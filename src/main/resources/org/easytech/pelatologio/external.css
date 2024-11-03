@@ -1,0 +1,363 @@
+* {
+	-fx-primary-color: #007acc;
+	-fx-secondary-color: #4B6EAF;
+	-fx-light-grey-color: #d1d1d1;
+
+	-fx-focus-color: -fx-secondary-color;
+}
+
+//------------------TableViews----------------
+//Style of entire tableView
+.table-view{
+    /*-fx-background-color: transparent;*/
+ }
+
+ //Style of entire tableView when is getting focused
+.table-view:focused{
+    /*-fx-background-color: transparent;*/
+}
+
+
+
+//Style of each column header in the tableView
+.table-view .column-header {
+     -fx-background-color: transparent;
+     -fx-padding : 8 0 8 0 ;
+}
+
+ //Style of each column header's label  in the tableView
+.table-view .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-font-weight:bold;
+    -fx-text-fill: black;
+    -fx-font-size:15px;
+    -fx-padding : 8 0 8 0 ;
+}
+
+//Style of each column in the tableView
+.table-view .table-column{
+    -fx-alignment:center;
+}
+
+ //Style of each table cell
+.table-view .table-cell{
+    -fx-font-weight:bold;
+    -fx-font-size:15px;           //the font size you asked in the comments below
+    /* -fx-text-fill:orange; */
+
+}
+
+
+//Style for each < non odd> row of table view
+/* .table-row-cell{
+    -fx-background-color: white;
+    -fx-background-insets: 0.0, 0.0 0.0 1.0 0.0;
+    -fx-padding: 0.0em;
+}
+
+//Style for each <odd> row of table view
+.table-row-cell:odd{
+    -fx-background-color: orange;
+    -fx-background-insets: 0.0, 0.0 0.0 1.0 0.0;
+    -fx-padding: 0.0em;
+}
+*/
+
+//Style of each entire row in the table view
+.table-row-cell:selected {
+    -fx-background-color:-fx-primary-color;
+    -fx-text-fill: white;
+}
+
+
+//Style of each entire row in the table view when is hovered
+.table-row-cell:hover {
+    -fx-background-color:-fx-primary-color;
+}
+
+.table-row-cell:empty {
+-fx-background-color: white;
+-fx-border-color: white;
+}
+
+.tree-table-view {
+    -fx-font-weight:bold;
+    -fx-font-size:15px;
+}
+
+
+//Style of each entire row in the table view when is getting focused
+//.table-row-cell:focused {
+//    -fx-background-color:purple;
+//}
+.inactive-row {
+    -fx-background-color: #cccccc; /* Σκούρο γκρί φόντο */
+    -fx-text-fill: white;
+}
+//------------------DatePickers----------------
+.date-picker .arrow-button {
+	-fx-background-color: -fx-primary-color;
+	-fx-background-radius: 0;
+}
+.date-picker .arrow-button:hover {
+	-fx-background-color: -fx-secondary-color;
+}
+.date-picker .arrow-button .arrow {
+	-fx-background-color: white;
+}
+.date-picker .cell {
+	-fx-background-color: white;
+	-fx-font-size: 16px;
+}
+.date-picker .cell:hover {
+	-fx-background-color: -fx-light-grey-color;
+}
+.date-picker .cell:focused {
+	-fx-background-color: -fx-light-grey-color;
+}
+.date-picker .selected {
+	-fx-background-color: -fx-primary-color;
+	-fx-text-fill: white;
+}
+.date-picker .selected:focused {
+	-fx-background-color: -fx-primary-color;
+	-fx-text-fill: white;
+}
+.date-picker-popup  {
+	-fx-border-color: transparent;
+}
+.date-picker-popup .month-year-pane {
+	-fx-background-color: -fx-primary-color;
+}
+.date-picker-popup .month-year-pane .label {
+	-fx-text-fill: white;
+	-fx-font-size: 16px;
+}
+.date-picker-popup .week-number-cell {
+	-fx-text-fill: -fx-secondary-color;
+}
+.date-picker-popup .spinner .button .left-arrow,
+.date-picker-popup .spinner .button .right-arrow {
+	-fx-background-color: white;
+}
+//------------------TextFields----------------
+.text-field {
+    -fx-background-color: #a9a9a9 ,  white ,  white;
+    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
+    -fx-font-size: 24px;
+    -fx-prompt-text-fill: gray;
+}
+
+.text-field:focused {
+    -fx-background-color: #a9a9a9 , white , white;
+    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
+    -fx-font-size: 24px;
+    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
+        -fx-prompt-translate-y: -25%;
+}
+
+//------------------ComboBox----------------
+.combo-box {
+-fx-background-color: #a9a9a9 , white , white;
+    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
+    -fx-font-size: 24px;
+}
+
+//------------------Buttons----------------
+.click-button {
+    -fx-background-radius: 50;
+    -fx-font-family: CrackMan;
+    -fx-font-size: 24;
+    -fx-border-color: #146B3A;
+    -fx-border-radius: 50;
+    -fx-border-width: 1;
+    -fx-text-fill: black;
+}
+
+.click-button:hover {
+    -fx-background-color: #EA4630;
+    -fx-background-radius: 50;
+    -fx-font-family: CrackMan;
+    -fx-font-size: 24;
+    -fx-border-color: #146B3A;
+    -fx-border-radius: 50;
+    -fx-border-width: 1;
+    -fx-text-fill: white;
+}
+
+.click-button:pressed {
+    -fx-background-color: #BB2528;
+    -fx-background-radius: 50;
+    -fx-font-family: CrackMan;
+    -fx-font-size: 24;
+    -fx-border-color: #165B33;
+    -fx-border-radius: 50;
+    -fx-border-width: 1;
+    -fx-text-fill: white;
+    -fx-rotate: 2;
+}
+
+
+
+//------------------Labels----------------
+.header-label{
+-fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+.normal-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+//
+.auto-complete-popup > .list-view {
+    -fx-font-size: 20px;
+    -fx-background-color:
+        linear-gradient(to bottom,
+            derive(-fx-color,-17%),
+            derive(-fx-color,-30%)
+        ),
+        -fx-control-inner-background;
+    -fx-background-insets: -1 -2 -1 -1, 0 -1 0 0;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 12, 0.0 , 0 , 8 );
+}
+.auto-complete-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
+    /* No alternate highlighting */
+    -fx-background: -fx-control-inner-background;
+}
+.auto-complete-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background:  -fx-selection-bar-non-focused;
+    -fx-background-color:  -fx-background;
+}
+.auto-complete-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover,
+.auto-complete-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover {
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-selection-bar;
+}
+.auto-complete-popup > .list-view > .placeholder > .label {
+    -fx-text-fill: derive(-fx-control-inner-background,-30%);
+}
+.auto-complete-popup > .list-view > .virtual-flow {
+    -fx-background-color: transparent; /* Καθαρίζει το φόντο για να εμφανίσει το scroll bar */
+    -fx-padding: 0; /* Αφαιρεί το padding για να περιορίσει τον χώρο */
+    -fx-max-width: 100%; /* Βεβαιωθείτε ότι η ευρεία εμφάνιση του virtual-flow είναι περιορισμένη */
+    -fx-max-height: 100%; /* Βεβαιωθείτε ότι το virtual-flow δεν θα υπερβεί το πλάτος της περιοχής σας */
+    -fx-min-width: 0; /* Βεβαιωθείτε ότι το virtual-flow μπορεί να σμικρυνθεί κατά την ανάγκη */
+    -fx-min-height: 20; /* Βεβαιωθείτε ότι το virtual-flow μπορεί να σμικρυνθεί κατά την ανάγκη */
+    -fx-overflow-y: scroll; /* Εμφανίζει την κάθετη μπάρα κύλισης */
+    -fx-overflow-x: hidden; /* Αποκρύπτει την οριζόντια μπάρα κύλισης, αν χρειαστεί */
+}
+
+.scroll-bar {
+  -fx-background-color: rgb(221, 221, 222);
+  -fx-opacity: 0.5;
+}
+.scroll-bar > .thumb {
+  -fx-background-color: #57606a;
+  -fx-background-radius: 4px;
+}
+.scroll-bar > .track {
+  -fx-background-color: transparent;
+  -fx-border-radius: 0;
+}
+.scroll-bar > .increment-button {
+  visibility: hidden;
+  -fx-managed: false;
+}
+.scroll-bar > .increment-button > .increment-arrow {
+  -fx-shape: " ";
+  -fx-padding: 0;
+}
+.scroll-bar > .decrement-button {
+  visibility: hidden;
+  -fx-managed: false;
+}
+.scroll-bar > .decrement-button > .decrement-arrow {
+  -fx-shape: " ";
+  -fx-padding: 0;
+}
+.scroll-bar:horizontal {
+  -fx-pref-height: 8px;
+}
+.scroll-bar:vertical {
+  -fx-pref-width: 8px;
+}
+.scroll-bar:hover, .scroll-bar:pressed, .scroll-bar:focused {
+  -fx-opacity: 1;
+}
+
+//------------------List----------------
+.list-view {
+    -fx-font-size: 20px;
+    -fx-background-color:
+        linear-gradient(to bottom,
+            derive(-fx-color,-17%),
+            derive(-fx-color,-30%)
+        ),
+        -fx-control-inner-background;
+    -fx-background-insets: -1 -2 -1 -1, 0 -1 0 0;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 12, 0.0 , 0 , 8 );
+}
+
+//----------------------------------
+
+.tree-table-view{
+    -fx-tree-table-color: #007acc;
+    -fx-tree-table-rippler-color: #d1d1d1;
+}
+.tree-table-view:focused .tree-table-row-cell:selected {
+    -fx-background-color: -fx-tree-table-color  ;
+    -fx-table-cell-border-color: -fx-tree-table-color;
+}
+
+.tree-table-view:focused .tree-table-row-cell:selected .tree-table-cell{
+    -fx-text-fill: white;
+}
+
+.tree-table-view .jfx-rippler {
+    -fx-rippler-fill: -fx-tree-table-rippler-color;
+}
+
+
+.tree-table-view .column-header{
+    -fx-border-width : 0 1 0 1;
+    -fx-background-color: transparent;
+}
+
+.tree-table-view .column-header .label {
+    -fx-background-color: transparent;
+        -fx-font-weight:bold;
+        -fx-text-fill: black;
+        -fx-font-size:15px;
+        -fx-padding : 8 0 8 0 ;
+}
+
+.tree-table-view .column-header:last-visible {
+    -fx-border-width: 0 2 0 1;
+}
+
+.tree-table-view .tree-table-cell{
+    -fx-border-width: 1 1 1 1;
+}
+
+.tree-table-view .column-overlay{
+    -fx-background-color: -fx-tree-table-color;
+}
+
+.tree-table-view .column-resize-line, .tree-table-view .column-drag-header{
+    -fx-background-color: -fx-tree-table-rippler-color;
+}
+
+.tree-table-view:focused {
+    -fx-background-color: -fx-tree-table-color,-fx-box-border,-fx-control-inner-background;
+    -fx-background-insets: -1.4, 0, 1;
+    -fx-background-radius: 1.4, 0, 0;
+    /*....*/
+    -fx-padding: 1; /* 0.083333em; */
+}
+

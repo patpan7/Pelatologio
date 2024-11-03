@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddLoginController">
+    <content>
+        <VBox alignment="CENTER">
+            <Label styleClass="normal-label" text="Προσθήκη Νέου Login" />
+            <TextField fx:id="usernameField" promptText="Username">
+            <VBox.margin>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </VBox.margin></TextField>
+            <PasswordField fx:id="passwordField" promptText="Password">
+            <VBox.margin>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </VBox.margin></PasswordField>
+            <TextField fx:id="tagField" promptText="Tag">
+            <VBox.margin>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </VBox.margin></TextField>
+        </VBox>
+    </content>
+</DialogPane>

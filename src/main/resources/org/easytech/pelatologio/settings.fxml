@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
+    <BorderPane minHeight="800.0" minWidth="1200.0">
+        <top>
+            <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                </BorderPane.margin>
+                <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                    <Label styleClass="header-label" text="Πελατολόγιο - Ρυθμίσεις" HBox.hgrow="ALWAYS">
+                        <font>
+                            <Font size="38.0" />
+                        </font>
+                        <HBox.margin>
+                            <Insets />
+                        </HBox.margin>
+                    </Label>
+                </HBox>
+                <HBox alignment="CENTER_RIGHT">
+                    <opaqueInsets>
+                        <Insets right="20.0" />
+                    </opaqueInsets>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                    <Button mnemonicParsing="false" onAction="#mainMenuClick" styleClass="click-button" text="Επιστροφή">
+                        <graphic>
+                            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@icons/menu.png" />
+                            </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                            <Insets />
+                        </HBox.margin>
+                    </Button>
+                </HBox>
+            </HBox>
+        </top>
+        <center>
+            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <VBox alignment="CENTER" HBox.hgrow="NEVER">
+                  <children>
+                     <HBox alignment="CENTER_RIGHT">
+                        <children>
+                                <Label styleClass="normal-label" text="Server">
+                                    <padding>
+                                        <Insets right="20.0" />
+                                    </padding>
+                                </Label>
+                                <TextField fx:id="tfServer" text="localhost" />
+                        </children>
+                        <VBox.margin>
+                           <Insets top="10.0" />
+                        </VBox.margin>
+                     </HBox>
+                     <HBox alignment="CENTER_RIGHT">
+                        <children>
+                                <Label styleClass="normal-label" text="User">
+                                    <padding>
+                                        <Insets right="20.0" />
+                                    </padding>
+                                </Label>
+                                <TextField fx:id="tfUser" text="sa" />
+                        </children>
+                        <VBox.margin>
+                           <Insets top="10.0" />
+                        </VBox.margin>
+                     </HBox>
+                     <HBox alignment="CENTER_RIGHT">
+                        <children>
+                                <Label styleClass="normal-label" text="Password">
+                                    <padding>
+                                        <Insets right="20.0" />
+                                    </padding>
+                                </Label>
+                                <TextField fx:id="tfPass" text="admin" />
+                        </children>
+                        <VBox.margin>
+                           <Insets top="10.0" />
+                        </VBox.margin>
+                     </HBox>
+                  </children>
+               </VBox>
+               <VBox>
+                  <children>
+                     <HBox alignment="CENTER">
+                        <children>
+                           <Label styleClass="normal-label" text="myPOS Link">
+                              <padding>
+                                 <Insets right="20.0" />
+                              </padding>
+                           </Label>
+                           <TextField fx:id="tfMyposLink" text="https://merchant.mypos.com/el/enroll?ref=1006179#/" />
+                        </children>
+                        <VBox.margin>
+                           <Insets top="10.0" />
+                        </VBox.margin>
+                     </HBox>
+                     <HBox alignment="CENTER">
+                        <children>
+                           <Label styleClass="normal-label" text="Simply User">
+                              <padding>
+                                 <Insets right="20.0" />
+                              </padding>
+                           </Label>
+                           <TextField fx:id="tfSimplyUser" text="et@dgou.gr" />
+                        </children>
+                        <VBox.margin>
+                           <Insets top="10.0" />
+                        </VBox.margin>
+                     </HBox>
+                     <HBox alignment="CENTER" layoutX="10.0" layoutY="71.0">
+                        <children>
+                           <Label styleClass="normal-label" text="Simply Pass">
+                              <padding>
+                                 <Insets right="20.0" />
+                              </padding>
+                           </Label>
+                           <TextField fx:id="tfSimplyPass" text="!abcd1234" />
+                        </children>
+                        <VBox.margin>
+                           <Insets top="10.0" />
+                        </VBox.margin>
+                     </HBox>
+                  </children>
+                  <HBox.margin>
+                     <Insets left="10.0" />
+                  </HBox.margin>
+               </VBox>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                    <Button mnemonicParsing="false" onAction="#saveSettings" styleClass="click-button" text="Αποθήκευση" />
+                </HBox>
+            </VBox>
+        </center>
+    </BorderPane>
+</StackPane>
