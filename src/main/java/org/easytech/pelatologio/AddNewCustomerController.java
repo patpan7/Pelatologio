@@ -1,18 +1,10 @@
 package org.easytech.pelatologio;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class AddNewCustomerController {
 
@@ -24,7 +16,7 @@ public class AddNewCustomerController {
 
     public void initialize() {
         // Εδώ μπορείς να αρχικοποιήσεις στοιχεία του pane αν χρειάζεται
-        btnAfmSearch.setOnAction(event -> handleAfmSearch(tfAfm.getText()));
+        btnAfmSearch.setOnAction(event -> handleAfmSearch());
     }
 
     public void setCustomerData(Customer customer) {
@@ -45,58 +37,77 @@ public class AddNewCustomerController {
     }
 
 
-    private void handleAfmSearch(String afm) {
-        if (afm.isEmpty()) {
-            showAlert("Error", "Please enter a valid ΑΦΜ.");
+    private void handleAfmSearch() {
+//        if (afm.isEmpty()) {
+//            showAlert("Error", "Please enter a valid ΑΦΜ.");
+//            return;
+//        }
+//
+//        try {
+//            // Call the API
+//            String apiUrl = "https://publicity.businessportal.gr/api/autocomplete/" + afm;
+//            System.out.println("API URL: " + apiUrl);
+//            HttpURLConnection conn = (HttpURLConnection) new URL(apiUrl).openConnection();
+//            conn.setRequestMethod("GET");
+//
+//            // Προσθήκη του User-Agent header
+//            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+//
+//            // Check the response code
+//            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+//                // Read the response
+//                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//                StringBuilder response = new StringBuilder();
+//                String inputLine;
+//                while ((inputLine = in.readLine()) != null) {
+//                    response.append(inputLine);
+//                }
+//                in.close();
+//
+//                // Parse the JSON response
+//                ObjectMapper objectMapper = new ObjectMapper();
+//                JsonNode rootNode = objectMapper.readTree(response.toString());
+//                JsonNode autocomplete = rootNode.path("payload").path("autocomplete");
+//
+//                if (autocomplete.size() > 0) {
+//                    // Get the first result
+//                    JsonNode firstResult = autocomplete.get(0);
+//                    String name = firstResult.path("co_name").asText();
+//                    String title = firstResult.path("title").asText();
+//
+//                    // Set values to the text fields
+//                    tfName.setText(name);
+//                    tfTitle.setText(title);
+//                } else {
+//                    showAlert("No Results", "No results found for the given ΑΦΜ.");
+//                }
+//            } else {
+//                showAlert("Error", "Failed to fetch data from API. Response Code: " + conn.getResponseCode());
+//            }
+//
+//            conn.disconnect();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            showAlert("Error", "An error occurred while fetching data: " + e.getMessage());
+//        }
+        String afm = tfAfm.getText();
+        if (afm == null || afm.isEmpty()) {
+            showAlert("No Results", "Παρακαλώ εισάγετε ένα έγκυρο ΑΦΜ.");
             return;
         }
 
-        try {
-            // Call the API
-            String apiUrl = "https://publicity.businessportal.gr/api/autocomplete/" + afm;
-            System.out.println("API URL: " + apiUrl);
-            HttpURLConnection conn = (HttpURLConnection) new URL(apiUrl).openConnection();
-            conn.setRequestMethod("GET");
+        AfmLookupService service = new AfmLookupService();
+        String responseXml = service.callAadeService(afm); // Βάλε το username και password σου
+        Customer companyInfo = AfmResponseParser.parseResponse(responseXml);
 
-            // Προσθήκη του User-Agent header
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-
-            // Check the response code
-            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                // Read the response
-                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-
-                // Parse the JSON response
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootNode = objectMapper.readTree(response.toString());
-                JsonNode autocomplete = rootNode.path("payload").path("autocomplete");
-
-                if (autocomplete.size() > 0) {
-                    // Get the first result
-                    JsonNode firstResult = autocomplete.get(0);
-                    String name = firstResult.path("co_name").asText();
-                    String title = firstResult.path("title").asText();
-
-                    // Set values to the text fields
-                    tfName.setText(name);
-                    tfTitle.setText(title);
-                } else {
-                    showAlert("No Results", "No results found for the given ΑΦΜ.");
-                }
-            } else {
-                showAlert("Error", "Failed to fetch data from API. Response Code: " + conn.getResponseCode());
-            }
-
-            conn.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("Error", "An error occurred while fetching data: " + e.getMessage());
+        if (companyInfo != null) {
+            tfName.setText(companyInfo.getName());
+            tfTitle.setText(companyInfo.getTitle());
+            tfJob.setText(companyInfo.getJob());
+            tfAddress.setText(companyInfo.getAddress());
+            tfTown.setText(companyInfo.getTown());
+        } else {
+            showAlert("No Results", "Σφάλμα κατά την ανάγνωση των δεδομένων.");
         }
     }
 

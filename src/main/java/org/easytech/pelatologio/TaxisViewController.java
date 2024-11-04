@@ -1,9 +1,5 @@
 package org.easytech.pelatologio;
 
-import gr.gsis.aade.RgWsPublic2InputRtType;
-import gr.gsis.aade.RgWsPublic2ResultRtType;
-import gr.gsis.aade.RgWsPublic2Service;
-import gr.gsis.aade.RgWsPublic2ServiceInterface;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

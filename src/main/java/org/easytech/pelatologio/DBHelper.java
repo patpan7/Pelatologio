@@ -22,7 +22,7 @@ public class DBHelper {
         user = AppSettings.getInstance().dbUser;
         pass = AppSettings.getInstance().dbPass;
 
-        String url = "jdbc:sqlserver://"+server+":1433;databaseName=Pelatologio;user="+user+";password="+pass+";encrypt=false;";
+        String url = "jdbc:sqlserver://"+server+";databaseName=Pelatologio;user="+user+";password="+pass+";encrypt=false;";
         return DriverManager.getConnection(url);
     }
 
