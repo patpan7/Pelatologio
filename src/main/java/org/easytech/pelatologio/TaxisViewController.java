@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 
 public class TaxisViewController {
@@ -150,9 +151,21 @@ public class TaxisViewController {
 
     public void taxisOpen(ActionEvent event) {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        WebPageOpener opener = new WebPageOpener();
-        opener.openAndFill("https://www1.aade.gr/saadeapps3/comregistry/#!/arxiki", selectedLogin.getUsername(),selectedLogin.getPassword());
-// Όταν τελειώσεις, κλείσε τον driver
-        opener.close();
+
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator();
+            loginAutomation.openAndFillLoginForm(
+                    "https://www1.aade.gr/saadeapps3/comregistry/#!/arxiki",
+                    selectedLogin.getUsername(),
+                    selectedLogin.getPassword(),
+                    "[username]",
+                    "[password]"
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        //opener.openAndFill("https://www1.aade.gr/saadeapps3/comregistry/#!/arxiki", selectedLogin.getUsername(),selectedLogin.getPassword());
+
     }
 }

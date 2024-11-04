@@ -37,6 +37,12 @@ public class SettingsController implements Initializable {
     TextField tfAfmUser;
     @FXML
     TextField tfAfmPass;
+    @FXML
+    RadioButton rbChrome;
+    @FXML
+    RadioButton rbFirefox;
+    @FXML
+    RadioButton rbBrave;
 
     String server;
 
@@ -56,6 +62,13 @@ public class SettingsController implements Initializable {
         tfTaxisPass.setText(AppSettings.loadSetting("taxisPass"));
         tfAfmUser.setText(AppSettings.loadSetting("afmUser"));
         tfAfmPass.setText(AppSettings.loadSetting("afmPass"));
+        if (AppSettings.loadSetting("browser").equals("chrome")) {
+            rbChrome.setSelected(true);
+        } else if (AppSettings.loadSetting("browser").equals("firefox")) {
+            rbFirefox.setSelected(true);
+        } else if (AppSettings.loadSetting("browser").equals("brave")) {
+            rbBrave.setSelected(true);
+        }
     }
 
 
@@ -73,7 +86,13 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("taxisPass", tfTaxisPass.getText());
         AppSettings.saveSetting("afmUser", tfAfmUser.getText());
         AppSettings.saveSetting("afmPass", tfAfmPass.getText());
-
+        if (rbChrome.isSelected()) {
+            AppSettings.saveSetting("browser", "chrome");
+        } else if (rbFirefox.isSelected()) {
+            AppSettings.saveSetting("browser", "firefox");
+        } else if (rbBrave.isSelected()) {
+            AppSettings.saveSetting("browser", "brave");
+        }
     }
 
 

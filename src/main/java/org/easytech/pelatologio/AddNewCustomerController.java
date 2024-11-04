@@ -38,66 +38,31 @@ public class AddNewCustomerController {
 
 
     private void handleAfmSearch() {
-//        if (afm.isEmpty()) {
-//            showAlert("Error", "Please enter a valid ΑΦΜ.");
-//            return;
-//        }
-//
-//        try {
-//            // Call the API
-//            String apiUrl = "https://publicity.businessportal.gr/api/autocomplete/" + afm;
-//            System.out.println("API URL: " + apiUrl);
-//            HttpURLConnection conn = (HttpURLConnection) new URL(apiUrl).openConnection();
-//            conn.setRequestMethod("GET");
-//
-//            // Προσθήκη του User-Agent header
-//            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-//
-//            // Check the response code
-//            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-//                // Read the response
-//                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//                StringBuilder response = new StringBuilder();
-//                String inputLine;
-//                while ((inputLine = in.readLine()) != null) {
-//                    response.append(inputLine);
-//                }
-//                in.close();
-//
-//                // Parse the JSON response
-//                ObjectMapper objectMapper = new ObjectMapper();
-//                JsonNode rootNode = objectMapper.readTree(response.toString());
-//                JsonNode autocomplete = rootNode.path("payload").path("autocomplete");
-//
-//                if (autocomplete.size() > 0) {
-//                    // Get the first result
-//                    JsonNode firstResult = autocomplete.get(0);
-//                    String name = firstResult.path("co_name").asText();
-//                    String title = firstResult.path("title").asText();
-//
-//                    // Set values to the text fields
-//                    tfName.setText(name);
-//                    tfTitle.setText(title);
-//                } else {
-//                    showAlert("No Results", "No results found for the given ΑΦΜ.");
-//                }
-//            } else {
-//                showAlert("Error", "Failed to fetch data from API. Response Code: " + conn.getResponseCode());
-//            }
-//
-//            conn.disconnect();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            showAlert("Error", "An error occurred while fetching data: " + e.getMessage());
-//        }
+        tfName.setText("");
+        tfTitle.setText("");
+        tfJob.setText("");
+        tfPhone1.setText("");
+        tfPhone2.setText("");
+        tfMobile.setText("");
+        tfAddress.setText("");
+        tfTown.setText("");
+        tfEmail.setText("");
         String afm = tfAfm.getText();
         if (afm == null || afm.isEmpty()) {
-            showAlert("No Results", "Παρακαλώ εισάγετε ένα έγκυρο ΑΦΜ.");
+            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο ΑΦΜ."));
             return;
         }
 
         AfmLookupService service = new AfmLookupService();
-        String responseXml = service.callAadeService(afm); // Βάλε το username και password σου
+        String responseXml = service.callAadeService(afm);
+
+        // Έλεγχος για μήνυμα σφάλματος
+        String errorDescr = AfmResponseParser.getXPathValue(responseXml, "//error_rec/error_descr");
+        if (errorDescr != null && !errorDescr.isEmpty()) {
+            Platform.runLater(() -> showAlert("Προσοχή", errorDescr));
+            return;
+        }
+
         Customer companyInfo = AfmResponseParser.parseResponse(responseXml);
 
         if (companyInfo != null) {
@@ -107,7 +72,7 @@ public class AddNewCustomerController {
             tfAddress.setText(companyInfo.getAddress());
             tfTown.setText(companyInfo.getTown());
         } else {
-            showAlert("No Results", "Σφάλμα κατά την ανάγνωση των δεδομένων.");
+            Platform.runLater(() -> showAlert("Προσοχή", "Σφάλμα κατά την ανάγνωση των δεδομένων."));
         }
     }
 
@@ -120,7 +85,7 @@ public class AddNewCustomerController {
         }
     }
 
-    void addCustomer(){
+    void addCustomer() {
         String name = tfName.getText();
         String title = tfTitle.getText();
         String job = tfJob.getText();
@@ -133,7 +98,7 @@ public class AddNewCustomerController {
         String email = tfEmail.getText();
         DBHelper dbHelper = new DBHelper();
         if (dbHelper.isAfmExists(afm)) {
-            Platform.runLater(() -> showAlert("Προσοχή","Ο πελάτης με ΑΦΜ " + afm + " υπάρχει ήδη."));
+            Platform.runLater(() -> showAlert("Προσοχή", "Ο πελάτης με ΑΦΜ " + afm + " υπάρχει ήδη."));
 
         } else {
             dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, address, town, email);
@@ -141,7 +106,7 @@ public class AddNewCustomerController {
         }
     }
 
-    void updateCustomer(){
+    void updateCustomer() {
         String name = tfName.getText();
         String title = tfTitle.getText();
         String job = tfJob.getText();

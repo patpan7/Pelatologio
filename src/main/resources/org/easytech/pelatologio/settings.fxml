@@ -6,7 +6,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
+<?import javafx.scene.Group?>
+<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
     <BorderPane minHeight="800.0" minWidth="1200.0">
         <top>
             <HBox alignment="CENTER" BorderPane.alignment="CENTER">
@@ -58,7 +59,7 @@
                 <RowConstraints vgrow="SOMETIMES" />
                 <RowConstraints vgrow="SOMETIMES" />
                 <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                   <RowConstraints vgrow="SOMETIMES" />
                   <RowConstraints vgrow="SOMETIMES" />
                   <RowConstraints vgrow="SOMETIMES" />
@@ -144,6 +145,20 @@
                   </Label>
                   <TextField fx:id="tfMyposUser" layoutX="756.0" layoutY="263.0" text="et@dgou.gr" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                   <TextField fx:id="tfMyposPass" layoutX="756.0" layoutY="314.0" text="!abcd1234" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                  <VBox alignment="CENTER_LEFT" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                     <fx:define>
+                         <ToggleGroup fx:id="browserToggleGroup"/>
+                     </fx:define>
+                     <children>
+                        <RadioButton fx:id="rbChrome" mnemonicParsing="false" styleClass="normal-label" text="Chrome" toggleGroup="$browserToggleGroup" />
+                        <RadioButton fx:id="rbBrave" mnemonicParsing="false" styleClass="normal-label" text="Brave" toggleGroup="$browserToggleGroup" />
+                        <RadioButton fx:id="rbFirefox" mnemonicParsing="false" styleClass="normal-label" text="Firefox" toggleGroup="$browserToggleGroup" />
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </GridPane.margin>
+                  </VBox>
+                  <Label layoutX="855.0" layoutY="281.0" styleClass="normal-label" text="Browser" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="8" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -154,5 +169,4 @@
                 </HBox>
             </VBox>
         </center>
-    </BorderPane>
-</StackPane>
+    </BorderPane></StackPane>

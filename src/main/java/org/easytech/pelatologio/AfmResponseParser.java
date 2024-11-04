@@ -32,8 +32,9 @@ public class AfmResponseParser {
             String postalAddressNo = getXPathValue(document, xpath, "//basic_rec/postal_address_no");
             String postalAreaDescription = getXPathValue(document, xpath, "//basic_rec/postal_area_description");
             String epaggelma = getXPathValue(document, xpath, "//firm_act_tab/item/firm_act_descr");
+
             // Επιστροφή των πληροφοριών σε αντικείμενο
-            return new Customer(onomasia,commerTitle,epaggelma,afm,"","","",postalAddress+" "+postalAddressNo,postalAreaDescription,"");
+            return new Customer(onomasia, commerTitle, epaggelma, afm, "", "", "", postalAddress + " " + postalAddressNo, postalAreaDescription, "");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,9 +42,26 @@ public class AfmResponseParser {
         }
     }
 
-    private static String getXPathValue(Document document, XPath xpath, String expression) throws Exception {
+    public static String getXPathValue(Document document, XPath xpath, String expression) throws Exception {
         XPathExpression expr = xpath.compile(expression);
         Node node = (Node) expr.evaluate(document, XPathConstants.NODE);
         return node != null ? node.getTextContent() : "";
+    }
+
+    // Νέα μέθοδος για χρήση XPath σε κείμενο XML
+    public static String getXPathValue(String xmlContent, String expression) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new ByteArrayInputStream(xmlContent.getBytes()));
+
+            XPathFactory xpathFactory = XPathFactory.newInstance();
+            XPath xpath = xpathFactory.newXPath();
+
+            return getXPathValue(document, xpath, expression);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
