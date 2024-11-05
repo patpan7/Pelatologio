@@ -14,8 +14,9 @@ public class LoginAutomator {
 
     // Constructor to set up the driver based on the browser type in the properties file
     public LoginAutomator() throws IOException {
-        String brave = "C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe";
+        String brave = System.getProperty("user.home") + "\\AppData\\Local\\BraveSoftware\\Brave-Browser\\Application\\brave.exe";
         System.out.println(brave);
+        System.setProperty("webdriver.chrome.driver", "C:\\web_driver\\chromedriver.exe");
         String browserType = AppSettings.loadSetting("browser");
 
         switch (browserType.toLowerCase()) {
@@ -41,18 +42,18 @@ public class LoginAutomator {
     }
 
     // Method to open a URL and fill the login form
-    public void openAndFillLoginForm(String url, String username, String password, String usernameSelector, String passwordSelector) {
+    public void openAndFillLoginForm(String url, String username, String password, By usernameLocator, By passwordLocator, By submitButtonLocator) {
         driver.get(url);
 
-        // Locate and fill username and password fields
-        WebElement usernameField = driver.findElement(By.cssSelector(usernameSelector));
-        WebElement passwordField = driver.findElement(By.cssSelector(passwordSelector));
+        // Εντοπισμός πεδίων username και password και εισαγωγή τιμών
+            WebElement usernameField = driver.findElement(usernameLocator);
+            WebElement passwordField = driver.findElement(passwordLocator);
 
-        usernameField.sendKeys(username);
-        passwordField.sendKeys(password);
+            usernameField.sendKeys(username);
+            passwordField.sendKeys(password);
 
-        // Submit the form
-        passwordField.submit();
+        // Υποβολή φόρμας ή πάτημα κουμπιού αν χρειάζεται
+        driver.findElement(submitButtonLocator).click();
     }
 
     // Close the driver

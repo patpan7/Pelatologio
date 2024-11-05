@@ -108,7 +108,7 @@
                   </graphic>
                </Button>
                <Separator visible="false" HBox.hgrow="ALWAYS" />
-               <Button mnemonicParsing="false" styleClass="click-button" text="myPOS" HBox.hgrow="ALWAYS">
+               <Button mnemonicParsing="false" onAction="#myposClick" styleClass="click-button" text="myPOS" HBox.hgrow="ALWAYS">
                   <graphic>
                       <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                           <image>

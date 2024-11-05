@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MyposViewController">
+    <content>
+        <VBox alignment="TOP_CENTER">
+            <Label fx:id="customerLabel" styleClass="header-label" text="Όνομα Πελάτη: [Όνομα Πελάτη]" textOverrun="CLIP" />
+            <HBox alignment="TOP_CENTER">
+                <children>
+                    <VBox alignment="TOP_CENTER">
+                        <children>
+                            <!-- Πίνακας για τα Logins -->
+                            <TableView fx:id="loginTable">
+                                <columns>
+                                    <TableColumn fx:id="usernameColumn" text="Username" />
+                                    <TableColumn fx:id="passwordColumn" text="Password" />
+                                    <TableColumn fx:id="tagColumn" text="Tag" />
+                                </columns>
+                        <columnResizePolicy>
+                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                        </columnResizePolicy>
+                            </TableView>
+
+                            <!-- Κουμπί για προσθήκη νέου login -->
+                            <Button fx:id="addLoginButton" onAction="#handleAddLogin" styleClass="click-button" text="Προσθήκη Νέου Login">
+                                <VBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                </VBox.margin>
+                            </Button>
+                            <Button fx:id="editButton" onAction="#handleEditLogin" styleClass="click-button" text="Επεξεργασία">
+                                <VBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                </VBox.margin>
+                            </Button>
+                            <Button fx:id="deleteButton" onAction="#handleDeleteLogin" styleClass="click-button" text="Διαγραφή">
+                                <VBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                </VBox.margin>
+                            </Button>
+                        </children>
+                  <HBox.margin>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </HBox.margin>
+                    </VBox>
+                    <!-- Λίστα με κουμπιά για άλλες εργασίες -->
+                    <VBox alignment="TOP_CENTER">
+                        <children>
+                            <Button mnemonicParsing="false" onAction="#myposloginOpen" styleClass="click-button" text="Σύνδεση myPOS">
+                                <VBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                </VBox.margin>
+                            </Button>
+                            <Button mnemonicParsing="false" onAction="#myposregisterOpen" styleClass="click-button" text="Εγγραφή myPOS">
+                                <VBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                </VBox.margin>
+                            </Button>
+                        </children>
+                  <HBox.margin>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </HBox.margin>
+                    </VBox>
+                </children>
+            </HBox>
+
+        </VBox>
+    </content>
+</DialogPane>

@@ -361,4 +361,34 @@ public class CustomersController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    public void myposClick(ActionEvent event) {
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        if (selectedCustomer == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Προσοχή");
+            alert.setContentText("Δεν έχει επιλεγεί Πελάτης!");
+            Optional<ButtonType> result = alert.showAndWait();
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("myposView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+// Τώρα μπορείς να πάρεις τον controller
+            MyposViewController controller = loader.getController();
+
+// Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+            controller.setCustomer(selectedCustomer);
+
+            dialog.setTitle("Κωδικοί myPOS");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+
+            dialog.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

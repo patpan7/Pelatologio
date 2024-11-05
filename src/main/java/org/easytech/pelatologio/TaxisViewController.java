@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,6 +8,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.IOException;
 import java.util.Map;
@@ -86,7 +92,8 @@ public class TaxisViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
+            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
+            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
             return;
         }
 
@@ -111,7 +118,8 @@ public class TaxisViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
+            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς επεξεργασία."));
+            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
             return;
         }
 
@@ -151,21 +159,171 @@ public class TaxisViewController {
 
     public void taxisOpen(ActionEvent event) {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
+            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
+            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
+            return;
+        }
         try {
             LoginAutomator loginAutomation = new LoginAutomator();
             loginAutomation.openAndFillLoginForm(
                     "https://www1.aade.gr/saadeapps3/comregistry/#!/arxiki",
                     selectedLogin.getUsername(),
                     selectedLogin.getPassword(),
-                    "[username]",
-                    "[password]"
+                    By.id("username"),
+                    By.id("password"),
+                    By.name("btn_login")
             );
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-        //opener.openAndFill("https://www1.aade.gr/saadeapps3/comregistry/#!/arxiki", selectedLogin.getUsername(),selectedLogin.getPassword());
 
+    }
+
+    public void authorizationsOpen(ActionEvent actionEvent) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
+            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
+            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
+            return;
+        }
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator();
+            loginAutomation.openAndFillLoginForm(
+                    "https://www1.gsis.gr/taxisnet/mytaxisnet/protected/authorizations.htm",
+                    selectedLogin.getUsername(),
+                    selectedLogin.getPassword(),
+                    By.id("username"),
+                    By.id("password"),
+                    By.name("btn_login")
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mydataOpen(ActionEvent actionEvent) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
+            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
+            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
+            return;
+        }
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator();
+            loginAutomation.openAndFillLoginForm(
+                    "https://www1.aade.gr/saadeapps2/bookkeeper-web/bookkeeper/#!/",
+                    selectedLogin.getUsername(),
+                    selectedLogin.getPassword(),
+                    By.id("username"),
+                    By.id("password"),
+                    By.name("btn_login")
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void esendOpen(ActionEvent actionEvent) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
+            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
+            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
+            return;
+        }
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator();
+            loginAutomation.openAndFillLoginForm(
+                    "https://www1.gsis.gr/tameiakes/myweb/esendN.php?FUNCTION=1",
+                    selectedLogin.getUsername(),
+                    selectedLogin.getPassword(),
+                    By.id("idEMAIL"),
+                    By.name("PASSWD"),
+                    By.cssSelector("input.btn.btn-primary[value='Σύνδεση']")
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void afm1Open(ActionEvent actionEvent) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
+            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
+            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
+            return;
+        }
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator();
+            loginAutomation.openAndFillLoginForm(
+                    "https://www1.aade.gr/webtax/wspublicreg/faces/pages/wspublicreg/menu.xhtml",
+                    selectedLogin.getUsername(),
+                    selectedLogin.getPassword(),
+                    By.id("username"),
+                    By.id("password"),
+                    By.name("btn_login")
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void afm2Open(ActionEvent actionEvent) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
+            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
+            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
+            return;
+        }
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator();
+            loginAutomation.openAndFillLoginForm(
+                    "https://www1.aade.gr/sgsisapps/tokenservices/protected/displayConsole.htm",
+                    selectedLogin.getUsername(),
+                    selectedLogin.getPassword(),
+                    By.id("username"),
+                    By.id("password"),
+                    By.name("btn_login")
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void tameiakesOpen(ActionEvent actionEvent) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
+            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
+            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
+            return;
+        }
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator();
+            loginAutomation.openAndFillLoginForm(
+                    "https://www1.aade.gr/taxisnet/info/protected/displayTillInfo.htm",
+                    selectedLogin.getUsername(),
+                    selectedLogin.getPassword(),
+                    By.id("username"),
+                    By.id("password"),
+                    By.name("btn_login")
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
