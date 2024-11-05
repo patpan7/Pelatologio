@@ -33,7 +33,7 @@ public class AddLoginController {
 
     // Μέθοδος για την αποθήκευση του νέου login
     @FXML
-    public void handleSaveLogin(ActionEvent event) {
+    public void handleSaveLogin(ActionEvent event, int appicationId) {
         String username = usernameField.getText();
         String password = passwordField.getText();
         String tag = tagField.getText();
@@ -41,7 +41,7 @@ public class AddLoginController {
 
         if (!username.isEmpty() && !password.isEmpty()) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.addLogin(customer.getCode(),newLogin,3); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
+            dbHelper.addLogin(customer.getCode(),newLogin,appicationId); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
 
             // Κλείσιμο του διαλόγου
             Dialog<ButtonType> dialog = new Dialog<>();

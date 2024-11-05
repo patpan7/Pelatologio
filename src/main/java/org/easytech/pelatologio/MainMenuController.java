@@ -4,10 +4,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import org.openqa.selenium.By;
 
 import java.io.IOException;
 
@@ -17,8 +16,6 @@ public class MainMenuController {
     private StackPane stackPane;
     @FXML
     Label vesrion;
-    private Stage stage;
-    private Scene scene;
     public Parent root;
 
     public void mainMenuClick(StackPane stackPane) throws IOException {
@@ -29,11 +26,6 @@ public class MainMenuController {
     }
 
     public void customersClick(ActionEvent e) throws IOException {
-//        root = FXMLLoader.load(getClass().getResource("suppliers.fxml"));
-//        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-//        scene = new Scene(root);
-//        stage.setScene(scene);
-//        stage.show();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("customers.fxml"));
         root = fxmlLoader.load();
         stackPane.getChildren().clear();
@@ -42,14 +34,39 @@ public class MainMenuController {
 
 
     public void settingsClick(ActionEvent e) throws IOException {
-//        root = FXMLLoader.load(getClass().getResource("settings.fxml"));
-//        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-//        scene = new Scene(root);
-//        stage.setScene(scene);
-//        stage.show();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("settings.fxml"));
         root = fxmlLoader.load();
         stackPane.getChildren().clear();
         stackPane.getChildren().add(root);
+    }
+
+    public void myposdasClick(ActionEvent event) {
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator(false);
+            loginAutomation.openPage("https://das.mypos.eu/en/login" );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void d11Click(ActionEvent event) {
+        try {
+        LoginAutomator loginAutomation = new LoginAutomator(true);
+        loginAutomation.openAndFillLoginForm(
+                "https://www1.aade.gr/taxisnet/kvs/protected/displayLiabilitiesForYear.htm?declarationType=kvsD11",
+                AppSettings.loadSetting("taxisUser"),
+                AppSettings.loadSetting("taxisPass"),
+                By.id("username"),
+                By.id("password"),
+                By.name("btn_login")
+        );
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    }
+
+    public void synkClick(ActionEvent event) {
+        DBHelper dbHelper = new DBHelper();
+        dbHelper.syncMegasoft();
     }
 }

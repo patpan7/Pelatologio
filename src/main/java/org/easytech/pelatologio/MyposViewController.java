@@ -70,7 +70,7 @@ public class MyposViewController {
             // Όταν ο χρήστης πατά το OK, θα καλέσει τη μέθοδο για αποθήκευση
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton == ButtonType.OK) {
-                    addLoginController.handleSaveLogin(event);
+                    addLoginController.handleSaveLogin(event,1);
                 }
                 return null;
             });
@@ -161,7 +161,7 @@ public class MyposViewController {
             return;
         }
         try {
-            LoginAutomator loginAutomation = new LoginAutomator();
+            LoginAutomator loginAutomation = new LoginAutomator(true);
             loginAutomation.openAndFillLoginForm(
                     "https://www.mypos.com/el/login",
                     selectedLogin.getUsername(),
@@ -177,24 +177,11 @@ public class MyposViewController {
     }
 
     public void myposregisterOpen(ActionEvent actionEvent) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         String myposRegister = AppSettings.loadSetting("myposlink");
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
-            return;
-        }
+
         try {
-            LoginAutomator loginAutomation = new LoginAutomator();
-            loginAutomation.openAndFillLoginForm(
-                    myposRegister,
-                    selectedLogin.getUsername(),
-                    selectedLogin.getPassword(),
-                    By.id("username"),
-                    By.id("password"),
-                    By.name("btn_login")
-            );
+            LoginAutomator loginAutomation = new LoginAutomator(true);
+            loginAutomation.openPage(myposRegister);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -22,94 +22,94 @@ public class DBHelper {
         user = AppSettings.getInstance().dbUser;
         pass = AppSettings.getInstance().dbPass;
 
-        String url = "jdbc:sqlserver://"+server+";databaseName=Pelatologio;user="+user+";password="+pass+";encrypt=false;";
+        String url = "jdbc:sqlserver://" + server + ";databaseName=Pelatologio;user=" + user + ";password=" + pass + ";encrypt=false;";
         return DriverManager.getConnection(url);
     }
 
 
-        public static void closeConnection(Connection connection) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+    public static void closeConnection(Connection connection) {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
 
-        // Μέθοδος για να πάρεις δεδομένα
-        public List<Customer> getCustomers() throws SQLException {
-            List<Customer> dataList = new ArrayList<>();
-            try (Connection conn = getConnection();
-                 Statement statement = conn.createStatement()) {
+    // Μέθοδος για να πάρεις δεδομένα
+    public List<Customer> getCustomers() throws SQLException {
+        List<Customer> dataList = new ArrayList<>();
+        try (Connection conn = getConnection();
+             Statement statement = conn.createStatement()) {
 
-                String query = "SELECT * FROM customers";
-                ResultSet resultSet = statement.executeQuery(query);
+            String query = "SELECT * FROM customers";
+            ResultSet resultSet = statement.executeQuery(query);
 
-                while (resultSet.next()) {
-                    Customer data = new Customer();
-                    data.setCode(resultSet.getInt("code"));
-                    data.setName(resultSet.getString("name"));
-                    data.setTitle(resultSet.getString("title"));
-                    data.setJob(resultSet.getString("job"));
-                    data.setAfm(resultSet.getString("afm"));
-                    data.setPhone1(resultSet.getString("phone1"));
-                    data.setPhone2(resultSet.getString("phone2"));
-                    data.setMobile(resultSet.getString("mobile"));
-                    data.setAddress(resultSet.getString("address"));
-                    data.setTown(resultSet.getString("town"));
-                    data.setEmail(resultSet.getString("email"));
-                    dataList.add(data);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            while (resultSet.next()) {
+                Customer data = new Customer();
+                data.setCode(resultSet.getInt("code"));
+                data.setName(resultSet.getString("name"));
+                data.setTitle(resultSet.getString("title"));
+                data.setJob(resultSet.getString("job"));
+                data.setAfm(resultSet.getString("afm"));
+                data.setPhone1(resultSet.getString("phone1"));
+                data.setPhone2(resultSet.getString("phone2"));
+                data.setMobile(resultSet.getString("mobile"));
+                data.setAddress(resultSet.getString("address"));
+                data.setTown(resultSet.getString("town"));
+                data.setEmail(resultSet.getString("email"));
+                dataList.add(data);
             }
-            return dataList;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return dataList;
+    }
 
-        public boolean isAfmExists(String afm) {
-            String query = "SELECT COUNT(*) FROM Customers WHERE afm = ?";
-            try (Connection conn = getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(query)) {
+    public boolean isAfmExists(String afm) {
+        String query = "SELECT COUNT(*) FROM Customers WHERE afm = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-                pstmt.setString(1, afm);
-                ResultSet rs = pstmt.executeQuery();
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            pstmt.setString(1, afm);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
             }
-            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return false;
+    }
 
-        public void insertCustomer(String name, String title, String job, String afm, String phone1,
-                                   String phone2, String mobile, String address,
-                                   String town, String email) {
-            String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, email) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void insertCustomer(String name, String title, String job, String afm, String phone1,
+                               String phone2, String mobile, String address,
+                               String town, String email) {
+        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, email) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            try (Connection conn = getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
 
-                pstmt.setString(1, name);
-                pstmt.setString(2, title);
-                pstmt.setString(3, job);
-                pstmt.setString(4, afm);
-                pstmt.setString(5, phone1);
-                pstmt.setString(6, phone2);
-                pstmt.setString(7, mobile);
-                pstmt.setString(8, address);
-                pstmt.setString(9, town);
-                pstmt.setString(10, email);
+            pstmt.setString(1, name);
+            pstmt.setString(2, title);
+            pstmt.setString(3, job);
+            pstmt.setString(4, afm);
+            pstmt.setString(5, phone1);
+            pstmt.setString(6, phone2);
+            pstmt.setString(7, mobile);
+            pstmt.setString(8, address);
+            pstmt.setString(9, town);
+            pstmt.setString(10, email);
 
-                int rowsInserted = pstmt.executeUpdate();
-                if (rowsInserted > 0) {
-                    System.out.println("Η εισαγωγή του πελάτη ήταν επιτυχής.");
-                    closeConnection(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Η εισαγωγή του πελάτη ήταν επιτυχής.");
+                closeConnection(conn);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
 
     public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String email) {
         String sql = "UPDATE customers SET name = ?, title = ?, job = ?,afm = ?, phone1 = ?, " +
@@ -209,35 +209,45 @@ public class DBHelper {
         }
     }
 
+    public void syncMegasoft() {
+        String SQL = "MERGE INTO [Pelatologio].[dbo].[Customers] AS target\n" +
+                "USING (\n" +
+                "    SELECT \n" +
+                "        COALESCE(BusinessTitle, '') AS BusinessTitle,\n" +
+                "        COALESCE(Company, '') AS name, \n" +
+                "        COALESCE(Business, '') AS job, \n" +
+                "        COALESCE(Afm, '0000000000') AS afm,  -- Αντικαθιστούμε το κενό με placeholder\n" +
+                "        COALESCE(Tel_1, '') AS phone1, \n" +
+                "        COALESCE(Tel_2, '') AS phone2, \n" +
+                "        COALESCE(Mobile, '') AS mobile, \n" +
+                "        COALESCE(Address_1, '') AS address, \n" +
+                "        COALESCE(City_1, '') AS city1, \n" +
+                "        COALESCE(Email, '') AS mail1\n" +
+                "    FROM Megasoft.dbo.E2_Emp065_24\n" +
+                "    INNER JOIN Megasoft.dbo.E2_Emp001_24 ON Megasoft.dbo.E2_Emp001_24.pelid = Megasoft.dbo.E2_Emp065_24.pelid\n" +
+                "    WHERE Afm IS NOT NULL AND Afm != ''  -- Προσθέτουμε τη συνθήκη για να φέρουμε μόνο πελάτες με AFM\n" +
+                ") AS source\n" +
+                "ON (target.afm = source.afm)  -- Συγκρίνει το AFM για το αν υπάρχει ήδη\n" +
+                "WHEN MATCHED THEN\n" +
+                "    UPDATE SET\n" +
+                "        target.name = source.name,\n" +
+                "        target.title = source.BusinessTitle,\n" +
+                "        target.job = source.job,\n" +
+                "        target.phone1 = source.phone1,\n" +
+                "        target.phone2 = source.phone2,\n" +
+                "        target.mobile = source.mobile,\n" +
+                "        target.address = source.address,\n" +
+                "        target.town = source.city1,\n" +
+                "        target.email = source.mail1\n" +
+                "WHEN NOT MATCHED THEN\n" +
+                "    INSERT (name, title, job, afm, phone1, phone2, mobile, address, town, email)\n" +
+                "    VALUES (source.name, source.BusinessTitle, source.job, source.afm, source.phone1, source.phone2, source.mobile, source.address, source.city1, source.mail1);";
 
-//
-//    // Μέθοδος για εισαγωγή δεδομένων
-//    public void insertData(YourDataModel data) {
-//        String query = "INSERT INTO yourTableName (field1, field2) VALUES (?, ?)";
-//        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-//             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-//
-//            preparedStatement.setString(1, data.getField1());
-//            preparedStatement.setString(2, data.getField2());
-//            // Άλλα πεδία...
-//            preparedStatement.executeUpdate();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    // Μέθοδος για ενημέρωση δεδομένων
-//    public void updateData(YourDataModel data) {
-//        String query = "UPDATE yourTableName SET field1 = ?, field2 = ? WHERE id = ?";
-//        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-//             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-//
-//            preparedStatement.setString(1, data.getField1());
-//            preparedStatement.setString(2, data.getField2());
-//            preparedStatement.setInt(3, data.getId()); // Υποθέτοντας ότι έχεις ένα id για το αντικείμενο
-//            preparedStatement.executeUpdate();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+        try (Connection connection = getConnection();
+                PreparedStatement stmt = connection.prepareStatement(SQL)) {
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

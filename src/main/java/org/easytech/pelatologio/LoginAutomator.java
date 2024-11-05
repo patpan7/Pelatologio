@@ -13,7 +13,7 @@ public class LoginAutomator {
     private WebDriver driver = null;
 
     // Constructor to set up the driver based on the browser type in the properties file
-    public LoginAutomator() throws IOException {
+    public LoginAutomator(boolean incognito) throws IOException {
         String brave = System.getProperty("user.home") + "\\AppData\\Local\\BraveSoftware\\Brave-Browser\\Application\\brave.exe";
         System.out.println(brave);
         System.setProperty("webdriver.chrome.driver", "C:\\web_driver\\chromedriver.exe");
@@ -22,18 +22,24 @@ public class LoginAutomator {
         switch (browserType.toLowerCase()) {
             case "chrome":
                 ChromeOptions chromeOptions = new ChromeOptions();
-                chromeOptions.addArguments("--incognito");
+                if (incognito) {
+                    chromeOptions.addArguments("--incognito");
+                }
                 driver = new ChromeDriver(chromeOptions);
                 break;
             case "firefox":
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
-                firefoxOptions.addArguments("-private");
+                if (incognito) {
+                    firefoxOptions.addArguments("-private");
+                }
                 driver = new FirefoxDriver(firefoxOptions);
                 break;
             case "brave":
                 ChromeOptions braveOptions = new ChromeOptions();
                 braveOptions.setBinary(brave); // ορίστε το path προς τον Brave browser
-                braveOptions.addArguments("--incognito");
+                if (incognito) {
+                    braveOptions.addArguments("--incognito");
+                }
                 driver = new ChromeDriver(braveOptions);
                 break;
             default:
@@ -54,6 +60,10 @@ public class LoginAutomator {
 
         // Υποβολή φόρμας ή πάτημα κουμπιού αν χρειάζεται
         driver.findElement(submitButtonLocator).click();
+    }
+
+    public void openPage(String url) {
+        driver.get(url);
     }
 
     // Close the driver

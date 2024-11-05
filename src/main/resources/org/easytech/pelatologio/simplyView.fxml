@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane stylesheets="@external.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.TaxisViewController">
+<DialogPane stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SimplyViewController">
     <content>
         <VBox alignment="TOP_CENTER">
             <Label fx:id="customerLabel" styleClass="header-label" text="Όνομα Πελάτη: [Όνομα Πελάτη]" textOverrun="CLIP" />
@@ -48,37 +48,27 @@
                     <!-- Λίστα με κουμπιά για άλλες εργασίες -->
                     <VBox alignment="TOP_CENTER">
                         <children>
-                            <Button mnemonicParsing="false" styleClass="click-button" text="TaxisNet" onAction="#taxisOpen">
+                            <Button mnemonicParsing="false" onAction="#simplyposOpen" styleClass="click-button" text="Simply POS">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
                             </Button>
-                            <Button mnemonicParsing="false" styleClass="click-button" text="Εξουσιοδότηση ΑΑΔΕ" onAction="#authorizationsOpen">
+                            <Button mnemonicParsing="false" onAction="#simplycashOpen" styleClass="click-button" text="Simply Cash">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
                             </Button>
-                            <Button mnemonicParsing="false" styleClass="click-button" text="myDATA" onAction="#mydataOpen">
+                            <Button mnemonicParsing="false" onAction="#simplyrestOpen" styleClass="click-button" text="Simply Rest">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
                             </Button>
-                            <Button mnemonicParsing="false" styleClass="click-button" text="eSend" onAction="#esendOpen">
+                            <Button mnemonicParsing="false" onAction="#registerposOpen" styleClass="click-button" text="Εγγραφή Simply POS">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
                             </Button>
-                            <Button mnemonicParsing="false" styleClass="click-button" text="Ανεύρεση ΑΦΜ 1" onAction="#afm1Open">
-                                <VBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                </VBox.margin>
-                            </Button>
-                            <Button mnemonicParsing="false" styleClass="click-button" text="Ανεύρεση ΑΦΜ 2"  onAction="#afm2Open">
-                                <VBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                </VBox.margin>
-                            </Button>
-                            <Button mnemonicParsing="false" styleClass="click-button" text="Ταμειακές" onAction="#tameiakesOpen">
+                            <Button mnemonicParsing="false" onAction="#registercloudOpen" styleClass="click-button" text="Εγγραφή Simply Cloud">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>

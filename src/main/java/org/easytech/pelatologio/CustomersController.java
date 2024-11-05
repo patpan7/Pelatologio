@@ -391,4 +391,44 @@ public class CustomersController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    public void simplyClick(ActionEvent event) {
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        if (selectedCustomer == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Προσοχή");
+            alert.setContentText("Δεν έχει επιλεγεί Πελάτης!");
+            Optional<ButtonType> result = alert.showAndWait();
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("simplyView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+// Τώρα μπορείς να πάρεις τον controller
+            SimplyViewController controller = loader.getController();
+
+// Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+            controller.setCustomer(selectedCustomer);
+
+            dialog.setTitle("Κωδικοί Simply");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+
+            dialog.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void folderClick(ActionEvent event) {
+        CustomerFolderManager folderManager = new CustomerFolderManager();
+
+        // Όνομα και ΑΦΜ του πελάτη
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+
+        // Κλήση της μεθόδου για δημιουργία ή άνοιγμα του φακέλου
+        folderManager.createOrOpenCustomerFolder(selectedCustomer.getName(), selectedCustomer.getAfm());
+    }
 }
