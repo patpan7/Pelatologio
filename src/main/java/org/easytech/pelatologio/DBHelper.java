@@ -57,6 +57,8 @@ public class DBHelper {
                 data.setAddress(resultSet.getString("address"));
                 data.setTown(resultSet.getString("town"));
                 data.setEmail(resultSet.getString("email"));
+                data.setManager(resultSet.getString("manager"));
+                data.setManagerPhone(resultSet.getString("managerPhone"));
                 dataList.add(data);
             }
         } catch (Exception e) {
@@ -83,9 +85,9 @@ public class DBHelper {
 
     public void insertCustomer(String name, String title, String job, String afm, String phone1,
                                String phone2, String mobile, String address,
-                               String town, String email) {
-        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, email) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                               String town, String email, String manager, String managerPhone) {
+        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, email, manager, managerPhone) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
@@ -100,6 +102,8 @@ public class DBHelper {
             pstmt.setString(8, address);
             pstmt.setString(9, town);
             pstmt.setString(10, email);
+            pstmt.setString(11, manager);
+            pstmt.setString(12, managerPhone);
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -111,9 +115,9 @@ public class DBHelper {
         }
     }
 
-    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String email) {
+    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String email, String manager, String managerPhone) {
         String sql = "UPDATE customers SET name = ?, title = ?, job = ?,afm = ?, phone1 = ?, " +
-                "phone2 = ?, mobile = ?, address = ?, town = ?, email = ? WHERE code = ?";
+                "phone2 = ?, mobile = ?, address = ?, town = ?, email = ?, manager = ?, managerPhone = ? WHERE code = ?";
         ;
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -127,7 +131,9 @@ public class DBHelper {
             pstmt.setString(8, address);
             pstmt.setString(9, town);
             pstmt.setString(10, email);
-            pstmt.setInt(11, code);
+            pstmt.setString(11, manager);
+            pstmt.setString(12, managerPhone);
+            pstmt.setInt(13, code);
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -157,6 +163,7 @@ public class DBHelper {
                 data.setUsername(resultSet.getString("Username"));
                 data.setPassword(resultSet.getString("Password"));
                 data.setTag(resultSet.getString("Tag"));
+                data.setPhone(resultSet.getString("Phone"));
                 dataList.add(data);
             }
         } catch (SQLException e) {
@@ -166,7 +173,7 @@ public class DBHelper {
     }
 
     public void addLogin(int code, Logins newLogin, int i) {
-        String sql = "INSERT INTO CustomerLogins (CustomerID, ApplicationID, username, password, tag) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO CustomerLogins (CustomerID, ApplicationID, username, password, tag, phone) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, code);
@@ -174,6 +181,7 @@ public class DBHelper {
             pstmt.setString(3, newLogin.getUsername());
             pstmt.setString(4, newLogin.getPassword());
             pstmt.setString(5, newLogin.getTag());
+            pstmt.setString(6, newLogin.getPhone());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -181,14 +189,15 @@ public class DBHelper {
     }
 
     public void updateLogin(Logins updatedLogin) {
-        String query = "UPDATE CustomerLogins SET username = ?, password = ?, tag = ? WHERE LoginID = ?";
+        String query = "UPDATE CustomerLogins SET username = ?, password = ?, tag = ?, phone = ? WHERE LoginID = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, updatedLogin.getUsername());
             pstmt.setString(2, updatedLogin.getPassword());
             pstmt.setString(3, updatedLogin.getTag());
-            pstmt.setInt(4, updatedLogin.getId());
+            pstmt.setString(4, updatedLogin.getPhone());
+            pstmt.setInt(5, updatedLogin.getId());
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -212,7 +221,7 @@ public class DBHelper {
     public void syncMegasoft() {
         String SQL = "MERGE INTO [Pelatologio].[dbo].[Customers] AS target\n" +
                 "USING (\n" +
-                "    SELECT \n" +
+                "    SELECT TOP 100 PERCENT\n" +
                 "        COALESCE(BusinessTitle, '') AS BusinessTitle,\n" +
                 "        COALESCE(Company, '') AS name, \n" +
                 "        COALESCE(Business, '') AS job, \n" +
@@ -225,9 +234,10 @@ public class DBHelper {
                 "        COALESCE(Email, '') AS mail1\n" +
                 "    FROM Megasoft.dbo.E2_Emp065_24\n" +
                 "    INNER JOIN Megasoft.dbo.E2_Emp001_24 ON Megasoft.dbo.E2_Emp001_24.pelid = Megasoft.dbo.E2_Emp065_24.pelid\n" +
-                "    WHERE Afm IS NOT NULL AND Afm != ''  -- Προσθέτουμε τη συνθήκη για να φέρουμε μόνο πελάτες με AFM\n" +
+                "    WHERE Afm IS NOT NULL AND Afm != ''\n" +
+                "    ORDER BY Kwd  -- Ταξινόμηση βάσει του Kwd για διατήρηση της σειράς\n" +
                 ") AS source\n" +
-                "ON (target.afm = source.afm)  -- Συγκρίνει το AFM για το αν υπάρχει ήδη\n" +
+                "ON (target.afm = source.afm)\n" +
                 "WHEN MATCHED THEN\n" +
                 "    UPDATE SET\n" +
                 "        target.name = source.name,\n" +

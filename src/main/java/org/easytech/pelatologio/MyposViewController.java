@@ -27,6 +27,8 @@ public class MyposViewController {
 
     @FXML
     private TableColumn<Logins, String> tagColumn;
+    @FXML
+    private TableColumn<Logins, String> phoneColumn;
 
 
     Customer customer;
@@ -42,6 +44,8 @@ public class MyposViewController {
         passwordColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPassword()));
         // Ρύθμιση στήλης tag
         tagColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTag()));
+        // Ρύθμιση στήλης Τηλέφωνο
+        phoneColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPhone()));
 
         loginTable.setItems(loginList);
     }
@@ -111,6 +115,7 @@ public class MyposViewController {
 
     public void handleEditLogin(ActionEvent event) {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        System.out.println(selectedLogin.getPhone());
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς επεξεργασία."));

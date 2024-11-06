@@ -29,12 +29,10 @@ public class CustomersController implements Initializable {
 
     ObservableList<Customer> observableList;
 
-    String server;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        server = AppSettings.getInstance().server;
 
         TableColumn<Customer, String> codeColumn = new TableColumn<>("Κωδικός");
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
@@ -69,9 +67,15 @@ public class CustomersController implements Initializable {
         TableColumn<Customer, String> emailColumn = new TableColumn<>("E-mail");
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
+        TableColumn<Customer, String> managerColumn = new TableColumn<>("Υπεύθυνος");
+        managerColumn.setCellValueFactory(new PropertyValueFactory<>("manager"));
+
+        TableColumn<Customer, String> managerPhoneColumn = new TableColumn<>("Τηλ υπευθύνου");
+        managerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("managerPhone"));
+
 
         // Προσθήκη των κολόνων στο TableView
-        customerTable.getColumns().addAll(codeColumn, nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, addressColumn, townColumn, emailColumn);
+        customerTable.getColumns().addAll(nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn);
         tableInit();
         customerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         FilteredList<Customer> filteredData = new FilteredList<>(observableList, b -> true);
@@ -105,6 +109,8 @@ public class CustomersController implements Initializable {
 
                 if (Customer.getName().toUpperCase().indexOf(newValToSearch1) != -1 || Customer.getName().toUpperCase().indexOf(newValToSearch2) != -1)
                     return true; // Filter matches first name.
+                else if (String.valueOf(Customer.getTitle()).indexOf(newValToSearch1) != -1 || String.valueOf(Customer.getTitle()).indexOf(newValToSearch2) != -1)
+                    return true; // Filter matches last name.
                 else if (String.valueOf(Customer.getCode()).indexOf(newValToSearch1) != -1 || String.valueOf(Customer.getCode()).indexOf(newValToSearch2) != -1)
                     return true; // Filter matches last name.
                 else if (Customer.getPhone1().toLowerCase().indexOf(newValToSearch1) != -1 || Customer.getPhone1().toLowerCase().indexOf(newValToSearch2) != -1)

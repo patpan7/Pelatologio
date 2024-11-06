@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 public class AddNewCustomerController {
 
     @FXML
-    private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfEmail;
+    private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfEmail,tfManager, tfManagerPhone;
     @FXML
     private Button btnAfmSearch;
     int code = 0;
@@ -96,12 +96,14 @@ public class AddNewCustomerController {
         String address = tfAddress.getText();
         String town = tfTown.getText();
         String email = tfEmail.getText();
+        String manager = tfManager.getText();
+        String managerPhone = tfManagerPhone.getText();
         DBHelper dbHelper = new DBHelper();
         if (dbHelper.isAfmExists(afm)) {
             Platform.runLater(() -> showAlert("Προσοχή", "Ο πελάτης με ΑΦΜ " + afm + " υπάρχει ήδη."));
 
         } else {
-            dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, address, town, email);
+            dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, address, town, email, manager, managerPhone);
             Platform.runLater(() -> showAlert("Επιτυχία", "Ο πελάτης εισήχθη με επιτυχία στη βάση δεδομένων."));
         }
     }
@@ -117,8 +119,10 @@ public class AddNewCustomerController {
         String address = tfAddress.getText();
         String town = tfTown.getText();
         String email = tfEmail.getText();
+        String manager = tfManager.getText();
+        String managerPhone = tfManagerPhone.getText();
         DBHelper dbHelper = new DBHelper();
-        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, email);
+        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, email, manager, managerPhone);
         showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
     }
 

@@ -13,6 +13,8 @@ public class Customer {
     String address;
     String town;
     String email;
+    String manager;
+    String managerPhone;
 
     public Customer() {
 
@@ -30,19 +32,6 @@ public class Customer {
         this.email = email;
     }
 
-    public Customer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String email) {
-        this.code = code;
-        this.name = name;
-        this.title = title;
-        this.job = job;
-        this.afm = afm;
-        this.phone1 = phone1;
-        this.phone2 = phone2;
-        this.mobile = mobile;
-        this.address = address;
-        this.town = town;
-        this.email = email;
-    }
 
     public int getCode() {
         return code;
@@ -130,5 +119,21 @@ public class Customer {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
+
+    public String getManagerPhone() {
+        return managerPhone;
+    }
+
+    public void setManagerPhone(String managerPhone) {
+        this.managerPhone = managerPhone;
     }
 }

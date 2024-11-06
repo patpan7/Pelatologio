@@ -18,6 +18,8 @@ public class AddLoginController {
 
     @FXML
     private TextField tagField;
+    @FXML
+    private TextField phoneField;
 
     private Customer customer;
 
@@ -37,7 +39,8 @@ public class AddLoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
         String tag = tagField.getText();
-        Logins newLogin = new Logins(username, password, tag);
+        String phone = phoneField.getText();
+        Logins newLogin = new Logins(username, password, tag,phone);
 
         if (!username.isEmpty() && !password.isEmpty()) {
             DBHelper dbHelper = new DBHelper();
@@ -53,6 +56,7 @@ public class AddLoginController {
             usernameField.clear();
             passwordField.clear();
             tagField.clear();
+            phoneField.clear();
         } else {
             // Μήνυμα σφάλματος αν κάποια πεδία είναι κενά
             Dialog<ButtonType> dialog = new Dialog<>();

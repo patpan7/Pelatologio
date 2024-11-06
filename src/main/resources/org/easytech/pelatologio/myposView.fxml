@@ -18,6 +18,7 @@
                                     <TableColumn fx:id="usernameColumn" text="Username" />
                                     <TableColumn fx:id="passwordColumn" text="Password" />
                                     <TableColumn fx:id="tagColumn" text="Tag" />
+                                    <TableColumn fx:id="phoneColumn" text="Τηλέφωνο" />
                                 </columns>
                         <columnResizePolicy>
                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

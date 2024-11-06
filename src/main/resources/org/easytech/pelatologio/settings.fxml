@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import javafx.scene.Group?>
-<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
+<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
     <BorderPane minHeight="800.0" minWidth="1200.0">
         <top>
             <HBox alignment="CENTER" BorderPane.alignment="CENTER">
@@ -131,8 +130,8 @@
                      </padding>
                   </Label>
                   <TextField fx:id="tfSimplyUser" text="et@dgou.gr" GridPane.columnIndex="4" GridPane.rowIndex="6" />
-                  <TextField fx:id="tfSimplyPass" text="!abcd1234" GridPane.columnIndex="4" GridPane.rowIndex="7" />
-                  <Label layoutX="225.0" layoutY="228.0" styleClass="normal-label" text="Simply" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+                  <TextField fx:id="tfSimplyPass" text="054909468" GridPane.columnIndex="4" GridPane.rowIndex="7" />
+                  <Label layoutX="225.0" layoutY="228.0" styleClass="normal-label" text="Simply Cloud" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
                   <Label layoutX="597.0" layoutY="53.0" styleClass="normal-label" text="myPOS User" GridPane.columnIndex="3" GridPane.rowIndex="2">
                      <padding>
                         <Insets right="20.0" />
@@ -143,21 +142,21 @@
                         <Insets right="20.0" />
                      </padding>
                   </Label>
-                  <TextField fx:id="tfMyposUser" layoutX="756.0" layoutY="263.0" text="et@dgou.gr" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                  <TextField fx:id="tfMyposPass" layoutX="756.0" layoutY="314.0" text="!abcd1234" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                  <VBox alignment="CENTER_LEFT" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                     <fx:define>
-                         <ToggleGroup fx:id="browserToggleGroup"/>
-                     </fx:define>
-                     <children>
-                        <RadioButton fx:id="rbChrome" mnemonicParsing="false" styleClass="normal-label" text="Chrome" toggleGroup="$browserToggleGroup" />
-                        <RadioButton fx:id="rbBrave" mnemonicParsing="false" styleClass="normal-label" text="Brave" toggleGroup="$browserToggleGroup" />
-                        <RadioButton fx:id="rbFirefox" mnemonicParsing="false" styleClass="normal-label" text="Firefox" toggleGroup="$browserToggleGroup" />
-                     </children>
-                     <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </GridPane.margin>
-                  </VBox>
+                  <TextField fx:id="tfMyposUser" layoutX="756.0" layoutY="263.0" text="dgou@dgou.gr" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                  <TextField fx:id="tfMyposPass" layoutX="756.0" layoutY="314.0" text="!abcd1234A" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                   <VBox alignment="CENTER_LEFT" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                       <fx:define>
+                           <ToggleGroup fx:id="browserToggleGroup"/>
+                       </fx:define>
+                       <children>
+                           <RadioButton fx:id="rbChrome" mnemonicParsing="false" styleClass="normal-label" text="Chrome" toggleGroup="$browserToggleGroup" />
+                           <RadioButton fx:id="rbBrave" mnemonicParsing="false" styleClass="normal-label" text="Brave" toggleGroup="$browserToggleGroup" />
+                           <RadioButton fx:id="rbFirefox" mnemonicParsing="false" styleClass="normal-label" text="Firefox" toggleGroup="$browserToggleGroup" />
+                       </children>
+                       <GridPane.margin>
+                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                       </GridPane.margin>
+                   </VBox>
                   <Label layoutX="855.0" layoutY="281.0" styleClass="normal-label" text="Browser" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="8" />
                </children>
                <VBox.margin>

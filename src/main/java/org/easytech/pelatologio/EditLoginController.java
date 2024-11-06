@@ -11,6 +11,8 @@ public class EditLoginController {
     private PasswordField passwordField;
     @FXML
     private TextField tagField;
+    @FXML
+    private TextField phoneField;
 
     private Logins login;
 
@@ -20,6 +22,7 @@ public class EditLoginController {
         usernameField.setText(login.getUsername());
         passwordField.setText(login.getPassword());
         tagField.setText(login.getTag());
+        phoneField.setText(login.getPhone());
     }
 
     // Επιστρέφει το επεξεργασμένο login
@@ -27,6 +30,7 @@ public class EditLoginController {
         login.setUsername(usernameField.getText());
         login.setPassword(passwordField.getText());
         login.setTag(tagField.getText());
+        login.setPhone(phoneField.getText());
         return login;
     }
 }

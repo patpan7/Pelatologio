@@ -20,6 +20,10 @@
             <VBox.margin>
                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </VBox.margin></TextField>
+            <TextField fx:id="phoneField" promptText="Τηλέφωνο">
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </VBox.margin></TextField>
         </VBox>
     </content>
 </DialogPane>

@@ -5,14 +5,16 @@ public class Logins {
     private String username;
     private String password;
     private String tag;
+    private String phone;
 
     public Logins() {
     }
 
-    public Logins(String username, String password, String tag) {
+    public Logins(String username, String password, String tag, String phone) {
         this.username = username;
         this.password = password;
         this.tag = tag;
+        this.phone = phone;
     }
 
     public int getId() { return id; }
@@ -41,5 +43,13 @@ public class Logins {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
