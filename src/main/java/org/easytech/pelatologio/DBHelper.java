@@ -41,7 +41,7 @@ public class DBHelper {
         try (Connection conn = getConnection();
              Statement statement = conn.createStatement()) {
 
-            String query = "SELECT * FROM customers";
+            String query = "SELECT * FROM customers order by code desc";
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {

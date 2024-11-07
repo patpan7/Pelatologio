@@ -75,7 +75,7 @@ public class TaxisViewController {
             // Όταν ο χρήστης πατά το OK, θα καλέσει τη μέθοδο για αποθήκευση
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton == ButtonType.OK) {
-                    addLoginController.handleSaveLogin(event,1);
+                    addLoginController.handleSaveLogin(event,3);
                 }
                 return null;
             });

@@ -43,25 +43,32 @@ public class SettingsController implements Initializable {
     RadioButton rbFirefox;
     @FXML
     RadioButton rbBrave;
+    @FXML
+    ToggleGroup browserToggleGroup;
 
     String server;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        browserToggleGroup = new ToggleGroup();
+        rbChrome.setToggleGroup(browserToggleGroup);
+        rbBrave.setToggleGroup(browserToggleGroup);
+        rbFirefox.setToggleGroup(browserToggleGroup);
         server = AppSettings.loadSetting("server");
         tfServer.setText(server);
-        tfUser.setText(AppSettings.loadSetting("dbUser"));
-        tfPass.setText(AppSettings.loadSetting("dbPass"));
-        tfMyposLink.setText(AppSettings.loadSetting("myposlink"));
-        tfMyposUser.setText(AppSettings.loadSetting("myposUser"));
-        tfMyposPass.setText(AppSettings.loadSetting("myposPass"));
-        tfSimplyUser.setText(AppSettings.loadSetting("simplyUser"));
-        tfSimplyPass.setText(AppSettings.loadSetting("simplyPass"));
-        tfTaxisUser.setText(AppSettings.loadSetting("taxisUser"));
-        tfTaxisPass.setText(AppSettings.loadSetting("taxisPass"));
-        tfAfmUser.setText(AppSettings.loadSetting("afmUser"));
-        tfAfmPass.setText(AppSettings.loadSetting("afmPass"));
+        tfUser.setText(AppSettings.loadSetting("dbUser") != null ? AppSettings.loadSetting("dbUser") : "");
+        tfPass.setText(AppSettings.loadSetting("dbPass") != null ? AppSettings.loadSetting("dbPass") : "");
+        tfMyposLink.setText(AppSettings.loadSetting("myposlink") != null ? AppSettings.loadSetting("myposlink") : "");
+        tfMyposUser.setText(AppSettings.loadSetting("myposUser") != null ? AppSettings.loadSetting("myposUser") : "");
+        tfMyposPass.setText(AppSettings.loadSetting("myposPass") != null ? AppSettings.loadSetting("myposPass") : "");
+        tfSimplyUser.setText(AppSettings.loadSetting("simplyUser") != null ? AppSettings.loadSetting("simplyUser") : "");
+        tfSimplyPass.setText(AppSettings.loadSetting("simplyPass") != null ? AppSettings.loadSetting("simplyPass") : "");
+        tfTaxisUser.setText(AppSettings.loadSetting("taxisUser") != null ? AppSettings.loadSetting("taxisUser") : "");
+        tfTaxisPass.setText(AppSettings.loadSetting("taxisPass") != null ? AppSettings.loadSetting("taxisPass") : "");
+        tfAfmUser.setText(AppSettings.loadSetting("afmUser") != null ? AppSettings.loadSetting("afmUser") : "");
+        tfAfmPass.setText(AppSettings.loadSetting("afmPass") != null ? AppSettings.loadSetting("afmPass") : "");
+
         if (AppSettings.loadSetting("browser").equals("chrome")) {
             rbChrome.setSelected(true);
         } else if (AppSettings.loadSetting("browser").equals("firefox")) {
