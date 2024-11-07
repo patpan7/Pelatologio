@@ -6,166 +6,204 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
-    <BorderPane minHeight="800.0" minWidth="1200.0">
-        <top>
-            <HBox alignment="CENTER" BorderPane.alignment="CENTER">
-                <BorderPane.margin>
-                    <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-                </BorderPane.margin>
-                <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                    <Label styleClass="header-label" text="Πελατολόγιο - Ρυθμίσεις" HBox.hgrow="ALWAYS">
-                        <font>
-                            <Font size="38.0" />
-                        </font>
+<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
+    <children>
+        <BorderPane minHeight="800.0" minWidth="1200.0">
+            <top>
+                <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                    </BorderPane.margin>
+                    <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                        <Label styleClass="header-label" text="Πελατολόγιο - Ρυθμίσεις" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="38.0" />
+                            </font>
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </Label>
+                    </HBox>
+                    <HBox alignment="CENTER_RIGHT">
+                        <opaqueInsets>
+                            <Insets right="20.0" />
+                        </opaqueInsets>
                         <HBox.margin>
                             <Insets />
                         </HBox.margin>
-                    </Label>
+                        <Button mnemonicParsing="false" onAction="#mainMenuClick" styleClass="click-button" text="Επιστροφή">
+                            <graphic>
+                                <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@icons/menu.png" />
+                                </ImageView>
+                            </graphic>
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </Button>
+                    </HBox>
                 </HBox>
-                <HBox alignment="CENTER_RIGHT">
-                    <opaqueInsets>
-                        <Insets right="20.0" />
-                    </opaqueInsets>
-                    <HBox.margin>
-                        <Insets />
-                    </HBox.margin>
-                    <Button mnemonicParsing="false" onAction="#mainMenuClick" styleClass="click-button" text="Επιστροφή">
-                        <graphic>
-                            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/menu.png" />
-                            </ImageView>
-                        </graphic>
-                        <HBox.margin>
-                            <Insets />
-                        </HBox.margin>
-                    </Button>
+            </top>
+
+            <center>
+                <Accordion fx:id="settingsAccordion" BorderPane.alignment="CENTER">
+                    <panes>
+                        <!-- Πρώτο TitledPane: Ρυθμίσεις Βάσης Δεδομένων -->
+                        <TitledPane text="Ρυθμίσεις Εφαρμογής">
+                            <content>
+                                <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                    <children>
+                                        <Label styleClass="normal-label" text="Server" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                        <TextField fx:id="tfServer" text="localhost" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                        <Label styleClass="normal-label" text="DB User" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                        <TextField fx:id="tfUser" text="sa" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                        <Label styleClass="normal-label" text="DB Password" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                        <TextField fx:id="tfPass" text="admin" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <VBox alignment="CENTER_LEFT" GridPane.rowIndex="3">
+                                            <fx:define>
+                                                <ToggleGroup fx:id="browserToggleGroup" />
+                                            </fx:define>
+                                            <children>
+                                              <Label styleClass="normal-label" text="Browser">
+                                       <VBox.margin>
+                                          <Insets bottom="10.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                                <RadioButton fx:id="rbChrome" styleClass="normal-label" text="Chrome">
+                                       <VBox.margin>
+                                          <Insets bottom="10.0" />
+                                       </VBox.margin></RadioButton>
+                                                <RadioButton fx:id="rbEdge" styleClass="normal-label" text="Edge">
+                                       <VBox.margin>
+                                          <Insets bottom="10.0" />
+                                       </VBox.margin></RadioButton>
+                                                <RadioButton fx:id="rbFirefox" styleClass="normal-label" text="Firefox">
+                                       <VBox.margin>
+                                          <Insets bottom="10.0" />
+                                       </VBox.margin></RadioButton>
+                                            </children>
+                                            <VBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                            </VBox.margin>
+                                        </VBox>
+                                    </children>
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                               <RowConstraints />
+                           </rowConstraints>
+                                </GridPane>
+                            </content>
+                        </TitledPane>
+
+                        <!-- Δεύτερο TitledPane: Ρυθμίσεις Taxis -->
+                        <TitledPane text="Ρυθμίσεις Taxis">
+                            <content>
+                                <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                    <children>
+                                        <Label styleClass="normal-label" text="Taxis User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                        <TextField fx:id="tfTaxisUser" text="localhost" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                        <Label styleClass="normal-label" text="Taxis Pass" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                        <TextField fx:id="tfTaxisPass" text="sa" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                        <Label styleClass="normal-label" text="Ανεύρεση User" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                        <TextField fx:id="tfAfmUser" text="et@dgou.gr" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                        <Label styleClass="normal-label" text="Ανεύρεση Pass" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                        <TextField fx:id="tfAfmPass" text="!abcd1234" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    </children>
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                           </rowConstraints>
+                                </GridPane>
+                            </content>
+                        </TitledPane>
+
+                        <!-- Τρίτο TitledPane: Ρυθμίσεις myPOS -->
+                        <TitledPane text="Ρυθμίσεις myPOS">
+                            <content>
+                                <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                    <children>
+                                        <Label styleClass="normal-label" text="myPOS Link" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                        <TextField fx:id="tfMyposLink" text="https://merchant.mypos.com/el/enroll?ref=1006179#/" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                        <Label styleClass="normal-label" text="myPOS User" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                        <TextField fx:id="tfMyposUser" text="dgou@dgou.gr" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                        <Label styleClass="normal-label" text="myPOS Pass" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                        <TextField fx:id="tfMyposPass" text="!abcd1234A" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    </children>
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                           </rowConstraints>
+                                </GridPane>
+                            </content>
+                        </TitledPane>
+
+                        <!-- Τέταρτο TitledPane: Άλλες Ρυθμίσεις -->
+                        <TitledPane text="Ρυθμίσεις Simply">
+                            <content>
+                                <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                    <children>
+                                        <Label styleClass="normal-label" text="Simply POS User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                        <TextField fx:id="tfSimplyPosUser" text="et@dgou.gr" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                        <Label styleClass="normal-label" text="Simply POS Pass" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                        <TextField fx:id="tfSimplyPosPass" text="!abcd1234" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                        <Label styleClass="normal-label" text="Simply Cloud User" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                        <TextField fx:id="tfSimplyCloudUser" text="et@dgou.gr" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                        <Label styleClass="normal-label" text="Simply Cloud Pass" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                        <TextField fx:id="tfSimplyCloudPass" text="054909468" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    </children>
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints />
+                           </rowConstraints>
+                                </GridPane>
+                            </content>
+                        </TitledPane>
+                    </panes>
+                </Accordion>
+            </center>
+
+            <bottom>
+                <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#saveSettings" styleClass="click-button" text="Αποθήκευση">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin></Button>
+                    </children>
                 </HBox>
-            </HBox>
-        </top>
-        <center>
-            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-            <GridPane alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
-              <columnConstraints>
-                <ColumnConstraints />
-                <ColumnConstraints />
-                  <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-              </columnConstraints>
-              <rowConstraints>
-                  <RowConstraints vgrow="SOMETIMES" />
-                <RowConstraints vgrow="SOMETIMES" />
-                <RowConstraints vgrow="SOMETIMES" />
-                <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                       <Label styleClass="normal-label" text="Server" GridPane.rowIndex="1">
-                           <padding>
-                               <Insets right="20.0" />
-                           </padding>
-                       </Label>
-                       <TextField fx:id="tfServer" text="localhost" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                       <Label styleClass="normal-label" text="DB User" GridPane.rowIndex="2">
-                           <padding>
-                               <Insets right="20.0" />
-                           </padding>
-                       </Label>
-                       <TextField fx:id="tfUser" text="sa" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                       <Label styleClass="normal-label" text="DB Password" GridPane.rowIndex="3">
-                           <padding>
-                               <Insets right="20.0" />
-                           </padding>
-                       </Label>
-                       <TextField fx:id="tfPass" text="admin" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Label styleClass="normal-label" text="SQL Server" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" />
-                  <Label styleClass="normal-label" text="myPOS Link" GridPane.columnIndex="3" GridPane.rowIndex="1">
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
-                  </Label>
-                  <TextField fx:id="tfMyposLink" text="https://merchant.mypos.com/el/enroll?ref=1006179#/" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                  <Label layoutX="181.0" layoutY="8.0" styleClass="normal-label" text="myPOS" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" />
-                  <Label styleClass="normal-label" text="Taxis User" GridPane.rowIndex="6">
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
-                  </Label>
-                  <TextField fx:id="tfTaxisUser" text="localhost" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                  <Label styleClass="normal-label" text="Taxis Pass" GridPane.rowIndex="7">
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
-                  </Label>
-                  <TextField fx:id="tfTaxisPass" text="sa" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                  <Label layoutX="181.0" layoutY="10.0" styleClass="normal-label" text="Taxis" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-                  <Label styleClass="normal-label" text="Ανεύρεση User" GridPane.rowIndex="9">
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
-                  </Label>
-                  <Label styleClass="normal-label" text="Ανεύρεση Pass" GridPane.rowIndex="10">
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
-                  </Label>
-                  <TextField fx:id="tfAfmUser" text="et@dgou.gr" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                  <TextField fx:id="tfAfmPass" text="!abcd1234" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                  <Label layoutX="214.0" layoutY="228.0" styleClass="normal-label" text="Ανευρεση ΑΦΜ" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="8" GridPane.valignment="CENTER" />
-                  <Label styleClass="normal-label" text="Simply User" GridPane.columnIndex="3" GridPane.rowIndex="6">
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
-                  </Label>
-                  <Label styleClass="normal-label" text="Simply Pass" GridPane.columnIndex="3" GridPane.rowIndex="7">
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
-                  </Label>
-                  <TextField fx:id="tfSimplyUser" text="et@dgou.gr" GridPane.columnIndex="4" GridPane.rowIndex="6" />
-                  <TextField fx:id="tfSimplyPass" text="054909468" GridPane.columnIndex="4" GridPane.rowIndex="7" />
-                  <Label layoutX="225.0" layoutY="228.0" styleClass="normal-label" text="Simply Cloud" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-                  <Label layoutX="597.0" layoutY="53.0" styleClass="normal-label" text="myPOS User" GridPane.columnIndex="3" GridPane.rowIndex="2">
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
-                  </Label>
-                  <Label layoutX="597.0" layoutY="104.0" styleClass="normal-label" text="myPOS Pass" GridPane.columnIndex="3" GridPane.rowIndex="3">
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
-                  </Label>
-                  <TextField fx:id="tfMyposUser" layoutX="756.0" layoutY="263.0" text="dgou@dgou.gr" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                  <TextField fx:id="tfMyposPass" layoutX="756.0" layoutY="314.0" text="!abcd1234A" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                   <VBox alignment="CENTER_LEFT" GridPane.columnIndex="3" GridPane.halignment="CENTER"
-                         GridPane.rowIndex="9" GridPane.rowSpan="2" GridPane.valignment="CENTER"
-                         GridPane.vgrow="ALWAYS">
-                       <fx:define>
-                           <ToggleGroup fx:id="browserToggleGroup"/>
-                       </fx:define>
-                       <GridPane.margin>
-                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-                       </GridPane.margin>
-                       <RadioButton fx:id="rbChrome" mnemonicParsing="false" styleClass="normal-label" text="Chrome"/>
-                       <RadioButton fx:id="rbBrave" mnemonicParsing="false" styleClass="normal-label" text="Brave"/>
-                       <RadioButton fx:id="rbFirefox" mnemonicParsing="false" styleClass="normal-label" text="Firefox"/>
-                   </VBox>
-                  <Label layoutX="855.0" layoutY="281.0" styleClass="normal-label" text="Browser" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="8" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
-            </GridPane>
-                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-                    <Button mnemonicParsing="false" onAction="#saveSettings" styleClass="click-button" text="Αποθήκευση" />
-                </HBox>
-            </VBox>
-        </center>
-    </BorderPane></StackPane>
+            </bottom>
+        </BorderPane>
+    </children>
+</StackPane>

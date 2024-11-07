@@ -7,6 +7,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import java.io.IOException;
 
 public class LoginAutomator {
@@ -34,13 +36,12 @@ public class LoginAutomator {
                 }
                 driver = new FirefoxDriver(firefoxOptions);
                 break;
-            case "brave":
-                ChromeOptions braveOptions = new ChromeOptions();
-                braveOptions.setBinary(brave); // ορίστε το path προς τον Brave browser
+            case "edge":
+                EdgeOptions edgeOptions = new EdgeOptions();
                 if (incognito) {
-                    braveOptions.addArguments("--incognito");
+                    edgeOptions.addArguments("inprivate");
                 }
-                driver = new ChromeDriver(braveOptions);
+                driver = new EdgeDriver(edgeOptions);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported browser: " + browserType);

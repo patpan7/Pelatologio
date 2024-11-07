@@ -234,7 +234,7 @@ public class CustomersController implements Initializable {
 
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setOnAction(event -> controller.handleOkButton());
-
+            customerTable.getSelectionModel().clearSelection();
             dialog.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();

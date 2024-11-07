@@ -8,6 +8,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
@@ -176,38 +180,93 @@ public class SimplyViewController {
 
     }
 
-    public void simplycashOpen(ActionEvent actionEvent) {
+    public void simplycashOpen(MouseEvent event) {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
-            return;
-        }
-        try {
-            LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openAndFillLoginForm(
-                    "https://app.simplycloud.gr/",
-                    selectedLogin.getUsername(),
-                    selectedLogin.getPassword(),
-                    By.id("keyboard"),
-                    By.id("Password"),
-                    By.id("btnSubmit")
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
+            if (selectedLogin != null) {
+                String msg ="Νέος Πελάτης Simply Cash" +
+                        "\nΕπωνυμία: "+customer.getName()+
+                        "\nΑΦΜ: "+customer.getAfm()+
+                        "\nEmail: "+selectedLogin.getUsername()+
+                        "\nΚινητό: "+customer.getMobile()+
+                        "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString(msg);  // Replace with the desired text
+                clipboard.setContent(content);
+                showAlert("Copied to Clipboard", msg);
+            } else {
+                showAlert("Attention", "Please select a login to copy.");
+            }
+        } else if (event.getButton() == MouseButton.PRIMARY) { // Left-click for regular functionality
+            if (selectedLogin == null) {
+                Platform.runLater(() -> showAlert("Attention", "Please select a login."));
+                return;
+            }
+
+            try {
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openAndFillLoginForm(
+                        "https://app.simplycloud.gr/",
+                        selectedLogin.getUsername(),
+                        selectedLogin.getPassword(),
+                        By.id("keyboard"),
+                        By.id("Password"),
+                        By.id("btnSubmit")
+                );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void simplyrestOpen(ActionEvent actionEvent) {
+    public void simplyrestOpen(MouseEvent event) {
+//        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+//        if (selectedLogin == null) {
+//            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
+//            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
+//            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
+//            return;
+//        }
+//        try {
+//            LoginAutomator loginAutomation = new LoginAutomator(true);
+//            loginAutomation.openAndFillLoginForm(
+//                    "https://rest.simplypos.com/",
+//                    selectedLogin.getUsername(),
+//                    selectedLogin.getPassword(),
+//                    By.name("Email"),
+//                    By.name("Password"),
+//                    By.id("kt_sign_in_submit")
+//            );
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
-            return;
-        }
-        try {
+
+        if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
+            if (selectedLogin != null) {
+                String msg ="Νέος Πελάτης Simply Rest" +
+                        "\nΕπωνυμία: "+customer.getName()+
+                        "\nΑΦΜ: "+customer.getAfm()+
+                        "\nEmail: "+selectedLogin.getUsername()+
+                        "\nΚινητό: "+customer.getMobile()+
+                        "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString(msg);  // Replace with the desired text
+                clipboard.setContent(content);
+                showAlert("Copied to Clipboard", msg);
+            } else {
+                showAlert("Attention", "Please select a login to copy.");
+            }
+        } else if (event.getButton() == MouseButton.PRIMARY) { // Left-click for regular functionality
+            if (selectedLogin == null) {
+                Platform.runLater(() -> showAlert("Attention", "Please select a login."));
+                return;
+            }
+
+            try {
             LoginAutomator loginAutomation = new LoginAutomator(true);
             loginAutomation.openAndFillLoginForm(
                     "https://rest.simplypos.com/",
@@ -216,10 +275,12 @@ public class SimplyViewController {
                     By.name("Email"),
                     By.name("Password"),
                     By.id("kt_sign_in_submit")
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
+                );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     public void registerposOpen(ActionEvent actionEvent) {
@@ -227,11 +288,11 @@ public class SimplyViewController {
             LoginAutomator loginAutomation = new LoginAutomator(true);
             loginAutomation.openAndFillLoginForm(
                     "https://app.simplypos.com/Partners/NewTrial",
-                    AppSettings.loadSetting("simplyUser"),
-                    AppSettings.loadSetting("simplyPass"),
+                    AppSettings.loadSetting("simplyPosUser"),
+                    AppSettings.loadSetting("simplyPosPass"),
                     By.name("UserName"),
                     By.id("Password"),
-                    By.className("btn")
+                    By.cssSelector("button.btn.green.pull-right[type='submit']")
             );
         } catch (IOException e) {
             e.printStackTrace();
@@ -243,8 +304,8 @@ public class SimplyViewController {
             LoginAutomator loginAutomation = new LoginAutomator(true);
             loginAutomation.openAndFillLoginForm(
                     "https://app.simplycloud.gr/Partners",
-                    AppSettings.loadSetting("simplyUser"),
-                    AppSettings.loadSetting("simplyPass"),
+                    AppSettings.loadSetting("simplyCloudUser"),
+                    AppSettings.loadSetting("simplyCloudPass"),
                     By.name("Email"),
                     By.id("Password"),
                     By.id("btnSubmit")

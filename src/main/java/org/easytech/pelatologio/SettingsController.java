@@ -26,9 +26,13 @@ public class SettingsController implements Initializable {
     @FXML
     TextField tfMyposPass;
     @FXML
-    TextField tfSimplyUser;
+    TextField tfSimplyPosUser;
     @FXML
-    TextField tfSimplyPass;
+    TextField tfSimplyPosPass;
+    @FXML
+    TextField tfSimplyCloudUser;
+    @FXML
+    TextField tfSimplyCloudPass;
     @FXML
     TextField tfTaxisUser;
     @FXML
@@ -42,7 +46,7 @@ public class SettingsController implements Initializable {
     @FXML
     RadioButton rbFirefox;
     @FXML
-    RadioButton rbBrave;
+    RadioButton rbEdge;
     @FXML
     ToggleGroup browserToggleGroup;
 
@@ -53,7 +57,7 @@ public class SettingsController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         browserToggleGroup = new ToggleGroup();
         rbChrome.setToggleGroup(browserToggleGroup);
-        rbBrave.setToggleGroup(browserToggleGroup);
+        rbEdge.setToggleGroup(browserToggleGroup);
         rbFirefox.setToggleGroup(browserToggleGroup);
         server = AppSettings.loadSetting("server");
         tfServer.setText(server);
@@ -62,8 +66,10 @@ public class SettingsController implements Initializable {
         tfMyposLink.setText(AppSettings.loadSetting("myposlink") != null ? AppSettings.loadSetting("myposlink") : "");
         tfMyposUser.setText(AppSettings.loadSetting("myposUser") != null ? AppSettings.loadSetting("myposUser") : "");
         tfMyposPass.setText(AppSettings.loadSetting("myposPass") != null ? AppSettings.loadSetting("myposPass") : "");
-        tfSimplyUser.setText(AppSettings.loadSetting("simplyUser") != null ? AppSettings.loadSetting("simplyUser") : "");
-        tfSimplyPass.setText(AppSettings.loadSetting("simplyPass") != null ? AppSettings.loadSetting("simplyPass") : "");
+        tfSimplyPosUser.setText(AppSettings.loadSetting("simplyPosUser") != null ? AppSettings.loadSetting("simplyPosUser") : "");
+        tfSimplyPosPass.setText(AppSettings.loadSetting("simplyPosPass") != null ? AppSettings.loadSetting("simplyPosPass") : "");
+        tfSimplyPosUser.setText(AppSettings.loadSetting("simplyCloudUser") != null ? AppSettings.loadSetting("simplyCloudUser") : "");
+        tfSimplyPosPass.setText(AppSettings.loadSetting("simplyCloudPass") != null ? AppSettings.loadSetting("simplyCloudPass") : "");
         tfTaxisUser.setText(AppSettings.loadSetting("taxisUser") != null ? AppSettings.loadSetting("taxisUser") : "");
         tfTaxisPass.setText(AppSettings.loadSetting("taxisPass") != null ? AppSettings.loadSetting("taxisPass") : "");
         tfAfmUser.setText(AppSettings.loadSetting("afmUser") != null ? AppSettings.loadSetting("afmUser") : "");
@@ -73,8 +79,8 @@ public class SettingsController implements Initializable {
             rbChrome.setSelected(true);
         } else if (AppSettings.loadSetting("browser").equals("firefox")) {
             rbFirefox.setSelected(true);
-        } else if (AppSettings.loadSetting("browser").equals("brave")) {
-            rbBrave.setSelected(true);
+        } else if (AppSettings.loadSetting("browser").equals("edge")) {
+            rbEdge.setSelected(true);
         }
     }
 
@@ -87,8 +93,10 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("myposlink", tfMyposLink.getText());
         AppSettings.saveSetting("myposUser",tfMyposUser.getText());
         AppSettings.saveSetting("myposPass", tfMyposPass.getText());
-        AppSettings.saveSetting("simplyUser", tfSimplyUser.getText());
-        AppSettings.saveSetting("simplyPass", tfSimplyPass.getText());
+        AppSettings.saveSetting("simplyPosUser", tfSimplyPosUser.getText());
+        AppSettings.saveSetting("simplyPosPass", tfSimplyPosPass.getText());
+        AppSettings.saveSetting("simplyCloudUser", tfSimplyCloudUser.getText());
+        AppSettings.saveSetting("simplyCloudPass", tfSimplyCloudPass.getText());
         AppSettings.saveSetting("taxisUser", tfTaxisUser.getText());
         AppSettings.saveSetting("taxisPass", tfTaxisPass.getText());
         AppSettings.saveSetting("afmUser", tfAfmUser.getText());
@@ -97,8 +105,8 @@ public class SettingsController implements Initializable {
             AppSettings.saveSetting("browser", "chrome");
         } else if (rbFirefox.isSelected()) {
             AppSettings.saveSetting("browser", "firefox");
-        } else if (rbBrave.isSelected()) {
-            AppSettings.saveSetting("browser", "brave");
+        } else if (rbEdge.isSelected()) {
+            AppSettings.saveSetting("browser", "edge");
         }
     }
 
