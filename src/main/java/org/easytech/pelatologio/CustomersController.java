@@ -28,12 +28,12 @@ public class CustomersController implements Initializable {
     TextField filterField;
 
     ObservableList<Customer> observableList;
-
+    DBHelper dbHelper;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        dbHelper = new DBHelper();
         TableColumn<Customer, String> codeColumn = new TableColumn<>("Κωδικός");
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
 
@@ -219,35 +219,40 @@ public class CustomersController implements Initializable {
     public void customerUpdate(ActionEvent actionEvent) throws IOException {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Ενημέρωση Πελάτη");
+            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+            if (res.equals("unlocked")) {
+                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Ενημέρωση Πελάτη");
 
-            AddNewCustomerController controller = loader.getController();
+                AddNewCustomerController controller = loader.getController();
 
-            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-            controller.setCustomerData(selectedCustomer);
+                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                controller.setCustomerData(selectedCustomer);
 
 
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.setOnAction(event -> controller.handleOkButton());
-            customerTable.getSelectionModel().clearSelection();
-            dialog.showAndWait();
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setOnAction(event -> controller.handleOkButton());
+                customerTable.getSelectionModel().clearSelection();
+                dialog.showAndWait();
+                dbHelper.customerUnlock(selectedCustomer.getCode());
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText(res);
+                Optional<ButtonType> result = alert.showAndWait();
+                return;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
 
     @FXML
@@ -261,9 +266,7 @@ public class CustomersController implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
             return;
         }
-
         customerUpdate(event);
-
     }
 
 

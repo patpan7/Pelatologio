@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
+<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
     <ScrollPane fitToHeight="true" fitToWidth="true">
         <BorderPane fx:id="rootPane" StackPane.alignment="CENTER">
             <center>
@@ -72,13 +72,27 @@
             <top>
                 <HBox alignment="CENTER" BorderPane.alignment="CENTER">
                     <BorderPane.margin>
-                        <Insets bottom="20.0" top="10.0" />
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                     </BorderPane.margin>
-                    <Label styleClass="header-label" text="Πελατολόγιο">
-                        <font>
-                            <Font size="38.0" />
-                        </font>
-                    </Label>
+                    <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                        <Label styleClass="header-label" text="Πελατολόγιο" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="38.0" />
+                            </font>
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </Label>
+                    </HBox>
+                    <HBox alignment="CENTER_RIGHT">
+                        <opaqueInsets>
+                            <Insets right="20.0" />
+                        </opaqueInsets>
+                        <HBox.margin>
+                            <Insets />
+                        </HBox.margin>
+                        <Label fx:id="lbAppUser" styleClass="normal-label" text="Xειριστή: " HBox.hgrow="ALWAYS" />
+                    </HBox>
                 </HBox>
             </top>
          <bottom>

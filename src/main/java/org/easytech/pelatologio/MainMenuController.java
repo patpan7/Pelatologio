@@ -1,22 +1,35 @@
 package org.easytech.pelatologio;
 
+import com.fasterxml.jackson.core.util.Instantiatable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.StackPane;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class MainMenuController {
+public class MainMenuController implements Initializable {
 
     @FXML
     private StackPane stackPane;
     @FXML
     Label vesrion;
+    @FXML
+    Label lbAppUser;
+
     public Parent root;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        lbAppUser.setText("Xειριστή: "+AppSettings.loadSetting("appuser"));
+    }
 
     public void mainMenuClick(StackPane stackPane) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-menu.fxml"));

@@ -118,7 +118,7 @@ public class DBHelper {
     public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String email, String manager, String managerPhone) {
         String sql = "UPDATE customers SET name = ?, title = ?, job = ?,afm = ?, phone1 = ?, " +
                 "phone2 = ?, mobile = ?, address = ?, town = ?, email = ?, manager = ?, managerPhone = ? WHERE code = ?";
-        ;
+
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, name);
@@ -147,6 +147,54 @@ public class DBHelper {
         }
 
     }
+
+    public String checkCustomerLock(int code, String appUser){
+        String checkLockQuery = "SELECT locked_by FROM Customers WHERE code = ?";
+        try {
+            Connection conn = getConnection();
+            PreparedStatement checkLockStmt = conn.prepareStatement(checkLockQuery);
+            checkLockStmt.setInt(1, code);
+            ResultSet rs = checkLockStmt.executeQuery();
+
+            if (rs.next()) {
+                String lockedBy = rs.getString("locked_by");
+                if (lockedBy != null && !lockedBy.equals(appUser)) {
+                    // Εμφανίζεις μήνυμα ότι η εγγραφή είναι κλειδωμένη
+                    System.out.println("Η εγγραφή αυτή είναι ήδη κλειδωμένη από άλλον χρήστη.");
+                    return "Η εγγραφή αυτή είναι ήδη κλειδωμένη από άλλον χρήστη.";
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return "unlocked";
+    }
+
+    public void customerLock(int code, String appUser){
+        String checkLockQuery = "UPDATE Customers SET locked_by = ? WHERE code = ?";
+        try {
+            Connection conn = getConnection();
+            PreparedStatement lockStmt = conn.prepareStatement(checkLockQuery);
+            lockStmt.setString(1, appUser);
+            lockStmt.setInt(2, code);
+            lockStmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void customerUnlock(int code){
+        String checkLockQuery = "UPDATE Customers SET locked_by = NULL WHERE code = ?";
+        try {
+            Connection conn = getConnection();
+            PreparedStatement lockStmt = conn.prepareStatement(checkLockQuery);
+            lockStmt.setInt(1, code);
+            lockStmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public List<Logins> getLogins(int customerId, int i) {
         List<Logins> dataList = new ArrayList<>();

@@ -12,6 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
+        <jdk.version>23</jdk.version>
     </properties>
 
     <dependencies>
@@ -171,7 +172,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.easytech.pelatologio/org.easytech.pelatologio.HelloApplication</mainClass>
+                            <mainClass>org.easytech.pelatologio/org.easytech.pelatologio.Launcher</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
@@ -186,19 +187,29 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
                 <version>2.6</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.easytech.pelatologio.Launcher</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
                 <executions>
                     <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>wsimport</goal>
+                            <goal>single</goal>
                         </goals>
-                        <configuration>
-                            <wsdlUrls>
-                                <wsdlUrl>https://www1.gsis.gr/wsaade/RgWsPublic2/RgWsPublic2?WSDL</wsdlUrl>
-                            </wsdlUrls>
-                            <packageName>gr.gsis.aade</packageName>
-                            <sourceDestDir>${project.build.directory}/generated-sources/jaxws</sourceDestDir>
-                            <extension>true</extension>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

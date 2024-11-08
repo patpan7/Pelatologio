@@ -16,9 +16,7 @@ public class LoginAutomator {
 
     // Constructor to set up the driver based on the browser type in the properties file
     public LoginAutomator(boolean incognito) throws IOException {
-        String brave = System.getProperty("user.home") + "\\AppData\\Local\\BraveSoftware\\Brave-Browser\\Application\\brave.exe";
-        System.out.println(brave);
-        System.setProperty("webdriver.chrome.driver", "C:\\web_driver\\chromedriver.exe");
+        //System.setProperty("webdriver.chrome.driver", "C:\\web_driver\\chromedriver.exe");
         String browserType = AppSettings.loadSetting("browser");
 
         switch (browserType.toLowerCase()) {

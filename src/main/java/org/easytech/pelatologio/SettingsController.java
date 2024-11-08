@@ -49,8 +49,12 @@ public class SettingsController implements Initializable {
     RadioButton rbEdge;
     @FXML
     ToggleGroup browserToggleGroup;
+    @FXML
+    TextField tfAppUser;
+    @FXML
+    TextField tfDataFolder;
 
-    String server;
+
 
 
     @Override
@@ -59,8 +63,7 @@ public class SettingsController implements Initializable {
         rbChrome.setToggleGroup(browserToggleGroup);
         rbEdge.setToggleGroup(browserToggleGroup);
         rbFirefox.setToggleGroup(browserToggleGroup);
-        server = AppSettings.loadSetting("server");
-        tfServer.setText(server);
+        tfServer.setText(AppSettings.loadSetting("server") != null ? AppSettings.loadSetting("server") : "");
         tfUser.setText(AppSettings.loadSetting("dbUser") != null ? AppSettings.loadSetting("dbUser") : "");
         tfPass.setText(AppSettings.loadSetting("dbPass") != null ? AppSettings.loadSetting("dbPass") : "");
         tfMyposLink.setText(AppSettings.loadSetting("myposlink") != null ? AppSettings.loadSetting("myposlink") : "");
@@ -74,13 +77,13 @@ public class SettingsController implements Initializable {
         tfTaxisPass.setText(AppSettings.loadSetting("taxisPass") != null ? AppSettings.loadSetting("taxisPass") : "");
         tfAfmUser.setText(AppSettings.loadSetting("afmUser") != null ? AppSettings.loadSetting("afmUser") : "");
         tfAfmPass.setText(AppSettings.loadSetting("afmPass") != null ? AppSettings.loadSetting("afmPass") : "");
-
-        if (AppSettings.loadSetting("browser").equals("chrome")) {
-            rbChrome.setSelected(true);
-        } else if (AppSettings.loadSetting("browser").equals("firefox")) {
-            rbFirefox.setSelected(true);
-        } else if (AppSettings.loadSetting("browser").equals("edge")) {
-            rbEdge.setSelected(true);
+        tfAppUser.setText(AppSettings.loadSetting("appuser") != null ? AppSettings.loadSetting("appuser") : "");
+        tfDataFolder.setText(AppSettings.loadSetting("datafolder") != null ? AppSettings.loadSetting("datafolder") : "");
+        String browser = AppSettings.loadSetting("browser") != null ? AppSettings.loadSetting("browser") : "";
+        switch (browser) {
+            case "chrome" -> rbChrome.setSelected(true);
+            case "firefox" -> rbFirefox.setSelected(true);
+            case "edge" -> rbEdge.setSelected(true);
         }
     }
 
@@ -101,6 +104,8 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("taxisPass", tfTaxisPass.getText());
         AppSettings.saveSetting("afmUser", tfAfmUser.getText());
         AppSettings.saveSetting("afmPass", tfAfmPass.getText());
+        AppSettings.saveSetting("appuser", tfAppUser.getText());
+        AppSettings.saveSetting("datafolder", tfDataFolder.getText());
         if (rbChrome.isSelected()) {
             AppSettings.saveSetting("browser", "chrome");
         } else if (rbFirefox.isSelected()) {

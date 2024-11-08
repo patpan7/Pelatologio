@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class CustomerFolderManager {
     public void createOrOpenCustomerFolder(String customerName, String afm) {
-        String folderPath = "C:/pelatologio_data/" + customerName + "_" + afm;
+        String folderPath = AppSettings.loadSetting("datafolder") + customerName + "_" + afm;
         File folder = new File(folderPath);
 
         // Δημιουργία του φακέλου αν δεν υπάρχει

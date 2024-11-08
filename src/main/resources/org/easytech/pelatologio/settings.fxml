@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
+<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
     <children>
         <BorderPane minHeight="800.0" minWidth="1200.0">
             <top>
@@ -61,45 +61,57 @@
 
                                         <Label styleClass="normal-label" text="DB Password" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                                         <TextField fx:id="tfPass" text="admin" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                        <VBox alignment="CENTER_LEFT" GridPane.rowIndex="3">
+                                        <VBox alignment="CENTER_LEFT" GridPane.rowIndex="4">
                                             <fx:define>
                                                 <ToggleGroup fx:id="browserToggleGroup" />
                                             </fx:define>
                                             <children>
-                                              <Label styleClass="normal-label" text="Browser">
-                                       <VBox.margin>
-                                          <Insets bottom="10.0" />
-                                       </VBox.margin>
-                                    </Label>
+                                                <Label styleClass="normal-label" text="Browser">
+                                                    <VBox.margin>
+                                                        <Insets bottom="10.0" />
+                                                    </VBox.margin>
+                                                </Label>
                                                 <RadioButton fx:id="rbChrome" styleClass="normal-label" text="Chrome">
-                                       <VBox.margin>
-                                          <Insets bottom="10.0" />
-                                       </VBox.margin></RadioButton>
+                                                    <VBox.margin>
+                                                        <Insets bottom="10.0" />
+                                                    </VBox.margin>
+                                                </RadioButton>
                                                 <RadioButton fx:id="rbEdge" styleClass="normal-label" text="Edge">
-                                       <VBox.margin>
-                                          <Insets bottom="10.0" />
-                                       </VBox.margin></RadioButton>
+                                                    <VBox.margin>
+                                                        <Insets bottom="10.0" />
+                                                    </VBox.margin>
+                                                </RadioButton>
                                                 <RadioButton fx:id="rbFirefox" styleClass="normal-label" text="Firefox">
-                                       <VBox.margin>
-                                          <Insets bottom="10.0" />
-                                       </VBox.margin></RadioButton>
+                                                    <VBox.margin>
+                                                        <Insets bottom="10.0" />
+                                                    </VBox.margin>
+                                                </RadioButton>
                                             </children>
                                             <VBox.margin>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                             </VBox.margin>
                                         </VBox>
+                                        <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                        <Separator layoutX="382.0" layoutY="217.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                        <Label styleClass="normal-label" text="Χειριστή" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                                        <TextField fx:id="tfAppUser" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                        <Label styleClass="normal-label" text="Διαδρομή δεδομένων" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                                        <TextField fx:id="tfDataFolder" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                     </children>
-                           <columnConstraints>
-                              <ColumnConstraints />
-                              <ColumnConstraints />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                               <RowConstraints />
-                           </rowConstraints>
+                                    <columnConstraints>
+                                        <ColumnConstraints />
+                                        <ColumnConstraints />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                                        <RowConstraints />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                    </rowConstraints>
                                 </GridPane>
                             </content>
                         </TitledPane>
@@ -121,16 +133,16 @@
                                         <Label styleClass="normal-label" text="Ανεύρεση Pass" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                                         <TextField fx:id="tfAfmPass" text="!abcd1234" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                     </children>
-                           <columnConstraints>
-                              <ColumnConstraints />
-                              <ColumnConstraints />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                           </rowConstraints>
+                                    <columnConstraints>
+                                        <ColumnConstraints />
+                                        <ColumnConstraints />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                    </rowConstraints>
                                 </GridPane>
                             </content>
                         </TitledPane>
@@ -149,15 +161,15 @@
                                         <Label styleClass="normal-label" text="myPOS Pass" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                                         <TextField fx:id="tfMyposPass" text="!abcd1234A" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     </children>
-                           <columnConstraints>
-                              <ColumnConstraints />
-                              <ColumnConstraints />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                           </rowConstraints>
+                                    <columnConstraints>
+                                        <ColumnConstraints />
+                                        <ColumnConstraints />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                    </rowConstraints>
                                 </GridPane>
                             </content>
                         </TitledPane>
@@ -179,14 +191,16 @@
                                         <Label styleClass="normal-label" text="Simply Cloud Pass" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                                         <TextField fx:id="tfSimplyCloudPass" text="054909468" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                     </children>
-                           <columnConstraints>
-                              <ColumnConstraints />
-                              <ColumnConstraints />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints />
-                              <RowConstraints />
-                           </rowConstraints>
+                                    <columnConstraints>
+                                        <ColumnConstraints />
+                                        <ColumnConstraints />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                    </rowConstraints>
                                 </GridPane>
                             </content>
                         </TitledPane>
@@ -198,9 +212,10 @@
                 <HBox alignment="CENTER" BorderPane.alignment="CENTER">
                     <children>
                         <Button mnemonicParsing="false" onAction="#saveSettings" styleClass="click-button" text="Αποθήκευση">
-                     <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </HBox.margin></Button>
+                            <HBox.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </HBox.margin>
+                        </Button>
                     </children>
                 </HBox>
             </bottom>
