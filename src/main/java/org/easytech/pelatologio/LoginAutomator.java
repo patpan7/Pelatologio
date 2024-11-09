@@ -61,6 +61,18 @@ public class LoginAutomator {
         driver.findElement(submitButtonLocator).click();
     }
 
+    public void openAndFillLoginFormDas(String url, String username, String password, By usernameLocator,By nextButtonLocator, By passwordLocator) {
+        driver.get(url);
+
+        // Εντοπισμός πεδίων username και password και εισαγωγή τιμών
+        WebElement usernameField = driver.findElement(usernameLocator);
+        usernameField.sendKeys(username);
+        driver.findElement(nextButtonLocator).click();
+        WebElement passwordField = driver.findElement(passwordLocator);
+        passwordField.sendKeys(password);
+
+    }
+
     public void openPage(String url) {
         driver.get(url);
     }

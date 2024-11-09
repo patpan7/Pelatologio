@@ -31,6 +31,8 @@ public class AddNewCustomerController {
         tfAddress.setText(customer.getAddress());
         tfTown.setText(customer.getTown());
         tfEmail.setText(customer.getEmail());
+        tfManager.setText(customer.getManager());
+        tfManagerPhone.setText(customer.getManagerPhone());
 
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = customer.getCode();

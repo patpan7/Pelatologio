@@ -82,8 +82,9 @@
                     <contextMenu>
                         <ContextMenu>
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#handleEditOption" text="Επεξεργασία" />
-                                <MenuItem mnemonicParsing="false" onAction="#customerAddNew" text="Προσθήκη" />
+                                <MenuItem mnemonicParsing="false" onAction="#handleEditOption" text="Επεξεργασία"  styleClass="menu-label"/>
+                                <MenuItem mnemonicParsing="false" onAction="#customerAddNew" text="Προσθήκη"  styleClass="menu-label"/>
+                                <MenuItem mnemonicParsing="false" onAction="#viberOpen" text="Επικοινωνία Viber" styleClass="menu-label"/>
                             </items>
                         </ContextMenu>
                     </contextMenu>

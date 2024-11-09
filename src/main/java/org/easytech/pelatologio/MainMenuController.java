@@ -39,6 +39,8 @@ public class MainMenuController implements Initializable {
     }
 
     public void customersClick(ActionEvent e) throws IOException {
+        DBHelper dbHelper = new DBHelper();
+        dbHelper.customerUnlockAll(AppSettings.loadSetting("appuser"));
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("customers.fxml"));
         root = fxmlLoader.load();
         stackPane.getChildren().clear();
@@ -55,8 +57,13 @@ public class MainMenuController implements Initializable {
 
     public void myposdasClick(ActionEvent event) {
         try {
-            LoginAutomator loginAutomation = new LoginAutomator(false);
-            loginAutomation.openPage("https://das.mypos.eu/en/login" );
+            LoginAutomator loginAutomation = new LoginAutomator(true);
+            loginAutomation.openAndFillLoginFormDas("https://das.mypos.eu/en/login",
+                    AppSettings.loadSetting("myposUser"),
+                    AppSettings.loadSetting("myposPass"),
+                    By.id("username"),
+                    By.className("btn-primary"),
+                    By.id("password"));
         } catch (IOException e) {
             e.printStackTrace();
         }

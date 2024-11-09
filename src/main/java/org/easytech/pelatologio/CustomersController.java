@@ -9,14 +9,23 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class CustomersController implements Initializable {
@@ -28,12 +37,15 @@ public class CustomersController implements Initializable {
     TextField filterField;
 
     ObservableList<Customer> observableList;
+    FilteredList<Customer> filteredData;
     DBHelper dbHelper;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dbHelper = new DBHelper();
+
+        // Δημιουργία και αρχικοποίηση των στηλών
         TableColumn<Customer, String> codeColumn = new TableColumn<>("Κωδικός");
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
 
@@ -73,75 +85,53 @@ public class CustomersController implements Initializable {
         TableColumn<Customer, String> managerPhoneColumn = new TableColumn<>("Τηλ υπευθύνου");
         managerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("managerPhone"));
 
-
         // Προσθήκη των κολόνων στο TableView
         customerTable.getColumns().addAll(nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn);
-        tableInit();
-        customerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        FilteredList<Customer> filteredData = new FilteredList<>(observableList, b -> true);
 
-        // 2. Set the filter Predicate whenever the filter changes.
+        tableInit(); // Υποθέτουμε ότι είναι μια μέθοδος για αρχικοποίηση του πίνακα
+
+        // Ορισμός του TableView resize policy
+        customerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // Δημιουργία της FilteredList για την αναζήτηση
+        filteredData = new FilteredList<>(observableList, b -> true);
+
+        // Ρύθμιση του Predicate για το φίλτρο
         filterField.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(Customer -> {
-                // If filter text is empty, display all persons.
-
+                // Αν το πεδίο αναζήτησης είναι άδειο, εμφανίζονται όλοι οι πελάτες
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
 
-                String filter = newValue.toUpperCase();
-                char[] chars1 = filter.toCharArray();
-                IntStream.range(0, chars1.length).forEach(i -> {
-                    Character repl = ENGLISH_TO_GREEK.get(chars1[i]);
-                    if (repl != null) {
-                        chars1[i] = repl;
-                    } else return;
-                });
-                char[] chars2 = filter.toCharArray();
-                IntStream.range(0, chars2.length).forEach(i -> {
-                    Character repl = GREEK_TO_ENGLISH.get(chars2[i]);
-                    if (repl != null) {
-                        chars2[i] = repl;
-                    } else return;
-                });
-                String newValToSearch1 = new String(chars1);
-                String newValToSearch2 = new String(chars2);
+                // Κλήση για μετατροπή του κειμένου αναζήτησης
+                String transformedText = transformSearchText(newValue);
 
-                if (Customer.getName().toUpperCase().indexOf(newValToSearch1) != -1 || Customer.getName().toUpperCase().indexOf(newValToSearch2) != -1)
-                    return true; // Filter matches first name.
-                else if (String.valueOf(Customer.getTitle()).indexOf(newValToSearch1) != -1 || String.valueOf(Customer.getTitle()).indexOf(newValToSearch2) != -1)
-                    return true; // Filter matches last name.
-                else if (String.valueOf(Customer.getCode()).indexOf(newValToSearch1) != -1 || String.valueOf(Customer.getCode()).indexOf(newValToSearch2) != -1)
-                    return true; // Filter matches last name.
-                else if (Customer.getPhone1().toLowerCase().indexOf(newValToSearch1) != -1 || Customer.getPhone1().toLowerCase().indexOf(newValToSearch2) != -1)
-                    return true;
-                else if (Customer.getPhone2().toLowerCase().indexOf(newValToSearch1) != -1 || Customer.getPhone2().toLowerCase().indexOf(newValToSearch2) != -1)
-                    return true;
-                else if (Customer.getMobile().toLowerCase().indexOf(newValToSearch1) != -1 || Customer.getMobile().toLowerCase().indexOf(newValToSearch2) != -1)
-                    return true;
-                else if (Customer.getAfm().toLowerCase().indexOf(newValToSearch1) != -1 || Customer.getAfm().toLowerCase().indexOf(newValToSearch2) != -1)
-                    return true;
-                else
-                    return false; // Does not match.
+                // Σύγκριση με τα πεδία του πελάτη
+                return Customer.getName().toUpperCase().contains(transformedText) ||
+                        Customer.getTitle().toUpperCase().contains(transformedText) ||
+                        Customer.getCode() == Integer.parseInt(transformedText) ||
+                        Customer.getPhone1().toLowerCase().contains(transformedText) ||
+                        Customer.getPhone2().toLowerCase().contains(transformedText) ||
+                        Customer.getMobile().toLowerCase().contains(transformedText) ||
+                        Customer.getAfm().toLowerCase().contains(transformedText);
             });
         });
 
-        // 3. Wrap the FilteredList in a SortedList.
+        // Δημιουργία SortedList για ταξινόμηση και φίλτρο
         SortedList<Customer> sortedData = new SortedList<>(filteredData);
 
-        // 4. Bind the SortedList comparator to the TableView comparator.
-        // 	  Otherwise, sorting the TableView would have no effect.
+        // Bind τον comparator του SortedList με του TableView
         sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
 
-        // 5. Add sorted (and filtered) data to the table.
+        // Εισαγωγή των ταξινομημένων (και φιλτραρισμένων) δεδομένων στον πίνακα
         customerTable.setItems(sortedData);
 
-
+        // Διπλό κλικ για επεξεργασία πελάτη
         customerTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) { // Έλεγχος για δύο κλικ
                 // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
                 Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-
 
                 // Έλεγχος αν υπάρχει επιλεγμένο προϊόν
                 if (selectedCustomer != null) {
@@ -154,8 +144,27 @@ public class CustomersController implements Initializable {
                 }
             }
         });
-
     }
+
+    // Helper μέθοδος για μετατροπή του κειμένου αναζήτησης
+    private String transformSearchText(String searchText) {
+        char[] chars1 = searchText.toUpperCase().toCharArray();
+        IntStream.range(0, chars1.length).forEach(i -> {
+            Character repl = ENGLISH_TO_GREEK.get(chars1[i]);
+            if (repl != null) {
+                chars1[i] = repl;
+            }
+        });
+        char[] chars2 = searchText.toUpperCase().toCharArray();
+        IntStream.range(0, chars2.length).forEach(i -> {
+            Character repl = GREEK_TO_ENGLISH.get(chars2[i]);
+            if (repl != null) {
+                chars2[i] = repl;
+            }
+        });
+        return new String(chars1) + " " + new String(chars2);
+    }
+
 
     private void tableInit() {
         List<Customer> items1 = null;
@@ -209,8 +218,14 @@ public class CustomersController implements Initializable {
 
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setOnAction(event -> controller.handleOkButton());
-
+            // Add a key listener to save when Enter is pressed
+            dialog.getDialogPane().setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    okButton.fire();  // Triggers the OK button action
+                }
+            });
             dialog.showAndWait();
+            tableInit();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -237,11 +252,29 @@ public class CustomersController implements Initializable {
 
                 Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setOnAction(event -> controller.handleOkButton());
+                // Add a key listener to save when Enter is pressed
+                dialog.getDialogPane().setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ENTER) {
+                        okButton.fire();  // Triggers the OK button action
+                    }
+                });
                 customerTable.getSelectionModel().clearSelection();
+                // Όταν το παράθυρο κλείσει, κάνε reload της λίστας και επαναφορά της αναζήτησης
+                dialog.setOnHidden(event -> {
+                    // Αποθήκευση της τιμής του φίλτρου πριν την ανανέωση του πίνακα
+                    String currentFilter = filterField.getText();
+
+                    // Επαναφόρτωση των δεδομένων του πίνακα
+                    ObservableList<Customer> customers = loadCustomersFromDatabase();
+                    customerTable.setItems(customers); // Ενημέρωση του πίνακα
+
+                    // Επαναφορά του φίλτρου αναζήτησης
+                    filterField.setText(currentFilter);
+                    applySearchFilter(currentFilter); // Εφαρμογή του φίλτρου αναζήτησης ξανά
+                });
                 dialog.showAndWait();
                 dbHelper.customerUnlock(selectedCustomer.getCode());
-            }
-            else {
+            } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Προσοχή");
                 alert.setContentText(res);
@@ -253,6 +286,34 @@ public class CustomersController implements Initializable {
         }
     }
 
+    // Μέθοδος για να φορτώσεις τους πελάτες από τη βάση δεδομένων ή άλλη πηγή
+    private ObservableList<Customer> loadCustomersFromDatabase() {
+        try {
+            // Παίρνουμε τα δεδομένα από τη βάση δεδομένων
+            List<Customer> customers = fetchDataFromMySQL();
+
+            // Επιστρέφουμε τα δεδομένα ως ObservableList για να τα χρησιμοποιήσει ο πίνακας
+            return FXCollections.observableArrayList(customers);
+        } catch (SQLException e) {
+            e.printStackTrace();  // Χειρισμός σφάλματος
+            return FXCollections.observableArrayList();  // Επιστρέφουμε κενή λίστα σε περίπτωση σφάλματος
+        }
+    }
+
+    // Μέθοδος για εφαρμογή του φίλτρου αναζήτησης
+    private void applySearchFilter(String filterText) {
+        if (filterText == null || filterText.isEmpty()) {
+            return;  // Αν το φίλτρο είναι κενό, δεν κάνουμε τίποτα
+        }
+
+        // Εφαρμόζουμε το φίλτρο στον πίνακα
+        FilteredList<Customer> filteredList = new FilteredList<>(customerTable.getItems(), customer -> {
+            return customer.getName().toLowerCase().contains(filterText.toLowerCase());
+        });
+
+        // Δημιουργούμε τον πίνακα που θα χρησιμοποιηθεί για την αναζήτηση
+        customerTable.setItems(filteredList);
+    }
 
 
     @FXML
@@ -439,5 +500,19 @@ public class CustomersController implements Initializable {
 
         // Κλήση της μεθόδου για δημιουργία ή άνοιγμα του φακέλου
         folderManager.createOrOpenCustomerFolder(selectedCustomer.getName(), selectedCustomer.getAfm());
+    }
+
+    public void viberOpen(ActionEvent event) {
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        try {
+            File viberPath = new File(System.getenv("LOCALAPPDATA") + "\\Viber\\Viber.exe");
+            Desktop.getDesktop().open(viberPath);
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(selectedCustomer.getMobile());  // Replace with the desired text
+            clipboard.setContent(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

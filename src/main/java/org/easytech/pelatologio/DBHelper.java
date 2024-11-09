@@ -160,8 +160,8 @@ public class DBHelper {
                 String lockedBy = rs.getString("locked_by");
                 if (lockedBy != null && !lockedBy.equals(appUser)) {
                     // Εμφανίζεις μήνυμα ότι η εγγραφή είναι κλειδωμένη
-                    System.out.println("Η εγγραφή αυτή είναι ήδη κλειδωμένη από άλλον χρήστη.");
-                    return "Η εγγραφή αυτή είναι ήδη κλειδωμένη από άλλον χρήστη.";
+                    //System.out.println("Η εγγραφή αυτή είναι ήδη κλειδωμένη από χρήστη "+lockedBy);
+                    return "Η εγγραφή αυτή είναι ήδη κλειδωμένη από τον χρήστη "+lockedBy;
                 }
             }
         } catch (SQLException e) {
@@ -189,6 +189,18 @@ public class DBHelper {
             Connection conn = getConnection();
             PreparedStatement lockStmt = conn.prepareStatement(checkLockQuery);
             lockStmt.setInt(1, code);
+            lockStmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void customerUnlockAll(String appUser){
+        String checkLockQuery = "UPDATE Customers SET locked_by = NULL WHERE locked_by = ?";
+        try {
+            Connection conn = getConnection();
+            PreparedStatement lockStmt = conn.prepareStatement(checkLockQuery);
+            lockStmt.setString(1, appUser);
             lockStmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
