@@ -157,7 +157,16 @@ public class SimplyViewController {
     }
 
     public void simplyposOpen(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        Logins selectedLogin;
+
+// Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
+        if (loginTable.getItems().size() == 1) {
+            selectedLogin = loginTable.getItems().get(0);
+            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
+        } else {
+            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        }
+
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
@@ -181,7 +190,15 @@ public class SimplyViewController {
     }
 
     public void simplycashOpen(MouseEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        Logins selectedLogin;
+
+        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
+        if (loginTable.getItems().size() == 1) {
+            selectedLogin = loginTable.getItems().get(0);
+            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
+        } else {
+            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        }
 
         if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
             if (selectedLogin != null) {
@@ -222,27 +239,15 @@ public class SimplyViewController {
     }
 
     public void simplyrestOpen(MouseEvent event) {
-//        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-//        if (selectedLogin == null) {
-//            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-//            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
-//            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
-//            return;
-//        }
-//        try {
-//            LoginAutomator loginAutomation = new LoginAutomator(true);
-//            loginAutomation.openAndFillLoginForm(
-//                    "https://rest.simplypos.com/",
-//                    selectedLogin.getUsername(),
-//                    selectedLogin.getPassword(),
-//                    By.name("Email"),
-//                    By.name("Password"),
-//                    By.id("kt_sign_in_submit")
-//            );
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        Logins selectedLogin;
+
+        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
+        if (loginTable.getItems().size() == 1) {
+            selectedLogin = loginTable.getItems().get(0);
+            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
+        } else {
+            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        }
 
         if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
             if (selectedLogin != null) {

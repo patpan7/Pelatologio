@@ -280,7 +280,7 @@ public class CustomersController implements Initializable {
                     }
                 });
                 dialog.showAndWait();
-                customerTable.getSelectionModel().clearSelection();
+                //customerTable.getSelectionModel().clearSelection();
                 dbHelper.customerUnlock(selectedCustomer.getCode());
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);

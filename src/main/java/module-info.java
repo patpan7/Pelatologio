@@ -15,8 +15,9 @@ module org.easytech.pelatologio {
     requires org.seleniumhq.selenium.chrome_driver;
     requires org.seleniumhq.selenium.firefox_driver;
     requires dev.failsafe.core;
-    requires java.desktop;
     requires org.seleniumhq.selenium.edge_driver;
+    requires jakarta.mail;
+    requires java.desktop;
 
     opens org.easytech.pelatologio to javafx.fxml;
     exports org.easytech.pelatologio;

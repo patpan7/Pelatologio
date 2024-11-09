@@ -158,7 +158,15 @@ public class MyposViewController {
     }
 
     public void myposloginOpen(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        Logins selectedLogin;
+
+        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
+        if (loginTable.getItems().size() == 1) {
+            selectedLogin = loginTable.getItems().get(0);
+            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
+        } else {
+            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        }
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
