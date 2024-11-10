@@ -46,11 +46,13 @@
             </top>
 
             <center>
+                <ScrollPane fitToHeight="true" fitToWidth="true">
                 <Accordion fx:id="settingsAccordion" stylesheets="@external.css" BorderPane.alignment="CENTER">
                     <panes>
                         <!-- Πρώτο TitledPane: Ρυθμίσεις Βάσης Δεδομένων -->
                         <TitledPane styleClass="menu-label" stylesheets="@external.css" text="Ρυθμίσεις Εφαρμογής">
                             <content>
+
                                 <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" stylesheets="@external.css" vgap="10">
                                     <children>
                                         <Label styleClass="normal-label" text="Server" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -113,6 +115,7 @@
                                         <RowConstraints />
                                     </rowConstraints>
                                 </GridPane>
+
                             </content>
                         </TitledPane>
 
@@ -239,6 +242,7 @@
                         </TitledPane>
                     </panes>
                 </Accordion>
+                </ScrollPane>
             </center>
 
             <bottom>

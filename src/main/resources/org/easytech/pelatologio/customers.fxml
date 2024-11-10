@@ -79,10 +79,20 @@
                     </Button>
                 </HBox>
                 <TableView fx:id="customerTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="nameColumn" minWidth="120.0" prefWidth="120.0" resizable="true" sortable="false" text="Όνομα" />
+                        <TableColumn fx:id="titleColumn" maxWidth="200.0" minWidth="100.0" prefWidth="100.0" resizable="true" sortable="false" text="Τίτλος" />
+                        <TableColumn fx:id="afmColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="true" sortable="false" text="ΑΦΜ" />
+                        <TableColumn fx:id="phone1Column" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="Τηλέφωνο 1" />
+                        <TableColumn fx:id="phone2Column" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="Τηλέφωνο 2" />
+                        <TableColumn fx:id="mobileColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="Κινητό" />
+                        <TableColumn fx:id="townColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="true" sortable="false" text="Πόλη" />
+                        <TableColumn fx:id="emailColumn" resizable="true" sortable="false" text="E-mail" />
+                    </columns>
                     <contextMenu>
                         <ContextMenu>
                             <items>
-                                <MenuItem  onAction="#handleEditOption" styleClass="menu-item" text="Επεξεργασία" />
+                                <MenuItem onAction="#handleEditOption" styleClass="menu-item" text="Επεξεργασία" />
                                 <MenuItem mnemonicParsing="false" onAction="#customerAddNew" styleClass="menu-item" text="Προσθήκη" />
                                 <MenuItem mnemonicParsing="false" onAction="#viberOpen" styleClass="menu-item" text="Επικοινωνία Viber" />
                             </items>

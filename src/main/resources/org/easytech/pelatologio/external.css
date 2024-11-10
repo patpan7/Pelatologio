@@ -12,6 +12,7 @@
 /* Στυλ του tableView */
 .table-view {
     -fx-background-color: transparent;
+    -fx-border-color: #d1d1d1;
 }
 
 /* Στυλ της γραμμής τίτλου κάθε στήλης */

@@ -30,6 +30,8 @@ import java.util.stream.IntStream;
 
 public class CustomersController implements Initializable {
     @FXML
+    public TableColumn nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn;
+    @FXML
     StackPane stackPane;
     @FXML
     TableView<Customer> customerTable;
@@ -46,81 +48,52 @@ public class CustomersController implements Initializable {
         dbHelper = new DBHelper();
 
         // Δημιουργία και αρχικοποίηση των στηλών
-        TableColumn<Customer, String> codeColumn = new TableColumn<>("Κωδικός");
-        codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
+//        TableColumn<Customer, String> codeColumn = new TableColumn<>("Κωδικός");
+//        codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
 
-        TableColumn<Customer, String> nameColumn = new TableColumn<>("Όνομα");
+        //TableColumn<Customer, String> nameColumn = new TableColumn<>("Όνομα");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Customer, String> titleColumn = new TableColumn<>("Τίτλος");
+        //TableColumn<Customer, String> titleColumn = new TableColumn<>("Τίτλος");
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
 
-        TableColumn<Customer, String> afmColumn = new TableColumn<>("ΑΦΜ");
+        //TableColumn<Customer, String> afmColumn = new TableColumn<>("ΑΦΜ");
         afmColumn.setCellValueFactory(new PropertyValueFactory<>("afm"));
 
-        TableColumn<Customer, String> jobColumn = new TableColumn<>("Επάγγελμα");
-        jobColumn.setCellValueFactory(new PropertyValueFactory<>("job"));
+//        TableColumn<Customer, String> jobColumn = new TableColumn<>("Επάγγελμα");
+//        jobColumn.setCellValueFactory(new PropertyValueFactory<>("job"));
 
-        TableColumn<Customer, String> phone1Column = new TableColumn<>("Τηλέφωνο 1");
+        //TableColumn<Customer, String> phone1Column = new TableColumn<>("Τηλέφωνο 1");
         phone1Column.setCellValueFactory(new PropertyValueFactory<>("phone1"));
 
-        TableColumn<Customer, String> phone2Column = new TableColumn<>("Τηλέφωνο 2");
+        //TableColumn<Customer, String> phone2Column = new TableColumn<>("Τηλέφωνο 2");
         phone2Column.setCellValueFactory(new PropertyValueFactory<>("phone2"));
 
-        TableColumn<Customer, String> mobileColumn = new TableColumn<>("Κινητό");
+        //TableColumn<Customer, String> mobileColumn = new TableColumn<>("Κινητό");
         mobileColumn.setCellValueFactory(new PropertyValueFactory<>("mobile"));
 
-        TableColumn<Customer, String> addressColumn = new TableColumn<>("Διεύθυνση");
-        addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
+//        TableColumn<Customer, String> addressColumn = new TableColumn<>("Διεύθυνση");
+//        addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
 
-        TableColumn<Customer, String> townColumn = new TableColumn<>("Πόλη");
+        //TableColumn<Customer, String> townColumn = new TableColumn<>("Πόλη");
         townColumn.setCellValueFactory(new PropertyValueFactory<>("town"));
 
-        TableColumn<Customer, String> emailColumn = new TableColumn<>("E-mail");
+        //TableColumn<Customer, String> emailColumn = new TableColumn<>("E-mail");
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-        TableColumn<Customer, String> managerColumn = new TableColumn<>("Υπεύθυνος");
-        managerColumn.setCellValueFactory(new PropertyValueFactory<>("manager"));
+//        TableColumn<Customer, String> managerColumn = new TableColumn<>("Υπεύθυνος");
+//        managerColumn.setCellValueFactory(new PropertyValueFactory<>("manager"));
 
-        TableColumn<Customer, String> managerPhoneColumn = new TableColumn<>("Τηλ υπευθύνου");
-        managerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("managerPhone"));
-
-
-        // Ορισμός των στηλών με σταθερό πλάτος για phone1, phone2, mobile
-        phone1Column.setPrefWidth(120);
-        phone2Column.setPrefWidth(120);
-        mobileColumn.setPrefWidth(120);
-
-// Οι άλλες στήλες (όπως όνομα, επαγγελμα, τηλέφωνο κλπ) θα γεμίζουν τον πίνακα
-        nameColumn.setResizable(true);
-        titleColumn.setResizable(true);
-        afmColumn.setResizable(true);
-        jobColumn.setResizable(true);
-        addressColumn.setResizable(true);
-        townColumn.setResizable(true);
-        emailColumn.setResizable(true);
-        managerColumn.setResizable(true);
-        managerPhoneColumn.setResizable(true);
-
-// Εφαρμογή δυναμικής διάστασης για τις υπόλοιπες στήλες (όπως τα phone1, phone2, mobile)
-        nameColumn.setPrefWidth(0);
-        titleColumn.setPrefWidth(0);
-        afmColumn.setPrefWidth(0);
-        jobColumn.setPrefWidth(0);
-        addressColumn.setPrefWidth(0);
-        townColumn.setPrefWidth(0);
-        emailColumn.setPrefWidth(0);
-        managerColumn.setPrefWidth(0);
-        managerPhoneColumn.setPrefWidth(0);
-
+//        TableColumn<Customer, String> managerPhoneColumn = new TableColumn<>("Τηλ υπευθύνου");
+//        managerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("managerPhone"));
 
         // Προσθήκη των κολόνων στο TableView
-        customerTable.getColumns().addAll(nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn);
+        //customerTable.getColumns().addAll(nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn);
 
         tableInit(); // Υποθέτουμε ότι είναι μια μέθοδος για αρχικοποίηση του πίνακα
 
         // Ορισμός του TableView resize policy
-        customerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        //customerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         // Δημιουργία της FilteredList για την αναζήτηση
         filteredData = new FilteredList<>(observableList, b -> true);
