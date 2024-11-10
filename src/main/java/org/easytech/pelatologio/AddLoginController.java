@@ -2,10 +2,7 @@ package org.easytech.pelatologio;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 public class AddLoginController {
@@ -17,7 +14,7 @@ public class AddLoginController {
     private PasswordField passwordField;
 
     @FXML
-    private TextField tagField;
+    private ComboBox tagField;
     @FXML
     private TextField phoneField;
 
@@ -38,7 +35,7 @@ public class AddLoginController {
     public void handleSaveLogin(ActionEvent event, int appicationId) {
         String username = usernameField.getText();
         String password = passwordField.getText();
-        String tag = tagField.getText();
+        String tag = tagField.getSelectionModel().getSelectedItem().toString();
         String phone = phoneField.getText();
         Logins newLogin = new Logins(username, password, tag,phone);
 
@@ -55,7 +52,7 @@ public class AddLoginController {
             // Καθαρισμός των πεδίων
             usernameField.clear();
             passwordField.clear();
-            tagField.clear();
+            tagField.setValue(null);
             phoneField.clear();
         } else {
             // Μήνυμα σφάλματος αν κάποια πεδία είναι κενά

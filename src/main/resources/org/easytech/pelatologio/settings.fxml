@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
+<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
     <children>
-        <BorderPane minHeight="800.0" minWidth="1200.0">
+        <BorderPane minHeight="800.0" minWidth="1200.0" styleClass="pane">
             <top>
                 <HBox alignment="CENTER" BorderPane.alignment="CENTER">
                     <BorderPane.margin>
@@ -46,12 +46,12 @@
             </top>
 
             <center>
-                <Accordion fx:id="settingsAccordion" BorderPane.alignment="CENTER">
+                <Accordion fx:id="settingsAccordion" stylesheets="@external.css" BorderPane.alignment="CENTER">
                     <panes>
                         <!-- Πρώτο TitledPane: Ρυθμίσεις Βάσης Δεδομένων -->
-                        <TitledPane text="Ρυθμίσεις Εφαρμογής">
+                        <TitledPane styleClass="menu-label" stylesheets="@external.css" text="Ρυθμίσεις Εφαρμογής">
                             <content>
-                                <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" stylesheets="@external.css" vgap="10">
                                     <children>
                                         <Label styleClass="normal-label" text="Server" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                         <TextField fx:id="tfServer" text="localhost" GridPane.columnIndex="1" GridPane.rowIndex="0" />
@@ -117,9 +117,9 @@
                         </TitledPane>
 
                         <!-- Δεύτερο TitledPane: Ρυθμίσεις Taxis -->
-                        <TitledPane text="Ρυθμίσεις Taxis">
+                        <TitledPane styleClass="menu-label" text="Ρυθμίσεις Taxis">
                             <content>
-                                <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
                                     <children>
                                         <Label styleClass="normal-label" text="Taxis User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                         <TextField fx:id="tfTaxisUser" text="localhost" GridPane.columnIndex="1" GridPane.rowIndex="0" />
@@ -148,9 +148,9 @@
                         </TitledPane>
 
                         <!-- Τρίτο TitledPane: Ρυθμίσεις myPOS -->
-                        <TitledPane text="Ρυθμίσεις myPOS">
+                        <TitledPane styleClass="menu-label" text="Ρυθμίσεις myPOS">
                             <content>
-                                <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
                                     <children>
                                         <Label styleClass="normal-label" text="myPOS Link" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                         <TextField fx:id="tfMyposLink" text="https://merchant.mypos.com/el/enroll?ref=1006179#/" GridPane.columnIndex="1" GridPane.rowIndex="0" />
@@ -175,9 +175,9 @@
                         </TitledPane>
 
                         <!-- Τέταρτο TitledPane: Άλλες Ρυθμίσεις -->
-                        <TitledPane text="Ρυθμίσεις Simply">
+                        <TitledPane styleClass="menu-label" text="Ρυθμίσεις Simply">
                             <content>
-                                <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
                                     <children>
                                         <Label styleClass="normal-label" text="Simply POS User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                         <TextField fx:id="tfSimplyPosUser" text="et@dgou.gr" GridPane.columnIndex="1" GridPane.rowIndex="0" />
@@ -190,6 +190,39 @@
 
                                         <Label styleClass="normal-label" text="Simply Cloud Pass" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                                         <TextField fx:id="tfSimplyCloudPass" text="054909468" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                                        <Label styleClass="normal-label" text="E-mail Simply" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                        <TextField fx:id="tfSimplyRegisterMail" text="" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    </children>
+                                    <columnConstraints>
+                                        <ColumnConstraints />
+                                        <ColumnConstraints />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                    </rowConstraints>
+                                </GridPane>
+                            </content>
+                        </TitledPane>
+                        <TitledPane styleClass="menu-label" text="Ρυθμίσεις Mail">
+                            <content>
+                                <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
+                                    <children>
+                                        <Label styleClass="normal-label" text="E-mail" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                        <TextField fx:id="tfEmail" text="patelos942@gmail.com" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                        <Label styleClass="normal-label" text="Pass key" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                        <TextField fx:id="tfEmailPassKey" text="dhgv bawk wqlw szsj" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                        <Label styleClass="normal-label" text="SMTP Server" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                        <TextField fx:id="tfSMTP" text="smtp.gmail.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                        <Label styleClass="normal-label" text="SMTP Port" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                        <TextField fx:id="tfSMTPPort" text="587" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                     </children>
                                     <columnConstraints>
                                         <ColumnConstraints />

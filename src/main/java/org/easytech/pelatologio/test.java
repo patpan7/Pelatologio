@@ -5,13 +5,13 @@ public class test {
         // Ρυθμίσεις για SMTP διακομιστή (π.χ., Gmail)
         String host = "smtp.gmail.com";
         String port = "587";
-        String username = "patpan7@gmail.com";
-        String password = "P@n0$.-7"; // Χρησιμοποίησε κωδικό εφαρμογής για Gmail
+        String username = "patelos942@gmail.com";
+        String password = "dhgv bawk wqlw szsj"; // Χρησιμοποίησε κωδικό εφαρμογής για Gmail
 
         EmailSender emailSender = new EmailSender(host, port, username, password);
 
         // Αποστολή του email
-        String recipient = "recipient_email@example.com";
+        String recipient = "patpan7@gmail.com";
         String subject = "Test Email";
         String messageContent = "This is a test email sent from Java.";
 

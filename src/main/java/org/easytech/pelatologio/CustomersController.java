@@ -85,6 +85,35 @@ public class CustomersController implements Initializable {
         TableColumn<Customer, String> managerPhoneColumn = new TableColumn<>("Τηλ υπευθύνου");
         managerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("managerPhone"));
 
+
+        // Ορισμός των στηλών με σταθερό πλάτος για phone1, phone2, mobile
+        phone1Column.setPrefWidth(120);
+        phone2Column.setPrefWidth(120);
+        mobileColumn.setPrefWidth(120);
+
+// Οι άλλες στήλες (όπως όνομα, επαγγελμα, τηλέφωνο κλπ) θα γεμίζουν τον πίνακα
+        nameColumn.setResizable(true);
+        titleColumn.setResizable(true);
+        afmColumn.setResizable(true);
+        jobColumn.setResizable(true);
+        addressColumn.setResizable(true);
+        townColumn.setResizable(true);
+        emailColumn.setResizable(true);
+        managerColumn.setResizable(true);
+        managerPhoneColumn.setResizable(true);
+
+// Εφαρμογή δυναμικής διάστασης για τις υπόλοιπες στήλες (όπως τα phone1, phone2, mobile)
+        nameColumn.setPrefWidth(0);
+        titleColumn.setPrefWidth(0);
+        afmColumn.setPrefWidth(0);
+        jobColumn.setPrefWidth(0);
+        addressColumn.setPrefWidth(0);
+        townColumn.setPrefWidth(0);
+        emailColumn.setPrefWidth(0);
+        managerColumn.setPrefWidth(0);
+        managerPhoneColumn.setPrefWidth(0);
+
+
         // Προσθήκη των κολόνων στο TableView
         customerTable.getColumns().addAll(nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn);
 
@@ -169,6 +198,8 @@ public class CustomersController implements Initializable {
                 }
             }
         });
+
+        customerTable.getSelectionModel().clearSelection();
     }
 
 

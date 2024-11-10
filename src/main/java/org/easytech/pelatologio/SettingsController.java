@@ -34,6 +34,8 @@ public class SettingsController implements Initializable {
     @FXML
     TextField tfSimplyCloudPass;
     @FXML
+    TextField tfSimplyRegisterMail;
+    @FXML
     TextField tfTaxisUser;
     @FXML
     TextField tfTaxisPass;
@@ -53,6 +55,14 @@ public class SettingsController implements Initializable {
     TextField tfAppUser;
     @FXML
     TextField tfDataFolder;
+    @FXML
+    TextField tfEmail;
+    @FXML
+    TextField tfEmailPassKey;
+    @FXML
+    TextField tfSMTP;
+    @FXML
+    TextField tfSMTPPort;
 
 
 
@@ -79,6 +89,11 @@ public class SettingsController implements Initializable {
         tfAfmPass.setText(AppSettings.loadSetting("afmPass") != null ? AppSettings.loadSetting("afmPass") : "");
         tfAppUser.setText(AppSettings.loadSetting("appuser") != null ? AppSettings.loadSetting("appuser") : "");
         tfDataFolder.setText(AppSettings.loadSetting("datafolder") != null ? AppSettings.loadSetting("datafolder") : "");
+        tfEmail.setText(AppSettings.loadSetting("email") != null ? AppSettings.loadSetting("email") : "");
+        tfEmailPassKey.setText(AppSettings.loadSetting("emailPass") != null ? AppSettings.loadSetting("emailPass") : "");
+        tfSMTP.setText(AppSettings.loadSetting("smtp") != null ? AppSettings.loadSetting("smtp") : "");
+        tfSMTPPort.setText(AppSettings.loadSetting("smtpport") != null ? AppSettings.loadSetting("smtpport") : "");
+        tfSimplyRegisterMail.setText(AppSettings.loadSetting("simplyRegisterMail") != null ? AppSettings.loadSetting("simplyRegisterMail") : "");
         String browser = AppSettings.loadSetting("browser") != null ? AppSettings.loadSetting("browser") : "";
         switch (browser) {
             case "chrome" -> rbChrome.setSelected(true);
@@ -106,6 +121,11 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("afmPass", tfAfmPass.getText());
         AppSettings.saveSetting("appuser", tfAppUser.getText());
         AppSettings.saveSetting("datafolder", tfDataFolder.getText());
+        AppSettings.saveSetting("email", tfEmail.getText());
+        AppSettings.saveSetting("emailPass", tfEmailPassKey.getText());
+        AppSettings.saveSetting("smtp", tfSMTP.getText());
+        AppSettings.saveSetting("smtpport", tfSMTPPort.getText());
+        AppSettings.saveSetting("simplyRegisterMail", tfSimplyRegisterMail.getText());
         if (rbChrome.isSelected()) {
             AppSettings.saveSetting("browser", "chrome");
         } else if (rbFirefox.isSelected()) {

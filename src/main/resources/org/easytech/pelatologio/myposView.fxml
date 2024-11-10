@@ -4,16 +4,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane stylesheets="@external.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MyposViewController">
+<DialogPane prefHeight="800.0" prefWidth="1100.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MyposViewController">
     <content>
         <VBox alignment="TOP_CENTER">
             <Label fx:id="customerLabel" styleClass="header-label" text="Όνομα Πελάτη: [Όνομα Πελάτη]" textOverrun="CLIP" />
             <HBox alignment="TOP_CENTER">
                 <children>
-                    <VBox alignment="TOP_CENTER">
+                    <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
                         <children>
                             <!-- Πίνακας για τα Logins -->
-                            <TableView fx:id="loginTable">
+                            <TableView fx:id="loginTable" VBox.vgrow="ALWAYS">
                                 <columns>
                                     <TableColumn fx:id="usernameColumn" text="Username" />
                                     <TableColumn fx:id="passwordColumn" text="Password" />

@@ -1,6 +1,7 @@
 package org.easytech.pelatologio;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -10,7 +11,7 @@ public class EditLoginController {
     @FXML
     private PasswordField passwordField;
     @FXML
-    private TextField tagField;
+    private ComboBox tagField;
     @FXML
     private TextField phoneField;
 
@@ -21,7 +22,7 @@ public class EditLoginController {
         this.login = login;
         usernameField.setText(login.getUsername());
         passwordField.setText(login.getPassword());
-        tagField.setText(login.getTag());
+        tagField.setValue(login.getTag());
         phoneField.setText(login.getPhone());
     }
 
@@ -29,7 +30,7 @@ public class EditLoginController {
     public Logins getUpdatedLogin() {
         login.setUsername(usernameField.getText());
         login.setPassword(passwordField.getText());
-        login.setTag(tagField.getText());
+        login.setTag(tagField.getValue().toString());
         login.setPhone(phoneField.getText());
         return login;
     }

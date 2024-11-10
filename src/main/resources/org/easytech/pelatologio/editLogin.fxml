@@ -1,29 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EditLoginController">
+<DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EditLoginController">
     <content>
         <VBox alignment="CENTER">
             <Label styleClass="normal-label" text="Επεξεργασία Login" />
             <TextField fx:id="usernameField" promptText="Username">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin></TextField>
+                </VBox.margin>
+            </TextField>
             <PasswordField fx:id="passwordField" promptText="Password">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin></PasswordField>
-            <TextField fx:id="tagField" promptText="Tag">
+                </VBox.margin>
+            </PasswordField>
+            <ComboBox fx:id="tagField" editable="true" promptText="Tag">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin></TextField>
+                </VBox.margin>
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Taxis" />
+                        <String fx:value="Ανεύρεση ΑΦΜ" />
+                        <String fx:value="myPOS" />
+                        <String fx:value="Cash" />
+                        <String fx:value="Rest" />
+                        <String fx:value="Full" />
+                        <String fx:value="Invoice" />
+                    </FXCollections>
+                </items>
+
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </VBox.margin>
+            </ComboBox>
             <TextField fx:id="phoneField" promptText="Τηλέφωνο">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin></TextField>
+                </VBox.margin>
+            </TextField>
         </VBox>
     </content>
 </DialogPane>

@@ -48,6 +48,7 @@ public class SimplyViewController {
         tagColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTag()));
 
         loginTable.setItems(loginList);
+
     }
 
     // Μέθοδος για τη φόρτωση των logins από τη βάση
@@ -57,6 +58,8 @@ public class SimplyViewController {
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
         loginList.addAll(dbHelper.getLogins(customerId,2));
+        if (loginTable.getItems().size() == 1)
+            loginTable.getSelectionModel().select(0);
     }
     public void handleAddLogin(ActionEvent event) {
         try {
@@ -157,15 +160,7 @@ public class SimplyViewController {
     }
 
     public void simplyposOpen(ActionEvent event) {
-        Logins selectedLogin;
-
-// Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
-        if (loginTable.getItems().size() == 1) {
-            selectedLogin = loginTable.getItems().get(0);
-            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
-        } else {
-            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        }
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
 
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
@@ -190,15 +185,7 @@ public class SimplyViewController {
     }
 
     public void simplycashOpen(MouseEvent event) {
-        Logins selectedLogin;
-
-        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
-        if (loginTable.getItems().size() == 1) {
-            selectedLogin = loginTable.getItems().get(0);
-            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
-        } else {
-            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        }
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
 
         if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
             if (selectedLogin != null) {
@@ -213,6 +200,8 @@ public class SimplyViewController {
                 content.putString(msg);  // Replace with the desired text
                 clipboard.setContent(content);
                 showAlert("Copied to Clipboard", msg);
+                EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
+                emailSender.sendEmail(AppSettings.loadSetting("simplyRegisterMail"), "Νέος Πελάτης Simply Cash", msg);
             } else {
                 showAlert("Attention", "Please select a login to copy.");
             }
@@ -239,15 +228,7 @@ public class SimplyViewController {
     }
 
     public void simplyrestOpen(MouseEvent event) {
-        Logins selectedLogin;
-
-        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
-        if (loginTable.getItems().size() == 1) {
-            selectedLogin = loginTable.getItems().get(0);
-            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
-        } else {
-            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        }
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
 
         if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
             if (selectedLogin != null) {
@@ -262,6 +243,8 @@ public class SimplyViewController {
                 content.putString(msg);  // Replace with the desired text
                 clipboard.setContent(content);
                 showAlert("Copied to Clipboard", msg);
+                EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
+                emailSender.sendEmail(AppSettings.loadSetting("simplyRegisterMail"), "Νέος Πελάτης Simply Rest", msg);
             } else {
                 showAlert("Attention", "Please select a login to copy.");
             }

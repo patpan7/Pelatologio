@@ -1,7 +1,10 @@
 package org.easytech.pelatologio;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
-import jakarta.mail.*;
-import jakarta.mail.internet.*;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class EmailSender {
@@ -47,11 +50,20 @@ public class EmailSender {
 
             // Αποστολή του email
             Transport.send(message);
+            Platform.runLater(() -> showAlert("Attention", "Το email στάλθηκε επιτυχώς."));
             System.out.println("Το email στάλθηκε επιτυχώς!");
         } catch (MessagingException e) {
             e.printStackTrace();
             System.out.println("Η αποστολή του email απέτυχε.");
+            Platform.runLater(() -> showAlert("Attention", "Η αποστολή του email απέτυχε."));
         }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
 

@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
-    <ScrollPane fitToHeight="true" fitToWidth="true">
-        <BorderPane fx:id="rootPane" StackPane.alignment="CENTER">
+<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
+    <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="pane">
+        <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
             <center>
                 <GridPane alignment="TOP_CENTER" hgap="50.0" vgap="50.0" BorderPane.alignment="TOP_CENTER">
                     <Button contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#customersClick" styleClass="click-button" text="Πελάτες" textAlignment="CENTER">
