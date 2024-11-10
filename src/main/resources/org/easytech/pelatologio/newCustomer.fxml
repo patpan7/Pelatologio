@@ -247,6 +247,7 @@
                     </font>
                 </TextField>
             </HBox>
+            <ProgressIndicator fx:id="progressIndicator" visible="false" progress="-1.0" />
         </VBox>
     </content>
 </DialogPane>

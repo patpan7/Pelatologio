@@ -15,11 +15,11 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
             </TextField>
-            <PasswordField fx:id="passwordField" promptText="Password">
+            <TextField fx:id="passwordField" accessibleRole="TEXT_FIELD" promptText="Password">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
-            </PasswordField>
+            </TextField>
             <ComboBox fx:id="tagField" editable="true" promptText="Tag">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

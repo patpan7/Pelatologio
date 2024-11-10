@@ -11,7 +11,7 @@
         <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
             <center>
                 <GridPane alignment="TOP_CENTER" hgap="50.0" vgap="50.0" BorderPane.alignment="TOP_CENTER">
-                    <Button contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#customersClick" styleClass="click-button" text="Πελάτες" textAlignment="CENTER">
+                    <Button contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#customersClick" styleClass="click-button" text="Πελάτες" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0">
                         <graphic>
                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@icons/users.png" />

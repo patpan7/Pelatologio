@@ -11,7 +11,7 @@ public class AddLoginController {
     private TextField usernameField;
 
     @FXML
-    private PasswordField passwordField;
+    private TextField passwordField;
 
     @FXML
     private ComboBox tagField;
