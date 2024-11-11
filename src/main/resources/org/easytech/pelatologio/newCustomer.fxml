@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddNewCustomerController">
+<DialogPane prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddNewCustomerController">
     <content>
         <VBox alignment="CENTER">
             <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
@@ -14,7 +14,7 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
 
-                <Label styleClass="normal-label" text="Επωνυμία:">
+                <Label prefWidth="205.0" styleClass="normal-label" text="Επωνυμία:">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -22,7 +22,7 @@
                         <Insets right="20.0" />
                     </padding>
                 </Label>
-                <TextField fx:id="tfName">
+                <TextField fx:id="tfName" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -33,7 +33,7 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
 
-                <Label styleClass="normal-label" text="Τίτλος:">
+                <Label prefWidth="205.0" styleClass="normal-label" text="Τίτλος:">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -41,7 +41,26 @@
                         <Insets right="20.0" />
                     </padding>
                 </Label>
-                <TextField fx:id="tfTitle">
+                <TextField fx:id="tfTitle" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </TextField>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </VBox.margin>
+
+                <Label prefWidth="205.0" styleClass="normal-label" text="Επάγγελμα:">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                    <padding>
+                        <Insets right="20.0" />
+                    </padding>
+                </Label>
+                <TextField fx:id="tfJob" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -52,7 +71,7 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
 
-                <Label styleClass="normal-label" text="Επάγγελμα:">
+                <Label prefWidth="205.0" styleClass="normal-label" text="ΑΦΜ:">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -60,26 +79,7 @@
                         <Insets right="20.0" />
                     </padding>
                 </Label>
-                <TextField fx:id="tfJob">
-                    <font>
-                        <Font size="24.0" />
-                    </font>
-                </TextField>
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-
-                <Label styleClass="normal-label" text="ΑΦΜ:">
-                    <font>
-                        <Font size="24.0" />
-                    </font>
-                    <padding>
-                        <Insets right="20.0" />
-                    </padding>
-                </Label>
-                <TextField fx:id="tfAfm" prefHeight="51.0" prefWidth="228.0">
+                <TextField fx:id="tfAfm" prefHeight="51.0" prefWidth="228.0" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -100,7 +100,7 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
 
-                <Label styleClass="normal-label" text="Τηλέφωνο 1:">
+                <Label prefWidth="205.0" styleClass="normal-label" text="Τηλέφωνο 1:">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -108,7 +108,7 @@
                         <Insets right="20.0" />
                     </padding>
                 </Label>
-                <TextField fx:id="tfPhone1" alignment="TOP_LEFT">
+                <TextField fx:id="tfPhone1" alignment="TOP_LEFT" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -119,7 +119,7 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
 
-                <Label styleClass="normal-label" text="Τηλέφωνο 2:">
+                <Label prefWidth="205.0" styleClass="normal-label" text="Τηλέφωνο 2:">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -127,7 +127,7 @@
                         <Insets right="20.0" />
                     </padding>
                 </Label>
-                <TextField fx:id="tfPhone2" alignment="TOP_LEFT">
+                <TextField fx:id="tfPhone2" alignment="TOP_LEFT" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -138,7 +138,7 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
 
-                <Label styleClass="normal-label" text="Κινητό:">
+                <Label prefWidth="205.0" styleClass="normal-label" text="Κινητό:">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -146,7 +146,7 @@
                         <Insets right="20.0" />
                     </padding>
                 </Label>
-                <TextField fx:id="tfMobile">
+                <TextField fx:id="tfMobile" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -157,7 +157,7 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
 
-                <Label styleClass="normal-label" text="Διεύθυνση:">
+                <Label prefWidth="205.0" styleClass="normal-label" text="Διεύθυνση:">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -165,7 +165,7 @@
                         <Insets right="20.0" />
                     </padding>
                 </Label>
-                <TextField fx:id="tfAddress">
+                <TextField fx:id="tfAddress" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -176,7 +176,7 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
 
-                <Label styleClass="normal-label" text="Πόλη:">
+                <Label prefWidth="205.0" styleClass="normal-label" text="Πόλη:">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -184,7 +184,7 @@
                         <Insets right="20.0" />
                     </padding>
                 </Label>
-                <TextField fx:id="tfTown">
+                <TextField fx:id="tfTown" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -195,7 +195,7 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
 
-                <Label styleClass="normal-label" text="E-mail:">
+                <Label prefWidth="205.0" styleClass="normal-label" text="E-mail:">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -203,7 +203,7 @@
                         <Insets right="20.0" />
                     </padding>
                 </Label>
-                <TextField fx:id="tfEmail">
+                <TextField fx:id="tfEmail" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -214,7 +214,7 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
 
-                <Label styleClass="normal-label" text="Υπεύθυνος:">
+                <Label prefWidth="205.0" styleClass="normal-label" text="Υπεύθυνος:">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -222,7 +222,7 @@
                         <Insets right="20.0" />
                     </padding>
                 </Label>
-                <TextField fx:id="tfManager">
+                <TextField fx:id="tfManager" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -233,7 +233,7 @@
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
 
-                <Label styleClass="normal-label" text="Τηλ Υπευθύνου:">
+                <Label prefWidth="205.0" styleClass="normal-label" text="Τηλ Υπευθύνου:">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -241,13 +241,13 @@
                         <Insets right="20.0" />
                     </padding>
                 </Label>
-                <TextField fx:id="tfManagerPhone">
+                <TextField fx:id="tfManagerPhone" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="24.0" />
                     </font>
                 </TextField>
             </HBox>
-            <ProgressIndicator fx:id="progressIndicator" visible="false" progress="-1.0" />
+            <ProgressIndicator fx:id="progressIndicator" progress="-1.0" visible="false" />
         </VBox>
     </content>
 </DialogPane>
