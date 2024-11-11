@@ -23,6 +23,7 @@ public class AddLoginController {
     // Μέθοδος για να ορίσεις τον πελάτη
     public void setCustomer(Customer customer) {
         this.customer = customer;
+        phoneField.setText(customer.getMobile());
     }
 
     @FXML
@@ -37,7 +38,7 @@ public class AddLoginController {
         String password = passwordField.getText();
         String tag = tagField.getSelectionModel().getSelectedItem().toString();
         String phone = phoneField.getText();
-        Logins newLogin = new Logins(username, password, tag,phone);
+        Logins newLogin = new Logins(username, password, tag, phone);
 
         if (!username.isEmpty() && !password.isEmpty()) {
             DBHelper dbHelper = new DBHelper();

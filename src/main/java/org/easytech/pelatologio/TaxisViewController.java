@@ -58,6 +58,8 @@ public class TaxisViewController {
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
         loginList.addAll(dbHelper.getLogins(customerId,3));
+        if (loginTable.getItems().size() == 1)
+            loginTable.getSelectionModel().select(0);
     }
     public void handleAddLogin(ActionEvent event) {
         try {
@@ -156,15 +158,8 @@ public class TaxisViewController {
     }
 
     public void taxisOpen(ActionEvent event) {
-        Logins selectedLogin;
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
 
-        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
-        if (loginTable.getItems().size() == 1) {
-            selectedLogin = loginTable.getItems().get(0);
-            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
-        } else {
-            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        }
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
@@ -187,15 +182,8 @@ public class TaxisViewController {
     }
 
     public void authorizationsOpen(ActionEvent actionEvent) {
-        Logins selectedLogin;
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
 
-        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
-        if (loginTable.getItems().size() == 1) {
-            selectedLogin = loginTable.getItems().get(0);
-            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
-        } else {
-            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        }
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
@@ -217,15 +205,8 @@ public class TaxisViewController {
     }
 
     public void mydataOpen(ActionEvent actionEvent) {
-        Logins selectedLogin;
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
 
-        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
-        if (loginTable.getItems().size() == 1) {
-            selectedLogin = loginTable.getItems().get(0);
-            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
-        } else {
-            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        }
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
@@ -247,15 +228,8 @@ public class TaxisViewController {
     }
 
     public void esendOpen(ActionEvent actionEvent) {
-        Logins selectedLogin;
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
 
-        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
-        if (loginTable.getItems().size() == 1) {
-            selectedLogin = loginTable.getItems().get(0);
-            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
-        } else {
-            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        }
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
@@ -277,15 +251,8 @@ public class TaxisViewController {
     }
 
     public void afm1Open(ActionEvent actionEvent) {
-        Logins selectedLogin;
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
 
-        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
-        if (loginTable.getItems().size() == 1) {
-            selectedLogin = loginTable.getItems().get(0);
-            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
-        } else {
-            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        }
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
@@ -307,15 +274,8 @@ public class TaxisViewController {
     }
 
     public void afm2Open(ActionEvent actionEvent) {
-        Logins selectedLogin;
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
 
-        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
-        if (loginTable.getItems().size() == 1) {
-            selectedLogin = loginTable.getItems().get(0);
-            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
-        } else {
-            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        }
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
@@ -337,15 +297,8 @@ public class TaxisViewController {
     }
 
     public void tameiakesOpen(ActionEvent actionEvent) {
-        Logins selectedLogin;
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
 
-        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
-        if (loginTable.getItems().size() == 1) {
-            selectedLogin = loginTable.getItems().get(0);
-            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
-        } else {
-            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        }
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));

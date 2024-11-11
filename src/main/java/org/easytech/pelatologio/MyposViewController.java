@@ -8,6 +8,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
@@ -57,6 +61,8 @@ public class MyposViewController {
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
         loginList.addAll(dbHelper.getLogins(customerId,1));
+        if (loginTable.getItems().size() == 1)
+            loginTable.getSelectionModel().select(0);
     }
     public void handleAddLogin(ActionEvent event) {
         try {
@@ -158,15 +164,8 @@ public class MyposViewController {
     }
 
     public void myposloginOpen(ActionEvent event) {
-        Logins selectedLogin;
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
 
-        // Έλεγχος αν ο πίνακας έχει μόνο μία εγγραφή
-        if (loginTable.getItems().size() == 1) {
-            selectedLogin = loginTable.getItems().get(0);
-            loginTable.getSelectionModel().select(0); // Επιλογή της μοναδικής εγγραφής
-        } else {
-            selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        }
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
@@ -189,14 +188,38 @@ public class MyposViewController {
 
     }
 
-    public void myposregisterOpen(ActionEvent actionEvent) {
+    public void myposregisterOpen(MouseEvent event) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         String myposRegister = AppSettings.loadSetting("myposlink");
 
-        try {
-            LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openPage(myposRegister);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
+            if (selectedLogin != null) {
+                String msg ="Στοιχεία myPOS" +
+                        "\nΕπωνυμία: " + customer.getName() +
+                        "\nΑΦΜ: " + customer.getAfm() +
+                        "\nEmail: " + selectedLogin.getUsername() +
+                        "\nΚωδικός: " + selectedLogin.getPassword() +
+                        "\nΚινητό: " + selectedLogin.getPhone();
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString(msg);  // Replace with the desired text
+                clipboard.setContent(content);
+                showAlert("Copied to Clipboard", msg);
+                } else {
+                showAlert("Attention", "Please select a login to copy.");
+            }
+        } else if (event.getButton() == MouseButton.PRIMARY) {
+            // Left-click for regular functionality
+            try {
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openPage(myposRegister);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (selectedLogin == null) {
+                Platform.runLater(() -> showAlert("Attention", "Please select a login."));
+                return;
+            }
         }
     }
 

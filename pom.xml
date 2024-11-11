@@ -6,7 +6,7 @@
 
     <groupId>org.easytech</groupId>
     <artifactId>Pelatologio</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.2.2</version>
     <name>Pelatologio</name>
 
     <properties>

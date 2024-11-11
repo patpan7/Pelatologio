@@ -54,7 +54,7 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
                             </Button>
-                            <Button mnemonicParsing="false" onAction="#myposregisterOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Εγγραφή myPOS">
+                            <Button mnemonicParsing="false" onMouseClicked="#myposregisterOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Εγγραφή myPOS">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>

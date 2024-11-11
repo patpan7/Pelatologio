@@ -1,6 +1,7 @@
 package org.easytech.pelatologio;
 
 import com.fasterxml.jackson.core.util.Instantiatable;
+import eu.hansolo.tilesfx.tools.DoubleExponentialSmoothingForLinearSeries;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
