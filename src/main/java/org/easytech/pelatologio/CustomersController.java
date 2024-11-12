@@ -438,8 +438,8 @@ public class CustomersController implements Initializable {
 
             dialog.setTitle("Κωδικοί Taxis");
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-
-            dialog.showAndWait();
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -468,8 +468,8 @@ public class CustomersController implements Initializable {
 
             dialog.setTitle("Κωδικοί myPOS");
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-
-            dialog.showAndWait();
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -498,8 +498,8 @@ public class CustomersController implements Initializable {
 
             dialog.setTitle("Κωδικοί Simply");
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-
-            dialog.showAndWait();
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
 
         } catch (IOException e) {
             e.printStackTrace();
