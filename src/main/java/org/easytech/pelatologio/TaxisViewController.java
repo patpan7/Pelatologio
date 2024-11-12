@@ -49,6 +49,12 @@ public class TaxisViewController {
         tagColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTag()));
 
         loginTable.setItems(loginList);
+
+        loginTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2){
+                handleEditLogin(null);
+            }
+        });
     }
 
     // Μέθοδος για τη φόρτωση των logins από τη βάση

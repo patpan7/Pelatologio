@@ -52,6 +52,12 @@ public class MyposViewController {
         phoneColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPhone()));
 
         loginTable.setItems(loginList);
+
+        loginTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2){
+                handleEditLogin(null);
+            }
+        });
     }
 
     // Μέθοδος για τη φόρτωση των logins από τη βάση

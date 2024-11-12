@@ -18,6 +18,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
 
 import java.awt.*;
 import java.io.File;
@@ -251,6 +252,7 @@ public class CustomersController implements Initializable {
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(loader.load());
                 dialog.setTitle("Ενημέρωση Πελάτη");
+                dialog.initModality(Modality.WINDOW_MODAL);
 
                 AddNewCustomerController controller = loader.getController();
 
@@ -277,15 +279,22 @@ public class CustomersController implements Initializable {
                     sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
                     customerTable.setItems(sortedData);
                 });
+
+                // Προσθήκη listener για το κλείσιμο του παραθύρου
+                dialog.setOnHidden(event -> {
+                    dbHelper.customerUnlock(selectedCustomer.getCode());
+                });
+
                 // Add a key listener to save when Enter is pressed
                 dialog.getDialogPane().setOnKeyPressed(event -> {
                     if (event.getCode() == KeyCode.ENTER) {
                         okButton.fire();  // Triggers the OK button action
                     }
                 });
-                dialog.showAndWait();
+                dialog.show();
+
                 //customerTable.getSelectionModel().clearSelection();
-                dbHelper.customerUnlock(selectedCustomer.getCode());
+
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Προσοχή");

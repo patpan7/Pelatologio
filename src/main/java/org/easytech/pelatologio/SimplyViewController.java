@@ -49,6 +49,12 @@ public class SimplyViewController {
 
         loginTable.setItems(loginList);
 
+        loginTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2){
+                handleEditLogin(null);
+            }
+        });
+
     }
 
     // Μέθοδος για τη φόρτωση των logins από τη βάση
@@ -195,14 +201,28 @@ public class SimplyViewController {
                         "\nEmail: "+selectedLogin.getUsername()+
                         "\nΚινητό: "+customer.getMobile()+
                         "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                ClipboardContent content = new ClipboardContent();
-                content.putString(msg);  // Replace with the desired text
-                clipboard.setContent(content);
-                showAlert("Copied to Clipboard", msg);
-                EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
-                emailSender.sendEmail(AppSettings.loadSetting("simplyRegisterMail"), "Νέος Πελάτης Simply Cash", msg);
-            } else {
+                // Δημιουργία παραθύρου διαλόγου για επιλογή
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Επιλογή Ενέργειας");
+                alert.setHeaderText("Επιλέξτε μια ενέργεια");
+                alert.setContentText("Θέλετε να αποστείλετε email ή να αντιγράψετε;");
+
+                // Προσθήκη κουμπιών επιλογής
+                ButtonType buttonEmail = new ButtonType("Αποστολή Email");
+                ButtonType buttonCopy = new ButtonType("Αντιγραφή");
+                ButtonType buttonCancel = new ButtonType("Ακύρωση", ButtonType.CANCEL.getButtonData());
+
+                alert.getButtonTypes().setAll(buttonEmail, buttonCopy, buttonCancel);
+
+                // Λήψη επιλογής χρήστη
+                alert.showAndWait().ifPresent(choice -> {
+                    if (choice == buttonEmail) {
+                        sendEmail("Νέος Πελάτης Simply Cash", msg);
+                    } else if (choice == buttonCopy) {
+                        copyTextToClipboard(msg);
+                    }
+                });
+               } else {
                 showAlert("Attention", "Please select a login to copy.");
             }
         } else if (event.getButton() == MouseButton.PRIMARY) { // Left-click for regular functionality
@@ -238,13 +258,27 @@ public class SimplyViewController {
                         "\nEmail: "+selectedLogin.getUsername()+
                         "\nΚινητό: "+customer.getMobile()+
                         "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                ClipboardContent content = new ClipboardContent();
-                content.putString(msg);  // Replace with the desired text
-                clipboard.setContent(content);
-                showAlert("Copied to Clipboard", msg);
-                EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
-                emailSender.sendEmail(AppSettings.loadSetting("simplyRegisterMail"), "Νέος Πελάτης Simply Rest", msg);
+                // Δημιουργία παραθύρου διαλόγου για επιλογή
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Επιλογή Ενέργειας");
+                alert.setHeaderText("Επιλέξτε μια ενέργεια");
+                alert.setContentText("Θέλετε να αποστείλετε email ή να αντιγράψετε;");
+
+                // Προσθήκη κουμπιών επιλογής
+                ButtonType buttonEmail = new ButtonType("Αποστολή Email");
+                ButtonType buttonCopy = new ButtonType("Αντιγραφή");
+                ButtonType buttonCancel = new ButtonType("Ακύρωση", ButtonType.CANCEL.getButtonData());
+
+                alert.getButtonTypes().setAll(buttonEmail, buttonCopy, buttonCancel);
+
+                // Λήψη επιλογής χρήστη
+                alert.showAndWait().ifPresent(choice -> {
+                    if (choice == buttonEmail) {
+                        sendEmail("Νέος Πελάτης Simply Rest", msg);
+                    } else if (choice == buttonCopy) {
+                        copyTextToClipboard(msg);
+                    }
+                });
             } else {
                 showAlert("Attention", "Please select a login to copy.");
             }
@@ -301,6 +335,23 @@ public class SimplyViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Μέθοδος αποστολής email
+    private void sendEmail(String subject, String msg) {
+        // Κώδικας για αποστολή email
+        EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
+        emailSender.sendEmail(AppSettings.loadSetting("simplyRegisterMail"), subject, msg);
+    }
+
+    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
+    private void copyTextToClipboard(String msg) {
+        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(msg);  // Replace with the desired text
+        clipboard.setContent(content);
+        showAlert("Copied to Clipboard", msg);
     }
 
 
