@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.ColorAdjust;
@@ -24,10 +25,15 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class CustomersController implements Initializable {
     @FXML
@@ -38,10 +44,13 @@ public class CustomersController implements Initializable {
     TableView<Customer> customerTable;
     @FXML
     TextField filterField;
+    @FXML
+    Button openFileButton;
 
     ObservableList<Customer> observableList;
     FilteredList<Customer> filteredData;
     DBHelper dbHelper;
+    private ContextMenu contextMenu = new ContextMenu();
 
 
     @Override
@@ -174,6 +183,38 @@ public class CustomersController implements Initializable {
         });
 
         customerTable.getSelectionModel().clearSelection();
+
+        openFileButton.setOnAction(event -> {
+            ContextMenu contextMenu = new ContextMenu();
+            File folder = new File(AppSettings.loadSetting("datafolder")+"\\Docs");
+
+            // Δημιουργία φακέλου αν δεν υπάρχει
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            // Δημιουργία MenuItem για κάθε αρχείο στον φάκελο
+            File[] files = folder.listFiles((dir, name) -> name.endsWith(".txt"));
+            if (files != null && files.length > 0) {
+                for (File file : files) {
+                    String displayName = file.getName().replace(".txt", "");
+                    MenuItem fileItem = new MenuItem(displayName);
+                    fileItem.setOnAction(e -> copyFileContentToClipboard(file));
+                    contextMenu.getItems().add(fileItem);
+                }
+            }
+
+            // Προσθήκη επιλογής για άνοιγμα του φακέλου
+            MenuItem openFolderItem = new MenuItem("Άνοιγμα φακέλου");
+            openFolderItem.setOnAction(e -> openFolder(AppSettings.loadSetting("datafolder")+"\\Docs"));
+            contextMenu.getItems().add(openFolderItem);
+
+            // Εμφάνιση του ContextMenu πάνω από το κουμπί
+            double buttonX = openFileButton.localToScene(openFileButton.getBoundsInLocal()).getMinX();
+            double buttonY = openFileButton.localToScene(openFileButton.getBoundsInLocal()).getMinY() - 2*openFileButton.getHeight();
+            contextMenu.show(openFileButton, openFileButton.getScene().getWindow().getX() + buttonX,
+                    openFileButton.getScene().getWindow().getY() + buttonY);
+        });
     }
 
 
@@ -525,6 +566,28 @@ public class CustomersController implements Initializable {
             ClipboardContent content = new ClipboardContent();
             content.putString(selectedCustomer.getMobile());  // Replace with the desired text
             clipboard.setContent(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Μέθοδος για αντιγραφή του περιεχομένου αρχείου στο πρόχειρο
+    private void copyFileContentToClipboard(File file) {
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+            javafx.scene.input.Clipboard clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
+            javafx.scene.input.ClipboardContent clipboardContent = new javafx.scene.input.ClipboardContent();
+            clipboardContent.putString(content);
+            clipboard.setContent(clipboardContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Μέθοδος για άνοιγμα του φακέλου
+    private void openFolder(String folderPath) {
+        try {
+            Desktop.getDesktop().open(new File(folderPath));
         } catch (IOException e) {
             e.printStackTrace();
         }

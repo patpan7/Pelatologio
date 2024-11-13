@@ -16,7 +16,7 @@ module org.easytech.pelatologio {
     requires org.seleniumhq.selenium.edge_driver;
     requires java.desktop;
     requires java.mail;
-    requires eu.hansolo.tilesfx;
+    //requires eu.hansolo.tilesfx;
 
     opens org.easytech.pelatologio to javafx.fxml;
     exports org.easytech.pelatologio;

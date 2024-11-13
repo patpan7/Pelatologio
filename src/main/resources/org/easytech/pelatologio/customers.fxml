@@ -149,6 +149,15 @@
                         </ImageView>
                     </graphic></Button>
                 <Separator visible="false" HBox.hgrow="ALWAYS" />
+                <Button fx:id="openFileButton" mnemonicParsing="false" styleClass="click-button" text="Data" HBox.hgrow="ALWAYS">
+                    <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@icons/document.png" />
+                            </image>
+                        </ImageView>
+                    </graphic></Button>
+                <Separator visible="false" HBox.hgrow="ALWAYS" />
             </children>
             <BorderPane.margin>
                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
