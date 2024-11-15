@@ -10,11 +10,13 @@ import javafx.scene.input.ClipboardContent;
 
 public class EditAddressController {
     @FXML
-    private TextField usernameField;
+    private TextField addressField;
     @FXML
-    private TextField passwordField;
+    private TextField townField;
     @FXML
-    private TextField phoneField;
+    private TextField postcodeField;
+    @FXML
+    private TextField storeField;
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
 
     private Address address;
@@ -27,9 +29,10 @@ public class EditAddressController {
         MenuItem pasteItem = new MenuItem("Επικόλληση");
         MenuItem clearItem = new MenuItem("Εκκαθάριση");
         contextMenu.getItems().addAll(copyItem, pasteItem, clearItem);
-        setupTextFieldContextMenu(usernameField, contextMenu);
-        setupTextFieldContextMenu(passwordField, contextMenu);
-        setupTextFieldContextMenu(phoneField, contextMenu);
+        setupTextFieldContextMenu(addressField, contextMenu);
+        setupTextFieldContextMenu(townField, contextMenu);
+        setupTextFieldContextMenu(postcodeField, contextMenu);
+        setupTextFieldContextMenu(storeField, contextMenu);
 
         copyItem.setOnAction(e -> copyText());
         pasteItem.setOnAction(e -> pasteText());
@@ -65,20 +68,20 @@ public class EditAddressController {
     }
 
     // Μέθοδος για να ρυθμίσεις το login προς επεξεργασία
-    public void setLogin(Logins login) {
-        this.login = login;
-        usernameField.setText(login.getUsername());
-        passwordField.setText(login.getPassword());
-        tagField.setValue(login.getTag());
-        phoneField.setText(login.getPhone());
+    public void setAddress(Address address) {
+        this.address = address;
+        addressField.setText(address.getAddress());
+        townField.setText(address.getTown());
+        postcodeField.setText(address.getPostcode());
+        storeField.setText(address.getStore());
     }
 
     // Επιστρέφει το επεξεργασμένο login
-    public Logins getUpdatedLogin() {
-        login.setUsername(usernameField.getText());
-        login.setPassword(passwordField.getText());
-        login.setTag(tagField.getValue().toString());
-        login.setPhone(phoneField.getText());
-        return login;
+    public Address getUpdatedAddress() {
+        address.setAddress(addressField.getText());
+        address.setTown(townField.getText());
+        address.setPostcode(postcodeField.getText());
+        address.setStore(storeField.getText());
+        return address;
     }
 }

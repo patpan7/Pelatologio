@@ -3,28 +3,28 @@ package org.easytech.pelatologio;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.stage.Modality;
 
 import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class AddNewCustomerController {
 
@@ -40,9 +40,16 @@ public class AddNewCustomerController {
     int code = 0;
 
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
+    private Customer customer;
 
     public void initialize() {
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
+//        DBHelper dbHelper = new DBHelper();
+//        if (dbHelper.hasSubAddress(customer.getCode())) {
+//            btnAddressAdd.setDisable(false);
+//            btnAddressAdd.setBorder(new Border(new BorderStroke(javafx.scene.paint.Color.GREEN, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+//            System.out.println("Έχει υποδιεύθυνση");
+//        } else
         btnAddressAdd.setDisable(true);
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
@@ -212,8 +219,15 @@ public class AddNewCustomerController {
         tfManager.setText(customer.getManager());
         tfManagerPhone.setText(customer.getManagerPhone());
         btnAddressAdd.setDisable(false);
+        DBHelper dbHelper = new DBHelper();
+        if (dbHelper.hasSubAddress(customer.getCode())) {
+            System.out.println("Έχει υποδιεύθυνση");
+            btnAddressAdd.setStyle("-fx-border-color: #FF0000;");
+        }
+
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = customer.getCode();
+        this.customer = customer;
     }
 
 
@@ -317,4 +331,32 @@ public class AddNewCustomerController {
         alert.showAndWait();
     }
 
+    public void addAddress(ActionEvent event) {
+        if (tfAddress.getText() == null || tfAddress.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Προσοχή");
+            alert.setContentText("Δεν υπάρχει κεντρική διεύθυνση!");
+            Optional<ButtonType> result = alert.showAndWait();
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addressView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+            // Τώρα μπορείς να πάρεις τον controller
+            AddressViewController controller = loader.getController();
+
+            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+            controller.setCustomer(customer);
+
+            dialog.setTitle("Διευθύνσεις πελάτη");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

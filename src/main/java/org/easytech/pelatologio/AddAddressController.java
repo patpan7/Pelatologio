@@ -73,7 +73,7 @@ public class AddAddressController {
 
     // Μέθοδος για την αποθήκευση του νέου login
     @FXML
-    public void handleSaveLogin(ActionEvent event, int appicationId) {
+    public void handleSaveAddress(ActionEvent event) {
         String address = addressField.getText();
         String town = townField.getText();
         String postcode = postcodeField.getText();

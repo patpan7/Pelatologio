@@ -76,8 +76,8 @@ public class AddressViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addAddress.fxml"));
             DialogPane dialogPane = loader.load();
 
-            AddLoginController addLoginController = loader.getController();
-            addLoginController.setCustomer(customer); // Ορίζει τον πελάτη
+            AddAddressController addAddressController = loader.getController();
+            addAddressController.setCustomer(customer); // Ορίζει τον πελάτη
 
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(dialogPane);
@@ -87,7 +87,7 @@ public class AddressViewController {
             // Όταν ο χρήστης πατά το OK, θα καλέσει τη μέθοδο για αποθήκευση
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton == ButtonType.OK) {
-                    addLoginController.handleSaveLogin(event,1);
+                    addAddressController.handleSaveAddress(event);
                 }
                 return null;
             });
@@ -119,7 +119,7 @@ public class AddressViewController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Διαγραφή από τη βάση
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteLogin(selectedAddress.getAddressId());
+            dbHelper.deleteAddress(selectedAddress.getAddressId());
 
             // Διαγραφή από τη λίστα και ενημέρωση του πίνακα
             addressTable.getItems().remove(selectedAddress);
@@ -136,27 +136,27 @@ public class AddressViewController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("addAddress.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("editAddress.fxml"));
             DialogPane dialogPane = loader.load();
 
             EditAddressController editController = loader.getController();
-            editController.setLogin(selectedAddress);
+            editController.setAddress(selectedAddress);
 
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(dialogPane);
-            dialog.setTitle("Επεξεργασία Login");
+            dialog.setTitle("Επεξεργασία διεύθυνσης");
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
             Optional<ButtonType> result = dialog.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                Logins updatedLogin = editController.getUpdatedLogin();
+                Address updatedAddress = editController.getUpdatedAddress();
 
                 // Ενημέρωση της βάσης
                 DBHelper dbHelper = new DBHelper();
-                dbHelper.updateLogin(updatedLogin);
+                dbHelper.updateAddress(updatedAddress);
 
                 // Ενημέρωση του πίνακα
-                loginTable.refresh();
+                addressTable.refresh();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -166,67 +166,7 @@ public class AddressViewController {
     public void setCustomer(Customer customer) {
         this.customer = customer;
         customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
-        loadLoginsForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
-    }
-
-    public void myposloginOpen(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
-            return;
-        }
-        try {
-            LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openAndFillLoginForm(
-                    "https://www.mypos.com/el/login",
-                    selectedLogin.getUsername(),
-                    selectedLogin.getPassword(),
-                    By.id("email"),
-                    By.id("password"),
-                    By.cssSelector("button[data-testid='mypos_login_btn']")
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void myposregisterOpen(MouseEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        String myposRegister = AppSettings.loadSetting("myposlink");
-
-        if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
-            if (selectedLogin != null) {
-                String msg ="Στοιχεία myPOS" +
-                        "\nΕπωνυμία: " + customer.getName() +
-                        "\nΑΦΜ: " + customer.getAfm() +
-                        "\nEmail: " + selectedLogin.getUsername() +
-                        "\nΚωδικός: " + selectedLogin.getPassword() +
-                        "\nΚινητό: " + selectedLogin.getPhone();
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                ClipboardContent content = new ClipboardContent();
-                content.putString(msg);  // Replace with the desired text
-                clipboard.setContent(content);
-                showAlert("Copied to Clipboard", msg);
-            } else {
-                showAlert("Attention", "Please select a login to copy.");
-            }
-        } else if (event.getButton() == MouseButton.PRIMARY) {
-            // Left-click for regular functionality
-            try {
-                LoginAutomator loginAutomation = new LoginAutomator(true);
-                loginAutomation.openPage(myposRegister);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (selectedLogin == null) {
-                Platform.runLater(() -> showAlert("Attention", "Please select a login."));
-                return;
-            }
-        }
+        loadAddressForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
     }
 
 

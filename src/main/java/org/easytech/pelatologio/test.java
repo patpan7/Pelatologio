@@ -17,4 +17,34 @@ public class test {
 
         emailSender.sendEmail(recipient, subject, messageContent);
     }
+
+//    USE [Pelatologio]
+//    GO
+//
+//    /****** Object:  Table [dbo].[CustomerAddresses]    Script Date: 16/11/2024 12:24:49 πμ ******/
+//    SET ANSI_NULLS ON
+//            GO
+//
+//    SET QUOTED_IDENTIFIER ON
+//            GO
+//
+//    CREATE TABLE [dbo].[CustomerAddresses](
+//            [AddressID] [int] IDENTITY(1,1) NOT NULL,
+//	[CustomerID] [int] NOT NULL,
+//	[Address] [nvarchar](255) NULL,
+//            [Town] [nvarchar](255) NULL,
+//            [Postcode] [nvarchar](20) NULL,
+//            [Store] [nvarchar](255) NULL,
+//    PRIMARY KEY CLUSTERED
+//            (
+//	[AddressID] ASC
+//            )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+//            ) ON [PRIMARY]
+//    GO
+//
+//    ALTER TABLE [dbo].[CustomerAddresses]  WITH CHECK ADD FOREIGN KEY([CustomerID])
+//    REFERENCES [dbo].[Customers] ([code])
+//    GO
+//
+
 }

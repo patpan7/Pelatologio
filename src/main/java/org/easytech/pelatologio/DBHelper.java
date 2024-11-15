@@ -335,7 +335,7 @@ public class DBHelper {
     }
 
     public void insertAdditionalAddress(int customerId, String address, String city, String postalCode) {
-        String sql = "INSERT INTO CustomerAddresses (CustomerID, Address, City, PostalCode) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO CustomerAddresses (CustomerID, Address, Town, Postcode) VALUES (?, ?, ?, ?)";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, customerId);
@@ -383,17 +383,63 @@ public class DBHelper {
     }
 
     public void addAddress(int code, Address newAddress) {
-        String sql = "INSERT INTO CustomerAddresses (CustomerID, Address, City, Postcode, Store) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO CustomerAddresses (CustomerID, Address, Town, Postcode, Store) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, code);
             statement.setString(2, newAddress.getAddress());
             statement.setString(3, newAddress.getTown());
             statement.setString(4, newAddress.getPostcode());
-            statement.setString(4, newAddress.getStore());
+            statement.setString(5, newAddress.getStore());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void updateAddress(Address updatedAddress) {
+        String query = "UPDATE CustomerAddresses SET Address = ?, Town = ?, Postcode = ?, Store = ? WHERE AddressID = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, updatedAddress.getAddress());
+            pstmt.setString(2, updatedAddress.getTown());
+            pstmt.setString(3, updatedAddress.getPostcode());
+            pstmt.setString(4, updatedAddress.getStore());
+            pstmt.setInt(5, updatedAddress.getAddressId());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteAddress(int addressId) {
+        String query = "DELETE FROM CustomerAddresses WHERE addressID = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, addressId);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean hasSubAddress(int code) {
+        String query = "SELECT COUNT(*) FROM CustomerAddresses WHERE CustomerID = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, code);
+            pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
