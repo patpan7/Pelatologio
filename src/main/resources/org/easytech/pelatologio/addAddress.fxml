@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddAddressController">
+    <content>
+        <VBox alignment="CENTER">
+            <Label styleClass="normal-label" text="Προσθήκη Νέας διεύθυνσης" />
+            <TextField fx:id="addressField" promptText="Διεύθυνση">
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </VBox.margin>
+            </TextField>
+            <TextField fx:id="townField" accessibleRole="TEXT_FIELD" promptText="Πόλη">
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </VBox.margin>
+            </TextField>
+            <TextField fx:id="postcodeField" promptText="T.K.">
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </VBox.margin>
+            </TextField>
+            <TextField fx:id="storeField" promptText="Υποκατάστημα">
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </VBox.margin>
+            </TextField>
+        </VBox>
+    </content>
+</DialogPane>

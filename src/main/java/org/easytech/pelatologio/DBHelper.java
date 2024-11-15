@@ -349,7 +349,7 @@ public class DBHelper {
     }
 
     public List<Address> getCustomerAddresses(int customerId) {
-        String sql = "SELECT AddressID, Address, City, PostalCode FROM CustomerAddresses WHERE CustomerID = ?";
+        String sql = "SELECT * FROM CustomerAddresses WHERE CustomerID = ?";
         List<Address> addresses = new ArrayList<>();
 
 
@@ -362,10 +362,17 @@ public class DBHelper {
             while (rs.next()) {
                 int addressId = rs.getInt("AddressID");
                 String address = rs.getString("Address");
-                String city = rs.getString("City");
-                String postalCode = rs.getString("PostalCode");
+                String town = rs.getString("Town");
+                String postcode = rs.getString("Postcode");
+                String store = rs.getString("Store");
 
-                addresses.add(new Address(addressId, address, city, postalCode));
+                Address newAddress = new Address();
+                newAddress.setAddressId(addressId);
+                newAddress.setAddress(address);
+                newAddress.setTown(town);
+                newAddress.setPostcode(postcode);
+                newAddress.setStore(store);
+                addresses.add(newAddress);
             }
 
         } catch (SQLException e) {
@@ -375,4 +382,18 @@ public class DBHelper {
         return addresses;
     }
 
+    public void addAddress(int code, Address newAddress) {
+        String sql = "INSERT INTO CustomerAddresses (CustomerID, Address, City, Postcode, Store) VALUES (?, ?, ?, ?, ?)";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, code);
+            statement.setString(2, newAddress.getAddress());
+            statement.setString(3, newAddress.getTown());
+            statement.setString(4, newAddress.getPostcode());
+            statement.setString(4, newAddress.getStore());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

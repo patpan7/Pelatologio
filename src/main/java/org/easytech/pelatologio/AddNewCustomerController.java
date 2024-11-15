@@ -36,16 +36,14 @@ public class AddNewCustomerController {
     Button btnAddressAdd;
     @FXML
     private ProgressIndicator progressIndicator;
-    @FXML
-    private VBox addressBox;
+
     int code = 0;
 
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
 
     public void initialize() {
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
-        btnAddressAdd.setOnAction(event -> addAddress(null,"","",""));
-
+        btnAddressAdd.setDisable(true);
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
         MenuItem copyItem = new MenuItem("Αντιγραφή");
@@ -80,6 +78,7 @@ public class AddNewCustomerController {
         setupTextFieldContextMenu(tfMobile, phoneContextMenu);
         setupTextFieldContextMenu(tfAddress, contextMenu);
         setupTextFieldContextMenu(tfTown, contextMenu);
+        setupTextFieldContextMenu(tfPostCode,contextMenu);
         setupTextFieldContextMenu(tfManager, contextMenu);
         setupTextFieldContextMenu(tfManagerPhone, phoneContextMenu);
 
@@ -212,17 +211,9 @@ public class AddNewCustomerController {
         tfEmail.setText(customer.getEmail());
         tfManager.setText(customer.getManager());
         tfManagerPhone.setText(customer.getManagerPhone());
-
+        btnAddressAdd.setDisable(false);
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = customer.getCode();
-
-        DBHelper dbHelper = new DBHelper();
-        List<Address> addresses = dbHelper.getCustomerAddresses(customer.getCode());
-        if (addresses != null && !addresses.isEmpty()) {
-            for (Address address : addresses) {
-                addAddress(null, address.getAddress(), address.getCity(), address.getPostalCode());
-            }
-        }
     }
 
 
@@ -295,49 +286,6 @@ public class AddNewCustomerController {
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
             int customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, manager, managerPhone);
-
-            // Συλλογή πρόσθετων διευθύνσεων από τα δυναμικά πεδία
-            List<Map<String, String>> additionalAddresses = new ArrayList<>();
-            for (Node node : addressBox.getChildren()) {
-                if (node instanceof HBox) {
-                    HBox hbox = (HBox) node;
-                    String address = null;
-                    String city = null;
-                    String postalCode = null;
-
-                    // Διατρέχουμε τα παιδιά του HBox για να βρούμε τα TextField με τις διευθύνσεις, πόλεις και ΤΚ
-                    for (Node innerNode : hbox.getChildren()) {
-                        if (innerNode instanceof TextField) {
-                            TextField textField = (TextField) innerNode;
-                            if (textField.getPromptText().contains("Διεύθυνση")) {
-                                address = textField.getText().trim();
-                            } else if (textField.getPromptText().contains("Πόλη")) {
-                                city = textField.getText().trim();
-                            } else if (textField.getPromptText().contains("ΤΚ")) {
-                                postalCode = textField.getText().trim();
-                            }
-                        }
-                    }
-
-                    // Εάν όλα τα πεδία είναι γεμάτα, προσθέτουμε το νέο σετ
-                    if (address != null && !address.isEmpty() && city != null && !city.isEmpty() && postalCode != null && !postalCode.isEmpty()) {
-                        Map<String, String> addressData = new HashMap<>();
-                        addressData.put("address", address);
-                        addressData.put("city", city);
-                        addressData.put("postcode", postalCode);
-                        additionalAddresses.add(addressData);
-                    }
-                }
-            }
-
-            // Εισαγωγή των πρόσθετων διευθύνσεων στον πίνακα CustomerAddresses
-            for (Map<String, String> addressData : additionalAddresses) {
-                String address = addressData.get("address");
-                String city = addressData.get("city");
-                String postalCode = addressData.get("postcode");
-                dbHelper.insertAdditionalAddress(customerId, address, city, postalCode);
-            }
-
             // Εμφάνιση επιτυχίας
             Platform.runLater(() -> showAlert("Επιτυχία", "Ο πελάτης εισήχθη με επιτυχία στη βάση δεδομένων."));
         }
@@ -368,54 +316,5 @@ public class AddNewCustomerController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-    public void addAddress(ActionEvent event, String address, String city, String postcode) {
-        // Δημιουργία πεδίων για διεύθυνση, πόλη και ΤΚ
-        Label newAddressLabel = new Label("Νέα Διεύθυνση:");
-        newAddressLabel.setFont(new javafx.scene.text.Font(16));
-
-        TextField newAddressField = new TextField();
-        newAddressField.setFont(tfAddress.getFont());
-        if (!address.isEmpty()) {
-            newAddressField.setText(address);
-        }
-        newAddressField.setPromptText("Νέα Διεύθυνση");
-
-        TextField newCityField = new TextField();
-        newCityField.setFont(tfTown.getFont());
-        if (!city.isEmpty()) {
-            newCityField.setText(city);
-        }
-        newCityField.setPromptText("Νέα Πόλη");
-        newCityField.setMaxWidth(150);
-
-        TextField newPostalCodeField = new TextField();
-        newPostalCodeField.setFont(tfPostCode.getFont());
-        if (!postcode.isEmpty()) {
-            newPostalCodeField.setText(postcode);
-        }
-        newPostalCodeField.setPromptText("Νέος ΤΚ");
-        newPostalCodeField.setMaxWidth(130);
-
-        // Δημιουργία ενός HBox για το σετ διεύθυνσης, πόλης, ΤΚ και το κουμπί αφαίρεσης
-        HBox newAddressSet = new HBox(10); // 10px κενό μεταξύ των στοιχείων
-        newAddressSet.getChildren().addAll(newAddressLabel, newAddressField, newCityField, newPostalCodeField);
-        newAddressSet.setAlignment(Pos.CENTER);  // Στοίχιση στο κέντρο οριζόντια
-
-        // Δημιουργία κουμπιού διαγραφής
-        Button deleteButton = new Button("X");
-        deleteButton.setOnAction(e -> addressBox.getChildren().remove(newAddressSet));
-
-        // Προσθήκη του κουμπιού αφαίρεσης στο HBox
-        newAddressSet.getChildren().add(deleteButton);
-
-        // Δημιουργία margin γύρω από το νέο HBox
-        VBox.setMargin(newAddressSet, new javafx.geometry.Insets(5, 0, 5, 0));
-        VBox.setVgrow(newAddressSet, Priority.ALWAYS);
-
-        // Προσθήκη του νέου σετ στο VBox (addressBox)
-        addressBox.getChildren().add(newAddressSet);
-    }
-
 
 }
