@@ -15,6 +15,7 @@ public class AfmResponseParser {
 
     public static Customer parseResponse(String responseXml) {
         try {
+            System.out.println(responseXml);
             // Φόρτωση της XML από το response
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -31,10 +32,11 @@ public class AfmResponseParser {
             String postalAddress = getXPathValue(document, xpath, "//basic_rec/postal_address");
             String postalAddressNo = getXPathValue(document, xpath, "//basic_rec/postal_address_no");
             String postalAreaDescription = getXPathValue(document, xpath, "//basic_rec/postal_area_description");
+            String tk = getXPathValue(document, xpath, "//basic_rec/postal_zip_code");
             String epaggelma = getXPathValue(document, xpath, "//firm_act_tab/item/firm_act_descr");
 
             // Επιστροφή των πληροφοριών σε αντικείμενο
-            return new Customer(onomasia, commerTitle, epaggelma, afm, "", "", "", postalAddress + " " + postalAddressNo, postalAreaDescription, "");
+            return new Customer(onomasia, commerTitle, epaggelma, afm, "", "", "", postalAddress + " " + postalAddressNo, postalAreaDescription, tk,"");
 
         } catch (Exception e) {
             e.printStackTrace();

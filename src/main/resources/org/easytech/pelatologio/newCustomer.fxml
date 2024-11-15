@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<DialogPane prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddNewCustomerController">
+<DialogPane expanded="true" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddNewCustomerController">
     <content>
         <VBox alignment="CENTER">
             <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
@@ -90,9 +90,9 @@
                             <Image url="@icons/Search.png" />
                         </ImageView>
                     </graphic>
-               <HBox.margin>
-                  <Insets left="5.0" />
-               </HBox.margin>
+                    <HBox.margin>
+                        <Insets left="5.0" />
+                    </HBox.margin>
                 </Button>
             </HBox>
             <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
@@ -170,6 +170,16 @@
                         <Font size="24.0" />
                     </font>
                 </TextField>
+                <Button fx:id="btnAddressAdd" mnemonicParsing="false" styleClass="click-button">
+                    <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@icons/add.png" />
+                        </ImageView>
+                    </graphic>
+                    <HBox.margin>
+                        <Insets left="5.0" />
+                    </HBox.margin>
+                </Button>
             </HBox>
             <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                 <VBox.margin>
@@ -189,7 +199,24 @@
                         <Font size="24.0" />
                     </font>
                 </TextField>
+            <Label layoutX="10.0" layoutY="18.0" styleClass="normal-label" text="T.K.:">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <padding>
+                  <Insets left="20.0" right="10.0" />
+               </padding>
+            </Label>
+            <TextField fx:id="tfPostCode" layoutX="215.0" layoutY="10.0" prefHeight="51.0" prefWidth="130.0" text="123456">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </TextField>
             </HBox>
+            <VBox fx:id="addressBox" alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" VBox.vgrow="ALWAYS">
+            <VBox.margin>
+               <Insets />
+            </VBox.margin></VBox>
             <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

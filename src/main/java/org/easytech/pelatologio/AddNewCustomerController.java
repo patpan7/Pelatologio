@@ -1,32 +1,50 @@
 package org.easytech.pelatologio;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
+import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AddNewCustomerController {
 
     @FXML
-    private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfEmail,tfManager, tfManagerPhone;
+    private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail,tfManager, tfManagerPhone;
     @FXML
     private Button btnAfmSearch;
     @FXML
+    Button btnAddressAdd;
+    @FXML
     private ProgressIndicator progressIndicator;
+    @FXML
+    private VBox addressBox;
     int code = 0;
 
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
 
     public void initialize() {
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
+        btnAddressAdd.setOnAction(event -> addAddress(null,"","",""));
 
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
@@ -190,12 +208,21 @@ public class AddNewCustomerController {
         tfMobile.setText(customer.getMobile());
         tfAddress.setText(customer.getAddress());
         tfTown.setText(customer.getTown());
+        tfPostCode.setText(customer.getPostcode());
         tfEmail.setText(customer.getEmail());
         tfManager.setText(customer.getManager());
         tfManagerPhone.setText(customer.getManagerPhone());
 
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = customer.getCode();
+
+        DBHelper dbHelper = new DBHelper();
+        List<Address> addresses = dbHelper.getCustomerAddresses(customer.getCode());
+        if (addresses != null && !addresses.isEmpty()) {
+            for (Address address : addresses) {
+                addAddress(null, address.getAddress(), address.getCity(), address.getPostalCode());
+            }
+        }
     }
 
 
@@ -203,12 +230,9 @@ public class AddNewCustomerController {
         tfName.setText("");
         tfTitle.setText("");
         tfJob.setText("");
-        tfPhone1.setText("");
-        tfPhone2.setText("");
-        tfMobile.setText("");
         tfAddress.setText("");
         tfTown.setText("");
-        tfEmail.setText("");
+        tfPostCode.setText("");
         String afm = tfAfm.getText();
         if (afm == null || afm.isEmpty()) {
             Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο ΑΦΜ."));
@@ -233,6 +257,7 @@ public class AddNewCustomerController {
             tfJob.setText(companyInfo.getJob());
             tfAddress.setText(companyInfo.getAddress());
             tfTown.setText(companyInfo.getTown());
+            tfPostCode.setText(companyInfo.getPostcode());
         } else {
             Platform.runLater(() -> showAlert("Προσοχή", "Σφάλμα κατά την ανάγνωση των δεδομένων."));
         }
@@ -250,22 +275,70 @@ public class AddNewCustomerController {
     void addCustomer() {
         String name = tfName.getText();
         String title = tfTitle.getText();
-        String job = tfJob.getText();
+        String job = tfJob.getText().substring(0, Math.min(tfJob.getText().length(), 255));
         String afm = tfAfm.getText();
         String phone1 = tfPhone1.getText();
         String phone2 = tfPhone2.getText();
         String mobile = tfMobile.getText();
-        String address = tfAddress.getText();
+        String primaryAddress = tfAddress.getText();  // Πρώτη διεύθυνση
         String town = tfTown.getText();
+        String postcode = tfPostCode.getText();
         String email = tfEmail.getText();
         String manager = tfManager.getText();
         String managerPhone = tfManagerPhone.getText();
+
         DBHelper dbHelper = new DBHelper();
+
+        // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         if (dbHelper.isAfmExists(afm)) {
             Platform.runLater(() -> showAlert("Προσοχή", "Ο πελάτης με ΑΦΜ " + afm + " υπάρχει ήδη."));
-
         } else {
-            dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, address, town, email, manager, managerPhone);
+            // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
+            int customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, manager, managerPhone);
+
+            // Συλλογή πρόσθετων διευθύνσεων από τα δυναμικά πεδία
+            List<Map<String, String>> additionalAddresses = new ArrayList<>();
+            for (Node node : addressBox.getChildren()) {
+                if (node instanceof HBox) {
+                    HBox hbox = (HBox) node;
+                    String address = null;
+                    String city = null;
+                    String postalCode = null;
+
+                    // Διατρέχουμε τα παιδιά του HBox για να βρούμε τα TextField με τις διευθύνσεις, πόλεις και ΤΚ
+                    for (Node innerNode : hbox.getChildren()) {
+                        if (innerNode instanceof TextField) {
+                            TextField textField = (TextField) innerNode;
+                            if (textField.getPromptText().contains("Διεύθυνση")) {
+                                address = textField.getText().trim();
+                            } else if (textField.getPromptText().contains("Πόλη")) {
+                                city = textField.getText().trim();
+                            } else if (textField.getPromptText().contains("ΤΚ")) {
+                                postalCode = textField.getText().trim();
+                            }
+                        }
+                    }
+
+                    // Εάν όλα τα πεδία είναι γεμάτα, προσθέτουμε το νέο σετ
+                    if (address != null && !address.isEmpty() && city != null && !city.isEmpty() && postalCode != null && !postalCode.isEmpty()) {
+                        Map<String, String> addressData = new HashMap<>();
+                        addressData.put("address", address);
+                        addressData.put("city", city);
+                        addressData.put("postcode", postalCode);
+                        additionalAddresses.add(addressData);
+                    }
+                }
+            }
+
+            // Εισαγωγή των πρόσθετων διευθύνσεων στον πίνακα CustomerAddresses
+            for (Map<String, String> addressData : additionalAddresses) {
+                String address = addressData.get("address");
+                String city = addressData.get("city");
+                String postalCode = addressData.get("postcode");
+                dbHelper.insertAdditionalAddress(customerId, address, city, postalCode);
+            }
+
+            // Εμφάνιση επιτυχίας
             Platform.runLater(() -> showAlert("Επιτυχία", "Ο πελάτης εισήχθη με επιτυχία στη βάση δεδομένων."));
         }
     }
@@ -273,18 +346,19 @@ public class AddNewCustomerController {
     void updateCustomer() {
         String name = tfName.getText();
         String title = tfTitle.getText();
-        String job = tfJob.getText();
+        String job = tfJob.getText().substring(0, Math.min(tfJob.getText().length(), 255));
         String afm = tfAfm.getText();
         String phone1 = tfPhone1.getText();
         String phone2 = tfPhone2.getText();
         String mobile = tfMobile.getText();
         String address = tfAddress.getText();
         String town = tfTown.getText();
+        String posCode = tfPostCode.getText();
         String email = tfEmail.getText();
         String manager = tfManager.getText();
         String managerPhone = tfManagerPhone.getText();
         DBHelper dbHelper = new DBHelper();
-        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, email, manager, managerPhone);
+        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, manager, managerPhone);
         showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
     }
 
@@ -294,5 +368,54 @@ public class AddNewCustomerController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    public void addAddress(ActionEvent event, String address, String city, String postcode) {
+        // Δημιουργία πεδίων για διεύθυνση, πόλη και ΤΚ
+        Label newAddressLabel = new Label("Νέα Διεύθυνση:");
+        newAddressLabel.setFont(new javafx.scene.text.Font(16));
+
+        TextField newAddressField = new TextField();
+        newAddressField.setFont(tfAddress.getFont());
+        if (!address.isEmpty()) {
+            newAddressField.setText(address);
+        }
+        newAddressField.setPromptText("Νέα Διεύθυνση");
+
+        TextField newCityField = new TextField();
+        newCityField.setFont(tfTown.getFont());
+        if (!city.isEmpty()) {
+            newCityField.setText(city);
+        }
+        newCityField.setPromptText("Νέα Πόλη");
+        newCityField.setMaxWidth(150);
+
+        TextField newPostalCodeField = new TextField();
+        newPostalCodeField.setFont(tfPostCode.getFont());
+        if (!postcode.isEmpty()) {
+            newPostalCodeField.setText(postcode);
+        }
+        newPostalCodeField.setPromptText("Νέος ΤΚ");
+        newPostalCodeField.setMaxWidth(130);
+
+        // Δημιουργία ενός HBox για το σετ διεύθυνσης, πόλης, ΤΚ και το κουμπί αφαίρεσης
+        HBox newAddressSet = new HBox(10); // 10px κενό μεταξύ των στοιχείων
+        newAddressSet.getChildren().addAll(newAddressLabel, newAddressField, newCityField, newPostalCodeField);
+        newAddressSet.setAlignment(Pos.CENTER);  // Στοίχιση στο κέντρο οριζόντια
+
+        // Δημιουργία κουμπιού διαγραφής
+        Button deleteButton = new Button("X");
+        deleteButton.setOnAction(e -> addressBox.getChildren().remove(newAddressSet));
+
+        // Προσθήκη του κουμπιού αφαίρεσης στο HBox
+        newAddressSet.getChildren().add(deleteButton);
+
+        // Δημιουργία margin γύρω από το νέο HBox
+        VBox.setMargin(newAddressSet, new javafx.geometry.Insets(5, 0, 5, 0));
+        VBox.setVgrow(newAddressSet, Priority.ALWAYS);
+
+        // Προσθήκη του νέου σετ στο VBox (addressBox)
+        addressBox.getChildren().add(newAddressSet);
+    }
+
 
 }

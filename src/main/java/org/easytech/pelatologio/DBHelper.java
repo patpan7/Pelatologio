@@ -56,6 +56,7 @@ public class DBHelper {
                 data.setMobile(resultSet.getString("mobile"));
                 data.setAddress(resultSet.getString("address"));
                 data.setTown(resultSet.getString("town"));
+                data.setPostcode(resultSet.getString("postcode"));
                 data.setEmail(resultSet.getString("email"));
                 data.setManager(resultSet.getString("manager"));
                 data.setManagerPhone(resultSet.getString("managerPhone"));
@@ -83,14 +84,14 @@ public class DBHelper {
         return false;
     }
 
-    public void insertCustomer(String name, String title, String job, String afm, String phone1,
-                               String phone2, String mobile, String address,
-                               String town, String email, String manager, String managerPhone) {
-        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, email, manager, managerPhone) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+    public int insertCustomer(String name, String title, String job, String afm, String phone1,
+                              String phone2, String mobile, String address,
+                              String town, String postcode, String email, String manager, String managerPhone) {
+        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, manager, managerPhone) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        int newCustomerId = -1; // Default value for error handling
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
+             PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, name);
             pstmt.setString(2, title);
@@ -101,23 +102,32 @@ public class DBHelper {
             pstmt.setString(7, mobile);
             pstmt.setString(8, address);
             pstmt.setString(9, town);
-            pstmt.setString(10, email);
-            pstmt.setString(11, manager);
-            pstmt.setString(12, managerPhone);
+            pstmt.setString(10, postcode);
+            pstmt.setString(11, email);
+            pstmt.setString(12, manager);
+            pstmt.setString(13, managerPhone);
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("Η εισαγωγή του πελάτη ήταν επιτυχής.");
-                closeConnection(conn);
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        newCustomerId = generatedKeys.getInt(1);
+                    }
+                }
+            } else {
+                System.out.println("Η εισαγωγή του πελάτη απέτυχε.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Σφάλμα κατά την εισαγωγή του πελάτη: " + e.getMessage());
         }
+
+        return newCustomerId; // Επιστρέφει το CustomerID ή -1 αν υπήρξε σφάλμα
     }
 
-    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String email, String manager, String managerPhone) {
+    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String manager, String managerPhone) {
         String sql = "UPDATE customers SET name = ?, title = ?, job = ?,afm = ?, phone1 = ?, " +
-                "phone2 = ?, mobile = ?, address = ?, town = ?, email = ?, manager = ?, managerPhone = ? WHERE code = ?";
+                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, manager = ?, managerPhone = ? WHERE code = ?";
 
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -130,10 +140,11 @@ public class DBHelper {
             pstmt.setString(7, mobile);
             pstmt.setString(8, address);
             pstmt.setString(9, town);
-            pstmt.setString(10, email);
-            pstmt.setString(11, manager);
-            pstmt.setString(12, managerPhone);
-            pstmt.setInt(13, code);
+            pstmt.setString(10, postcode);
+            pstmt.setString(11, email);
+            pstmt.setString(12, manager);
+            pstmt.setString(13, managerPhone);
+            pstmt.setInt(14, code);
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -148,7 +159,7 @@ public class DBHelper {
 
     }
 
-    public String checkCustomerLock(int code, String appUser){
+    public String checkCustomerLock(int code, String appUser) {
         String checkLockQuery = "SELECT locked_by FROM Customers WHERE code = ?";
         try {
             Connection conn = getConnection();
@@ -161,7 +172,7 @@ public class DBHelper {
                 if (lockedBy != null && !lockedBy.equals(appUser)) {
                     // Εμφανίζεις μήνυμα ότι η εγγραφή είναι κλειδωμένη
                     //System.out.println("Η εγγραφή αυτή είναι ήδη κλειδωμένη από χρήστη "+lockedBy);
-                    return "Η εγγραφή αυτή είναι ήδη κλειδωμένη από τον χρήστη "+lockedBy;
+                    return "Η εγγραφή αυτή είναι ήδη κλειδωμένη από τον χρήστη " + lockedBy;
                 }
             }
         } catch (SQLException e) {
@@ -170,7 +181,7 @@ public class DBHelper {
         return "unlocked";
     }
 
-    public void customerLock(int code, String appUser){
+    public void customerLock(int code, String appUser) {
         String checkLockQuery = "UPDATE Customers SET locked_by = ? WHERE code = ?";
         try {
             Connection conn = getConnection();
@@ -183,7 +194,7 @@ public class DBHelper {
         }
     }
 
-    public void customerUnlock(int code){
+    public void customerUnlock(int code) {
         String checkLockQuery = "UPDATE Customers SET locked_by = NULL WHERE code = ?";
         try {
             Connection conn = getConnection();
@@ -195,7 +206,7 @@ public class DBHelper {
         }
     }
 
-    public void customerUnlockAll(String appUser){
+    public void customerUnlockAll(String appUser) {
         String checkLockQuery = "UPDATE Customers SET locked_by = NULL WHERE locked_by = ?";
         try {
             Connection conn = getConnection();
@@ -291,6 +302,7 @@ public class DBHelper {
                 "        COALESCE(Mobile, '') AS mobile, \n" +
                 "        COALESCE(Address_1, '') AS address, \n" +
                 "        COALESCE(City_1, '') AS city1, \n" +
+                "        COALESCE(zip_1, '') AS zip1, \n" +
                 "        COALESCE(Email, '') AS mail1\n" +
                 "    FROM Megasoft.dbo.E2_Emp065_24\n" +
                 "    INNER JOIN Megasoft.dbo.E2_Emp001_24 ON Megasoft.dbo.E2_Emp001_24.pelid = Megasoft.dbo.E2_Emp065_24.pelid\n" +
@@ -308,16 +320,59 @@ public class DBHelper {
                 "        target.mobile = source.mobile,\n" +
                 "        target.address = source.address,\n" +
                 "        target.town = source.city1,\n" +
+                "        target.postcode = source.zip1,\n" +
                 "        target.email = source.mail1\n" +
                 "WHEN NOT MATCHED THEN\n" +
-                "    INSERT (name, title, job, afm, phone1, phone2, mobile, address, town, email)\n" +
-                "    VALUES (source.name, source.BusinessTitle, source.job, source.afm, source.phone1, source.phone2, source.mobile, source.address, source.city1, source.mail1);";
+                "    INSERT (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email)\n" +
+                "    VALUES (source.name, source.BusinessTitle, source.job, source.afm, source.phone1, source.phone2, source.mobile, source.address, source.city1, source.zip1, source.mail1);";
 
         try (Connection connection = getConnection();
-                PreparedStatement stmt = connection.prepareStatement(SQL)) {
+             PreparedStatement stmt = connection.prepareStatement(SQL)) {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
+    public void insertAdditionalAddress(int customerId, String address, String city, String postalCode) {
+        String sql = "INSERT INTO CustomerAddresses (CustomerID, Address, City, PostalCode) VALUES (?, ?, ?, ?)";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, customerId);
+            statement.setString(2, address);
+            statement.setString(3, city);
+            statement.setString(4, postalCode);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Address> getCustomerAddresses(int customerId) {
+        String sql = "SELECT AddressID, Address, City, PostalCode FROM CustomerAddresses WHERE CustomerID = ?";
+        List<Address> addresses = new ArrayList<>();
+
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int addressId = rs.getInt("AddressID");
+                String address = rs.getString("Address");
+                String city = rs.getString("City");
+                String postalCode = rs.getString("PostalCode");
+
+                addresses.add(new Address(addressId, address, city, postalCode));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Αν υπάρχει κάποιο σφάλμα, το εκτυπώνουμε
+        }
+
+        return addresses;
+    }
+
 }

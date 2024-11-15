@@ -12,6 +12,7 @@ public class Customer {
     String mobile;
     String address;
     String town;
+    String postcode;
     String email;
     String manager;
     String managerPhone;
@@ -19,7 +20,8 @@ public class Customer {
     public Customer() {
 
     }
-    public Customer(String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String email) {
+
+    public Customer(String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email) {
         this.name = name;
         this.title = title;
         this.job = job;
@@ -29,6 +31,7 @@ public class Customer {
         this.mobile = mobile;
         this.address = address;
         this.town = town;
+        this.postcode = postcode;
         this.email = email;
     }
 
@@ -112,6 +115,10 @@ public class Customer {
     public void setTown(String town) {
         this.town = town;
     }
+
+    public String getPostcode() {return postcode;}
+
+    public void setPostcode(String postcode) {this.postcode = postcode;}
 
     public String getEmail() {
         return email;
