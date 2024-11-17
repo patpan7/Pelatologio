@@ -16,7 +16,7 @@ module org.easytech.pelatologio {
     requires java.desktop;
     requires java.mail;
     requires org.seleniumhq.selenium.devtools_v128;
-    //requires eu.hansolo.tilesfx;
+    requires jain.sip.ri;
 
     opens org.easytech.pelatologio to javafx.fxml;
     exports org.easytech.pelatologio;

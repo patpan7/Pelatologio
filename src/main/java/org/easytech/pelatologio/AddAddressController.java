@@ -79,11 +79,11 @@ public class AddAddressController {
         String postcode = postcodeField.getText();
         String store = storeField.getText();
 
-        Address newAddress = new Address(customer.getCode(),address,town,postcode,store);
+        CustomerAddress newCustomerAddress = new CustomerAddress(customer.getCode(),address,town,postcode,store);
 
         if (!address.isEmpty() && !town.isEmpty()&& !postcode.isEmpty() && !store.isEmpty()) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.addAddress(customer.getCode(),newAddress); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
+            dbHelper.addAddress(customer.getCode(), newCustomerAddress); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
 
             // Κλείσιμο του διαλόγου
             Dialog<ButtonType> dialog = new Dialog<>();

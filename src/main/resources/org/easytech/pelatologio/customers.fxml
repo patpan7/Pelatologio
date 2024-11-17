@@ -108,7 +108,7 @@
          <HBox alignment="CENTER" BorderPane.alignment="CENTER">
             <children>
                <Separator visible="false" HBox.hgrow="ALWAYS" />
-               <Button mnemonicParsing="false" onAction="#taxisClick" text="Taxis" HBox.hgrow="ALWAYS">
+               <Button mnemonicParsing="false" onAction="#taxisClick" prefWidth="175.0" text="Taxis" HBox.hgrow="ALWAYS">
                   <styleClass>
                      <String fx:value="button" />
                      <String fx:value="click-button" />
@@ -122,7 +122,7 @@
                   </graphic>
                </Button>
                <Separator visible="false" HBox.hgrow="ALWAYS" />
-               <Button mnemonicParsing="false" onAction="#myposClick" styleClass="click-button" text="myPOS" HBox.hgrow="ALWAYS">
+               <Button mnemonicParsing="false" onAction="#myposClick" prefWidth="175.0" styleClass="click-button" text="myPOS" HBox.hgrow="ALWAYS">
                   <graphic>
                       <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                           <image>
@@ -131,7 +131,7 @@
                       </ImageView>
                   </graphic></Button>
                <Separator visible="false" HBox.hgrow="ALWAYS" />
-               <Button mnemonicParsing="false" onAction="#simplyClick" styleClass="click-button" text="Simply" HBox.hgrow="ALWAYS">
+               <Button mnemonicParsing="false" onAction="#simplyClick" prefWidth="175.0" styleClass="click-button" text="Simply" HBox.hgrow="ALWAYS">
                   <graphic>
                       <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                           <image>
@@ -140,7 +140,7 @@
                       </ImageView>
                   </graphic></Button>
                <Separator visible="false" HBox.hgrow="ALWAYS" />
-                <Button mnemonicParsing="false" onAction="#folderClick" styleClass="click-button" text="Data" HBox.hgrow="ALWAYS">
+                <Button mnemonicParsing="false" onAction="#folderClick" prefWidth="175.0" styleClass="click-button" text="Data" HBox.hgrow="ALWAYS">
                     <graphic>
                         <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -149,7 +149,7 @@
                         </ImageView>
                     </graphic></Button>
                 <Separator visible="false" HBox.hgrow="ALWAYS" />
-                <Button fx:id="openFileButton" mnemonicParsing="false" styleClass="click-button" text="Data" HBox.hgrow="ALWAYS">
+                <Button fx:id="openFileButton" mnemonicParsing="false" prefWidth="175.0" styleClass="click-button" text="My Files" HBox.hgrow="ALWAYS">
                     <graphic>
                         <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                             <image>

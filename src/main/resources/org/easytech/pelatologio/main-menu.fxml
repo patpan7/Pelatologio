@@ -58,6 +58,15 @@
                      </ImageView>
                   </graphic>
                </Button>
+               <Button contentDisplay="TOP" disable="true" layoutX="634.0" layoutY="324.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#checkSipConnection" styleClass="click-button" text="Έλεγχος Σύνδεσης SIP" textAlignment="CENTER" GridPane.rowIndex="2">
+                  <graphic>
+                     <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@icons/team.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+               </Button>
                <columnConstraints>
                   <ColumnConstraints />
                   <ColumnConstraints />

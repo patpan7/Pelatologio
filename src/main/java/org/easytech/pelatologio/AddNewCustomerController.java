@@ -5,26 +5,24 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 
-import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.List;
+import java.util.Optional;
 
 public class AddNewCustomerController {
 
@@ -34,6 +32,8 @@ public class AddNewCustomerController {
     private Button btnAfmSearch;
     @FXML
     Button btnAddressAdd;
+    @FXML
+    private TextArea taNotes;
     @FXML
     private ProgressIndicator progressIndicator;
 
@@ -120,6 +120,43 @@ public class AddNewCustomerController {
             }
         });
     }
+
+    @FXML
+    private void handleMouseClick(MouseEvent event) {
+        // Έλεγχος για διπλό κλικ
+        if (event.getClickCount() == 2) {
+            openNotesDialog(taNotes.getText());
+        }
+    }
+
+    private void openNotesDialog(String currentNotes) {
+        // Ο κώδικας για το παράθυρο διαλόγου, όπως περιγράφεται
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("Επεξεργασία Σημειώσεων");
+
+        TextArea expandedTextArea = new TextArea(currentNotes);
+        expandedTextArea.setWrapText(true);
+        expandedTextArea.setPrefSize(400, 300);
+        expandedTextArea.setStyle("-fx-font-size: 24px;");
+        expandedTextArea.positionCaret(currentNotes.length());
+
+        Button btnOk = new Button("OK");
+        btnOk.setPrefWidth(100);
+        btnOk.setOnAction(event -> {
+            taNotes.setText(expandedTextArea.getText()); // Ενημέρωση του αρχικού TextArea
+            dialogStage.close();
+        });
+
+        VBox vbox = new VBox(10, expandedTextArea, btnOk);
+        vbox.setAlignment(Pos.CENTER);
+        //vbox.setPadding(new Insets(10));
+
+        Scene scene = new Scene(vbox);
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();
+    }
+
 
     // Μέθοδος για να αναθέτει το contextMenu και να αποθηκεύει το ενεργό TextField
     private void setupTextFieldContextMenu(TextField textField, ContextMenu contextMenu) {
@@ -218,6 +255,7 @@ public class AddNewCustomerController {
         tfEmail.setText(customer.getEmail());
         tfManager.setText(customer.getManager());
         tfManagerPhone.setText(customer.getManagerPhone());
+        taNotes.setText(customer.getNotes());
         btnAddressAdd.setDisable(false);
         DBHelper dbHelper = new DBHelper();
         if (dbHelper.hasSubAddress(customer.getCode())) {
@@ -291,6 +329,7 @@ public class AddNewCustomerController {
         String email = tfEmail.getText();
         String manager = tfManager.getText();
         String managerPhone = tfManagerPhone.getText();
+        String notes = taNotes.getText();
 
         DBHelper dbHelper = new DBHelper();
 
@@ -299,7 +338,7 @@ public class AddNewCustomerController {
             Platform.runLater(() -> showAlert("Προσοχή", "Ο πελάτης με ΑΦΜ " + afm + " υπάρχει ήδη."));
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
-            int customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, manager, managerPhone);
+            int customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, manager, managerPhone, notes);
             // Εμφάνιση επιτυχίας
             Platform.runLater(() -> showAlert("Επιτυχία", "Ο πελάτης εισήχθη με επιτυχία στη βάση δεδομένων."));
         }
@@ -320,7 +359,8 @@ public class AddNewCustomerController {
         String manager = tfManager.getText();
         String managerPhone = tfManagerPhone.getText();
         DBHelper dbHelper = new DBHelper();
-        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, manager, managerPhone);
+        String notes = taNotes.getText();
+        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, manager, managerPhone, notes);
         showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
     }
 

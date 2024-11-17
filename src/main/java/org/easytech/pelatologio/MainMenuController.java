@@ -1,14 +1,12 @@
 package org.easytech.pelatologio;
 
-import com.fasterxml.jackson.core.util.Instantiatable;
-//import eu.hansolo.tilesfx.tools.DoubleExponentialSmoothingForLinearSeries;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.StackPane;
 import org.openqa.selenium.By;
 
@@ -89,5 +87,14 @@ public class MainMenuController implements Initializable {
     public void synkClick(ActionEvent event) {
         DBHelper dbHelper = new DBHelper();
         dbHelper.syncMegasoft();
+    }
+
+    @FXML
+    public void checkSipConnection() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Έλεγχος Σύνδεσης");
+        alert.setHeaderText(null);
+        alert.setContentText("Η σύνδεση SIP είναι ενεργή.");
+        alert.showAndWait();
     }
 }

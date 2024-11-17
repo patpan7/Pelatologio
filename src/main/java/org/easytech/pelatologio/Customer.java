@@ -16,6 +16,7 @@ public class Customer {
     String email;
     String manager;
     String managerPhone;
+    String notes;
 
     public Customer() {
 
@@ -143,4 +144,8 @@ public class Customer {
     public void setManagerPhone(String managerPhone) {
         this.managerPhone = managerPhone;
     }
+
+    public String getNotes() {return notes;}
+
+    public void setNotes(String notes) {this.notes = notes;}
 }

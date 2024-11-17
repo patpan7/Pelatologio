@@ -60,6 +60,7 @@ public class DBHelper {
                 data.setEmail(resultSet.getString("email"));
                 data.setManager(resultSet.getString("manager"));
                 data.setManagerPhone(resultSet.getString("managerPhone"));
+                data.setNotes(resultSet.getString("notes"));
                 dataList.add(data);
             }
         } catch (Exception e) {
@@ -86,9 +87,9 @@ public class DBHelper {
 
     public int insertCustomer(String name, String title, String job, String afm, String phone1,
                               String phone2, String mobile, String address,
-                              String town, String postcode, String email, String manager, String managerPhone) {
-        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, manager, managerPhone) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                              String town, String postcode, String email, String manager, String managerPhone, String notes) {
+        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, manager, managerPhone, notes) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int newCustomerId = -1; // Default value for error handling
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -106,6 +107,7 @@ public class DBHelper {
             pstmt.setString(11, email);
             pstmt.setString(12, manager);
             pstmt.setString(13, managerPhone);
+            pstmt.setString(14, notes);
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -125,9 +127,9 @@ public class DBHelper {
         return newCustomerId; // Επιστρέφει το CustomerID ή -1 αν υπήρξε σφάλμα
     }
 
-    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String manager, String managerPhone) {
+    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String manager, String managerPhone, String notes) {
         String sql = "UPDATE customers SET name = ?, title = ?, job = ?,afm = ?, phone1 = ?, " +
-                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, manager = ?, managerPhone = ? WHERE code = ?";
+                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, manager = ?, managerPhone = ?, notes = ? WHERE code = ?";
 
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -144,7 +146,8 @@ public class DBHelper {
             pstmt.setString(11, email);
             pstmt.setString(12, manager);
             pstmt.setString(13, managerPhone);
-            pstmt.setInt(14, code);
+            pstmt.setString(14, notes);
+            pstmt.setInt(15, code);
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -348,9 +351,9 @@ public class DBHelper {
         }
     }
 
-    public List<Address> getCustomerAddresses(int customerId) {
+    public List<CustomerAddress> getCustomerAddresses(int customerId) {
         String sql = "SELECT * FROM CustomerAddresses WHERE CustomerID = ?";
-        List<Address> addresses = new ArrayList<>();
+        List<CustomerAddress> customerAddresses = new ArrayList<>();
 
 
         try (Connection conn = getConnection();
@@ -366,47 +369,47 @@ public class DBHelper {
                 String postcode = rs.getString("Postcode");
                 String store = rs.getString("Store");
 
-                Address newAddress = new Address();
-                newAddress.setAddressId(addressId);
-                newAddress.setAddress(address);
-                newAddress.setTown(town);
-                newAddress.setPostcode(postcode);
-                newAddress.setStore(store);
-                addresses.add(newAddress);
+                CustomerAddress newCustomerAddress = new CustomerAddress();
+                newCustomerAddress.setAddressId(addressId);
+                newCustomerAddress.setAddress(address);
+                newCustomerAddress.setTown(town);
+                newCustomerAddress.setPostcode(postcode);
+                newCustomerAddress.setStore(store);
+                customerAddresses.add(newCustomerAddress);
             }
 
         } catch (SQLException e) {
             e.printStackTrace(); // Αν υπάρχει κάποιο σφάλμα, το εκτυπώνουμε
         }
 
-        return addresses;
+        return customerAddresses;
     }
 
-    public void addAddress(int code, Address newAddress) {
+    public void addAddress(int code, CustomerAddress newCustomerAddress) {
         String sql = "INSERT INTO CustomerAddresses (CustomerID, Address, Town, Postcode, Store) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, code);
-            statement.setString(2, newAddress.getAddress());
-            statement.setString(3, newAddress.getTown());
-            statement.setString(4, newAddress.getPostcode());
-            statement.setString(5, newAddress.getStore());
+            statement.setString(2, newCustomerAddress.getAddress());
+            statement.setString(3, newCustomerAddress.getTown());
+            statement.setString(4, newCustomerAddress.getPostcode());
+            statement.setString(5, newCustomerAddress.getStore());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void updateAddress(Address updatedAddress) {
+    public void updateAddress(CustomerAddress updatedCustomerAddress) {
         String query = "UPDATE CustomerAddresses SET Address = ?, Town = ?, Postcode = ?, Store = ? WHERE AddressID = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            pstmt.setString(1, updatedAddress.getAddress());
-            pstmt.setString(2, updatedAddress.getTown());
-            pstmt.setString(3, updatedAddress.getPostcode());
-            pstmt.setString(4, updatedAddress.getStore());
-            pstmt.setInt(5, updatedAddress.getAddressId());
+            pstmt.setString(1, updatedCustomerAddress.getAddress());
+            pstmt.setString(2, updatedCustomerAddress.getTown());
+            pstmt.setString(3, updatedCustomerAddress.getPostcode());
+            pstmt.setString(4, updatedCustomerAddress.getStore());
+            pstmt.setInt(5, updatedCustomerAddress.getAddressId());
             pstmt.executeUpdate();
 
         } catch (SQLException e) {

@@ -1,6 +1,6 @@
 package org.easytech.pelatologio;
 
-public class Address {
+public class CustomerAddress {
     private int addressId;
     private int customerCode;
     private String address;
@@ -8,14 +8,14 @@ public class Address {
     private String postcode;
     private String store;
 
-    public Address(String address, String town, String postcode, String store) {
+    public CustomerAddress(String address, String town, String postcode, String store) {
         this.address = address;
         this.town = town;
         this.postcode = postcode;
         this.store = store;
     }
 
-    public Address(int customerCode, String address, String town, String postcode, String store) {
+    public CustomerAddress(int customerCode, String address, String town, String postcode, String store) {
         this.customerCode = customerCode;
         this.address = address;
         this.town = town;
@@ -23,7 +23,7 @@ public class Address {
         this.store = store;
     }
 
-    public Address() {
+    public CustomerAddress() {
 
     }
 

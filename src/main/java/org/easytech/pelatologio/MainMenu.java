@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -34,6 +33,16 @@ public class MainMenu extends Application {
         //stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+
+//        try {
+//            SIPClient client = new SIPClient("22", "Ho81?^WPUTJHSJLU", "192.168.1.20", 5070, "TCP");
+//            client.init();
+//            System.out.println("SIP Client initialized successfully.");
+//        } catch (Exception e) {
+//            System.err.println("Failed to initialize SIP Client: " + e.getMessage());
+//            javax.swing.JOptionPane.showMessageDialog(null, "Failed to initialize SIP Client:\n" + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+//        }
+
     }
 
     private Optional<String> promptForUsername() {

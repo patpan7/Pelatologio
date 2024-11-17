@@ -18,7 +18,7 @@ public class EditAddressController {
     private TextField storeField;
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
 
-    private Address address;
+    private CustomerAddress customerAddress;
 
     @FXML
     public void initialize() {
@@ -67,20 +67,20 @@ public class EditAddressController {
     }
 
     // Μέθοδος για να ρυθμίσεις το login προς επεξεργασία
-    public void setAddress(Address address) {
-        this.address = address;
-        addressField.setText(address.getAddress());
-        townField.setText(address.getTown());
-        postcodeField.setText(address.getPostcode());
-        storeField.setText(address.getStore());
+    public void setAddress(CustomerAddress customerAddress) {
+        this.customerAddress = customerAddress;
+        addressField.setText(customerAddress.getAddress());
+        townField.setText(customerAddress.getTown());
+        postcodeField.setText(customerAddress.getPostcode());
+        storeField.setText(customerAddress.getStore());
     }
 
     // Επιστρέφει το επεξεργασμένο login
-    public Address getUpdatedAddress() {
-        address.setAddress(addressField.getText());
-        address.setTown(townField.getText());
-        address.setPostcode(postcodeField.getText());
-        address.setStore(storeField.getText());
-        return address;
+    public CustomerAddress getUpdatedAddress() {
+        customerAddress.setAddress(addressField.getText());
+        customerAddress.setTown(townField.getText());
+        customerAddress.setPostcode(postcodeField.getText());
+        customerAddress.setStore(storeField.getText());
+        return customerAddress;
     }
 }

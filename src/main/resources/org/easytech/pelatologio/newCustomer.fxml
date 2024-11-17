@@ -6,13 +6,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<DialogPane expanded="true" prefHeight="1000.0" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddNewCustomerController">
+<DialogPane expanded="true" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddNewCustomerController">
     <content>
         <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-            <VBox alignment="CENTER" prefWidth="800.0" VBox.vgrow="ALWAYS">
+            <VBox alignment="CENTER" prefHeight="900.0" prefWidth="800.0" VBox.vgrow="ALWAYS">
                 <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
                     <Label prefWidth="205.0" styleClass="normal-label" text="Επωνυμία:">
@@ -31,7 +31,7 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
                     <Label prefWidth="205.0" styleClass="normal-label" text="Τίτλος:">
@@ -50,7 +50,7 @@
                 </HBox>
                 <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
                     <Label prefWidth="205.0" styleClass="normal-label" text="Επάγγελμα:">
@@ -69,7 +69,7 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
                     <Label prefWidth="205.0" styleClass="normal-label" text="ΑΦΜ:">
@@ -98,7 +98,7 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
                     <Label prefWidth="205.0" styleClass="normal-label" text="Τηλέφωνο 1:">
@@ -117,7 +117,7 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
                     <Label prefWidth="205.0" styleClass="normal-label" text="Τηλέφωνο 2:">
@@ -136,7 +136,7 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
                     <Label prefWidth="205.0" styleClass="normal-label" text="Κινητό:">
@@ -155,7 +155,7 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
                     <Label prefWidth="205.0" styleClass="normal-label" text="Διεύθυνση:">
@@ -184,7 +184,7 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
                     <Label prefWidth="205.0" styleClass="normal-label" text="Πόλη:">
@@ -208,7 +208,7 @@
                             <Insets left="20.0" right="10.0" />
                         </padding>
                     </Label>
-                    <TextField fx:id="tfPostCode" layoutX="215.0" layoutY="10.0" prefHeight="51.0" prefWidth="130.0" text="123456">
+                    <TextField fx:id="tfPostCode" layoutX="215.0" layoutY="10.0" prefHeight="51.0" prefWidth="130.0">
                         <font>
                             <Font size="24.0" />
                         </font>
@@ -216,7 +216,7 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
                     <Label prefWidth="205.0" styleClass="normal-label" text="E-mail:">
@@ -235,7 +235,7 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
                     <Label prefWidth="205.0" styleClass="normal-label" text="Υπεύθυνος:">
@@ -254,7 +254,7 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
                     <Label prefWidth="205.0" styleClass="normal-label" text="Τηλ Υπευθύνου:">
@@ -273,10 +273,10 @@
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
-                    <Label prefWidth="205.0" styleClass="normal-label" text="Τηλ Υπευθύνου:">
+                    <Label prefWidth="205.0" styleClass="normal-label" text="Σημειώσεις:">
                         <font>
                             <Font size="24.0" />
                         </font>
@@ -284,7 +284,7 @@
                             <Insets right="20.0" />
                         </padding>
                     </Label>
-                    <TextArea fx:id="tfNote" HBox.hgrow="ALWAYS">
+                    <TextArea fx:id="taNotes" onMouseClicked="#handleMouseClick" prefHeight="102.0" prefRowCount="4" prefWidth="555.0" HBox.hgrow="ALWAYS">
                         <font>
                             <Font size="24.0" />
                         </font>
@@ -293,5 +293,4 @@
                 <ProgressIndicator fx:id="progressIndicator" progress="-1.0" visible="false" />
             </VBox>
         </ScrollPane>
-    </content>
-</DialogPane>
+    </content></DialogPane>
