@@ -11,8 +11,11 @@ import java.util.Optional;
 
 
 public class MainMenu extends Application {
+
+
     @Override
     public void start(Stage stage) throws IOException {
+
 
         String username = AppSettings.loadSetting("appuser") != null ? AppSettings.loadSetting("appuser") : "";
         if (username == null || username.isEmpty()) {
@@ -33,16 +36,6 @@ public class MainMenu extends Application {
         //stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
-
-//        try {
-//            SIPClient client = new SIPClient("22", "Ho81?^WPUTJHSJLU", "192.168.1.20", 5070, "TCP");
-//            client.init();
-//            System.out.println("SIP Client initialized successfully.");
-//        } catch (Exception e) {
-//            System.err.println("Failed to initialize SIP Client: " + e.getMessage());
-//            javax.swing.JOptionPane.showMessageDialog(null, "Failed to initialize SIP Client:\n" + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
-//        }
-
     }
 
     private Optional<String> promptForUsername() {

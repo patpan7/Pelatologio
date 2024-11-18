@@ -139,7 +139,13 @@ public class AddNewCustomerController {
         expandedTextArea.setWrapText(true);
         expandedTextArea.setPrefSize(400, 300);
         expandedTextArea.setStyle("-fx-font-size: 24px;");
-        expandedTextArea.positionCaret(currentNotes.length());
+        if (currentNotes != null && !currentNotes.isEmpty()) {
+            expandedTextArea.setText(currentNotes);
+            expandedTextArea.positionCaret(currentNotes.length());
+        } else {
+            expandedTextArea.setText(""); // Βεβαιωθείτε ότι το TextArea είναι κενό
+            expandedTextArea.positionCaret(0); // Τοποθετήστε τον κέρσορα στην αρχή
+        }
 
         Button btnOk = new Button("OK");
         btnOk.setPrefWidth(100);
