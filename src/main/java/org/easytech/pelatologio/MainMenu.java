@@ -11,11 +11,10 @@ import java.util.Optional;
 
 
 public class MainMenu extends Application {
-
+    private TAPIListener tapiListener;
 
     @Override
     public void start(Stage stage) throws IOException {
-
 
         String username = AppSettings.loadSetting("appuser") != null ? AppSettings.loadSetting("appuser") : "";
         if (username == null || username.isEmpty()) {
@@ -36,6 +35,16 @@ public class MainMenu extends Application {
         //stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+
+        // Δημιουργία και εκκίνηση του TAPI listener
+        tapiListener = new TAPIListener();
+        new Thread(() -> tapiListener.startListening()).start();  // Εκκινεί τον listener σε νέο νήμα
+
+        // Ορισμός του κλεισίματος του παραθύρου για να κλείσουμε την TAPI γραμμή
+        stage.setOnCloseRequest(event -> {
+            tapiListener.shutdownTAPI();  // Κλείνουμε τη σύνδεση TAPI
+            System.exit(0);  // Τερματίζουμε το πρόγραμμα
+        });
     }
 
     private Optional<String> promptForUsername() {
