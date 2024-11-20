@@ -1,6 +1,7 @@
 package org.easytech.pelatologio;
 
 import com.sun.jna.*;
+import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.win32.*;
@@ -15,7 +16,7 @@ public interface TAPI extends StdCallLibrary {
     int lineOpen(Pointer hLineApp, int deviceID, PointerByReference hLine, int apiVersion, int extVersion, Pointer hCallbackInstance, int privileges, int mediaModes, LineCallParams params);
     int lineClose(Pointer hLine);
     int lineAnswer(Pointer hCall, byte[] userUserInfo, int size);
-    int lineGetCallInfo(long hCall, LINECALLINFO callInfo);  // Χρησιμοποιούμε long εδώ αντί για HANDLE.
+    int lineGetCallInfo(WinNT.HANDLE hCall, LINECALLINFO callInfo);  // Χρησιμοποιούμε long εδώ αντί για HANDLE.
 
     // Callback interface για την γραμμή TAPI
     interface LineCallback extends StdCallCallback {

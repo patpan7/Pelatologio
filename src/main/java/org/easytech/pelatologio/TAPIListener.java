@@ -3,28 +3,16 @@ package org.easytech.pelatologio;
 import com.sun.jna.*;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
-
+import com.sun.jna.platform.win32.WinNT.HANDLE;
 import javax.swing.*;
 
 public class TAPIListener {
     private PointerByReference hLineApp = new PointerByReference();
     private PointerByReference hLine = new PointerByReference();
 
-    // Δημιουργία του LineCallback ως inner class
-    private class LineCallbackImpl implements TAPI.LineCallback {
-        @Override
-        public void callback(int hDevice, int dwMessage, int dwCallbackInstance,
-                             int dwParam1, int dwParam2, int dwParam3) {
-            // Χειρισμός του μηνύματος κλήσης
-            onLineEvent(hDevice, dwMessage, dwCallbackInstance, dwParam1, dwParam2, dwParam3);
-        }
-    }
 
     public void initTAPI() {
         IntByReference numDevs = new IntByReference();
-
-        // Αρχικοποίηση του TAPI με το callback
-        //LineCallbackImpl callback = new LineCallbackImpl();
 
         int result = TAPI.INSTANCE.lineInitialize(hLineApp, null, this::lineCallbackFunction, "Pelatologio TAPI Listener", numDevs);
         if (result != 0) {
@@ -77,25 +65,41 @@ public class TAPIListener {
     }
 
     private void onLineEvent(int hDevice, int dwMessage, int dwCallbackInstance, int dwParam1, int dwParam2, int dwParam3) {
-
-        System.out.println("online event");
-        if (dwMessage == 0x0400) { // LINE_CALLSTATE
-            System.out.println("Call state changed: " + dwParam1); // Έλεγχος των παραμέτρων
-
+        System.out.println("onlineevent");
+        if (dwMessage == TAPIConstants.LINE_CALLSTATE) {
             if (dwParam1 == TAPIConstants.LINECALLSTATE_OFFERING) {
                 System.out.println("Incoming call detected.");
 
-                // Εμφάνιση του αριθμού κλήσης
-                showPopup("Incoming call from: " + dwParam1);
+                // Λήψη πληροφοριών κλήσης
+                LINECALLINFO callInfo = new LINECALLINFO();
+                callInfo.dwTotalSize = callInfo.size();
+
+                int result = TAPI.INSTANCE.lineGetCallInfo(new HANDLE(Pointer.createConstant(hDevice)), callInfo);
+                if (result == 0) {
+                    if (callInfo.dwCallerIDSize > 0) {
+                        Pointer pointer = callInfo.getPointer();
+                        String callerID = new String(pointer.getByteArray(callInfo.dwCallerIDOffset, callInfo.dwCallerIDSize));
+                        System.out.println("Incoming call from: " + callerID);
+                        showPopup(callerID);
+                    } else {
+                        System.out.println("No caller ID available");
+                    }
+                } else {
+                    System.err.println("Failed to get call info, error code: " + result);
+                }
             }
         }
     }
+
     public void lineCallbackFunction(long hDevice, long dwMsg, long dwCallbackInstance,
                                      long dwParam1, long dwParam2, long dwParam3) {
         System.out.println("lineCallbackFunction called: dwMsg=" + dwMsg +
                 ", dwParam1=" + dwParam1 +
                 ", dwParam2=" + dwParam2 +
                 ", dwParam3=" + dwParam3);
+        // Κλήση της onLineEvent για διαχείριση γεγονότων
+        onLineEvent((int) hDevice, (int) dwMsg, (int) dwCallbackInstance, (int) dwParam1, (int) dwParam2, (int) dwParam3);
+
     }
 
     private void showPopup(String callerID) {
