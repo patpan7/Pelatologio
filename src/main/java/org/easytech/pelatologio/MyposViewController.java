@@ -77,6 +77,7 @@ public class MyposViewController {
 
             AddLoginController addLoginController = loader.getController();
             addLoginController.setCustomer(customer); // Ορίζει τον πελάτη
+            addLoginController.setUsername(customer.getEmail());
 
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(dialogPane);

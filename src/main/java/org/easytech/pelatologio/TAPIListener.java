@@ -15,6 +15,7 @@ public class TAPIListener {
         IntByReference numDevs = new IntByReference();
 
         int result = TAPI.INSTANCE.lineInitialize(hLineApp, null, this::lineCallbackFunction, "Pelatologio TAPI Listener", numDevs);
+
         if (result != 0) {
             System.err.println("Failed to initialize TAPI. Error code: " + result);
             return;
@@ -30,7 +31,7 @@ public class TAPIListener {
                 0,
                 null,
                 0x00000001, // privileges
-                0xFFFFFFFF, // media modes
+                0x00000004, // media modes
                 new LineCallParams()
         );
         if (result != 0) {
@@ -44,7 +45,7 @@ public class TAPIListener {
     public void startListening() {
         // Αρχικοποίηση και εκκίνηση του listener
         initTAPI();
-
+        logDeviceCapabilities();
         // Εδώ μπορείς να προσθέσεις τον κώδικα για να συνεχίζει το πρόγραμμα να ακούει για κλήσεις
         // για παράδειγμα, χρησιμοποιώντας έναν βρόχο (loop) ή μια άλλης μορφής διαχείριση της ροής
         // του προγράμματος που να κρατά το TAPI "ανοιχτό" και να ακούει.
@@ -93,18 +94,30 @@ public class TAPIListener {
 
     public void lineCallbackFunction(long hDevice, long dwMsg, long dwCallbackInstance,
                                      long dwParam1, long dwParam2, long dwParam3) {
-        System.out.println("lineCallbackFunction called: dwMsg=" + dwMsg +
-                ", dwParam1=" + dwParam1 +
-                ", dwParam2=" + dwParam2 +
-                ", dwParam3=" + dwParam3);
-        // Κλήση της onLineEvent για διαχείριση γεγονότων
+        System.out.println("Callback received: dwMsg=" + dwMsg + ", dwParam1=" + dwParam1);
         onLineEvent((int) hDevice, (int) dwMsg, (int) dwCallbackInstance, (int) dwParam1, (int) dwParam2, (int) dwParam3);
-
     }
+
 
     private void showPopup(String callerID) {
         javax.swing.SwingUtilities.invokeLater(() -> {
             javax.swing.JOptionPane.showMessageDialog(null, "Incoming call from: " + callerID);
         });
     }
+
+    private void logDeviceCapabilities() {
+        LINEDEVCAPS devCaps = new LINEDEVCAPS();
+        devCaps.dwTotalSize = devCaps.size();
+
+        int result = TAPI.INSTANCE.lineGetDevCaps(hLineApp.getValue(), 0, 0x00020000, 0, devCaps);
+        if (result == 0) {
+            System.out.println("Device capabilities:");
+            System.out.println("Max number of calls: " + devCaps.dwMaxNumActiveCalls);
+            System.out.println("Media modes: " + devCaps.dwMediaModes);
+            //System.out.println("Line features: " + devCaps.dwLineFeatures);
+        } else {
+            System.err.println("Failed to get device capabilities. Error code: " + result);
+        }
+    }
+
 }

@@ -102,4 +102,8 @@ public class AddLoginController {
             dialog.showAndWait();
         }
     }
+
+    public void setUsername(String email) {
+        usernameField.setText(email);
+    }
 }
