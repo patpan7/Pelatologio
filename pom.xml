@@ -172,7 +172,6 @@
             <artifactId>jna-platform</artifactId>
             <version>5.15.0</version>
         </dependency>
-
     </dependencies>
 
     <build>

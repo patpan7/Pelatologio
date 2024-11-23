@@ -445,4 +445,21 @@ public class DBHelper {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean hasApp(int code, int appId) {
+        String query = "SELECT COUNT(*) FROM CustomerLogins WHERE CustomerID = ? and ApplicationID = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, code);
+            pstmt.setInt(2, appId);
+            pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

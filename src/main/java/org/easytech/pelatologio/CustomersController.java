@@ -43,6 +43,8 @@ public class CustomersController implements Initializable {
     TextField filterField;
     @FXML
     Button openFileButton;
+    @FXML
+    Button btnTaxis, btnMypos, btnSimply;
 
     ObservableList<Customer> observableList;
     FilteredList<Customer> filteredData;
@@ -163,6 +165,23 @@ public class CustomersController implements Initializable {
 
         // Διπλό κλικ για επεξεργασία πελάτη
         customerTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1){
+                btnTaxis.setStyle("-fx-border-color: #D6D8DE;");
+                btnMypos.setStyle("-fx-border-color: #D6D8DE;");
+                btnSimply.setStyle("-fx-border-color: #D6D8DE;");
+                // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
+                Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+
+                if(dbHelper.hasApp(selectedCustomer.getCode(),2)){
+                    btnSimply.setStyle("-fx-border-color: #FF0000;");
+                }
+                if(dbHelper.hasApp(selectedCustomer.getCode(),1)){
+                    btnMypos.setStyle("-fx-border-color: #FF0000;");
+                }
+                if(dbHelper.hasApp(selectedCustomer.getCode(),3)){
+                    btnTaxis.setStyle("-fx-border-color: #FF0000;");
+                }
+            }
             if (event.getClickCount() == 2) { // Έλεγχος για δύο κλικ
                 // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
                 Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();

@@ -40,6 +40,10 @@ public class AddLoginController {
         setupTextFieldContextMenu(passwordField, contextMenu);
         setupTextFieldContextMenu(phoneField, contextMenu);
 
+        // Ενέργειες για τα copy, paste, clear items στο βασικό contextMenu
+        copyItem.setOnAction(e -> copyText());
+        pasteItem.setOnAction(e -> pasteText());
+        clearItem.setOnAction(e -> clearText());
     }
 
     // Μέθοδος για να αναθέτει το contextMenu και να αποθηκεύει το ενεργό TextField
