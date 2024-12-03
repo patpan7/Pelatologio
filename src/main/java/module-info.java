@@ -18,6 +18,7 @@ module org.easytech.pelatologio {
     requires org.seleniumhq.selenium.devtools_v128;
     requires com.sun.jna;
     requires com.sun.jna.platform;
+    requires jacob;
 
 
     opens org.easytech.pelatologio to javafx.fxml;

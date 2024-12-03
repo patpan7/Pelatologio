@@ -406,6 +406,26 @@ public class CustomersController implements Initializable {
     }
 
 
+    public void customerDelete(ActionEvent event) {
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        if (selectedCustomer == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Προσοχή");
+            alert.setContentText("Δεν έχει επιλεγεί Πελάτης!");
+            Optional<ButtonType> result = alert.showAndWait();
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Επιβεβαίωση");
+        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε τον πελάτη " + selectedCustomer.getName() + ";" );
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            dbHelper.customerDelete(selectedCustomer.getCode());
+            tableInit();
+        }
+    }
+
+
     private static final Map<Character, Character> ENGLISH_TO_GREEK = new HashMap<>();
 
     static {

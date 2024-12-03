@@ -94,6 +94,8 @@
                             <items>
                                 <MenuItem onAction="#handleEditOption" styleClass="menu-item" text="Επεξεργασία" />
                                 <MenuItem mnemonicParsing="false" onAction="#customerAddNew" styleClass="menu-item" text="Προσθήκη" />
+                                <MenuItem mnemonicParsing="false" onAction="#customerDelete" styleClass="menu-item" text="Διαγραφή" />
+                                <SeparatorMenuItem />
                                 <MenuItem mnemonicParsing="false" onAction="#viberOpen" styleClass="menu-item" text="Επικοινωνία Viber" />
                             </items>
                         </ContextMenu>

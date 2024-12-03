@@ -462,4 +462,27 @@ public class DBHelper {
             throw new RuntimeException(e);
         }
     }
+
+    public void customerDelete(int code) {
+        String query = "DELETE FROM CustomerAddresses WHERE CustomerID = ?";
+        String query2 = "DELETE FROM CustomerLogins WHERE CustomerID = ?";
+        String query3 = "DELETE FROM Customers WHERE code = ?";
+        try (Connection conn = getConnection()) {
+            try (PreparedStatement pstmt1 = conn.prepareStatement(query);
+                 PreparedStatement pstmt2 = conn.prepareStatement(query2);
+                 PreparedStatement pstmt3 = conn.prepareStatement(query3)) {
+
+                pstmt1.setInt(1, code);
+                pstmt1.executeUpdate();
+
+                pstmt2.setInt(1, code);
+                pstmt2.executeUpdate();
+
+                pstmt3.setInt(1, code);
+                pstmt3.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

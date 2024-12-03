@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public class MainMenu extends Application {
     private TAPIListener tapiListener;
+    private SipTapiHandler sipTapiHandler = new SipTapiHandler();
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -22,7 +23,7 @@ public class MainMenu extends Application {
             Optional<String> result = promptForUsername();
             if (result.isPresent()) {
                 username = result.get();
-                AppSettings.saveSetting("appuser",username);
+                AppSettings.saveSetting("appuser", username);
             } else {
                 // If no username is provided, close the app
                 System.out.println("No username provided. Exiting.");
@@ -36,15 +37,20 @@ public class MainMenu extends Application {
         stage.setScene(scene);
         stage.show();
 
-//        // Δημιουργία και εκκίνηση του TAPI listener
-//        tapiListener = new TAPIListener();
-//        new Thread(() -> tapiListener.startListening()).start();  // Εκκινεί τον listener σε νέο νήμα
-//
-//        // Ορισμός του κλεισίματος του παραθύρου για να κλείσουμε την TAPI γραμμή
-//        stage.setOnCloseRequest(event -> {
-//            tapiListener.shutdownTAPI();  // Κλείνουμε τη σύνδεση TAPI
-//            System.exit(0);  // Τερματίζουμε το πρόγραμμα
-//        });
+        // Δημιουργία και εκκίνηση του TAPI handler
+        sipTapiHandler.initialize();
+        sipTapiHandler.getCallerId();
+
+        // Δημιουργία και εκκίνηση του monitoring thread
+        Thread monitoringThread = new Thread(sipTapiHandler);
+        monitoringThread.setDaemon(true); // Το thread θα τερματίσει όταν κλείσει η εφαρμογή
+        monitoringThread.start();
+
+        // Τερματισμός του TAPI κατά το κλείσιμο της εφαρμογής
+        stage.setOnCloseRequest(event -> {
+            System.out.println("Application closing...");
+            sipTapiHandler.shutdown();
+        });
     }
 
     private Optional<String> promptForUsername() {
