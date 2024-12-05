@@ -425,6 +425,38 @@ public class CustomersController implements Initializable {
         }
     }
 
+    public void customerInfo(ActionEvent actionEvent) {
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        if (selectedCustomer != null) {
+            String msg ="Στοιχεία πελάτη" +
+                    "\nΕπωνυμία: "+selectedCustomer.getName()+
+                    "\nΤίτλος: " + selectedCustomer.getTitle()+
+                    "\nΕπλαγγελμα: " + selectedCustomer.getJob()+
+                    "\nΔιεύθυνση: " +selectedCustomer.getAddress()+
+                    "\nΠόλη: " + selectedCustomer.getTown()+
+                    "\nΤ.Κ.: " + selectedCustomer.getPostcode()+
+                    "\nΑΦΜ: "+selectedCustomer.getAfm()+
+                    "\nEmail: "+selectedCustomer.getEmail()+
+                    "\nΤηλέφωνο: " + selectedCustomer.getPhone1()+
+                    "\nΚινητό: "+selectedCustomer.getMobile();
+            copyTextToClipboard(msg);
+        }
+    }
+
+    public void viberOpen(ActionEvent event) {
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        try {
+            File viberPath = new File(System.getenv("LOCALAPPDATA") + "\\Viber\\Viber.exe");
+            Desktop.getDesktop().open(viberPath);
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(selectedCustomer.getMobile());  // Replace with the desired text
+            clipboard.setContent(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private static final Map<Character, Character> ENGLISH_TO_GREEK = new HashMap<>();
 
@@ -593,19 +625,6 @@ public class CustomersController implements Initializable {
         folderManager.createOrOpenCustomerFolder(selectedCustomer.getName(), selectedCustomer.getAfm());
     }
 
-    public void viberOpen(ActionEvent event) {
-        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-        try {
-            File viberPath = new File(System.getenv("LOCALAPPDATA") + "\\Viber\\Viber.exe");
-            Desktop.getDesktop().open(viberPath);
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(selectedCustomer.getMobile());  // Replace with the desired text
-            clipboard.setContent(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     // Μέθοδος για αντιγραφή του περιεχομένου αρχείου στο πρόχειρο
     private void copyFileContentToClipboard(File file) {
@@ -627,5 +646,21 @@ public class CustomersController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void copyTextToClipboard(String msg) {
+        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(msg);  // Replace with the desired text
+        clipboard.setContent(content);
+        showAlert("Copied to Clipboard", msg);
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

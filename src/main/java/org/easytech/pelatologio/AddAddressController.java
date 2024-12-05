@@ -35,6 +35,9 @@ public class AddAddressController {
         MenuItem copyItem = new MenuItem("Αντιγραφή");
         MenuItem pasteItem = new MenuItem("Επικόλληση");
         MenuItem clearItem = new MenuItem("Εκκαθάριση");
+        copyItem.setOnAction(event -> copyText());
+        pasteItem.setOnAction(event -> pasteText());
+        clearItem.setOnAction(event -> clearText());
         contextMenu.getItems().addAll(copyItem, pasteItem, clearItem);
         setupTextFieldContextMenu(addressField, contextMenu);
         setupTextFieldContextMenu(townField, contextMenu);
