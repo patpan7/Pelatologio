@@ -19,6 +19,7 @@ module org.easytech.pelatologio {
     requires com.sun.jna;
     requires com.sun.jna.platform;
     requires jacob;
+    requires javax.websocket.api;
 
 
     opens org.easytech.pelatologio to javafx.fxml;

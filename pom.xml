@@ -178,7 +178,16 @@
             <artifactId>jacob</artifactId>
             <version>1.14.3</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-client</artifactId>
+            <version>1.18</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-container-grizzly-client</artifactId>
+            <version>1.18</version>
+        </dependency>
     </dependencies>
 
     <build>

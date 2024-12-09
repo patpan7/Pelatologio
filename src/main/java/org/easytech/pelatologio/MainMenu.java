@@ -11,8 +11,7 @@ import java.util.Optional;
 
 
 public class MainMenu extends Application {
-    private TAPIListener tapiListener;
-    private SipTapiHandler sipTapiHandler = new SipTapiHandler();
+
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -37,20 +36,6 @@ public class MainMenu extends Application {
         stage.setScene(scene);
         stage.show();
 
-        // Δημιουργία και εκκίνηση του TAPI handler
-        sipTapiHandler.initialize();
-        sipTapiHandler.getCallerId();
-
-        // Δημιουργία και εκκίνηση του monitoring thread
-        Thread monitoringThread = new Thread(sipTapiHandler);
-        monitoringThread.setDaemon(true); // Το thread θα τερματίσει όταν κλείσει η εφαρμογή
-        monitoringThread.start();
-
-        // Τερματισμός του TAPI κατά το κλείσιμο της εφαρμογής
-        stage.setOnCloseRequest(event -> {
-            System.out.println("Application closing...");
-            sipTapiHandler.shutdown();
-        });
     }
 
     private Optional<String> promptForUsername() {
