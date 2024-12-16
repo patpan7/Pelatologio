@@ -97,4 +97,11 @@ public class MainMenuController implements Initializable {
         alert.setContentText("Η σύνδεση SIP είναι ενεργή.");
         alert.showAndWait();
     }
+
+    public void calendarClick(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("CalendarView.fxml"));
+        root = fxmlLoader.load();
+        stackPane.getChildren().clear();
+        stackPane.getChildren().add(root);
+    }
 }

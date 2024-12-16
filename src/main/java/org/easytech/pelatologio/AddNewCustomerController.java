@@ -129,6 +129,11 @@ public class AddNewCustomerController {
         }
     }
 
+    public void setInitialAFM(String afm) {
+        tfAfm.setText(afm); // Ορισμός αρχικής τιμής στο πεδίο ΑΦΜ
+        btnAfmSearch.fire();
+    }
+
     private void openNotesDialog(String currentNotes) {
         // Ο κώδικας για το παράθυρο διαλόγου, όπως περιγράφεται
         Stage dialogStage = new Stage();

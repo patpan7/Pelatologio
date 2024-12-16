@@ -173,3 +173,41 @@
 .pane {
     -fx-background-color: #EEF1F7;
 }
+
+/* Στυλ για την Agenda */
+.agenda {
+    -fx-background-color: #f4f4f4;  /* Απαλή γκρι απόχρωση φόντου */
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial", sans-serif;
+}
+
+/* Στυλ για τα ραντεβού */
+.agenda-appointment {
+    -fx-background-color: #4CAF50; /* Χρώμα πράσινο για τα ραντεβού */
+    -fx-text-fill: white;           /* Λευκό κείμενο */
+    -fx-border-radius: 5px;        /* Στρογγυλεμένες γωνίες */
+}
+
+
+/* Στυλ για το label της ημερομηνίας */
+#dateRangeLabel {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;  /* Σκούρο γκρι χρώμα */
+    -fx-padding: 10px;
+    -fx-background-color: #ecf0f1;  /* Ελαφρύ γκρι φόντο */
+    -fx-border-radius: 5px;
+}
+
+/* Ειδικό στυλ για την προβολή ημερών */
+.agenda-day {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-padding: 5px;
+}
+
+/* Ειδικό στυλ για την τρέχουσα ημέρα */
+.agenda-day-today {
+    -fx-background-color: #ffeb3b;  /* Κίτρινο για την τρέχουσα ημέρα */
+}

@@ -16,10 +16,8 @@ module org.easytech.pelatologio {
     requires java.desktop;
     requires java.mail;
     requires org.seleniumhq.selenium.devtools_v128;
-    requires com.sun.jna;
-    requires com.sun.jna.platform;
-    requires jacob;
-    requires javax.websocket.api;
+    requires jfxtras.controls;
+    requires jfxtras.agenda;
 
 
     opens org.easytech.pelatologio to javafx.fxml;

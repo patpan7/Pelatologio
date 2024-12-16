@@ -293,4 +293,5 @@
                 <ProgressIndicator fx:id="progressIndicator" progress="-1.0" visible="false" />
             </VBox>
         </ScrollPane>
-    </content></DialogPane>
+    </content>
+</DialogPane>

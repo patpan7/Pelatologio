@@ -1,6 +1,7 @@
 package org.easytech.pelatologio;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -485,4 +486,44 @@ public class DBHelper {
             e.printStackTrace();
         }
     }
+
+    public void saveAppointment(Appointment appointment) {
+        String query = "INSERT INTO appointments (customer_id, title, description, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, appointment.getCustomerId());
+            stmt.setString(2, appointment.getTitle());
+            stmt.setString(3, appointment.getDescription());
+            stmt.setTimestamp(4, Timestamp.valueOf(appointment.getStartTime()));
+            stmt.setTimestamp(5, Timestamp.valueOf(appointment.getEndTime()));
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Appointment> getAllAppointments() {
+        List<Appointment> appointments = new ArrayList<>();
+        String query = "SELECT * FROM appointments";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int customerId = rs.getInt("customer_id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                LocalDateTime startTime = rs.getTimestamp("start_time").toLocalDateTime();
+                LocalDateTime endTime = rs.getTimestamp("end_time").toLocalDateTime();
+
+                appointments.add(new Appointment(id, customerId, title, description, startTime, endTime));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return appointments;
+    }
+
 }

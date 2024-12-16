@@ -231,20 +231,24 @@ public class CustomersController implements Initializable {
             dialog.setTitle("Εισαγωγή Νέου Πελάτη");
 
             AddNewCustomerController controller = loader.getController();
-
+            String filterValue = filterField.getText();
+            if (filterValue != null && filterValue.matches("\\d{9}")) {
+                controller.setInitialAFM(filterValue); // Προ-συμπλήρωση ΑΦΜ
+            }
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.setOnAction(event -> controller.handleOkButton());
+            okButton.setOnAction(event -> {controller.handleOkButton();
+                refreshTableData();
+            });
             // Add a key listener to save when Enter is pressed
             dialog.getDialogPane().setOnKeyPressed(event -> {
                 if (event.getCode() == KeyCode.ENTER) {
                     okButton.fire();  // Triggers the OK button action
+                    refreshTableData();
                 }
             });
             dialog.show();
-            // Ανανέωση δεδομένων
-            refreshTableData();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -343,6 +347,36 @@ public class CustomersController implements Initializable {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             dbHelper.customerDelete(selectedCustomer.getCode());
             refreshTableData();
+        }
+    }
+
+    public void customerNewAppointment(ActionEvent actionEvent) {
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        if (selectedCustomer != null) {
+            try {
+                // Φόρτωση του FXML για προσθήκη ραντεβού
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("newAppointment.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Προσθήκη Ραντεβού");
+
+                NewAppointmentController controller = loader.getController();
+
+                // Προ-συμπλήρωση πελάτη
+                if (selectedCustomer != null) {
+                    controller.setCustomerId(selectedCustomer.getCode());
+                    controller.setCustomerName(selectedCustomer.getName());
+                }
+
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setOnAction(event -> controller.handleSaveAppointment());
+
+                dialog.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
