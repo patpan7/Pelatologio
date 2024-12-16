@@ -488,7 +488,7 @@ public class DBHelper {
     }
 
     public void saveAppointment(Appointment appointment) {
-        String query = "INSERT INTO appointments (customer_id, title, description, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO appointments (customerid, title, description, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
                 PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, appointment.getCustomerId());
@@ -512,7 +512,7 @@ public class DBHelper {
 
             while (rs.next()) {
                 int id = rs.getInt("id");
-                int customerId = rs.getInt("customer_id");
+                int customerId = rs.getInt("customerid");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
                 LocalDateTime startTime = rs.getTimestamp("start_time").toLocalDateTime();

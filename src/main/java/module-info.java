@@ -18,7 +18,7 @@ module org.easytech.pelatologio {
     requires org.seleniumhq.selenium.devtools_v128;
     requires jfxtras.controls;
     requires jfxtras.agenda;
-
+    requires com.calendarfx.view;
 
     opens org.easytech.pelatologio to javafx.fxml;
     exports org.easytech.pelatologio;

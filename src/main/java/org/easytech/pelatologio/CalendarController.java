@@ -1,67 +1,79 @@
 package org.easytech.pelatologio;
 
 
+import com.calendarfx.model.Calendar;
+import com.calendarfx.model.CalendarSource;
+import com.calendarfx.model.Entry;
+import com.calendarfx.view.CalendarView;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import jfxtras.scene.control.agenda.Agenda;
-import jfxtras.scene.control.agenda.Agenda.AppointmentImplLocal;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroupImpl;
+import javafx.scene.control.Alert;
+import javafx.scene.layout.StackPane;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class CalendarController {
+    @FXML
+    StackPane stackPane;
+    @FXML
+    private CalendarView calendarView;
 
-    @FXML
-    private Agenda agenda;
-
-    @FXML
-    private Button previousButton;
-
-    @FXML
-    private Button nextButton;
-    @FXML
-    private Label dateRangeLabel;
+    private Calendar appointmentCalendar;
 
     private LocalDateTime currentDate;
     @FXML
     public void initialize() {
-        // Ξεκινάμε την ημέρα από τις 7 το πρωί
-        currentDate = LocalDateTime.now().withHour(7).withMinute(0).withSecond(0);
+        // Δημιουργία Calendar για τα ραντεβού
+        appointmentCalendar = new Calendar();
+        appointmentCalendar.setStyle(Calendar.Style.STYLE2);
 
-        // Φόρτωση ραντεβού από τη βάση
+
+        // Σύνδεση του Calendar με το CalendarView
+        CalendarSource calendarSource = new CalendarSource();
+        calendarSource.getCalendars().add(appointmentCalendar);
+        calendarView.getCalendarSources().add(calendarSource);
+
+        // Ρυθμίσεις εμφάνισης
+        calendarView.setShowSearchField(true);
+        calendarView.setShowToolBar(true);
+
+        calendarView.setEntryDetailsCallback(param -> {
+            Entry<?> entry = param.getEntry();
+            if (entry.getUserObject() instanceof Appointment) {
+                Appointment appointment = (Appointment) entry.getUserObject();
+
+                // Δημιουργία Popup
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Λεπτομέρειες Ραντεβού");
+                alert.setHeaderText("Τίτλος: " + appointment.getTitle());
+                alert.setContentText("Περιγραφή: " + appointment.getDescription() +
+                        "\nΠελάτης ID: " + appointment.getCustomerId() +
+                        "\nΈναρξη: " + appointment.getStartTime() +
+                        "\nΛήξη: " + appointment.getEndTime());
+                alert.showAndWait();
+            }
+            return null;
+        });
+
+
+        // Φόρτωση των ραντεβού από τη βάση δεδομένων
         loadAppointments();
-
-        // Διαχείριση πλοήγησης
-        previousButton.setOnAction(event -> navigatePrevious());
-        nextButton.setOnAction(event -> navigateNext());
-
-        // Ρύθμιση της ώρας για το ημερολόγιο να ξεκινά από τις 7 το πρωί
-        //agenda.setStartHour(LocalTime.of(7, 0));  // Έναρξη από τις 7 το πρωί
     }
 
     private void loadAppointments() {
-        // Διαγραφή όλων των ραντεβού πριν την προσθήκη νέων
-        agenda.appointments().clear();
-
         // Ανάκτηση ραντεβού από τη βάση δεδομένων
         List<Appointment> appointments = getAppointmentsFromDatabase();
 
         // Προσθήκη ραντεβού στην agenda
         for (Appointment appointment : appointments) {
-            agenda.appointments().add(new AppointmentImplLocal()
-                    .withStartLocalDateTime(appointment.getStartTime())
-                    .withEndLocalDateTime(appointment.getEndTime())
-                    .withSummary(appointment.getTitle())
-                    .withDescription(appointment.getDescription())
-                    .withAppointmentGroup(new AppointmentGroupImpl().withStyleClass("group")));
+            Entry<Appointment> entry = new Entry<>(appointment.getTitle());
+            entry.setInterval(appointment.getStartTime(), appointment.getEndTime());
+            // Συσχέτιση του αντικειμένου Appointment με το Entry
+            entry.setUserObject(appointment);
+            appointmentCalendar.addEntry(entry);
         }
-
-        // Ανάλογα με την επιλεγμένη προβολή, ορίζουμε την περίοδο
-        updateCalendarView();
     }
 
     private List<Appointment> getAppointmentsFromDatabase() {
@@ -70,38 +82,8 @@ public class CalendarController {
         return dbHelper.getAllAppointments();
     }
 
-
-    private void updateCalendarView() {
-        // Ρύθμιση της ημερομηνίας εκκίνησης για την προβολή
-        agenda.setDisplayedLocalDateTime(currentDate);
-
-        // Ενημέρωση του layout της agenda
-        agenda.layout();
-        // Ενημέρωση του Label για την προβολή ημερομηνιών
-        updateDateRangeLabel();
-    }
-
-    private void updateDateRangeLabel() {
-        // Δημιουργία του DateTimeFormatter για την εμφάνιση των ημερομηνιών
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        LocalDateTime endDate = currentDate.plusDays(7 - 1); // Ανάλογα με τις μέρες που προβάλλονται
-        String startDateString = currentDate.format(formatter);
-        String endDateString = endDate.format(formatter);
-
-        // Ενημέρωση του Label με το εύρος των ημερομηνιών
-        dateRangeLabel.setText("Εμφάνιση: " + startDateString + " - " + endDateString);
-    }
-
-    private void navigatePrevious() {
-        // Αλλάζουμε την ημερομηνία για το προηγούμενο χρονικό διάστημα
-        currentDate = currentDate.minusWeeks(1);
-        loadAppointments();  // Επαναφορτώνουμε τα ραντεβού για την προηγούμενη περίοδο
-    }
-
-    private void navigateNext() {
-        // Αλλάζουμε την ημερομηνία για το επόμενο χρονικό διάστημα
-        currentDate = currentDate.plusWeeks(1);
-        loadAppointments();  // Επαναφορτώνουμε τα ραντεβού για την επόμενη περίοδο
+    public void mainMenuClick(ActionEvent event) throws IOException {
+        MainMenuController mainMenuController = new MainMenuController();
+        mainMenuController.mainMenuClick(stackPane);
     }
 }
