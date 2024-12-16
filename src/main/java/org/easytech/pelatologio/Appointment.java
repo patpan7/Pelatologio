@@ -9,13 +9,15 @@ public class Appointment {
     private String description;     // Περιγραφή
     private LocalDateTime startTime; // Ώρα έναρξης
     private LocalDateTime endTime;   // Ώρα λήξης
+    private int calendarId; // ID του ημερολογίου
 
     // Constructor
-    public Appointment(int id, int customerId, String title, String description, LocalDateTime startTime, LocalDateTime endTime) {
+    public Appointment(int id, int customerId, String title, String description, int calendarId, LocalDateTime startTime, LocalDateTime endTime) {
         this.id = id;
         this.customerId = customerId;
         this.title = title;
         this.description = description;
+        this.calendarId = calendarId;
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -38,4 +40,7 @@ public class Appointment {
 
     public LocalDateTime getEndTime() { return endTime; }
     public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
+
+    public int getCalendarId() { return calendarId; }
+    public void setCalendarId(int calendarId) { this.calendarId = calendarId; }
 }

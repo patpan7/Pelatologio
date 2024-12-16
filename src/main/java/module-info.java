@@ -11,11 +11,11 @@ module org.easytech.pelatologio {
     requires java.sql;
     requires org.seleniumhq.selenium.chrome_driver;
     requires org.seleniumhq.selenium.firefox_driver;
-    requires dev.failsafe.core;
     requires org.seleniumhq.selenium.edge_driver;
+    //requires org.seleniumhq.selenium.devtools.v128;
+    requires dev.failsafe.core;
     requires java.desktop;
     requires java.mail;
-    requires org.seleniumhq.selenium.devtools_v128;
     requires jfxtras.controls;
     requires jfxtras.agenda;
     requires com.calendarfx.view;

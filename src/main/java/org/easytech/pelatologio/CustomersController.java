@@ -363,15 +363,22 @@ public class CustomersController implements Initializable {
                 NewAppointmentController controller = loader.getController();
 
                 // Προ-συμπλήρωση πελάτη
-                if (selectedCustomer != null) {
-                    controller.setCustomerId(selectedCustomer.getCode());
-                    controller.setCustomerName(selectedCustomer.getName());
-                }
+                controller.setCustomerId(selectedCustomer.getCode());
+                controller.setCustomerName(selectedCustomer.getName());
 
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
+                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
                 Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setOnAction(event -> controller.handleSaveAppointment());
+                okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                    // Εκτελούμε το handleSaveAppointment
+                    boolean success = controller.handleSaveAppointment();
+
+                    if (!success) {
+                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                        event.consume();
+                    }
+                });
 
                 dialog.showAndWait();
             } catch (IOException e) {
@@ -379,6 +386,8 @@ public class CustomersController implements Initializable {
             }
         }
     }
+
+
 
     public void customerInfo(ActionEvent actionEvent) {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();

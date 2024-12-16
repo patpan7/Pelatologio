@@ -487,15 +487,51 @@ public class DBHelper {
         }
     }
 
+    public void saveCalendar(Calendars calendar) {
+        String query = "INSERT INTO calendars (name) VALUES (?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, calendar.getName());
+            stmt.executeUpdate();
+
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                calendar.setId(rs.getInt(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Λήψη όλων των ημερολογίων
+    public List<Calendars> getAllCalendars() {
+        List<Calendars> calendars = new ArrayList<>();
+        String query = "SELECT * FROM calendars";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                calendars.add(new Calendars(
+                        rs.getInt("id"),
+                        rs.getString("name")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return calendars;
+    }
+
     public void saveAppointment(Appointment appointment) {
-        String query = "INSERT INTO appointments (customerid, title, description, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO appointments (customerid, title, description, calendar_id, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
                 PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, appointment.getCustomerId());
             stmt.setString(2, appointment.getTitle());
             stmt.setString(3, appointment.getDescription());
-            stmt.setTimestamp(4, Timestamp.valueOf(appointment.getStartTime()));
-            stmt.setTimestamp(5, Timestamp.valueOf(appointment.getEndTime()));
+            stmt.setInt(4,appointment.getCalendarId());
+            stmt.setTimestamp(5, Timestamp.valueOf(appointment.getStartTime()));
+            stmt.setTimestamp(6, Timestamp.valueOf(appointment.getEndTime()));
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -515,15 +551,34 @@ public class DBHelper {
                 int customerId = rs.getInt("customerid");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
+                int calendarId = rs.getInt("calendar_id");
                 LocalDateTime startTime = rs.getTimestamp("start_time").toLocalDateTime();
                 LocalDateTime endTime = rs.getTimestamp("end_time").toLocalDateTime();
 
-                appointments.add(new Appointment(id, customerId, title, description, startTime, endTime));
+                appointments.add(new Appointment(id, customerId, title, description, calendarId, startTime, endTime));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return appointments;
     }
+
+    public void updateAppointment(Appointment appointment) {
+        String query = "UPDATE appointments SET title = ?, description = ?, calendar_id = ?, start_time = ?, end_time = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, appointment.getTitle());
+            stmt.setString(2, appointment.getDescription());
+            stmt.setInt(3, appointment.getCalendarId());
+            stmt.setTimestamp(4, Timestamp.valueOf(appointment.getStartTime()));
+            stmt.setTimestamp(5, Timestamp.valueOf(appointment.getEndTime()));
+            stmt.setInt(6, appointment.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
