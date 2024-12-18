@@ -67,7 +67,7 @@
                             </ImageView>
                         </graphic>
                     </Button>
-               <Button contentDisplay="TOP" layoutX="634.0" layoutY="167.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#synkClick" styleClass="click-button" text="Megasoft Sync" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <Button contentDisplay="TOP" layoutX="634.0" layoutY="167.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#syncClick" styleClass="click-button" text="Megasoft Sync" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
                   <graphic>
                      <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                         <image>

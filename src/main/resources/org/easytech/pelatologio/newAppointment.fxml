@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane expanded="true" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.NewAppointmentController">
+<DialogPane expanded="true" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.NewAppointmentController">
 <content>
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
         <VBox alignment="CENTER">
@@ -15,7 +15,7 @@
             <Label text="Περιγραφή:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <TextArea fx:id="descriptionField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-            <ComboBox fx:id="calendarComboBox" layoutX="150" layoutY="100" prefWidth="478.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ComboBox fx:id="calendarComboBox" editable="true" layoutX="150" layoutY="100" prefWidth="478.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
 
             <Label text="Ημερομηνία Έναρξης:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
@@ -23,11 +23,11 @@
 
             <Label text="Ώρα Έναρξης:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
             <HBox GridPane.columnIndex="1" GridPane.rowIndex="4">
-            <ComboBox fx:id="startHourComboBox" prefWidth="160.0" promptText="Ώρα" />
-            <ComboBox fx:id="startMinuteComboBox" prefWidth="160.0" promptText="Λεπτά" />
+            <ComboBox fx:id="startHourComboBox" editable="true" prefWidth="160.0" promptText="Ώρα" />
+            <ComboBox fx:id="startMinuteComboBox" editable="true" prefWidth="160.0" promptText="Λεπτά" />
             </HBox>
             <Label text="Διάρκεια (λεπτά):" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-            <ComboBox fx:id="durationComboBox" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <ComboBox fx:id="durationComboBox" editable="true" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                <Label layoutX="10.0" layoutY="153.0" text="Ημερολόγιο:" GridPane.rowIndex="2" />
                <columnConstraints>
                   <ColumnConstraints />

@@ -580,5 +580,30 @@ public class DBHelper {
         }
     }
 
+    public void deleteCalendar(int id) {
+        String query = "DELETE FROM Calendars WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
 
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateCalendra(Calendars updatedCalendar) {
+        String query = "UPDATE Calendars SET name = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, updatedCalendar.getName());
+            pstmt.setInt(2, updatedCalendar.getId());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

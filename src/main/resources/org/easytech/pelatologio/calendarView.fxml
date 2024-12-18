@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.calendarfx.view.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import com.calendarfx.view.CalendarView?>
-<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CalendarController">
+<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CalendarController">
     <children>
         <BorderPane minHeight="800.0" minWidth="1200.0" styleClass="pane">
             <top>
@@ -48,7 +48,16 @@
 
             <center>
                 <ScrollPane fitToHeight="true" fitToWidth="true">
-                    <CalendarView fx:id="calendarView" layoutX="10" layoutY="10" prefWidth="780" prefHeight="580" />
+               <VBox alignment="TOP_CENTER">
+                  <children>
+                     <HBox alignment="TOP_CENTER">
+                        <children>
+                           <Button mnemonicParsing="false" onAction="#calendarManager" text="Διαχείριση Ημερολογίων" />
+                        </children>
+                     </HBox>
+                          <CalendarView fx:id="calendarView" enableHyperlinks="false" selectionMode="SINGLE" showAddCalendarButton="false" showPrintButton="false" suspendUpdates="true" />
+                  </children>
+               </VBox>
                 </ScrollPane>
             </center>
         </BorderPane>

@@ -84,7 +84,7 @@ public class MainMenuController implements Initializable {
     }
     }
 
-    public void synkClick(ActionEvent event) {
+    public void syncClick(ActionEvent event) {
         DBHelper dbHelper = new DBHelper();
         dbHelper.syncMegasoft();
     }
@@ -99,7 +99,7 @@ public class MainMenuController implements Initializable {
     }
 
     public void calendarClick(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("CalendarView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("calendarView.fxml"));
         root = fxmlLoader.load();
         stackPane.getChildren().clear();
         stackPane.getChildren().add(root);

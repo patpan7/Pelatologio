@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -24,23 +25,9 @@ public class CalendarController {
     @FXML
     private CalendarView calendarView;
 
-    private Calendar appointmentCalendar;
 
-    private LocalDateTime currentDate;
     @FXML
     public void initialize() {
-//        // Δημιουργία Calendar για τα ραντεβού
-//        appointmentCalendar = new Calendar();
-//        appointmentCalendar.setStyle(Calendar.Style.STYLE1);
-//        appointmentCalendar.setName("Ραντεβού");
-//
-//
-//        // Σύνδεση του Calendar με το CalendarView
-//        CalendarSource calendarSource = new CalendarSource("Calendars");
-//        com.calendarfx.model.Calendar calendar = new com.calendarfx.model.Calendar();
-//        calendarSource.getCalendars().add(appointmentCalendar);
-//        calendarSource.setName("Rantebou");
-
         // Ανάκτηση ημερολογίων από τη βάση
         DBHelper dbHelper = new DBHelper();
         List<Calendars> customCalendars = dbHelper.getAllCalendars();
@@ -55,8 +42,12 @@ public class CalendarController {
         int styleIndex = 0;
 
         for (Calendars customCalendar : customCalendars) {
-            com.calendarfx.model.Calendar fxCalendar = new com.calendarfx.model.Calendar(customCalendar.getName());
-            fxCalendar.setStyle(Calendar.Style.valueOf(styles[styleIndex % styles.length]));
+            Calendar fxCalendar = new Calendar(customCalendar.getName());
+
+            // Ορισμός στυλ
+            String style = styles[styleIndex % styles.length];
+            fxCalendar.setStyle(Calendar.Style.valueOf(style)); // Εδώ χρησιμοποιείται η αντιστοιχία
+
             styleIndex++;
             // Προσθήκη των ραντεβού στο συγκεκριμένο ημερολόγιο
             for (Appointment appointment : appointments) {
@@ -64,8 +55,9 @@ public class CalendarController {
                     Entry<Appointment> entry = new Entry<>(appointment.getTitle());
                     entry.setInterval(appointment.getStartTime(), appointment.getEndTime());
                     entry.setUserObject(appointment);
-                    System.out.println(appointment.getDescription());
+                    entry.setCalendar(fxCalendar); // Αυτό είναι απαραίτητο
                     fxCalendar.addEntry(entry);
+
                 }
             }
 
@@ -73,14 +65,12 @@ public class CalendarController {
         }
 
 
-// Προσθήκη στο View
+        // Προσθήκη στο View
         calendarView.getCalendarSources().add(calendarSource);
 
         // Ρυθμίσεις εμφάνισης
         calendarView.setShowSearchField(true);
         calendarView.setShowToolBar(true);
-        calendarView.setShowAddCalendarButton(false);
-
 
         calendarView.setEntryDetailsCallback(param -> {
             Entry<?> entry = param.getEntry();
@@ -89,7 +79,9 @@ public class CalendarController {
             }
             return null;
         });
-
+        for (Calendar calendar : calendarSource.getCalendars()) {
+            System.out.println("Calendar: " + calendar.getName() + ", Style: " + calendar.getStyle());
+        }
     }
 
     private void showEditAppointmentDialog(Entry<?> entry) {
@@ -145,7 +137,26 @@ public class CalendarController {
         }
     }
 
+    public void calendarManager(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("calendarManagerView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
 
+            // Τώρα μπορείς να πάρεις τον controller
+            CalendarManagerViewController controller = loader.getController();
+            controller.loadCalendars();
+
+
+            dialog.setTitle("Ημερολόγια");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public void mainMenuClick(ActionEvent event) throws IOException {
