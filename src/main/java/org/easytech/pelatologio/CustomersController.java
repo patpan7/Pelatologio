@@ -14,7 +14,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
@@ -360,7 +359,7 @@ public class CustomersController implements Initializable {
                 dialog.setDialogPane(loader.load());
                 dialog.setTitle("Προσθήκη Ραντεβού");
 
-                NewAppointmentController controller = loader.getController();
+                AddAppointmentController controller = loader.getController();
 
                 // Προ-συμπλήρωση πελάτη
                 controller.setCustomerId(selectedCustomer.getCode());

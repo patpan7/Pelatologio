@@ -8,7 +8,6 @@ import com.calendarfx.view.CalendarView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -16,7 +15,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class CalendarController {
@@ -24,12 +23,12 @@ public class CalendarController {
     StackPane stackPane;
     @FXML
     private CalendarView calendarView;
-
+    DBHelper dbHelper;
 
     @FXML
     public void initialize() {
         // Ανάκτηση ημερολογίων από τη βάση
-        DBHelper dbHelper = new DBHelper();
+        dbHelper = new DBHelper();
         List<Calendars> customCalendars = dbHelper.getAllCalendars();
         List<Appointment> appointments = dbHelper.getAllAppointments();
 
@@ -38,7 +37,7 @@ public class CalendarController {
         calendarSource.getCalendars().clear();
 
         // Μετατροπή των δεδομένων σε CalendarFX Calendar
-        String[] styles = { "STYLE1", "STYLE2", "STYLE3", "STYLE4", "STYLE5", "STYLE6", "STYLE7", "STYLE8", "STYLE9", "STYLE10" };
+        String[] styles = {"STYLE1", "STYLE2", "STYLE3", "STYLE4", "STYLE5", "STYLE6", "STYLE7", "STYLE8", "STYLE9", "STYLE10"};
         int styleIndex = 0;
 
         for (Calendars customCalendar : customCalendars) {
@@ -53,87 +52,127 @@ public class CalendarController {
             for (Appointment appointment : appointments) {
                 if (appointment.getCalendarId() == customCalendar.getId()) {
                     Entry<Appointment> entry = new Entry<>(appointment.getTitle());
+                    entry.setId(String.valueOf(appointment.getId()));
                     entry.setInterval(appointment.getStartTime(), appointment.getEndTime());
                     entry.setUserObject(appointment);
                     entry.setCalendar(fxCalendar); // Αυτό είναι απαραίτητο
                     fxCalendar.addEntry(entry);
+                    System.out.println("Προσθήκη ραντεβού: " + appointment.getTitle() +
+                            " από " + appointment.getStartTime() +
+                            " έως " + appointment.getEndTime() +
+                            " στο ημερολόγιο: " + fxCalendar.getName());
 
                 }
             }
 
-            calendarSource.getCalendars().add(fxCalendar);
+            calendarSource.getCalendars().addAll(fxCalendar);
         }
 
 
         // Προσθήκη στο View
-        calendarView.getCalendarSources().add(calendarSource);
-
+        calendarView.getCalendarSources().addAll(calendarSource);
+        calendarView.setRequestedTime(LocalTime.now());
         // Ρυθμίσεις εμφάνισης
         calendarView.setShowSearchField(true);
         calendarView.setShowToolBar(true);
 
         calendarView.setEntryDetailsCallback(param -> {
-            Entry<?> entry = param.getEntry();
+            Entry<Appointment> entry = (Entry<Appointment>) param.getEntry();
             if (entry != null) {
-                showEditAppointmentDialog(entry);
+                showEditAppointmentDialog(entry, entry.getCalendar());
             }
             return null;
         });
-        for (Calendar calendar : calendarSource.getCalendars()) {
-            System.out.println("Calendar: " + calendar.getName() + ", Style: " + calendar.getStyle());
-        }
     }
 
-    private void showEditAppointmentDialog(Entry<?> entry) {
+
+    private void showEditAppointmentDialog(Entry<Appointment> entry, Calendar fxCalendar) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("newAppointment.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("editAppointment.fxml"));
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(loader.load());
-            dialog.setTitle("Επεξεργασία Ραντεβού");
+            dialog.setTitle("Διαχείριση Ραντεβού");
 
-            NewAppointmentController controller = loader.getController();
-            Appointment appointment = (Appointment) entry.getUserObject();
-            // Προ-συμπλήρωση δεδομένων από το επιλεγμένο Entry
-            controller.setAppointmentDetails(
-                    appointment.getId(), // ID του ραντεβού
-                    appointment.getTitle(),
-                    appointment.getDescription(),
-                    appointment.getCalendarId(),
-                    entry.getStartAsLocalDateTime(),
-                    entry.getEndAsLocalDateTime()
-            );
+            EditAppointmentController controller = loader.getController();
+
+            // Έλεγχος αν το Entry είναι νέο
+            if (entry.getUserObject() == null) {
+                // Δημιουργούμε νέο Appointment με προεπιλεγμένες τιμές
+                Appointment newAppointment = new Appointment(
+                        0, // ID = 0 για νέο ραντεβού
+                        0,
+                        "", // Προεπιλεγμένος τίτλος
+                        "", // Κενή περιγραφή
+                        -1, // Προεπιλεγμένο ημερολόγιο (ID = -1 για ένδειξη)
+                        entry.getStartAsLocalDateTime(),
+                        entry.getEndAsLocalDateTime()
+                );
+                controller.setCalendarMap(dbHelper.getAllCalendars());
+                controller.loadAppointment(newAppointment);
+                entry.setUserObject(newAppointment); // Συνδέουμε το νέο Appointment με το Entry
+            } else {
+                // Φορτώνουμε υπάρχον Appointment
+                Appointment appointment = entry.getUserObject();
+                controller.setCalendarMap(dbHelper.getAllCalendars());
+                controller.loadAppointment(appointment);
+            }
 
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            // Λογική για το "OK" κουμπί
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                if (!controller.handleSaveOrUpdateAppointment(Integer.parseInt(entry.getId()))) {
-                    event.consume(); // Αποτρέπουμε το κλείσιμο αν υπάρχει σφάλμα
+                if (!controller.saveAppointment()) {
+                    event.consume(); // Αποτρέπουμε το κλείσιμο αν η αποθήκευση αποτύχει
                 } else {
-                    // Ενημέρωση του Entry στο CalendarView
-                    updateCalendarEntry(entry, controller.getUpdatedStart(), controller.getUpdatedEnd(), controller.getUpdatedTitle());
+                    Appointment updatedAppointment = entry.getUserObject();
+                    entry.setTitle(updatedAppointment.getTitle());
+                    entry.setInterval(updatedAppointment.getStartTime(), updatedAppointment.getEndTime());
                 }
             });
 
-
             dialog.showAndWait();
+            // Έλεγχος αν αποθηκεύτηκε
+            if (controller.isSaved()) {
+                System.out.println("Το ραντεβού αποθηκεύτηκε επιτυχώς!");
+                updateCalendarEntry(fxCalendar, entry.getUserObject());
+                // Ενημέρωση του ημερολογίου
+            } else {
+                System.out.println("Το ραντεβού δεν αποθηκεύτηκε.");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateCalendarEntry(Entry<?> entry, LocalDateTime updatedStart, LocalDateTime updatedEnd, String updatedTitle) {
-        if (updatedStart != null) {
-            entry.changeStartTime(updatedStart.toLocalTime());
-            entry.changeStartDate(updatedStart.toLocalDate());
+
+    private void updateCalendarEntry(Calendar fxCalendar, Appointment updatedAppointment) {
+        // Αναζήτηση του Entry με το ίδιο ID στο Calendar
+        Entry<?> entryToUpdate = null;
+        for (Entry<?> entry : fxCalendar.findEntries(updatedAppointment.getTitle())) {
+            if (entry.getId().equals(String.valueOf(updatedAppointment.getId()))) {
+                entryToUpdate = entry;
+                break;
+            }
         }
-        if (updatedEnd != null) {
-            entry.changeEndTime(updatedEnd.toLocalTime());
-            entry.changeEndDate(updatedEnd.toLocalDate());
-        }
-        if (updatedTitle != null && !updatedTitle.isEmpty()) {
-            entry.setTitle(updatedTitle);
+
+        if (entryToUpdate != null) {
+            // Ενημέρωση του υπάρχοντος Entry
+            entryToUpdate.setTitle(updatedAppointment.getTitle());
+            entryToUpdate.changeStartDate(updatedAppointment.getStartTime().toLocalDate());
+            entryToUpdate.changeStartTime(updatedAppointment.getStartTime().toLocalTime());
+            entryToUpdate.changeEndDate(updatedAppointment.getEndTime().toLocalDate());
+            entryToUpdate.changeEndTime(updatedAppointment.getEndTime().toLocalTime());
+            entryToUpdate.setCalendar(fxCalendar);
+            System.out.println("Το ραντεβού ενημερώθηκε στο ημερολόγιο.");
+        } else {
+            // Προσθήκη νέου Entry αν δεν βρεθεί υπάρχον
+            Entry<Appointment> newEntry = new Entry<>(updatedAppointment.getTitle());
+            newEntry.setId(String.valueOf(updatedAppointment.getId()));
+            newEntry.setInterval(updatedAppointment.getStartTime(), updatedAppointment.getEndTime());
+            newEntry.setUserObject(updatedAppointment);
+
+            fxCalendar.addEntry(newEntry);
+            System.out.println("Νέο ραντεβού προστέθηκε στο ημερολόγιο.");
         }
     }
 

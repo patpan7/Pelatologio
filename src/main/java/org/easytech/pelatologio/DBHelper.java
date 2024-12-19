@@ -42,7 +42,7 @@ public class DBHelper {
         try (Connection conn = getConnection();
              Statement statement = conn.createStatement()) {
 
-            String query = "SELECT * FROM customers order by code desc";
+            String query = "SELECT * FROM customers where code > 0 order by code desc";
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
@@ -522,7 +522,7 @@ public class DBHelper {
         return calendars;
     }
 
-    public void saveAppointment(Appointment appointment) {
+    public boolean saveAppointment(Appointment appointment) {
         String query = "INSERT INTO appointments (customerid, title, description, calendar_id, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
                 PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -532,10 +532,17 @@ public class DBHelper {
             stmt.setInt(4,appointment.getCalendarId());
             stmt.setTimestamp(5, Timestamp.valueOf(appointment.getStartTime()));
             stmt.setTimestamp(6, Timestamp.valueOf(appointment.getEndTime()));
-            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                return true; // Ενημερώθηκε επιτυχώς
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                return saveAppointment(appointment);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public List<Appointment> getAllAppointments() {
@@ -563,7 +570,7 @@ public class DBHelper {
         return appointments;
     }
 
-    public void updateAppointment(Appointment appointment) {
+    public boolean updateAppointment(Appointment appointment) {
         String query = "UPDATE appointments SET title = ?, description = ?, calendar_id = ?, start_time = ?, end_time = ? WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -574,9 +581,17 @@ public class DBHelper {
             stmt.setTimestamp(4, Timestamp.valueOf(appointment.getStartTime()));
             stmt.setTimestamp(5, Timestamp.valueOf(appointment.getEndTime()));
             stmt.setInt(6, appointment.getId());
-            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                return true; // Ενημερώθηκε επιτυχώς
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                return saveAppointment(appointment);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 

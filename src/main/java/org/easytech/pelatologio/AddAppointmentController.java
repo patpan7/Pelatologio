@@ -4,15 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
-import jfxtras.scene.control.LocalTimePicker;
-
-public class NewAppointmentController {
+public class AddAppointmentController {
     @FXML
     private TextField titleField;
     @FXML
