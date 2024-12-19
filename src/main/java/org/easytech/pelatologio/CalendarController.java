@@ -8,13 +8,17 @@ import com.calendarfx.view.CalendarView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -23,6 +27,8 @@ public class CalendarController {
     StackPane stackPane;
     @FXML
     private CalendarView calendarView;
+    @FXML
+    private ButtonType deleteButton;
     DBHelper dbHelper;
 
     @FXML
@@ -56,12 +62,15 @@ public class CalendarController {
                     entry.setInterval(appointment.getStartTime(), appointment.getEndTime());
                     entry.setUserObject(appointment);
                     entry.setCalendar(fxCalendar); // Αυτό είναι απαραίτητο
+
+                    // Προσθήκη listener για drag-and-drop
+                    addDragAndDropListener(entry);
+
                     fxCalendar.addEntry(entry);
                     System.out.println("Προσθήκη ραντεβού: " + appointment.getTitle() +
                             " από " + appointment.getStartTime() +
                             " έως " + appointment.getEndTime() +
                             " στο ημερολόγιο: " + fxCalendar.getName());
-
                 }
             }
 
@@ -83,6 +92,7 @@ public class CalendarController {
             }
             return null;
         });
+
     }
 
 
@@ -100,10 +110,10 @@ public class CalendarController {
                 // Δημιουργούμε νέο Appointment με προεπιλεγμένες τιμές
                 Appointment newAppointment = new Appointment(
                         0, // ID = 0 για νέο ραντεβού
-                        0,
-                        "", // Προεπιλεγμένος τίτλος
+                        0, // Προεπιλεγμένος πελάτης
+                        "", // Κενός τίτλος
                         "", // Κενή περιγραφή
-                        -1, // Προεπιλεγμένο ημερολόγιο (ID = -1 για ένδειξη)
+                        -1, // Προεπιλεγμένο ημερολόγιο (ID = -1)
                         entry.getStartAsLocalDateTime(),
                         entry.getEndAsLocalDateTime()
                 );
@@ -117,7 +127,32 @@ public class CalendarController {
                 controller.loadAppointment(appointment);
             }
 
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL, ButtonType.FINISH);
+            Button deleteButtonNode = (Button) dialog.getDialogPane().lookupButton(ButtonType.FINISH);
+            deleteButtonNode.setText("Διαγραφή");
+            if (deleteButtonNode != null) {
+                System.out.println("Delete button found!");
+                deleteButtonNode.addEventFilter(ActionEvent.ACTION, event -> {
+                    Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirmationAlert.setTitle("Επιβεβαίωση Διαγραφής");
+                    confirmationAlert.setHeaderText("Θέλετε σίγουρα να διαγράψετε αυτό το ραντεβού;");
+                    confirmationAlert.setContentText("Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.");
+
+                    if (confirmationAlert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                        if (controller.deleteAppointment(entry)) {
+                            dialog.close();
+                        } else {
+                            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                            errorAlert.setTitle("Σφάλμα Διαγραφής");
+                            errorAlert.setHeaderText(null);
+                            errorAlert.setContentText("Η διαγραφή του ραντεβού απέτυχε.");
+                            errorAlert.showAndWait();
+                        }
+                    }
+
+                    event.consume();
+                });
+            }
 
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.addEventFilter(ActionEvent.ACTION, event -> {
@@ -175,6 +210,27 @@ public class CalendarController {
             System.out.println("Νέο ραντεβού προστέθηκε στο ημερολόγιο.");
         }
     }
+
+    private void addDragAndDropListener(Entry<Appointment> entry) {
+        entry.intervalProperty().addListener((obs, oldInterval, newInterval) -> {
+
+            if (entry.getUserObject() instanceof Appointment) {
+                Appointment appointment = entry.getUserObject();
+                System.out.println("move");
+                appointment.setStartTime(newInterval.getStartDateTime());
+                appointment.setEndTime(newInterval.getEndDateTime());
+                // Ενημέρωση της βάσης
+                boolean success = dbHelper.updateAppointment(appointment);
+
+                if (!success) {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Σφάλμα κατά την ενημέρωση του ραντεβού στη βάση.");
+                    errorAlert.show();
+                }
+            }
+        });
+    }
+
+
 
     public void calendarManager(ActionEvent actionEvent) {
         try {

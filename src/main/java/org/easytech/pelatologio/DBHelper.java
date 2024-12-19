@@ -621,4 +621,14 @@ public class DBHelper {
             e.printStackTrace();
         }
     }
+
+    public void deleteAppointment(int appointmentId) throws SQLException {
+        String query = "DELETE FROM appointments WHERE id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, appointmentId);
+            statement.executeUpdate();
+        }
+    }
+
 }

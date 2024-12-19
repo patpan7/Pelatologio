@@ -84,38 +84,31 @@
             <artifactId>jaxb-runtime</artifactId>
             <version>4.0.5</version>
         </dependency>
-
-        <!-- JAX-WS dependencies -->
         <dependency>
             <groupId>javax.xml.ws</groupId>
             <artifactId>jaxws-api</artifactId>
             <version>2.3.1</version>
         </dependency>
-
         <dependency>
             <groupId>javax.jws</groupId>
             <artifactId>javax.jws-api</artifactId>
             <version>1.1</version>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.18.2</version> <!-- Use the latest version -->
         </dependency>
-
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <version>12.8.1.jre11</version> <!-- Διάλεξε την κατάλληλη έκδοση ανάλογα με την Java σου -->
         </dependency>
-
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-api</artifactId>
             <version>4.27.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
@@ -136,20 +129,16 @@
             <artifactId>selenium-edge-driver</artifactId>
             <version>4.27.0</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/dev.failsafe/failsafe -->
         <dependency>
             <groupId>dev.failsafe</groupId>
             <artifactId>failsafe</artifactId>
             <version>3.3.2</version>
         </dependency>
-
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
-
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
@@ -160,37 +149,21 @@
             <artifactId>javax.annotation-api</artifactId>
             <version>1.3.2</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.jfxtras/jfxtras-agenda -->
-        <dependency>
-            <groupId>org.jfxtras</groupId>
-            <artifactId>jfxtras-agenda</artifactId>
-            <version>17-r1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jfxtras</groupId>
-            <artifactId>jfxtras-controls</artifactId>
-            <version>17-r1</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.calendarfx/calendar -->
         <dependency>
             <groupId>com.calendarfx</groupId>
             <artifactId>calendar</artifactId>
             <version>11.12.7</version>
             <type>pom</type>
         </dependency>
-
-
         <dependency>
             <groupId>com.calendarfx</groupId>
             <artifactId>view</artifactId>
             <version>11.10.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.1.0-alpha1</version>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.9</version>
         </dependency>
 
     </dependencies>

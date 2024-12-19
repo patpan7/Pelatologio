@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import com.calendarfx.model.Entry;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -175,5 +176,20 @@ public class EditAppointmentController {
     private void closeDialog() {
         Stage stage = (Stage) titleField.getScene().getWindow();
         stage.close();
+    }
+
+    public boolean deleteAppointment(Entry<Appointment> entry) {
+        try {
+            Appointment appointment = entry.getUserObject();
+            if (appointment != null) {
+                DBHelper dbHelper = new DBHelper();
+                dbHelper.deleteAppointment(appointment.getId()); // Υποθέτοντας ότι υπάρχει αυτή η μέθοδος
+                entry.removeFromCalendar(); // Αφαίρεση από το ημερολόγιο
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

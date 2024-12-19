@@ -16,8 +16,6 @@ module org.easytech.pelatologio {
     requires dev.failsafe.core;
     requires java.desktop;
     requires java.mail;
-    requires jfxtras.controls;
-    requires jfxtras.agenda;
     requires com.calendarfx.view;
 
     opens org.easytech.pelatologio to javafx.fxml;
