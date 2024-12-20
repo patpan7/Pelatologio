@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane expanded="true" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EditAppointmentController">
+<DialogPane expanded="true" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EditAppointmentController">
     <content>
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
         <VBox alignment="CENTER">
@@ -29,7 +31,19 @@
             <Label text="Διάρκεια (λεπτά):" GridPane.columnIndex="0" GridPane.rowIndex="5" />
             <ComboBox fx:id="durationComboBox" editable="true" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                <Label layoutX="10.0" layoutY="153.0" text="Ημερολόγιο:" GridPane.rowIndex="2" />
+            <Button contentDisplay="TOP" minHeight="100.0" minWidth="180.0" mnemonicParsing="false" onAction="#showCustomer" styleClass="click-button" text="Προβολή πελάτη" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                <GridPane.margin>
+                    <Insets />
+                </GridPane.margin>
+                  <graphic>
+                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@icons/users.png" />
+                    </ImageView>
+                  </graphic>
+            </Button>
                <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
                   <ColumnConstraints />
                   <ColumnConstraints />
                   <ColumnConstraints />

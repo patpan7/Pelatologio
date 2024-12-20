@@ -31,11 +31,13 @@ public class AddNewCustomerController {
     @FXML
     private Button btnAfmSearch;
     @FXML
-    Button btnAddressAdd;
+    private Button btnAddressAdd;
     @FXML
     private TextArea taNotes;
     @FXML
     private ProgressIndicator progressIndicator;
+    @FXML
+    Button btnTaxis, btnMypos, btnSimply;
 
     int code = 0;
 
@@ -277,6 +279,20 @@ public class AddNewCustomerController {
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = customer.getCode();
         this.customer = customer;
+
+        btnTaxis.setStyle("-fx-border-color: #D6D8DE;");
+        btnMypos.setStyle("-fx-border-color: #D6D8DE;");
+        btnSimply.setStyle("-fx-border-color: #D6D8DE;");
+
+        if(dbHelper.hasApp(customer.getCode(),2)){
+            btnSimply.setStyle("-fx-border-color: #FF0000;");
+        }
+        if(dbHelper.hasApp(customer.getCode(),1)){
+            btnMypos.setStyle("-fx-border-color: #FF0000;");
+        }
+        if(dbHelper.hasApp(customer.getCode(),3)){
+            btnTaxis.setStyle("-fx-border-color: #FF0000;");
+        }
     }
 
 
@@ -409,5 +425,78 @@ public class AddNewCustomerController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void taxisClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("taxisView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+            // Τώρα μπορείς να πάρεις τον controller
+            TaxisViewController controller = loader.getController();
+
+            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+            controller.setCustomer(customer);
+
+            dialog.setTitle("Κωδικοί Taxis");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void myposClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("myposView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+            // Τώρα μπορείς να πάρεις τον controller
+            MyposViewController controller = loader.getController();
+
+            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+            controller.setCustomer(customer);
+
+            dialog.setTitle("Κωδικοί myPOS");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void simplyClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("simplyView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+            // Τώρα μπορείς να πάρεις τον controller
+            SimplyViewController controller = loader.getController();
+
+            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+            controller.setCustomer(customer);
+
+            dialog.setTitle("Κωδικοί Simply");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void folderClick(ActionEvent event) {
+        CustomerFolderManager folderManager = new CustomerFolderManager();
+
+        // Κλήση της μεθόδου για δημιουργία ή άνοιγμα του φακέλου
+        folderManager.createOrOpenCustomerFolder(customer.getName(), customer.getAfm());
     }
 }

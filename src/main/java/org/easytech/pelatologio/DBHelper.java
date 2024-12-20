@@ -631,4 +631,35 @@ public class DBHelper {
         }
     }
 
+    public Customer getSelectedCustomer(int customerId) {
+        String query = "SELECT * FROM customers WHERE code = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, customerId);
+            ResultSet resultSet = stmt.executeQuery();
+            Customer data = null;
+            if (resultSet.next()) {
+                data = new Customer();
+                data.setCode(resultSet.getInt("code"));
+                data.setName(resultSet.getString("name"));
+                data.setTitle(resultSet.getString("title"));
+                data.setJob(resultSet.getString("job"));
+                data.setAfm(resultSet.getString("afm"));
+                data.setPhone1(resultSet.getString("phone1"));
+                data.setPhone2(resultSet.getString("phone2"));
+                data.setMobile(resultSet.getString("mobile"));
+                data.setAddress(resultSet.getString("address"));
+                data.setTown(resultSet.getString("town"));
+                data.setPostcode(resultSet.getString("postcode"));
+                data.setEmail(resultSet.getString("email"));
+                data.setManager(resultSet.getString("manager"));
+                data.setManagerPhone(resultSet.getString("managerPhone"));
+                data.setNotes(resultSet.getString("notes"));
+            }
+            return data;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
