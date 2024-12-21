@@ -6,12 +6,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<DialogPane expanded="true" prefWidth="1000.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddNewCustomerController">
+<DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddNewCustomerController">
     <content>
       <BorderPane>
          <center>
               <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-                  <VBox alignment="CENTER" prefHeight="900.0" prefWidth="800.0" styleClass="pane" VBox.vgrow="ALWAYS">
+                  <VBox alignment="CENTER" styleClass="pane" VBox.vgrow="ALWAYS">
                       <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                           <VBox.margin>
                               <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
@@ -323,7 +323,7 @@
                              </image>
                          </ImageView>
                      </graphic></Button>
-                 <Button mnemonicParsing="false" onAction="#folderClick" prefWidth="175.0" styleClass="click-button" text="Data" HBox.hgrow="ALWAYS">
+                 <Button fx:id="btnData" mnemonicParsing="false" onAction="#folderClick" prefWidth="175.0" styleClass="click-button" text="Data" HBox.hgrow="ALWAYS">
                      <graphic>
                          <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                              <image>

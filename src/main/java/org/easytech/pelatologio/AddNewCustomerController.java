@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import javax.swing.text.View;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class AddNewCustomerController {
     @FXML
     private ProgressIndicator progressIndicator;
     @FXML
-    Button btnTaxis, btnMypos, btnSimply;
+    Button btnTaxis, btnMypos, btnSimply, btnData;
 
     int code = 0;
 
@@ -53,6 +54,14 @@ public class AddNewCustomerController {
 //            System.out.println("Έχει υποδιεύθυνση");
 //        } else
         btnAddressAdd.setDisable(true);
+        btnTaxis.setDisable(true);
+        btnTaxis.setVisible(false);
+        btnMypos.setDisable(true);
+        btnMypos.setVisible(false);
+        btnSimply.setDisable(true);
+        btnSimply.setVisible(false);
+        btnData.setDisable(true);
+        btnData.setVisible(false);
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
         MenuItem copyItem = new MenuItem("Αντιγραφή");
@@ -279,6 +288,15 @@ public class AddNewCustomerController {
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = customer.getCode();
         this.customer = customer;
+
+        btnTaxis.setDisable(false);
+        btnTaxis.setVisible(true);
+        btnMypos.setDisable(false);
+        btnMypos.setVisible(true);
+        btnSimply.setDisable(false);
+        btnSimply.setVisible(true);
+        btnData.setDisable(false);
+        btnData.setVisible(true);
 
         btnTaxis.setStyle("-fx-border-color: #D6D8DE;");
         btnMypos.setStyle("-fx-border-color: #D6D8DE;");
