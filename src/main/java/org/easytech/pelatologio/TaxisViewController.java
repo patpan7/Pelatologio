@@ -8,6 +8,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
@@ -158,28 +162,37 @@ public class TaxisViewController {
         loadLoginsForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
     }
 
-    public void taxisOpen(ActionEvent event) {
+    public void taxisOpen(MouseEvent event) {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
 
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
-            return;
+        if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
+            if (selectedLogin != null) {
+                String msg = selectedLogin.getTag() +
+                        "\nUsername: " + selectedLogin.getUsername() +
+                        "\nPassword: " + selectedLogin.getPassword();
+                copyTextToClipboard(msg);
+            } else {
+                showAlert("Attention", "Please select a login to copy.");
+            }
+        } else if (event.getButton() == MouseButton.PRIMARY) { // Left-click for regular functionality
+            if (selectedLogin == null) {
+                Platform.runLater(() -> showAlert("Attention", "Please select a login."));
+                return;
+            }
+            try {
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openAndFillLoginForm(
+                        "https://www1.aade.gr/saadeapps3/comregistry/#!/arxiki",
+                        selectedLogin.getUsername(),
+                        selectedLogin.getPassword(),
+                        By.id("username"),
+                        By.id("password"),
+                        By.name("btn_login")
+                );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        try {
-            LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openAndFillLoginForm(
-                    "https://www1.aade.gr/saadeapps3/comregistry/#!/arxiki",
-                    selectedLogin.getUsername(),
-                    selectedLogin.getPassword(),
-                    By.id("username"),
-                    By.id("password"),
-                    By.name("btn_login")
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     public void authorizationsOpen(ActionEvent actionEvent) {
@@ -320,6 +333,15 @@ public class TaxisViewController {
         }
     }
 
+    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
+    private void copyTextToClipboard(String msg) {
+        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(msg);  // Replace with the desired text
+        clipboard.setContent(content);
+        showAlert("Copied to Clipboard", msg);
+    }
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

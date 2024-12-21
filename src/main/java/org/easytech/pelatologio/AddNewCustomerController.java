@@ -38,7 +38,7 @@ public class AddNewCustomerController {
     @FXML
     private ProgressIndicator progressIndicator;
     @FXML
-    Button btnTaxis, btnMypos, btnSimply, btnData;
+    Button btnTaxis, btnMypos, btnSimply, btnData, btnAppointment;
 
     int code = 0;
 
@@ -62,6 +62,8 @@ public class AddNewCustomerController {
         btnSimply.setVisible(false);
         btnData.setDisable(true);
         btnData.setVisible(false);
+        btnAppointment.setDisable(true);
+        btnAppointment.setVisible(false);
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
         MenuItem copyItem = new MenuItem("Αντιγραφή");
@@ -297,6 +299,8 @@ public class AddNewCustomerController {
         btnSimply.setVisible(true);
         btnData.setDisable(false);
         btnData.setVisible(true);
+        btnAppointment.setDisable(false);
+        btnAppointment.setVisible(true);
 
         btnTaxis.setStyle("-fx-border-color: #D6D8DE;");
         btnMypos.setStyle("-fx-border-color: #D6D8DE;");
@@ -516,5 +520,41 @@ public class AddNewCustomerController {
 
         // Κλήση της μεθόδου για δημιουργία ή άνοιγμα του φακέλου
         folderManager.createOrOpenCustomerFolder(customer.getName(), customer.getAfm());
+    }
+
+    public void newAppointment(ActionEvent actionEvent) {
+        if (customer != null) {
+            try {
+                // Φόρτωση του FXML για προσθήκη ραντεβού
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("newAppointment.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Προσθήκη Ραντεβού");
+
+                AddAppointmentController controller = loader.getController();
+
+                // Προ-συμπλήρωση πελάτη
+                controller.setCustomerId(customer.getCode());
+                controller.setCustomerName(customer.getName());
+
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                    // Εκτελούμε το handleSaveAppointment
+                    boolean success = controller.handleSaveAppointment();
+
+                    if (!success) {
+                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                        event.consume();
+                    }
+                });
+
+                dialog.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
