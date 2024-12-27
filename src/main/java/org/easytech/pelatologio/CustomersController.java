@@ -394,7 +394,7 @@ public class CustomersController implements Initializable {
             String msg ="Στοιχεία πελάτη" +
                     "\nΕπωνυμία: "+selectedCustomer.getName()+
                     "\nΤίτλος: " + selectedCustomer.getTitle()+
-                    "\nΕπλαγγελμα: " + selectedCustomer.getJob()+
+                    "\nΕπάγγελμα: " + selectedCustomer.getJob()+
                     "\nΔιεύθυνση: " +selectedCustomer.getAddress()+
                     "\nΠόλη: " + selectedCustomer.getTown()+
                     "\nΤ.Κ.: " + selectedCustomer.getPostcode()+

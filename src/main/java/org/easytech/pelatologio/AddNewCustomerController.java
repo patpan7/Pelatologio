@@ -380,6 +380,19 @@ public class AddNewCustomerController {
         String managerPhone = tfManagerPhone.getText();
         String notes = taNotes.getText();
 
+        if (mobile.startsWith("+30"))
+            mobile = mobile.substring(3);
+        if (phone1.startsWith("+30"))
+            phone1 = phone1.substring(3);
+        if (phone2.startsWith("+30"))
+            phone2 = phone2.substring(3);
+        if (managerPhone.startsWith("+30"))
+            managerPhone = managerPhone.substring(3);
+        mobile = mobile.replaceAll("\\s+", "");
+        phone1 = phone1.replaceAll("\\s+", "");
+        phone2 = phone2.replaceAll("\\s+", "");
+        managerPhone = managerPhone.replaceAll("\\s+", "");
+
         DBHelper dbHelper = new DBHelper();
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
@@ -409,6 +422,20 @@ public class AddNewCustomerController {
         String managerPhone = tfManagerPhone.getText();
         DBHelper dbHelper = new DBHelper();
         String notes = taNotes.getText();
+
+        if (mobile.startsWith("+30"))
+            mobile = mobile.substring(3);
+        if (phone1.startsWith("+30"))
+            phone1 = phone1.substring(3);
+        if (phone2.startsWith("+30"))
+            phone2 = phone2.substring(3);
+        if (managerPhone.startsWith("+30"))
+            managerPhone = managerPhone.substring(3);
+        mobile = mobile.replaceAll("\\s+", "");
+        phone1 = phone1.replaceAll("\\s+", "");
+        phone2 = phone2.replaceAll("\\s+", "");
+        managerPhone = managerPhone.replaceAll("\\s+", "");
+
         dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, manager, managerPhone, notes);
         showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
     }
