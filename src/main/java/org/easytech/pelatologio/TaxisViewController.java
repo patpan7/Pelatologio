@@ -12,12 +12,15 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Duration;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
 import java.util.Optional;
 
 public class TaxisViewController {
+    @FXML
+    private Button btnTaxis, btnAuthorizations, btnMyData, btnESend, btnAfm1, btnAfm2, btnTameiakes;
     @FXML
     private Label customerLabel;
 
@@ -39,6 +42,14 @@ public class TaxisViewController {
 
     @FXML
     public void initialize() {
+        setTooltip(btnTaxis, "1) Είσοδος στο Taxis με επιλεγμένο κωδικό\n2) Αντιγραφή στοιχείων για επιλεγμένου κωδικού");
+        setTooltip(btnAuthorizations, "Είσοδος στις εξουσιοδοτήσεις με επιλεγμένο κωδικό");
+        setTooltip(btnMyData, "Είσοδος στο myData με επιλεγμένο κωδικό");
+        setTooltip(btnESend, "Είσοδος στο e-send με επιλεγμένο κωδικό");
+        setTooltip(btnAfm1, "Εγγραφή στην υπηρεσία ανεύρεσης ΑΦΜ με επιλεγμένο κωδικό");
+        setTooltip(btnAfm2, "Είσοδος στη διαχείριση ειδικών κωδικών με επιλεγμένο κωδικό");
+        setTooltip(btnTameiakes, "Είσοδος στις ταμειακές με επιλεγμένο κωδικό");
+
         loginList = FXCollections.observableArrayList();
         // Ρύθμιση στήλης username
         usernameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
@@ -348,5 +359,12 @@ public class TaxisViewController {
         alert.setTitle(title);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void setTooltip(Button button, String text) {
+        Tooltip tooltip = new Tooltip();
+        tooltip.setShowDelay(Duration.seconds(0.3));
+        tooltip.setText(text);
+        button.setTooltip(tooltip);
     }
 }

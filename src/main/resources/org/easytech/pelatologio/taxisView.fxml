@@ -50,7 +50,7 @@
                     <!-- Λίστα με κουμπιά για άλλες εργασίες -->
                     <VBox alignment="TOP_CENTER">
                         <children>
-                            <Button mnemonicParsing="false" onMouseClicked="#taxisOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="TaxisNet">
+                            <Button fx:id="btnTaxis" mnemonicParsing="false" onMouseClicked="#taxisOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="TaxisNet">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
@@ -58,32 +58,32 @@
                            <Cursor fx:constant="HAND" />
                         </cursor>
                             </Button>
-                            <Button mnemonicParsing="false" onAction="#authorizationsOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Εξουσιοδότηση ΑΑΔΕ">
+                            <Button fx:id="btnAuthorizations" mnemonicParsing="false" onAction="#authorizationsOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Εξουσιοδότηση ΑΑΔΕ">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
                             </Button>
-                            <Button mnemonicParsing="false" onAction="#mydataOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="myDATA">
+                            <Button fx:id="btnMyData" mnemonicParsing="false" onAction="#mydataOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="myDATA">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
                             </Button>
-                            <Button mnemonicParsing="false" onAction="#esendOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="eSend">
+                            <Button fx:id="btnESend" mnemonicParsing="false" onAction="#esendOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="eSend">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
                             </Button>
-                            <Button mnemonicParsing="false" onAction="#afm1Open" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Ανεύρεση ΑΦΜ 1">
+                            <Button fx:id="btnAfm1" lineSpacing="1.0" mnemonicParsing="false" onAction="#afm1Open" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Ανεύρεσης ΑΦΜ" textOverrun="CLIP">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
                             </Button>
-                            <Button mnemonicParsing="false" onAction="#afm2Open" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Ανεύρεση ΑΦΜ 2">
+                            <Button fx:id="btnAfm2" mnemonicParsing="false" onAction="#afm2Open" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Ειδικοί Κωδικοί">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
                             </Button>
-                            <Button mnemonicParsing="false" onAction="#tameiakesOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Ταμειακές">
+                            <Button fx:id="btnTameiakes" mnemonicParsing="false" onAction="#tameiakesOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Ταμειακές">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>

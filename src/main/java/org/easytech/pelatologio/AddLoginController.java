@@ -1,10 +1,14 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import org.openqa.selenium.By;
+
+import java.io.IOException;
 
 public class AddLoginController {
 
@@ -109,5 +113,34 @@ public class AddLoginController {
 
     public void setUsername(String email) {
         usernameField.setText(email);
+    }
+
+    public void tempLogin() {
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+        if (username.isEmpty() || password.isEmpty()) {
+            Platform.runLater(() -> showAlert("Attention", "Συμπλήρωσε το Username και το Password."));
+            return;
+        }
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator(true);
+            loginAutomation.openAndFillLoginForm(
+                    "https://www1.aade.gr/saadeapps3/comregistry/#!/arxiki",
+                    username,
+                    password,
+                    By.id("username"),
+                    By.id("password"),
+                    By.name("btn_login")
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

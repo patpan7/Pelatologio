@@ -211,3 +211,12 @@
 .agenda-day-today {
     -fx-background-color: #ffeb3b;  /* Κίτρινο για την τρέχουσα ημέρα */
 }
+
+.tooltip {
+    -fx-background-color: #2a2a2a;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+}

@@ -12,12 +12,15 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Duration;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
 import java.util.Optional;
 
 public class SimplyViewController {
+    @FXML
+    public Button btnSimplyPOS, btnSimplyCash, btnSimplyRest, btnSimplyPOSRegister, btnSimplyCloudRegister;
     @FXML
     private Label customerLabel;
 
@@ -39,6 +42,12 @@ public class SimplyViewController {
 
     @FXML
     public void initialize() {
+        setTooltip(btnSimplyPOS, "Είσοδος στο Simply POS με επιλεγμένο κωδικό");
+        setTooltip(btnSimplyCash, "1) Είσοδος στο Simply Cash με επιλεγμένο κωδικό\n2α) Αποστολή στοιχείων για επιλεγμένο κωδικό σε Simply \n2β) Aντιγραφή στοιχείων για επιλεγμένου κωδικού");
+        setTooltip(btnSimplyRest, "1) Είσοδος στο Simply Rest με επιλεγμένο κωδικό\n2α) Αποστολή στοιχείων για επιλεγμένο κωδικό σε Simply \n2β) Aντιγραφή στοιχείων για επιλεγμένου κωδικού");
+        setTooltip(btnSimplyPOSRegister, "Εγγραφή στο Simply POS");
+        setTooltip(btnSimplyCloudRegister,"Εγγραφή Simply Cash/Rest");
+
         loginList = FXCollections.observableArrayList();
         // Ρύθμιση στήλης username
         usernameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
@@ -361,5 +370,11 @@ public class SimplyViewController {
         alert.setTitle(title);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    private void setTooltip(Button button, String text) {
+        Tooltip tooltip = new Tooltip();
+        tooltip.setShowDelay(Duration.seconds(0.3));
+        tooltip.setText(text);
+        button.setTooltip(tooltip);
     }
 }

@@ -14,11 +14,10 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.KeyCode;
+import javafx.scene.input.*;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
+import javafx.util.Duration;
 
 import java.awt.*;
 import java.io.File;
@@ -41,9 +40,7 @@ public class CustomersController implements Initializable {
     @FXML
     TextField filterField;
     @FXML
-    Button openFileButton;
-    @FXML
-    Button btnTaxis, btnMypos, btnSimply;
+    Button btnTaxis, btnMypos, btnSimply, btnData, openFileButton;
 
     ObservableList<Customer> observableList;
     FilteredList<Customer> filteredData;
@@ -53,6 +50,13 @@ public class CustomersController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        setTooltip(btnTaxis, "1) Διαχείριση κωδικών Taxis του πελάτη\n2) Είσοδος με κωδικούς νέου πελάτη");
+        setTooltip(btnMypos, "Διαχείριση κωδικών myPOS του πελάτη");
+        setTooltip(btnSimply, "Διαχείριση κωδικών Simply του πελάτη");
+        setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
+        setTooltip(openFileButton,"1) Αντιγραφή πληροφοριών\n2) Άνοιγμα φακέλου με δεδομένα");
+
+
         dbHelper = new DBHelper();
 
         // Δημιουργία και αρχικοποίηση των στηλών
@@ -488,33 +492,59 @@ public class CustomersController implements Initializable {
         mainMenuController.mainMenuClick(stackPane);
     }
 
-    public void taxisClick(ActionEvent event) {
-        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-        if (selectedCustomer == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί Πελάτης!");
-            Optional<ButtonType> result = alert.showAndWait();
-            return;
-        }
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("taxisView.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+    public void taxisClick(MouseEvent event) {
+        if (event.getButton() == MouseButton.SECONDARY){
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addLogin.fxml"));
+                DialogPane dialogPane = loader.load();
 
-            // Τώρα μπορείς να πάρεις τον controller
-            TaxisViewController controller = loader.getController();
+                AddLoginController addLoginController = loader.getController();
 
-            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-            controller.setCustomer(selectedCustomer);
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(dialogPane);
+                dialog.setTitle("Login");
+                dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
 
-            dialog.setTitle("Κωδικοί Taxis");
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            dialog.initModality(Modality.WINDOW_MODAL);
-            dialog.show();
+                // Όταν ο χρήστης πατά το OK, θα καλέσει τη μέθοδο για αποθήκευση
+                dialog.setResultConverter(dialogButton -> {
+                    if (dialogButton == ButtonType.OK) {
+                        addLoginController.tempLogin();
+                    }
+                    return null;
+                });
 
-        } catch (IOException e) {
-            e.printStackTrace();
+                dialog.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+            if (selectedCustomer == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText("Δεν έχει επιλεγεί Πελάτης!");
+                Optional<ButtonType> result = alert.showAndWait();
+                return;
+            }
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("taxisView.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+                // Τώρα μπορείς να πάρεις τον controller
+                TaxisViewController controller = loader.getController();
+
+                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                controller.setCustomer(selectedCustomer);
+
+                dialog.setTitle("Κωδικοί Taxis");
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+                dialog.initModality(Modality.WINDOW_MODAL);
+                dialog.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -625,5 +655,12 @@ public class CustomersController implements Initializable {
         alert.setTitle(title);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void setTooltip(Button button, String text) {
+        Tooltip tooltip = new Tooltip();
+        tooltip.setShowDelay(Duration.seconds(0.3));
+        tooltip.setText(text);
+        button.setTooltip(tooltip);
     }
 }

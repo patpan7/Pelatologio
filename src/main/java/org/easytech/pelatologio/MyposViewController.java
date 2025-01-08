@@ -12,6 +12,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Duration;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
@@ -33,6 +34,8 @@ public class MyposViewController {
     private TableColumn<Logins, String> tagColumn;
     @FXML
     private TableColumn<Logins, String> phoneColumn;
+    @FXML
+    private Button btnLogin, btnRegister;
 
 
     Customer customer;
@@ -41,6 +44,9 @@ public class MyposViewController {
 
     @FXML
     public void initialize() {
+        setTooltip(btnLogin, "Είσοδος myPOS με επιλεγμένο κωδικό");
+        setTooltip(btnRegister, "1) Εγγραφή πελάτη στην myPOS\n2) Αντιγραφή στοιχείων και επιλεγμένου κωδικού");
+
         loginList = FXCollections.observableArrayList();
         // Ρύθμιση στήλης username
         usernameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
@@ -230,11 +236,16 @@ public class MyposViewController {
         }
     }
 
-
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    private void setTooltip(Button button, String text) {
+        Tooltip tooltip = new Tooltip();
+        tooltip.setShowDelay(Duration.seconds(0.3));
+        tooltip.setText(text);
+        button.setTooltip(tooltip);
     }
 }

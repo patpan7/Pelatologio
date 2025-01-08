@@ -18,6 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import javax.swing.text.View;
 import java.awt.*;
@@ -46,6 +47,13 @@ public class AddNewCustomerController {
     private Customer customer;
 
     public void initialize() {
+        setTooltip(btnTaxis, "1) Διαχείριση κωδικών Taxis του πελάτη");
+        setTooltip(btnMypos, "Διαχείριση κωδικών myPOS του πελάτη");
+        setTooltip(btnSimply, "Διαχείριση κωδικών Simply του πελάτη");
+        setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
+        setTooltip(btnAppointment,"Προσθήκη νέου ραντεβού");
+
+
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
 //        DBHelper dbHelper = new DBHelper();
 //        if (dbHelper.hasSubAddress(customer.getCode())) {
@@ -583,5 +591,12 @@ public class AddNewCustomerController {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void setTooltip(Button button, String text) {
+        Tooltip tooltip = new Tooltip();
+        tooltip.setShowDelay(Duration.seconds(0.3));
+        tooltip.setText(text);
+        button.setTooltip(tooltip);
     }
 }
