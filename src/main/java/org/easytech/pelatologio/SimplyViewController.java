@@ -42,9 +42,9 @@ public class SimplyViewController {
 
     @FXML
     public void initialize() {
-        setTooltip(btnSimplyPOS, "Είσοδος στο Simply POS με επιλεγμένο κωδικό");
-        setTooltip(btnSimplyCash, "1) Είσοδος στο Simply Cash με επιλεγμένο κωδικό\n2α) Αποστολή στοιχείων για επιλεγμένο κωδικό σε Simply \n2β) Aντιγραφή στοιχείων για επιλεγμένου κωδικού");
-        setTooltip(btnSimplyRest, "1) Είσοδος στο Simply Rest με επιλεγμένο κωδικό\n2α) Αποστολή στοιχείων για επιλεγμένο κωδικό σε Simply \n2β) Aντιγραφή στοιχείων για επιλεγμένου κωδικού");
+        setTooltip(btnSimplyPOS, "1) Είσοδος στο Simply POS με επιλεγμένο κωδικό\n2) Αντιγραφή στοιχείων για επιλεγμένο κωδικό");
+        setTooltip(btnSimplyCash, "1) Είσοδος στο Simply Cash με επιλεγμένο κωδικό\n2α) Αποστολή στοιχείων για επιλεγμένο κωδικό σε Simply \n2β) Αντιγραφή στοιχείων για επιλεγμένου κωδικού");
+        setTooltip(btnSimplyRest, "1) Είσοδος στο Simply Rest με επιλεγμένο κωδικό\n2α) Αποστολή στοιχείων για επιλεγμένο κωδικό σε Simply \n2β) Αντιγραφή στοιχείων για επιλεγμένου κωδικού");
         setTooltip(btnSimplyPOSRegister, "Εγγραφή στο Simply POS");
         setTooltip(btnSimplyCloudRegister,"Εγγραφή Simply Cash/Rest");
 
@@ -175,29 +175,43 @@ public class SimplyViewController {
         loadLoginsForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
     }
 
-    public void simplyposOpen(ActionEvent event) {
+    public void simplyposOpen(MouseEvent event) {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
-            return;
+        if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
+            if (selectedLogin != null) {
+                String msg ="Νέος Πελάτης Simply POS" +
+                        "\nΕπωνυμία: "+customer.getName()+
+                        "\nΑΦΜ: "+customer.getAfm()+
+                        "\nEmail: "+selectedLogin.getUsername()+
+                        "\nΚωδικός: "+selectedLogin.getPassword()+
+                        "\nΚινητό: "+customer.getMobile()+
+                        "\n";
+                copyTextToClipboard(msg);
+                showAlert("Attention", "Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.");
+            } else {
+                showAlert("Attention", "Please select a login to copy.");
+            }
+        } else {
+            if (selectedLogin == null) {
+                // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
+                Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
+                //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
+                return;
+            }
+            try {
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openAndFillLoginForm(
+                        "https://app.simplypos.com/Account/Login",
+                        selectedLogin.getUsername(),
+                        selectedLogin.getPassword(),
+                        By.id("keyboard"),
+                        By.id("Password"),
+                        By.id("btnSubmit")
+                );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        try {
-            LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openAndFillLoginForm(
-                    "https://app.simplypos.com/Account/Login",
-                    selectedLogin.getUsername(),
-                    selectedLogin.getPassword(),
-                    By.id("keyboard"),
-                    By.id("Password"),
-                    By.id("btnSubmit")
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     public void simplycashOpen(MouseEvent event) {
@@ -209,6 +223,7 @@ public class SimplyViewController {
                         "\nΕπωνυμία: "+customer.getName()+
                         "\nΑΦΜ: "+customer.getAfm()+
                         "\nEmail: "+selectedLogin.getUsername()+
+                        "\nΚωδικός: "+selectedLogin.getPassword()+
                         "\nΚινητό: "+customer.getMobile()+
                         "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
                 // Δημιουργία παραθύρου διαλόγου για επιλογή
@@ -235,7 +250,7 @@ public class SimplyViewController {
                } else {
                 showAlert("Attention", "Please select a login to copy.");
             }
-        } else if (event.getButton() == MouseButton.PRIMARY) { // Left-click for regular functionality
+        } else { // Left-click for regular functionality
             if (selectedLogin == null) {
                 Platform.runLater(() -> showAlert("Attention", "Please select a login."));
                 return;
@@ -266,6 +281,7 @@ public class SimplyViewController {
                         "\nΕπωνυμία: "+customer.getName()+
                         "\nΑΦΜ: "+customer.getAfm()+
                         "\nEmail: "+selectedLogin.getUsername()+
+                        "\nΚωδικός: "+selectedLogin.getPassword()+
                         "\nΚινητό: "+customer.getMobile()+
                         "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
                 // Δημιουργία παραθύρου διαλόγου για επιλογή
