@@ -308,8 +308,8 @@ public class DBHelper {
                 "        COALESCE(City_1, '') AS city1, \n" +
                 "        COALESCE(zip_1, '') AS zip1, \n" +
                 "        COALESCE(Email, '') AS mail1\n" +
-                "    FROM Megasoft.dbo.E2_Emp065_24\n" +
-                "    INNER JOIN Megasoft.dbo.E2_Emp001_24 ON Megasoft.dbo.E2_Emp001_24.pelid = Megasoft.dbo.E2_Emp065_24.pelid\n" +
+                "    FROM Megasoft.dbo.E2_Emp065_25\n" +
+                "    INNER JOIN Megasoft.dbo.E2_Emp001_25 ON Megasoft.dbo.E2_Emp001_25.pelid = Megasoft.dbo.E2_Emp065_25.pelid\n" +
                 "    WHERE Afm IS NOT NULL AND Afm != ''\n" +
                 "    ORDER BY Kwd  -- Ταξινόμηση βάσει του Kwd για διατήρηση της σειράς\n" +
                 ") AS source\n" +
