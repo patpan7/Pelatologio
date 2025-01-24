@@ -663,56 +663,31 @@ public class DBHelper {
         return null;
     }
 
-    public boolean addTask(Task task) {
-        String query = "INSERT INTO tasks (title, description, due_date, customer_id, is_completed) VALUES (?, ?, ?, ?, 0)";
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, task.getTitle());
-            stmt.setString(2, task.getDescription());
-            stmt.setTimestamp(3, task.getDueDate() != null ? Timestamp.valueOf(task.getDueDate()) : null);
-            if (task.getCustomerId() != null) {
-                stmt.setInt(4, task.getCustomerId());
-            } else {
-                stmt.setNull(4, Types.INTEGER);
-            }
-            stmt.executeUpdate();
 
-            System.out.println("Η εργασία προστέθηκε επιτυχώς!");
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public List<Task> getTasks(Integer customerId) {
+    public List<Task> getAllTasks() {
         List<Task> tasks = new ArrayList<>();
-        String query = customerId != null
-                ? "SELECT * FROM tasks WHERE customer_id = ?"
-                : "SELECT * FROM tasks WHERE customer_id IS NULL";
+        String query = "SELECT id, title, description, dueDate, isCompleted, customerId FROM Tasks";
 
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            if (customerId != null) {
-                stmt.setInt(1, customerId);
-            }
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Task task = new Task(
-                        rs.getInt("id"),
-                        rs.getString("title"),
-                        rs.getString("description"),
-                        rs.getTimestamp("due_date") != null ? rs.getTimestamp("due_date").toLocalDateTime() : null,
-                        rs.getInt("customer_id"),
-                        rs.getString("category"),
-                        rs.getBoolean("is_completed")
-                );
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet resultSet = stmt.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                Date dueDate = resultSet.getDate("dueDate");
+                boolean isCompleted = resultSet.getBoolean("isCompleted");
+                Integer customerId = resultSet.getObject("customerId", Integer.class);
+
+                Task task = new Task(id, title, description, dueDate != null ? dueDate.toLocalDate() : null, isCompleted, customerId);
                 tasks.add(task);
-                task.print();
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return tasks;
     }
 
