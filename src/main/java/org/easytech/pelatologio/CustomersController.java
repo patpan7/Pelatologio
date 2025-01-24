@@ -390,6 +390,22 @@ public class CustomersController implements Initializable {
         }
     }
 
+    public void customerNewTask(ActionEvent actionEvent) {
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        if (selectedCustomer != null) {
+            try {
+                // Φόρτωση του FXML για προσθήκη ραντεβού
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Προσθήκη Εργασίας");
+                AddTaskController controller = loader.getController();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 
     public void customerInfo(ActionEvent actionEvent) {

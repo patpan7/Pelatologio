@@ -135,6 +135,10 @@ public class SettingsController implements Initializable {
         }
     }
 
+    public void syncClick(ActionEvent event) {
+        DBHelper dbHelper = new DBHelper();
+        dbHelper.syncMegasoft();
+    }
 
     public void mainMenuClick(ActionEvent event) throws IOException {
         MainMenuController mainMenuController = new MainMenuController();

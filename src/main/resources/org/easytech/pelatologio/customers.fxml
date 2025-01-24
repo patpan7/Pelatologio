@@ -98,6 +98,7 @@
                                 <MenuItem mnemonicParsing="false" onAction="#customerDelete" styleClass="menu-item" text="Διαγραφή" />
                                 <SeparatorMenuItem />
                                 <MenuItem mnemonicParsing="false" onAction="#customerNewAppointment" styleClass="menu-item" text="Νέο Ραντεβού" />
+                                <MenuItem mnemonicParsing="false" onAction="#customerNewTask" styleClass="menu-item" text="Νέα Εργασία" />
                                 <SeparatorMenuItem />
                                 <MenuItem mnemonicParsing="false" onAction="#customerInfo" styleClass="menu-item" text="Αντιγραφή Στοιχείων" />
                                 <MenuItem mnemonicParsing="false" onAction="#viberOpen" styleClass="menu-item" text="Επικοινωνία Viber" />
@@ -110,8 +111,7 @@
                 </TableView>
             </VBox>
         </center>
-      <bottom>
-         <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+      <bottom>         <HBox alignment="CENTER" BorderPane.alignment="CENTER">
             <children>
                <Separator visible="false" HBox.hgrow="ALWAYS" />
                <Button fx:id="btnTaxis" mnemonicParsing="false" onMouseClicked="#taxisClick" prefWidth="175.0" text="Taxis" HBox.hgrow="ALWAYS">

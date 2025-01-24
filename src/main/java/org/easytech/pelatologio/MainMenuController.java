@@ -84,18 +84,21 @@ public class MainMenuController implements Initializable {
     }
     }
 
-    public void syncClick(ActionEvent event) {
-        DBHelper dbHelper = new DBHelper();
-        dbHelper.syncMegasoft();
+    public void tasksClick(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("tasksView.fxml"));
+        root = fxmlLoader.load();
+        stackPane.getChildren().clear();
+        stackPane.getChildren().add(root);
     }
 
     @FXML
-    public void checkSipConnection() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Έλεγχος Σύνδεσης");
-        alert.setHeaderText(null);
-        alert.setContentText("Η σύνδεση SIP είναι ενεργή.");
-        alert.showAndWait();
+    public void myDataStatusClick(ActionEvent event) {
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator(true);
+            loginAutomation.openPage("https://status.mydatacloud.gr/");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void calendarClick(ActionEvent event) throws IOException {

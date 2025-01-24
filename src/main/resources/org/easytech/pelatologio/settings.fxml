@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
+<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
     <children>
         <BorderPane minHeight="800.0" minWidth="1200.0" styleClass="pane">
             <top>
@@ -99,6 +99,13 @@
                                         <TextField fx:id="tfAppUser" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                         <Label styleClass="normal-label" text="Διαδρομή δεδομένων" GridPane.columnIndex="0" GridPane.rowIndex="7" />
                                         <TextField fx:id="tfDataFolder" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                        <Button contentDisplay="TOP" layoutX="634.0" layoutY="167.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#syncClick" styleClass="click-button" text="Megasoft Sync" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                                            <graphic>
+                                                <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                                                    <Image url="@icons/megasoft.png" />
+                                                </ImageView>
+                                            </graphic>
+                                        </Button>
                                     </children>
                                     <columnConstraints>
                                         <ColumnConstraints />
@@ -113,6 +120,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" />
                                         <RowConstraints />
                                         <RowConstraints />
+                                        <RowConstraints />
                                     </rowConstraints>
                                 </GridPane>
 
@@ -125,16 +133,16 @@
                                 <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
                                     <children>
                                         <Label styleClass="normal-label" text="Taxis User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                        <TextField fx:id="tfTaxisUser" text="localhost" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                        <TextField fx:id="tfTaxisUser" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                                         <Label styleClass="normal-label" text="Taxis Pass" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                        <TextField fx:id="tfTaxisPass" text="sa" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <TextField fx:id="tfTaxisPass" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                                         <Label styleClass="normal-label" text="Ανεύρεση User" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                        <TextField fx:id="tfAfmUser" text="et@dgou.gr" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <TextField fx:id="tfAfmUser" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                                         <Label styleClass="normal-label" text="Ανεύρεση Pass" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                                        <TextField fx:id="tfAfmPass" text="!abcd1234" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                        <TextField fx:id="tfAfmPass" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                     </children>
                                     <columnConstraints>
                                         <ColumnConstraints />
@@ -156,13 +164,13 @@
                                 <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
                                     <children>
                                         <Label styleClass="normal-label" text="myPOS Link" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                        <TextField fx:id="tfMyposLink" text="https://merchant.mypos.com/el/enroll?ref=1006179#/" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                        <TextField fx:id="tfMyposLink" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                                         <Label styleClass="normal-label" text="myPOS User" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                        <TextField fx:id="tfMyposUser" text="dgou@dgou.gr" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <TextField fx:id="tfMyposUser" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                                         <Label styleClass="normal-label" text="myPOS Pass" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                        <TextField fx:id="tfMyposPass" text="!abcd1234A" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <TextField fx:id="tfMyposPass" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     </children>
                                     <columnConstraints>
                                         <ColumnConstraints />
@@ -183,16 +191,16 @@
                                 <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
                                     <children>
                                         <Label styleClass="normal-label" text="Simply POS User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                        <TextField fx:id="tfSimplyPosUser" text="et@dgou.gr" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                        <TextField fx:id="tfSimplyPosUser" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                                         <Label styleClass="normal-label" text="Simply POS Pass" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                        <TextField fx:id="tfSimplyPosPass" text="!abcd1234" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <TextField fx:id="tfSimplyPosPass" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                                         <Label styleClass="normal-label" text="Simply Cloud User" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                        <TextField fx:id="tfSimplyCloudUser" text="et@dgou.gr" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <TextField fx:id="tfSimplyCloudUser" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                                         <Label styleClass="normal-label" text="Simply Cloud Pass" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                                        <TextField fx:id="tfSimplyCloudPass" text="054909468" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                        <TextField fx:id="tfSimplyCloudPass" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                                         <Label styleClass="normal-label" text="E-mail Simply" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                                         <TextField fx:id="tfSimplyRegisterMail" text="" GridPane.columnIndex="1" GridPane.rowIndex="4" />
@@ -219,7 +227,7 @@
                                         <TextField fx:id="tfEmail" text="patelos942@gmail.com" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                                         <Label styleClass="normal-label" text="Pass key" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                        <TextField fx:id="tfEmailPassKey" text="dhgv bawk wqlw szsj" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <TextField fx:id="tfEmailPassKey" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                                         <Label styleClass="normal-label" text="SMTP Server" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                                         <TextField fx:id="tfSMTP" text="smtp.gmail.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
