@@ -22,10 +22,14 @@ public class AddTaskController {
     private Task task;
     private boolean isSaved = false;
 
-    public void initialize() throws SQLException {
+    public void initialize() {
         // Φόρτωση πελατών
         DBHelper dbHelper = new DBHelper();
-        customerComboBox.getItems().addAll(dbHelper.getCustomers());
+        try {
+            customerComboBox.getItems().addAll(dbHelper.getCustomers());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void loadTask(Task task) {
@@ -33,7 +37,7 @@ public class AddTaskController {
         titleField.setText(task.getTitle());
         descriptionField.setText(task.getDescription());
         dueDatePicker.setValue(task.getDueDate() != null ? task.getDueDate().toLocalDate() : null);
-        if (task.getCustomerId() != null) {
+        if (task.getCustomerId() != 0) {
             //customerComboBox.getSelectionModel().select(DBHelper.getCustomerById(task.getCustomerId()));
         }
     }

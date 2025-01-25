@@ -2,70 +2,57 @@ package org.easytech.pelatologio;
 import javafx.beans.property.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Task {
-    private final IntegerProperty id;
-    private final StringProperty title;
-    private final StringProperty description;
-    private final ObjectProperty<LocalDate> dueDate;
-    private final BooleanProperty isCompleted;
-    private final ObjectProperty<Integer> customerId;
+    private int id;
+    private String title;
+    private String description;
+    private LocalDateTime dueDate;
+    private boolean isCompleted;
+    private int customerId;
+    private String customerName;
 
-    public Task(int id, String title, String description, LocalDate dueDate, boolean isCompleted, Integer customerId) {
-        this.id = new SimpleIntegerProperty(id);
-        this.title = new SimpleStringProperty(title);
-        this.description = new SimpleStringProperty(description);
-        this.dueDate = new SimpleObjectProperty<>(dueDate);
-        this.isCompleted = new SimpleBooleanProperty(isCompleted);
-        this.customerId = new SimpleObjectProperty<>(customerId);
+    public Task(int id, String title, String description, LocalDateTime dueDate, boolean isCompleted, Integer customerId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.isCompleted = isCompleted;
+        this.customerId = customerId;
+        this.customerName = "";
     }
 
     public int getId() {
-        return id.get();
-    }
-
-    public IntegerProperty idProperty() {
         return id;
     }
 
     public String getTitle() {
-        return title.get();
-    }
-
-    public StringProperty titleProperty() {
         return title;
     }
 
     public String getDescription() {
-        return description.get();
-    }
-
-    public StringProperty descriptionProperty() {
         return description;
     }
 
-    public LocalDate getDueDate() {
-        return dueDate.get();
-    }
-
-    public ObjectProperty<LocalDate> dueDateProperty() {
+    public LocalDateTime getDueDate() {
         return dueDate;
     }
 
     public boolean isCompleted() {
-        return isCompleted.get();
-    }
-
-    public BooleanProperty isCompletedProperty() {
         return isCompleted;
     }
 
-    public Integer getCustomerId() {
-        return customerId.get();
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public ObjectProperty<Integer> customerIdProperty() {
-        return customerId;
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 }
 

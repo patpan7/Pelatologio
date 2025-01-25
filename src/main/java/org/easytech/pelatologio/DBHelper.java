@@ -666,7 +666,7 @@ public class DBHelper {
 
     public List<Task> getAllTasks() {
         List<Task> tasks = new ArrayList<>();
-        String query = "SELECT id, title, description, dueDate, isCompleted, customerId FROM Tasks";
+        String query = "SELECT id, tasks.title, description, dueDate, is_Completed, customerId, name FROM Tasks,customers where tasks.customerId = customers.code";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
@@ -679,8 +679,10 @@ public class DBHelper {
                 Date dueDate = resultSet.getDate("dueDate");
                 boolean isCompleted = resultSet.getBoolean("isCompleted");
                 Integer customerId = resultSet.getObject("customerId", Integer.class);
+                String customerName = resultSet.getString("name");
 
-                Task task = new Task(id, title, description, dueDate != null ? dueDate.toLocalDate() : null, isCompleted, customerId);
+                Task task = new Task(id, title, description, dueDate != null ? LocalDateTime.from(dueDate.toLocalDate()) : null, isCompleted, customerId);
+                task.setCustomerName(customerName);
                 tasks.add(task);
             }
 

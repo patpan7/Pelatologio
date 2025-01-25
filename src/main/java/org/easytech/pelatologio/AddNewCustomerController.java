@@ -561,7 +561,7 @@ public class AddNewCustomerController {
         if (customer != null) {
             try {
                 // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("newAppointment.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addAppointment.fxml"));
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(loader.load());
                 dialog.setTitle("Προσθήκη Ραντεβού");

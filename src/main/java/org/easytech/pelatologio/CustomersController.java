@@ -45,7 +45,6 @@ public class CustomersController implements Initializable {
     ObservableList<Customer> observableList;
     FilteredList<Customer> filteredData;
     DBHelper dbHelper;
-    private ContextMenu contextMenu = new ContextMenu();
 
 
     @Override
@@ -358,7 +357,7 @@ public class CustomersController implements Initializable {
         if (selectedCustomer != null) {
             try {
                 // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("newAppointment.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addAppointment.fxml"));
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(loader.load());
                 dialog.setTitle("Προσθήκη Ραντεβού");

@@ -75,25 +75,27 @@
 <!--            </BorderPane.margin>-->
 <!--            </VBox>-->
             <VBox spacing="10">
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Φίλτρα:" />
-                    <CheckBox fx:id="showAllCheckbox" text="Όλες" selected="true" />
-                    <CheckBox fx:id="showCompletedCheckbox" text="Ολοκληρωμένες" />
-                    <CheckBox fx:id="showPendingCheckbox" text="Εκκρεμείς" />
-                    <CheckBox fx:id="showWithCustomerCheckbox" text="Με πελάτη" />
-                    <CheckBox fx:id="showWithoutCustomerCheckbox" text="Χωρίς πελάτη" />
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label styleClass="normal-label" text="Φίλτρα:" />
+                    <CheckBox fx:id="showAllCheckbox" selected="true" styleClass="normal-label" text="Όλες" />
+                    <CheckBox fx:id="showCompletedCheckbox" styleClass="normal-label" text="Ολοκληρωμένες" />
+                    <CheckBox fx:id="showPendingCheckbox" styleClass="normal-label" text="Εκκρεμείς" />
+                    <CheckBox fx:id="showWithCustomerCheckbox" styleClass="normal-label" text="Με πελάτη" />
+                    <CheckBox fx:id="showWithoutCustomerCheckbox" styleClass="normal-label" text="Χωρίς πελάτη" />
                 </HBox>
 
-                <TableView fx:id="taskTable" prefHeight="400">
+                <TableView fx:id="taskTable">
                     <columns>
-                        <TableColumn fx:id="idColumn" text="ID" prefWidth="100" />
-                        <TableColumn fx:id="titleColumn" text="Τίτλος" prefWidth="200" />
-                        <TableColumn fx:id="descriptionColumn" text="Περιγραφή" prefWidth="300" />
-                        <TableColumn fx:id="dueDateColumn" text="Ημερομηνία" prefWidth="150" />
+                        <TableColumn fx:id="idColumn" prefWidth="100" text="ID" />
+                        <TableColumn fx:id="titleColumn" prefWidth="200" text="Τίτλος" />
+                        <TableColumn fx:id="descriptionColumn" prefWidth="300" text="Περιγραφή" />
+                        <TableColumn fx:id="dueDateColumn" prefWidth="150" text="Ημερομηνία" />
+                        <TableColumn fx:id="customerColumn" prefWidth="200" text="Πελάτης" />
+                        <TableColumn fx:id="isCompletedColumn" prefWidth="150" text="Κατάσταση" />
                     </columns>
                 </TableView>
 
-                <HBox spacing="10" alignment="CENTER_RIGHT">
+                <HBox alignment="CENTER_RIGHT" spacing="10">
                     <Button fx:id="addTaskButton" text="Προσθήκη" />
                     <Button fx:id="editTaskButton" text="Επεξεργασία" />
                     <Button fx:id="deleteTaskButton" text="Διαγραφή" />
