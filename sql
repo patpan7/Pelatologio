@@ -3,8 +3,7 @@ GO
 /****** Object:  Database [Pelatologio]    Script Date: 26/1/2025 11:46:11 μμ ******/
 CREATE DATABASE [Pelatologio]
  CONTAINMENT = NONE
- ON  PRIMARY
-GO
+ GO
 ALTER DATABASE [Pelatologio] SET COMPATIBILITY_LEVEL = 140
 GO
 IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
