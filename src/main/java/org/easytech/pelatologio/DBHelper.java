@@ -1,6 +1,7 @@
 package org.easytech.pelatologio;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -666,7 +667,9 @@ public class DBHelper {
 
     public List<Task> getAllTasks() {
         List<Task> tasks = new ArrayList<>();
-        String query = "SELECT id, title, description, dueDate, isCompleted, customerId FROM Tasks";
+        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, c.name " +
+                "FROM Tasks t " +
+                "LEFT JOIN Customers c ON t.customerId = c.code";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
@@ -676,11 +679,13 @@ public class DBHelper {
                 int id = resultSet.getInt("id");
                 String title = resultSet.getString("title");
                 String description = resultSet.getString("description");
-                Date dueDate = resultSet.getDate("dueDate");
-                boolean isCompleted = resultSet.getBoolean("isCompleted");
+                LocalDate dueDate = resultSet.getDate("dueDate").toLocalDate();
+                boolean isCompleted = resultSet.getBoolean("is_Completed");
                 Integer customerId = resultSet.getObject("customerId", Integer.class);
+                String category = resultSet.getString("category");
+                String customerName = resultSet.getString("name");
 
-                Task task = new Task(id, title, description, dueDate != null ? dueDate.toLocalDate() : null, isCompleted, customerId);
+                Task task = new Task(id, title, description, dueDate, isCompleted, category, customerId, customerName);
                 tasks.add(task);
             }
 
@@ -691,11 +696,14 @@ public class DBHelper {
         return tasks;
     }
 
-    public boolean completeTask(int taskId) {
-        String query = "UPDATE tasks SET is_completed = 1 WHERE id = ?";
+
+
+    public boolean completeTask(int taskId, boolean isCompleted) {
+        String query = "UPDATE tasks SET is_completed = ? WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, taskId);
+            stmt.setBoolean(1, isCompleted);
+            stmt.setInt(2, taskId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -703,5 +711,66 @@ public class DBHelper {
         }
     }
 
+
+    public boolean saveTask(Task task) {
+        String query = "INSERT INTO Tasks (title, description, dueDate, is_completed, customerId, category) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, task.getTitle());
+            stmt.setString(2, task.getDescription());
+            stmt.setDate(3, Date.valueOf(task.getDueDate()));
+            stmt.setBoolean(4,task.getCompleted());
+            if (task.getCustomerId() != null) {
+                stmt.setInt(5, task.getCustomerId());
+            } else {
+                stmt.setNull(5, java.sql.Types.INTEGER);
+            }
+            stmt.setString(6, task.getCategory());
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                return true; // Ενημερώθηκε επιτυχώς
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                return saveTask(task);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateTask(Task task) {
+        String query = "UPDATE Tasks SET title = ?, description = ?, dueDate = ?, is_Completed = ?, category = ?, customerId = ? WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, task.getTitle());
+            stmt.setString(2, task.getDescription());
+            stmt.setDate(3, java.sql.Date.valueOf(task.getDueDate()));
+            stmt.setBoolean(4, task.getCompleted());
+            stmt.setString(5, task.getCategory());
+            if (task.getCustomerId() != null) {
+                stmt.setInt(6, task.getCustomerId());
+            } else {
+                stmt.setNull(6, java.sql.Types.INTEGER);
+            }
+            stmt.setInt(7, task.getId());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void deleteTask(int taskId) throws SQLException {
+        String query = "DELETE FROM Tasks WHERE id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, taskId);
+            statement.executeUpdate();
+        }
+    }
 
 }

@@ -400,12 +400,28 @@ public class CustomersController implements Initializable {
                 dialog.setDialogPane(loader.load());
                 dialog.setTitle("Προσθήκη Εργασίας");
                 AddTaskController controller = loader.getController();
+                controller.setCustomerId(selectedCustomer.getCode());
+                controller.setCustomerName(selectedCustomer.getName());
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                    // Εκτελούμε το handleSaveAppointment
+                    boolean success = controller.handleSaveTask();
+
+                    if (!success) {
+                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                        event.consume();
+                    }
+                });
+
+                dialog.showAndWait();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-
 
 
     public void customerInfo(ActionEvent actionEvent) {

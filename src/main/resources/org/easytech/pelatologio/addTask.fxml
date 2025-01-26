@@ -34,9 +34,6 @@
                             </FXCollections>
                         </items>
                     </ComboBox>
-
-                    <Label text="Λεπτομέρειες:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                    <TextArea fx:id="detailsField" prefHeight="100" prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                <columnConstraints>
                   <ColumnConstraints />
                   <ColumnConstraints />

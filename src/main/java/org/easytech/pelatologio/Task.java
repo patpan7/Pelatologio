@@ -1,71 +1,100 @@
 package org.easytech.pelatologio;
-import javafx.beans.property.*;
 
 import java.time.LocalDate;
 
 public class Task {
-    private final IntegerProperty id;
-    private final StringProperty title;
-    private final StringProperty description;
-    private final ObjectProperty<LocalDate> dueDate;
-    private final BooleanProperty isCompleted;
-    private final ObjectProperty<Integer> customerId;
+    private Integer id;
+    private String title;
+    private String description;
+    private LocalDate dueDate;
+    private Boolean isCompleted;
+    private Integer customerId;
+    private String category;
+    private String customerName;
 
-    public Task(int id, String title, String description, LocalDate dueDate, boolean isCompleted, Integer customerId) {
-        this.id = new SimpleIntegerProperty(id);
-        this.title = new SimpleStringProperty(title);
-        this.description = new SimpleStringProperty(description);
-        this.dueDate = new SimpleObjectProperty<>(dueDate);
-        this.isCompleted = new SimpleBooleanProperty(isCompleted);
-        this.customerId = new SimpleObjectProperty<>(customerId);
+    public Task(Integer id, String title, String description, LocalDate dueDate, Boolean isCompleted,String category, Integer customerId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.isCompleted = isCompleted;
+        this.category = category;
+        this.customerId = customerId;
     }
 
-    public int getId() {
-        return id.get();
+    public Task(int id, String title, String description, LocalDate dueDate, Boolean isCompleted, String category, Integer customerId, String customerName) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.isCompleted = isCompleted;
+        this.category = category;
+        this.customerId = customerId;
+        this.customerName = customerName;
     }
 
-    public IntegerProperty idProperty() {
+    public Integer getId() {
         return id;
     }
 
-    public String getTitle() {
-        return title.get();
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public StringProperty titleProperty() {
+    public String getTitle() {
         return title;
     }
 
-    public String getDescription() {
-        return description.get();
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public StringProperty descriptionProperty() {
+    public String getDescription() {
         return description;
     }
 
-    public LocalDate getDueDate() {
-        return dueDate.get();
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public ObjectProperty<LocalDate> dueDateProperty() {
+    public LocalDate getDueDate() {
         return dueDate;
     }
 
-    public boolean isCompleted() {
-        return isCompleted.get();
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
 
-    public BooleanProperty isCompletedProperty() {
+    public Boolean getCompleted() {
         return isCompleted;
     }
 
-    public Integer getCustomerId() {
-        return customerId.get();
+    public void setCompleted(Boolean completed) {
+        isCompleted = completed;
     }
 
-    public ObjectProperty<Integer> customerIdProperty() {
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Integer getCustomerId() {
         return customerId;
+    }
+
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 }
 
