@@ -65,6 +65,7 @@ public class DBHelper {
                 data.setNotes(resultSet.getString("notes"));
                 dataList.add(data);
             }
+            closeConnection(conn);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,6 +82,7 @@ public class DBHelper {
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -122,6 +124,7 @@ public class DBHelper {
             } else {
                 System.out.println("Η εισαγωγή του πελάτη απέτυχε.");
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             System.err.println("Σφάλμα κατά την εισαγωγή του πελάτη: " + e.getMessage());
         }
@@ -158,6 +161,7 @@ public class DBHelper {
             } else {
                 System.out.println("Δεν βρέθηκε πελάτης με αυτό το κωδικό.");
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -180,6 +184,7 @@ public class DBHelper {
                     return "Η εγγραφή αυτή είναι ήδη κλειδωμένη από τον χρήστη " + lockedBy;
                 }
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -194,6 +199,7 @@ public class DBHelper {
             lockStmt.setString(1, appUser);
             lockStmt.setInt(2, code);
             lockStmt.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -206,6 +212,7 @@ public class DBHelper {
             PreparedStatement lockStmt = conn.prepareStatement(checkLockQuery);
             lockStmt.setInt(1, code);
             lockStmt.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -218,6 +225,7 @@ public class DBHelper {
             PreparedStatement lockStmt = conn.prepareStatement(checkLockQuery);
             lockStmt.setString(1, appUser);
             lockStmt.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -242,6 +250,7 @@ public class DBHelper {
                 data.setPhone(resultSet.getString("Phone"));
                 dataList.add(data);
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -259,6 +268,7 @@ public class DBHelper {
             pstmt.setString(5, newLogin.getTag());
             pstmt.setString(6, newLogin.getPhone());
             pstmt.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -275,7 +285,7 @@ public class DBHelper {
             pstmt.setString(4, updatedLogin.getPhone());
             pstmt.setInt(5, updatedLogin.getId());
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -288,7 +298,7 @@ public class DBHelper {
 
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -331,9 +341,10 @@ public class DBHelper {
                 "    INSERT (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email)\n" +
                 "    VALUES (source.name, source.BusinessTitle, source.job, source.afm, source.phone1, source.phone2, source.mobile, source.address, source.city1, source.zip1, source.mail1);";
 
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(SQL)) {
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(SQL)) {
             stmt.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -341,13 +352,14 @@ public class DBHelper {
 
     public void insertAdditionalAddress(int customerId, String address, String city, String postalCode) {
         String sql = "INSERT INTO CustomerAddresses (CustomerID, Address, Town, Postcode) VALUES (?, ?, ?, ?)";
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, customerId);
             statement.setString(2, address);
             statement.setString(3, city);
             statement.setString(4, postalCode);
             statement.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -379,7 +391,7 @@ public class DBHelper {
                 newCustomerAddress.setStore(store);
                 customerAddresses.add(newCustomerAddress);
             }
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace(); // Αν υπάρχει κάποιο σφάλμα, το εκτυπώνουμε
         }
@@ -389,14 +401,15 @@ public class DBHelper {
 
     public void addAddress(int code, CustomerAddress newCustomerAddress) {
         String sql = "INSERT INTO CustomerAddresses (CustomerID, Address, Town, Postcode, Store) VALUES (?, ?, ?, ?, ?)";
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, code);
             statement.setString(2, newCustomerAddress.getAddress());
             statement.setString(3, newCustomerAddress.getTown());
             statement.setString(4, newCustomerAddress.getPostcode());
             statement.setString(5, newCustomerAddress.getStore());
             statement.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -413,7 +426,7 @@ public class DBHelper {
             pstmt.setString(4, updatedCustomerAddress.getStore());
             pstmt.setInt(5, updatedCustomerAddress.getAddressId());
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -426,7 +439,7 @@ public class DBHelper {
 
             pstmt.setInt(1, addressId);
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -442,6 +455,7 @@ public class DBHelper {
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
+            closeConnection(conn);
             return false;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -459,6 +473,7 @@ public class DBHelper {
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
+            closeConnection(conn);
             return false;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -483,6 +498,7 @@ public class DBHelper {
                 pstmt3.setInt(1, code);
                 pstmt3.executeUpdate();
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -499,6 +515,7 @@ public class DBHelper {
             if (rs.next()) {
                 calendar.setId(rs.getInt(1));
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -517,6 +534,7 @@ public class DBHelper {
                         rs.getString("name")
                 ));
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -565,6 +583,7 @@ public class DBHelper {
 
                 appointments.add(new Appointment(id, customerId, title, description, calendarId, startTime, endTime));
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -584,9 +603,11 @@ public class DBHelper {
             stmt.setInt(6, appointment.getId());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
+                closeConnection(conn);
                 return true; // Ενημερώθηκε επιτυχώς
             } else {
                 // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                closeConnection(conn);
                 return saveAppointment(appointment);
             }
 
@@ -603,7 +624,7 @@ public class DBHelper {
 
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -617,7 +638,7 @@ public class DBHelper {
             pstmt.setString(1, updatedCalendar.getName());
             pstmt.setInt(2, updatedCalendar.getId());
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -625,10 +646,11 @@ public class DBHelper {
 
     public void deleteAppointment(int appointmentId) throws SQLException {
         String query = "DELETE FROM appointments WHERE id = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, appointmentId);
             statement.executeUpdate();
+            closeConnection(conn);
         }
     }
 
@@ -657,6 +679,7 @@ public class DBHelper {
                 data.setManagerPhone(resultSet.getString("managerPhone"));
                 data.setNotes(resultSet.getString("notes"));
             }
+            closeConnection(conn);
             return data;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -688,7 +711,7 @@ public class DBHelper {
                 Task task = new Task(id, title, description, dueDate, isCompleted, category, customerId, customerName);
                 tasks.add(task);
             }
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -704,6 +727,7 @@ public class DBHelper {
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setBoolean(1, isCompleted);
             stmt.setInt(2, taskId);
+            closeConnection(conn);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -728,9 +752,11 @@ public class DBHelper {
             stmt.setString(6, task.getCategory());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
+                closeConnection(conn);
                 return true; // Ενημερώθηκε επιτυχώς
             } else {
                 // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                closeConnection(conn);
                 return saveTask(task);
             }
         } catch (SQLException e) {
@@ -766,10 +792,11 @@ public class DBHelper {
 
     public void deleteTask(int taskId) throws SQLException {
         String query = "DELETE FROM Tasks WHERE id = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, taskId);
             statement.executeUpdate();
+            closeConnection(conn);
         }
     }
 
@@ -784,6 +811,7 @@ public class DBHelper {
                 if (rs.next()) {
                     newTaskCategory.setId(rs.getInt(1));
                 }
+                closeConnection(conn);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -796,7 +824,7 @@ public class DBHelper {
 
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -810,7 +838,7 @@ public class DBHelper {
             pstmt.setString(1, updatedCategory.getName());
             pstmt.setInt(2, updatedCategory.getId());
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -828,6 +856,7 @@ public class DBHelper {
                         rs.getString("name")
                 ));
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -842,6 +871,7 @@ public class DBHelper {
             if (rs.next()) {
                 return rs.getInt(1);
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -858,6 +888,7 @@ public class DBHelper {
             if (rs.next()) {
                 return rs.getInt(1);
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
