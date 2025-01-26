@@ -773,4 +773,94 @@ public class DBHelper {
         }
     }
 
+    public void saveTaskCategory(TaskCategory newTaskCategory) {
+            String query = "INSERT INTO TaskCategories (name) VALUES (?)";
+            try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, newTaskCategory.getName());
+                stmt.executeUpdate();
+
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    newTaskCategory.setId(rs.getInt(1));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+    }
+
+    public void deleteTaskCategory(int id) {
+        String query = "DELETE FROM TaskCategories WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateTaskCategory(TaskCategory updatedCategory) {
+        String query = "UPDATE TaskCategories SET name = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, updatedCategory.getName());
+            pstmt.setInt(2, updatedCategory.getId());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<TaskCategory> getAllTaskCategory() {
+        List<TaskCategory> taskCategories = new ArrayList<>();
+        String query = "SELECT * FROM TaskCategories";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                taskCategories.add(new TaskCategory(
+                        rs.getInt("id"),
+                        rs.getString("name")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return taskCategories;
+    }
+
+    public int getTasksCount() {
+        String query = "SELECT COUNT(*) FROM Tasks where is_Completed = 0";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getAppointmentsCount() {
+        String query = "SELECT COUNT(*) AS total_appointments " +
+                "FROM appointments " +
+                "WHERE CAST(start_time AS DATE) = CAST(GETDATE() AS DATE);";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

@@ -24,16 +24,7 @@
                     <ComboBox fx:id="customerComboBox" editable="true" prefWidth="300" promptText="Επιλογή Πελάτη" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                     <Label text="Κατηγορία:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                    <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="Γενική Εργασία" />
-                                <String fx:value="Τηλεφωνική Κλήση" />
-                                <String fx:value="Email" />
-                                <String fx:value="On-site" />
-                            </FXCollections>
-                        </items>
-                    </ComboBox>
+                    <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
                <columnConstraints>
                   <ColumnConstraints />
                   <ColumnConstraints />

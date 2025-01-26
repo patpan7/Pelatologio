@@ -20,11 +20,12 @@ public class AddTaskController {
     @FXML
     private ComboBox<Customer> customerComboBox;
     @FXML
-    private ComboBox<String> categoryComboBox;
+    private ComboBox<TaskCategory> categoryComboBox;
 
     private Task task;
     private int customerId;
     private String customerName;
+    private Customer selectedCustomer;
 
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
@@ -44,8 +45,12 @@ public class AddTaskController {
         titleField.setText(task.getTitle());
         descriptionField.setText(task.getDescription());
         dueDatePicker.setValue(task.getDueDate());
-        categoryComboBox.setValue(task.getCategory());
-
+        for (TaskCategory taskCategory : categoryComboBox.getItems()) {
+            if (taskCategory.getName().equals(task.getCategory())) {
+                categoryComboBox.setValue(taskCategory);
+                break;
+            }
+        }
         // Αν υπάρχει πελάτης, προ-συμπλήρωσε την επιλογή
         if (task.getCustomerId() != null) {
             for (Customer customer : customerComboBox.getItems()) {
@@ -63,33 +68,53 @@ public class AddTaskController {
         DBHelper dbHelper = new DBHelper();
         List<Customer> customers = dbHelper.getCustomers();
         customerComboBox.getItems().addAll(customers); // Προσθήκη αντικειμένων Customer
+        customerComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Customer customer) {
+                return customer != null ? customer.getName() : "";
+            }
 
+            @Override
+            public Customer fromString(String string) {
+                return customerComboBox.getItems().stream()
+                        .filter(customer -> customer.getName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+        List<TaskCategory> categories = dbHelper.getAllTaskCategory();
+        categoryComboBox.getItems().addAll(categories);
+        categoryComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(TaskCategory taskCategory) {
+                return taskCategory != null ? taskCategory.getName() : "";
+            }
+
+            @Override
+            public TaskCategory fromString(String string) {
+                return categoryComboBox.getItems().stream()
+                        .filter(taskCategory -> taskCategory.getName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+        dueDatePicker.setValue(LocalDate.now());
     }
 
     public boolean handleSaveTask() {
         try {
-            // Έλεγχος για κενά ή μη έγκυρα πεδία
             if (dueDatePicker.getValue() == null || titleField.getText() == null || descriptionField.getText() == null) {
                 showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Συμπληρώστε όλα τα απαραίτητα πεδία!");
-                return false; // Αποτυχία
+                return false;
             }
 
             String title = titleField.getText();
             String description = descriptionField.getText();
             LocalDate date = dueDatePicker.getValue();
-            Customer selectedCustomer = null;
-            for (Customer customer : customerComboBox.getItems()) {
-                if (customer.getName().equals(customerComboBox.getValue())) {
-                    selectedCustomer = customer;
-                    break;
-                }
-            }
-            if (selectedCustomer != null) {
-                System.out.println("Επιλέχθηκε πελάτης: " + selectedCustomer.getName());
-            } else {
-                System.out.println("Δεν επιλέχθηκε πελάτης");
-            }
-            String category = categoryComboBox.getValue();
+            Customer selectedCustomer = customerComboBox.getValue(); // Απευθείας χρήση του ComboBox
+            String category = categoryComboBox.getValue().getName();
 
             DBHelper dbHelper = new DBHelper();
 
@@ -99,24 +124,25 @@ public class AddTaskController {
                 dbHelper.saveTask(newTask);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
-                System.out.println("Ενημέρωση");
                 task.setTitle(title);
                 task.setDescription(description);
                 task.setDueDate(date);
                 task.setCategory(category);
-                task.setCustomerId(selectedCustomer != null ? selectedCustomer.getCode() : 0);
+                int customerId = selectedCustomer != null ? selectedCustomer.getCode() : 0;
+                task.setCustomerId(customerId);
                 dbHelper.updateTask(task);
             }
 
             showAlert(Alert.AlertType.INFORMATION, "Επιτυχία", "Η εργασία αποθηκεύτηκε!");
-            return true; // Επιτυχία
+            return true;
 
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Υπήρξε πρόβλημα με την αποθήκευση της εργασίας!");
-            return false; // Αποτυχία
+            return false;
         }
     }
+
 
 
     // Μέθοδος για εμφάνιση Alert

@@ -6,12 +6,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 
 import javafx.event.ActionEvent;
+import javafx.stage.Modality;
+import javafx.util.Duration;
+import javafx.util.StringConverter;
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -21,24 +28,33 @@ public class TaskListController implements Initializable {
     @FXML
     private TableView<Task> taskTable;
     @FXML
-    private TableColumn idColumn, titleColumn, descriptionColumn, dueDateColumn, customerColumn;
+    private TableColumn idColumn, titleColumn, descriptionColumn, dueDateColumn, customerColumn, categoryColumn;
 
     @FXML
     private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox;
 
     @FXML
-    private Button addTaskButton, editTaskButton, deleteTaskButton, completeTaskButton, uncompletedTaskButton;
+    private ComboBox <TaskCategory> categoryFilterComboBox;
+    @FXML
+    private Button addCategoryButton, addTaskButton, editTaskButton, deleteTaskButton, completeTaskButton, uncompletedTaskButton;
 
     private ObservableList<Task> allTasks = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        setTooltip(addTaskButton, "Προσθήκη νέας εργασίας");
+        setTooltip(editTaskButton, "Επεξεργασία εργασίας");
+        setTooltip(deleteTaskButton, "Διαγραφή εργασίας");
+        setTooltip(completeTaskButton, "Σημείωση εργασίας ως ολοκληρωμένη");
+        setTooltip(uncompletedTaskButton,"Σημείωση εργασίας ως σε επεξεργασία");
+        setTooltip(addCategoryButton, "Προσθήκη/Επεξεργασία κατηγοριών εργασιών");
         // Σύνδεση στηλών πίνακα με πεδία του Task
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         dueDateColumn.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         // Αρχικό γέμισμα του πίνακα
         loadTasks();
 
@@ -58,6 +74,24 @@ public class TaskListController implements Initializable {
                 }
             }
         });
+
+        taskTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) { // Έλεγχος για δύο κλικ
+                // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
+                Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
+
+                // Έλεγχος αν υπάρχει επιλεγμένο προϊόν
+                if (selectedTask != null) {
+                    // Ανοίξτε το dialog box για επεξεργασία
+                    try {
+                        handleEditTask();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
+
         // Φίλτρα
         CheckBox[] checkBoxes1 = {
                 showAllCheckbox,
@@ -71,6 +105,31 @@ public class TaskListController implements Initializable {
                 showWithoutCustomerCheckbox
         };
         configureSingleSelectionCheckBoxes(checkBoxes2);
+
+        DBHelper dbHelper = new DBHelper();
+        List<TaskCategory> categories = dbHelper.getAllTaskCategory();
+        categoryFilterComboBox.getItems().add(new TaskCategory(0,"Όλες"));
+        categoryFilterComboBox.getItems().addAll(categories);
+        categoryFilterComboBox.getSelectionModel().selectFirst();
+        categoryFilterComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(TaskCategory taskCategory) {
+                return taskCategory != null ? taskCategory.getName() : "";
+            }
+
+            @Override
+            public TaskCategory fromString(String string) {
+                return categoryFilterComboBox.getItems().stream()
+                        .filter(taskCategory -> taskCategory.getName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+
+        categoryFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateTaskTable());
+
+
         showAllCheckbox.setOnAction(e -> updateTaskTable());
         showCompletedCheckbox.setOnAction(e -> updateTaskTable());
         showPendingCheckbox.setOnAction(e -> updateTaskTable());
@@ -78,6 +137,7 @@ public class TaskListController implements Initializable {
         showWithoutCustomerCheckbox.setOnAction(e -> updateTaskTable());
 
         // Κουμπιά
+        addCategoryButton.setOnAction(e -> TaskCategoryManager());
         addTaskButton.setOnAction(e -> handleAddTask());
         editTaskButton.setOnAction(e -> {
             try {
@@ -99,8 +159,6 @@ public class TaskListController implements Initializable {
 
 
     private void configureSingleSelectionCheckBoxes(CheckBox[] checkBoxes) {
-
-
         for (CheckBox checkBox : checkBoxes) {
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
@@ -143,8 +201,10 @@ public class TaskListController implements Initializable {
     }
 
     private void updateTaskTable() {
+        // Ξεκινάμε με όλες τις εργασίες
         ObservableList<Task> filteredTasks = FXCollections.observableArrayList(allTasks);
 
+        // Φιλτράρισμα βάσει ολοκλήρωσης
         if (!showAllCheckbox.isSelected()) {
             if (showCompletedCheckbox.isSelected()) {
                 filteredTasks.removeIf(task -> !task.getCompleted());
@@ -153,16 +213,26 @@ public class TaskListController implements Initializable {
             }
         }
 
+        // Φιλτράρισμα βάσει πελάτη
         if (showWithCustomerCheckbox.isSelected()) {
             filteredTasks.removeIf(task -> task.getCustomerId() == 0);
         }
-
         if (showWithoutCustomerCheckbox.isSelected()) {
             filteredTasks.removeIf(task -> task.getCustomerId() != 0);
         }
 
+        // Φιλτράρισμα βάσει κατηγορίας
+        TaskCategory selectedCategory = categoryFilterComboBox.getValue(); // Η επιλεγμένη κατηγορία από το ComboBox
+        if (selectedCategory != null && selectedCategory.getId() != 0) { // Εξαιρείται η κατηγορία "Όλες"
+            filteredTasks.removeIf(task -> !task.getCategory().equals(selectedCategory.getName()));
+        }
+
+
+        // Ανανεώνουμε τα δεδομένα του πίνακα
         taskTable.setItems(filteredTasks);
     }
+
+
 
     private void handleAddTask() {
             try {
@@ -254,9 +324,37 @@ public class TaskListController implements Initializable {
         }
     }
 
+    public void TaskCategoryManager() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("taskCategoryManagerView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+            // Τώρα μπορείς να πάρεις τον controller
+            TaskCategoryManagerViewController controller = loader.getController();
+            controller.loadTaskCategories();
+
+
+            dialog.setTitle("Κατηγορίες Εργασιών");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void mainMenuClick(ActionEvent event) throws IOException {
         MainMenuController mainMenuController = new MainMenuController();
         mainMenuController.mainMenuClick(stackPane);
+    }
+
+    private void setTooltip(Button button, String text) {
+        Tooltip tooltip = new Tooltip();
+        tooltip.setShowDelay(Duration.seconds(0.3));
+        tooltip.setText(text);
+        button.setTooltip(tooltip);
     }
 
 }
