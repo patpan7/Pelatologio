@@ -14,7 +14,7 @@
                     <TextField fx:id="titleField" prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                     <Label text="Περιγραφή:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                    <TextArea fx:id="descriptionField" prefHeight="100" prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <TextArea fx:id="descriptionField" prefHeight="100" prefWidth="300" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                   <font>
                      <Font size="24.0" />
                   </font></TextArea>
