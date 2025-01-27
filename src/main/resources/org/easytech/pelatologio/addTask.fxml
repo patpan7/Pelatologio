@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<DialogPane expanded="true" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddTaskController">
+<DialogPane expanded="true" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddTaskController">
     <content>
         <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
             <VBox alignment="TOP_CENTER">

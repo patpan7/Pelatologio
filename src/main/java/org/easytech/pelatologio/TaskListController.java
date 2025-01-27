@@ -274,16 +274,14 @@ public class TaskListController implements Initializable {
             return;
         }
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddTask.fxml"));
-            DialogPane dialogPane = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Επεξεργασία Εργασίας");
             AddTaskController controller = loader.getController();
 
             // Ορισμός δεδομένων για επεξεργασία
             controller.setTaskForEdit(selectedTask);
-
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(dialogPane);
-            dialog.setTitle("Επεξεργασία Εργασίας");
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);

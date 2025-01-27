@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane prefHeight="800.0" prefWidth="1100.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.TaxisViewController">
+<DialogPane prefHeight="800.0" prefWidth="1100.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.TaxisViewController">
     <content>
         <VBox alignment="TOP_CENTER">
             <Label fx:id="customerLabel" styleClass="header-label" text="Όνομα Πελάτη" textOverrun="CLIP" VBox.vgrow="ALWAYS">
