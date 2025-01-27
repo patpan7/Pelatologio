@@ -22,12 +22,21 @@ public class MainMenuController implements Initializable {
     Label vesrion;
     @FXML
     Label lbAppUser;
+    @FXML
+    Label lbTasks;
+    @FXML
+    Label lbAppointments;
 
     public Parent root;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        lbAppUser.setText("Xειριστή: "+AppSettings.loadSetting("appuser"));
+        lbAppUser.setText("Χειριστή: "+AppSettings.loadSetting("appuser"));
+        DBHelper dbHelper = new DBHelper();
+        int tasksCount = dbHelper.getTasksCount();
+        lbTasks.setText("Εκκρεμής εργασίες: "+tasksCount);
+        int appointmentsCount = dbHelper.getAppointmentsCount();
+        lbAppointments.setText("Ραντεβού ημέρας: "+appointmentsCount);
     }
 
     public void mainMenuClick(StackPane stackPane) throws IOException {

@@ -10,74 +10,95 @@
     <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="pane">
         <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
             <center>
-                <GridPane alignment="TOP_CENTER" hgap="50.0" vgap="50.0" BorderPane.alignment="TOP_CENTER">
-                    <Button contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#customersClick" styleClass="click-button" text="Πελάτες" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <HBox BorderPane.alignment="CENTER">
+               <children>
+                  <VBox prefWidth="200.0">
+                     <children>
+                        <Label fx:id="lbTasks" styleClass="normal-label" text="Εκκρεμής εργασίες: 1" wrapText="true" />
+                        <Label fx:id="lbAppointments" layoutX="10.0" layoutY="10.0" styleClass="normal-label" text="Εκκρεμής εργασίες: 1" wrapText="true">
+                           <VBox.margin>
+                              <Insets top="20.0" />
+                           </VBox.margin></Label>
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </VBox>
+                      <GridPane alignment="TOP_CENTER" hgap="50.0" vgap="50.0" HBox.hgrow="ALWAYS">
+                          <Button contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#customersClick" styleClass="click-button" text="Πελάτες" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                              <graphic>
+                                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                      <Image url="@icons/users.png" />
+                                  </ImageView>
+                              </graphic>
+                              <GridPane.margin>
+                                  <Insets />
+                              </GridPane.margin>
+                          </Button>
+                          <Button contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#settingsClick" styleClass="click-button" text="Ρυθμίσεις" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                              <graphic>
+                                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                      <Image url="@icons/settings.png" />
+                                  </ImageView>
+                              </graphic>
+                              <GridPane.margin>
+                                  <Insets />
+                              </GridPane.margin>
+                          </Button>
+                     <Button contentDisplay="TOP" layoutX="364.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#myposdasClick" styleClass="click-button" text="myPOS DAS" textAlignment="CENTER" GridPane.columnIndex="1">
                         <graphic>
                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/users.png" />
+                                <Image url="@icons/mypos1.png" />
                             </ImageView>
                         </graphic>
-                        <GridPane.margin>
-                            <Insets />
-                        </GridPane.margin>
-                    </Button>
-                    <Button contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#settingsClick" styleClass="click-button" text="Ρυθμίσεις" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     </Button>
+                     <Button contentDisplay="TOP" layoutX="364.0" layoutY="167.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#d11Click" styleClass="click-button" text="Δ11" textAlignment="CENTER" GridPane.rowIndex="2">
                         <graphic>
                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/settings.png" />
+                                <Image url="@icons/gsis.png" />
                             </ImageView>
                         </graphic>
-                        <GridPane.margin>
-                            <Insets />
-                        </GridPane.margin>
-                    </Button>
-               <Button contentDisplay="TOP" layoutX="364.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#myposdasClick" styleClass="click-button" text="myPOS DAS" textAlignment="CENTER" GridPane.columnIndex="1">
-                  <graphic>
-                      <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                          <Image url="@icons/mypos1.png" />
-                      </ImageView>
-                  </graphic>
-               </Button>
-               <Button contentDisplay="TOP" layoutX="364.0" layoutY="167.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#d11Click" styleClass="click-button" text="Δ11" textAlignment="CENTER" GridPane.rowIndex="2">
-                  <graphic>
-                      <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                          <Image url="@icons/gsis.png" />
-                      </ImageView>
-                  </graphic>
-               </Button>
-                    <Button contentDisplay="TOP" layoutX="364.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#tasksClick" styleClass="click-button" text="Εργασίες" textAlignment="CENTER" GridPane.rowIndex="1">
-                        <graphic>
-                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/tasks.png" />
-                            </ImageView>
-                        </graphic>
-                    </Button>
-                    <Button contentDisplay="TOP" layoutX="364.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#calendarClick" styleClass="click-button" text="Ημερολόγιο" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                        <graphic>
-                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/calendar.png" />
-                            </ImageView>
-                        </graphic>
-                    </Button>
-                    <Button contentDisplay="TOP" layoutX="364.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#myDataStatusClick" styleClass="click-button" text="myData Status" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                        <graphic>
-                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/mydatastatus.png" />
-                            </ImageView>
-                        </graphic>
-                    </Button>
-               <columnConstraints>
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-               </rowConstraints>
-                </GridPane>
+                     </Button>
+                          <Button contentDisplay="TOP" layoutX="364.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#tasksClick" styleClass="click-button" text="Εργασίες" textAlignment="CENTER" GridPane.rowIndex="1">
+                              <graphic>
+                                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                      <Image url="@icons/tasks.png" />
+                                  </ImageView>
+                              </graphic>
+                          </Button>
+                          <Button contentDisplay="TOP" layoutX="364.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#calendarClick" styleClass="click-button" text="Ημερολόγιο" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <graphic>
+                                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                      <Image url="@icons/calendar.png" />
+                                  </ImageView>
+                              </graphic>
+                          </Button>
+                          <Button contentDisplay="TOP" layoutX="364.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#myDataStatusClick" styleClass="click-button" text="myData Status" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <graphic>
+                                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                      <Image url="@icons/mydatastatus.png" />
+                                  </ImageView>
+                              </graphic>
+                          </Button>
+                     <columnConstraints>
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                      </GridPane>
+                  <VBox prefWidth="200.0">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+            </HBox>
             </center>
             <top>
                 <HBox alignment="CENTER" BorderPane.alignment="CENTER">
@@ -108,7 +129,7 @@
          <bottom>
             <VBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
                <children>
-                  <Label fx:id="vesrion" alignment="CENTER" text="v 2.3.6">
+                  <Label fx:id="vesrion" alignment="CENTER" text="v 2.4.0">
                      <VBox.margin>
                         <Insets bottom="10.0" right="20.0" />
                      </VBox.margin>

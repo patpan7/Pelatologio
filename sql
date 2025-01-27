@@ -1,14 +1,104 @@
+USE [master]
+GO
+/****** Object:  Database [Pelatologio]    Script Date: 26/1/2025 11:46:11 μμ ******/
+CREATE DATABASE [Pelatologio]
+ CONTAINMENT = NONE
+ GO
+ALTER DATABASE [Pelatologio] SET COMPATIBILITY_LEVEL = 140
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [Pelatologio].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [Pelatologio] SET ANSI_NULL_DEFAULT OFF
+GO
+ALTER DATABASE [Pelatologio] SET ANSI_NULLS OFF
+GO
+ALTER DATABASE [Pelatologio] SET ANSI_PADDING OFF
+GO
+ALTER DATABASE [Pelatologio] SET ANSI_WARNINGS OFF
+GO
+ALTER DATABASE [Pelatologio] SET ARITHABORT OFF
+GO
+ALTER DATABASE [Pelatologio] SET AUTO_CLOSE OFF
+GO
+ALTER DATABASE [Pelatologio] SET AUTO_SHRINK OFF
+GO
+ALTER DATABASE [Pelatologio] SET AUTO_UPDATE_STATISTICS ON
+GO
+ALTER DATABASE [Pelatologio] SET CURSOR_CLOSE_ON_COMMIT OFF
+GO
+ALTER DATABASE [Pelatologio] SET CURSOR_DEFAULT  GLOBAL
+GO
+ALTER DATABASE [Pelatologio] SET CONCAT_NULL_YIELDS_NULL OFF
+GO
+ALTER DATABASE [Pelatologio] SET NUMERIC_ROUNDABORT OFF
+GO
+ALTER DATABASE [Pelatologio] SET QUOTED_IDENTIFIER OFF
+GO
+ALTER DATABASE [Pelatologio] SET RECURSIVE_TRIGGERS OFF
+GO
+ALTER DATABASE [Pelatologio] SET  DISABLE_BROKER
+GO
+ALTER DATABASE [Pelatologio] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
+GO
+ALTER DATABASE [Pelatologio] SET DATE_CORRELATION_OPTIMIZATION OFF
+GO
+ALTER DATABASE [Pelatologio] SET TRUSTWORTHY OFF
+GO
+ALTER DATABASE [Pelatologio] SET ALLOW_SNAPSHOT_ISOLATION OFF
+GO
+ALTER DATABASE [Pelatologio] SET PARAMETERIZATION SIMPLE
+GO
+ALTER DATABASE [Pelatologio] SET READ_COMMITTED_SNAPSHOT OFF
+GO
+ALTER DATABASE [Pelatologio] SET HONOR_BROKER_PRIORITY OFF
+GO
+ALTER DATABASE [Pelatologio] SET RECOVERY SIMPLE
+GO
+ALTER DATABASE [Pelatologio] SET  MULTI_USER
+GO
+ALTER DATABASE [Pelatologio] SET PAGE_VERIFY CHECKSUM
+GO
+ALTER DATABASE [Pelatologio] SET DB_CHAINING OFF
+GO
+ALTER DATABASE [Pelatologio] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF )
+GO
+ALTER DATABASE [Pelatologio] SET TARGET_RECOVERY_TIME = 60 SECONDS
+GO
+ALTER DATABASE [Pelatologio] SET DELAYED_DURABILITY = DISABLED
+GO
+ALTER DATABASE [Pelatologio] SET ACCELERATED_DATABASE_RECOVERY = OFF
+GO
+ALTER DATABASE [Pelatologio] SET QUERY_STORE = OFF
+GO
 USE [Pelatologio]
 GO
-
-/****** Object:  Table [dbo].[appointments]    Script Date: 17/12/2024 1:27:35 πμ ******/
+/****** Object:  Table [dbo].[Applications]    Script Date: 26/1/2025 11:46:11 μμ ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
-CREATE TABLE [dbo].[appointments](
+CREATE TABLE [dbo].[Applications](
+	[ApplicationID] [int] IDENTITY(1,1) NOT NULL,
+	[ApplicationName] [nvarchar](255) NOT NULL,
+PRIMARY KEY CLUSTERED
+(
+	[ApplicationID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED
+(
+	[ApplicationName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Appointments]    Script Date: 26/1/2025 11:46:11 μμ ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Appointments](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[customerid] [int] NULL,
 	[title] [nvarchar](255) NULL,
@@ -19,40 +109,152 @@ CREATE TABLE [dbo].[appointments](
 PRIMARY KEY CLUSTERED
 (
 	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-
-ALTER TABLE [dbo].[appointments]  WITH CHECK ADD FOREIGN KEY([customerid])
-REFERENCES [dbo].[Customers] ([code])
-GO
-
-ALTER TABLE [dbo].[appointments]  WITH CHECK ADD  CONSTRAINT [FK_appointments_calendars] FOREIGN KEY([calendar_id])
-REFERENCES [dbo].[calendars] ([id])
-GO
-
-ALTER TABLE [dbo].[appointments] CHECK CONSTRAINT [FK_appointments_calendars]
-GO
-
-
-USE [Pelatologio]
-GO
-
-/****** Object:  Table [dbo].[calendars]    Script Date: 17/12/2024 1:27:47 πμ ******/
+/****** Object:  Table [dbo].[Calendars]    Script Date: 26/1/2025 11:46:11 μμ ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
-CREATE TABLE [dbo].[calendars](
+CREATE TABLE [dbo].[Calendars](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[name] [nvarchar](255) NOT NULL,
-	[color] [nvarchar](20) NOT NULL,
 PRIMARY KEY CLUSTERED
 (
 	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-
+/****** Object:  Table [dbo].[CustomerAddresses]    Script Date: 26/1/2025 11:46:11 μμ ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CustomerAddresses](
+	[AddressID] [int] IDENTITY(1,1) NOT NULL,
+	[CustomerID] [int] NOT NULL,
+	[Address] [nvarchar](255) NULL,
+	[Town] [nvarchar](255) NULL,
+	[Postcode] [nvarchar](20) NULL,
+	[Store] [nvarchar](255) NULL,
+PRIMARY KEY CLUSTERED
+(
+	[AddressID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[CustomerLogins]    Script Date: 26/1/2025 11:46:11 μμ ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CustomerLogins](
+	[LoginID] [int] IDENTITY(1,1) NOT NULL,
+	[CustomerID] [int] NULL,
+	[ApplicationID] [int] NULL,
+	[Username] [nvarchar](255) NULL,
+	[Password] [nvarchar](255) NULL,
+	[Tag] [nvarchar](255) NULL,
+	[phone] [nvarchar](255) NULL,
+PRIMARY KEY CLUSTERED
+(
+	[LoginID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Customers]    Script Date: 26/1/2025 11:46:11 μμ ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Customers](
+	[code] [int] IDENTITY(1,1) NOT NULL,
+	[name] [varchar](300) NULL,
+	[title] [varchar](300) NULL,
+	[job] [nvarchar](255) NULL,
+	[afm] [nvarchar](20) NOT NULL,
+	[phone1] [varchar](100) NULL,
+	[phone2] [varchar](100) NULL,
+	[mobile] [varchar](100) NULL,
+	[address] [nvarchar](255) NULL,
+	[town] [nvarchar](255) NULL,
+	[email] [nvarchar](255) NULL,
+	[manager] [nvarchar](255) NULL,
+	[managerPhone] [nvarchar](255) NULL,
+	[locked_by] [varchar](255) NULL,
+	[postcode] [varchar](10) NULL,
+	[notes] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED
+(
+	[code] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [afm] UNIQUE NONCLUSTERED
+(
+	[afm] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TaskCategories]    Script Date: 26/1/2025 11:46:11 μμ ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TaskCategories](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[name] [nvarchar](255) NOT NULL,
+PRIMARY KEY CLUSTERED
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tasks]    Script Date: 26/1/2025 11:46:11 μμ ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tasks](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[title] [varchar](255) NOT NULL,
+	[description] [nvarchar](max) NULL,
+	[dueDate] [datetime] NULL,
+	[is_completed] [bit] NULL,
+	[customerId] [int] NULL,
+	[category] [varchar](50) NULL,
+PRIMARY KEY CLUSTERED
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Tasks] ADD  DEFAULT ((0)) FOR [is_completed]
+GO
+ALTER TABLE [dbo].[Appointments]  WITH CHECK ADD FOREIGN KEY([customerid])
+REFERENCES [dbo].[Customers] ([code])
+GO
+ALTER TABLE [dbo].[Appointments]  WITH CHECK ADD FOREIGN KEY([customerid])
+REFERENCES [dbo].[Customers] ([code])
+GO
+ALTER TABLE [dbo].[Appointments]  WITH CHECK ADD  CONSTRAINT [FK_appointments_calendars] FOREIGN KEY([calendar_id])
+REFERENCES [dbo].[Calendars] ([id])
+GO
+ALTER TABLE [dbo].[Appointments] CHECK CONSTRAINT [FK_appointments_calendars]
+GO
+ALTER TABLE [dbo].[CustomerAddresses]  WITH CHECK ADD FOREIGN KEY([CustomerID])
+REFERENCES [dbo].[Customers] ([code])
+GO
+ALTER TABLE [dbo].[CustomerLogins]  WITH CHECK ADD FOREIGN KEY([ApplicationID])
+REFERENCES [dbo].[Applications] ([ApplicationID])
+GO
+ALTER TABLE [dbo].[CustomerLogins]  WITH CHECK ADD FOREIGN KEY([CustomerID])
+REFERENCES [dbo].[Customers] ([code])
+GO
+ALTER TABLE [dbo].[Tasks]  WITH CHECK ADD FOREIGN KEY([customerId])
+REFERENCES [dbo].[Customers] ([code])
+ON DELETE SET NULL
+GO
+USE [master]
+GO
+ALTER DATABASE [Pelatologio] SET  READ_WRITE
+GO

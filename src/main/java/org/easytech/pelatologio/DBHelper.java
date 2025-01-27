@@ -1,6 +1,7 @@
 package org.easytech.pelatologio;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,7 @@ public class DBHelper {
                 data.setNotes(resultSet.getString("notes"));
                 dataList.add(data);
             }
+            closeConnection(conn);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,6 +82,7 @@ public class DBHelper {
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -121,6 +124,7 @@ public class DBHelper {
             } else {
                 System.out.println("Η εισαγωγή του πελάτη απέτυχε.");
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             System.err.println("Σφάλμα κατά την εισαγωγή του πελάτη: " + e.getMessage());
         }
@@ -157,6 +161,7 @@ public class DBHelper {
             } else {
                 System.out.println("Δεν βρέθηκε πελάτης με αυτό το κωδικό.");
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -179,6 +184,7 @@ public class DBHelper {
                     return "Η εγγραφή αυτή είναι ήδη κλειδωμένη από τον χρήστη " + lockedBy;
                 }
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -193,6 +199,7 @@ public class DBHelper {
             lockStmt.setString(1, appUser);
             lockStmt.setInt(2, code);
             lockStmt.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -205,6 +212,7 @@ public class DBHelper {
             PreparedStatement lockStmt = conn.prepareStatement(checkLockQuery);
             lockStmt.setInt(1, code);
             lockStmt.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -217,6 +225,7 @@ public class DBHelper {
             PreparedStatement lockStmt = conn.prepareStatement(checkLockQuery);
             lockStmt.setString(1, appUser);
             lockStmt.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -241,6 +250,7 @@ public class DBHelper {
                 data.setPhone(resultSet.getString("Phone"));
                 dataList.add(data);
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -258,6 +268,7 @@ public class DBHelper {
             pstmt.setString(5, newLogin.getTag());
             pstmt.setString(6, newLogin.getPhone());
             pstmt.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -274,7 +285,7 @@ public class DBHelper {
             pstmt.setString(4, updatedLogin.getPhone());
             pstmt.setInt(5, updatedLogin.getId());
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -287,7 +298,7 @@ public class DBHelper {
 
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -330,9 +341,10 @@ public class DBHelper {
                 "    INSERT (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email)\n" +
                 "    VALUES (source.name, source.BusinessTitle, source.job, source.afm, source.phone1, source.phone2, source.mobile, source.address, source.city1, source.zip1, source.mail1);";
 
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement(SQL)) {
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(SQL)) {
             stmt.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -340,13 +352,14 @@ public class DBHelper {
 
     public void insertAdditionalAddress(int customerId, String address, String city, String postalCode) {
         String sql = "INSERT INTO CustomerAddresses (CustomerID, Address, Town, Postcode) VALUES (?, ?, ?, ?)";
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, customerId);
             statement.setString(2, address);
             statement.setString(3, city);
             statement.setString(4, postalCode);
             statement.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -378,7 +391,7 @@ public class DBHelper {
                 newCustomerAddress.setStore(store);
                 customerAddresses.add(newCustomerAddress);
             }
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace(); // Αν υπάρχει κάποιο σφάλμα, το εκτυπώνουμε
         }
@@ -388,14 +401,15 @@ public class DBHelper {
 
     public void addAddress(int code, CustomerAddress newCustomerAddress) {
         String sql = "INSERT INTO CustomerAddresses (CustomerID, Address, Town, Postcode, Store) VALUES (?, ?, ?, ?, ?)";
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, code);
             statement.setString(2, newCustomerAddress.getAddress());
             statement.setString(3, newCustomerAddress.getTown());
             statement.setString(4, newCustomerAddress.getPostcode());
             statement.setString(5, newCustomerAddress.getStore());
             statement.executeUpdate();
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -412,7 +426,7 @@ public class DBHelper {
             pstmt.setString(4, updatedCustomerAddress.getStore());
             pstmt.setInt(5, updatedCustomerAddress.getAddressId());
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -425,7 +439,7 @@ public class DBHelper {
 
             pstmt.setInt(1, addressId);
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -441,6 +455,7 @@ public class DBHelper {
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
+            closeConnection(conn);
             return false;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -458,6 +473,7 @@ public class DBHelper {
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
+            closeConnection(conn);
             return false;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -482,6 +498,7 @@ public class DBHelper {
                 pstmt3.setInt(1, code);
                 pstmt3.executeUpdate();
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -498,6 +515,7 @@ public class DBHelper {
             if (rs.next()) {
                 calendar.setId(rs.getInt(1));
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -516,6 +534,7 @@ public class DBHelper {
                         rs.getString("name")
                 ));
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -564,6 +583,7 @@ public class DBHelper {
 
                 appointments.add(new Appointment(id, customerId, title, description, calendarId, startTime, endTime));
             }
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -583,9 +603,11 @@ public class DBHelper {
             stmt.setInt(6, appointment.getId());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
+                closeConnection(conn);
                 return true; // Ενημερώθηκε επιτυχώς
             } else {
                 // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                closeConnection(conn);
                 return saveAppointment(appointment);
             }
 
@@ -602,7 +624,7 @@ public class DBHelper {
 
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -616,7 +638,7 @@ public class DBHelper {
             pstmt.setString(1, updatedCalendar.getName());
             pstmt.setInt(2, updatedCalendar.getId());
             pstmt.executeUpdate();
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -624,10 +646,11 @@ public class DBHelper {
 
     public void deleteAppointment(int appointmentId) throws SQLException {
         String query = "DELETE FROM appointments WHERE id = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, appointmentId);
             statement.executeUpdate();
+            closeConnection(conn);
         }
     }
 
@@ -656,6 +679,7 @@ public class DBHelper {
                 data.setManagerPhone(resultSet.getString("managerPhone"));
                 data.setNotes(resultSet.getString("notes"));
             }
+            closeConnection(conn);
             return data;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -666,7 +690,9 @@ public class DBHelper {
 
     public List<Task> getAllTasks() {
         List<Task> tasks = new ArrayList<>();
-        String query = "SELECT id, tasks.title, description, dueDate, is_Completed, customerId, name FROM Tasks,customers where tasks.customerId = customers.code";
+        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, c.name " +
+                "FROM Tasks t " +
+                "LEFT JOIN Customers c ON t.customerId = c.code";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
@@ -676,16 +702,16 @@ public class DBHelper {
                 int id = resultSet.getInt("id");
                 String title = resultSet.getString("title");
                 String description = resultSet.getString("description");
-                Date dueDate = resultSet.getDate("dueDate");
-                boolean isCompleted = resultSet.getBoolean("isCompleted");
+                LocalDate dueDate = resultSet.getDate("dueDate").toLocalDate();
+                boolean isCompleted = resultSet.getBoolean("is_Completed");
                 Integer customerId = resultSet.getObject("customerId", Integer.class);
+                String category = resultSet.getString("category");
                 String customerName = resultSet.getString("name");
 
-                Task task = new Task(id, title, description, dueDate != null ? LocalDateTime.from(dueDate.toLocalDate()) : null, isCompleted, customerId);
-                task.setCustomerName(customerName);
+                Task task = new Task(id, title, description, dueDate, isCompleted, category, customerId, customerName);
                 tasks.add(task);
             }
-
+            closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -693,11 +719,15 @@ public class DBHelper {
         return tasks;
     }
 
-    public boolean completeTask(int taskId) {
-        String query = "UPDATE tasks SET is_completed = 1 WHERE id = ?";
+
+
+    public boolean completeTask(int taskId, boolean isCompleted) {
+        String query = "UPDATE tasks SET is_completed = ? WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, taskId);
+            stmt.setBoolean(1, isCompleted);
+            stmt.setInt(2, taskId);
+            closeConnection(conn);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -706,4 +736,162 @@ public class DBHelper {
     }
 
 
+    public boolean saveTask(Task task) {
+        String query = "INSERT INTO Tasks (title, description, dueDate, is_completed, customerId, category) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, task.getTitle());
+            stmt.setString(2, task.getDescription());
+            stmt.setDate(3, Date.valueOf(task.getDueDate()));
+            stmt.setBoolean(4,task.getCompleted());
+            if (task.getCustomerId() != null) {
+                stmt.setInt(5, task.getCustomerId());
+            } else {
+                stmt.setNull(5, java.sql.Types.INTEGER);
+            }
+            stmt.setString(6, task.getCategory());
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                closeConnection(conn);
+                return true; // Ενημερώθηκε επιτυχώς
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                closeConnection(conn);
+                return saveTask(task);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateTask(Task task) {
+        String query = "UPDATE Tasks SET title = ?, description = ?, dueDate = ?, is_Completed = ?, category = ?, customerId = ? WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, task.getTitle());
+            stmt.setString(2, task.getDescription());
+            stmt.setDate(3, java.sql.Date.valueOf(task.getDueDate()));
+            stmt.setBoolean(4, task.getCompleted());
+            stmt.setString(5, task.getCategory());
+            if (task.getCustomerId() != null) {
+                stmt.setInt(6, task.getCustomerId());
+            } else {
+                stmt.setNull(6, java.sql.Types.INTEGER);
+            }
+            stmt.setInt(7, task.getId());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void deleteTask(int taskId) throws SQLException {
+        String query = "DELETE FROM Tasks WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setInt(1, taskId);
+            statement.executeUpdate();
+            closeConnection(conn);
+        }
+    }
+
+    public void saveTaskCategory(TaskCategory newTaskCategory) {
+            String query = "INSERT INTO TaskCategories (name) VALUES (?)";
+            try (Connection conn = getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, newTaskCategory.getName());
+                stmt.executeUpdate();
+
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    newTaskCategory.setId(rs.getInt(1));
+                }
+                closeConnection(conn);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+    }
+
+    public void deleteTaskCategory(int id) {
+        String query = "DELETE FROM TaskCategories WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateTaskCategory(TaskCategory updatedCategory) {
+        String query = "UPDATE TaskCategories SET name = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, updatedCategory.getName());
+            pstmt.setInt(2, updatedCategory.getId());
+            pstmt.executeUpdate();
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<TaskCategory> getAllTaskCategory() {
+        List<TaskCategory> taskCategories = new ArrayList<>();
+        String query = "SELECT * FROM TaskCategories";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                taskCategories.add(new TaskCategory(
+                        rs.getInt("id"),
+                        rs.getString("name")
+                ));
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return taskCategories;
+    }
+
+    public int getTasksCount() {
+        String query = "SELECT COUNT(*) FROM Tasks where is_Completed = 0";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getAppointmentsCount() {
+        String query = "SELECT COUNT(*) AS total_appointments " +
+                "FROM appointments " +
+                "WHERE CAST(start_time AS DATE) = CAST(GETDATE() AS DATE);";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
