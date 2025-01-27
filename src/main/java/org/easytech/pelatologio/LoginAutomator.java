@@ -83,4 +83,12 @@ public class LoginAutomator {
             driver.quit();
         }
     }
+
+    public void openGemi(String url, String afm) {
+        driver.get(url);
+        // Εντοπισμός πεδίων username και password και εισαγωγή τιμών
+        WebElement searchBar = driver.findElement(By.id("AutocompleteSearchItem"));
+        searchBar.sendKeys(afm);
+
+    }
 }

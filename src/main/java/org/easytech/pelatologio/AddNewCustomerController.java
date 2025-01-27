@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.openqa.selenium.By;
 
 import javax.swing.text.View;
 import java.awt.*;
@@ -39,7 +40,7 @@ public class AddNewCustomerController {
     @FXML
     private ProgressIndicator progressIndicator;
     @FXML
-    Button btnTaxis, btnMypos, btnSimply, btnData, btnAppointment;
+    Button btnTaxis, btnMypos, btnSimply, btnData, btnAppointment,btnTask;
 
     int code = 0;
 
@@ -52,6 +53,7 @@ public class AddNewCustomerController {
         setTooltip(btnSimply, "Διαχείριση κωδικών Simply του πελάτη");
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
         setTooltip(btnAppointment,"Προσθήκη νέου ραντεβού");
+        setTooltip(btnTask,"Προσθήκη νέας εργασίας");
 
 
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
@@ -72,6 +74,9 @@ public class AddNewCustomerController {
         btnData.setVisible(false);
         btnAppointment.setDisable(true);
         btnAppointment.setVisible(false);
+        btnTask.setDisable(true);
+        btnTask.setVisible(false);
+
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
         MenuItem copyItem = new MenuItem("Αντιγραφή");
@@ -309,6 +314,8 @@ public class AddNewCustomerController {
         btnData.setVisible(true);
         btnAppointment.setDisable(false);
         btnAppointment.setVisible(true);
+        btnTask.setDisable(false);
+        btnTask.setVisible(true);
 
         btnTaxis.setStyle("-fx-border-color: #D6D8DE;");
         btnMypos.setStyle("-fx-border-color: #D6D8DE;");

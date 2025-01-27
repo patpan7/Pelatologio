@@ -20,7 +20,7 @@ import java.util.Optional;
 
 public class TaxisViewController {
     @FXML
-    private Button btnTaxis, btnAuthorizations, btnMyData, btnESend, btnAfm1, btnAfm2, btnTameiakes;
+    private Button btnTaxis, btnAuthorizations, btnMyData, btnESend, btnAfm1, btnAfm2, btnTameiakes, btnGemi;
     @FXML
     private Label customerLabel;
 
@@ -49,6 +49,7 @@ public class TaxisViewController {
         setTooltip(btnAfm1, "Εγγραφή στην υπηρεσία ανεύρεσης ΑΦΜ με επιλεγμένο κωδικό");
         setTooltip(btnAfm2, "Είσοδος στη διαχείριση ειδικών κωδικών με επιλεγμένο κωδικό");
         setTooltip(btnTameiakes, "Είσοδος στις ταμειακές με επιλεγμένο κωδικό");
+        setTooltip(btnGemi, "Αναζήτηση στο ΓΕΜΗ για τον πελάτη");
 
         loginList = FXCollections.observableArrayList();
         // Ρύθμιση στήλης username
@@ -341,6 +342,21 @@ public class TaxisViewController {
             );
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+
+    public void gemiSearch(ActionEvent actionEvent) {
+        if (customer != null) {
+            try {
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openGemi(
+                        "https://publicity.businessportal.gr/",
+                        customer.getAfm()
+                );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
