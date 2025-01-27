@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <DialogPane expanded="true" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddTaskController">
     <content>
@@ -15,7 +14,10 @@
                     <TextField fx:id="titleField" prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                     <Label text="Περιγραφή:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                    <TextArea fx:id="descriptionField" prefHeight="100" prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <TextArea fx:id="descriptionField" prefHeight="100" prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <font>
+                     <Font size="24.0" />
+                  </font></TextArea>
 
                     <Label text="Ημερομηνία Λήξης:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                     <DatePicker fx:id="dueDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -24,7 +26,7 @@
                     <ComboBox fx:id="customerComboBox" editable="true" prefWidth="300" promptText="Επιλογή Πελάτη" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                     <Label text="Κατηγορία:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                    <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                    <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                <columnConstraints>
                   <ColumnConstraints />
                   <ColumnConstraints />

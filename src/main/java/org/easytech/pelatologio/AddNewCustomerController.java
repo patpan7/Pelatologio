@@ -593,6 +593,38 @@ public class AddNewCustomerController {
         }
     }
 
+    public void newTask(ActionEvent actionEvent){
+        if (customer != null) {
+            try {
+                // Φόρτωση του FXML για προσθήκη ραντεβού
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Προσθήκη Εργασίας");
+                AddTaskController controller = loader.getController();
+                controller.setCustomerId(customer.getCode());
+                controller.setCustomerName(customer.getName());
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                    // Εκτελούμε το handleSaveAppointment
+                    boolean success = controller.handleSaveTask();
+
+                    if (!success) {
+                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                        event.consume();
+                    }
+                });
+
+                dialog.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();
         tooltip.setShowDelay(Duration.seconds(0.3));
