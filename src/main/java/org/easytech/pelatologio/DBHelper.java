@@ -607,7 +607,6 @@ public class DBHelper {
                 return true; // Ενημερώθηκε επιτυχώς
             } else {
                 // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
-                closeConnection(conn);
                 return saveAppointment(appointment);
             }
 
@@ -727,8 +726,13 @@ public class DBHelper {
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setBoolean(1, isCompleted);
             stmt.setInt(2, taskId);
-            closeConnection(conn);
-            return stmt.executeUpdate() > 0;
+            if (stmt.executeUpdate() > 0) {
+                closeConnection(conn);
+                return true;
+            } else {
+                closeConnection(conn);
+                return false;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -756,7 +760,6 @@ public class DBHelper {
                 return true; // Ενημερώθηκε επιτυχώς
             } else {
                 // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
-                closeConnection(conn);
                 return saveTask(task);
             }
         } catch (SQLException e) {
@@ -783,7 +786,13 @@ public class DBHelper {
             }
             stmt.setInt(7, task.getId());
 
-            return stmt.executeUpdate() > 0;
+            if (stmt.executeUpdate() > 0) {
+                closeConnection(conn);
+                return true; // Ενημερώθηκε επιτυχώς
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                return false;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
