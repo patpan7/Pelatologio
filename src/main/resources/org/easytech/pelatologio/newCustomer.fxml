@@ -234,6 +234,18 @@
                                     <Font size="24.0" />
                                 </font>
                             </TextField>
+                     <Button fx:id="btnEmail" mnemonicParsing="false" onAction="#showEmailDialog" styleClass="click-button">
+                        <graphic>
+                           <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@icons/mail.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                           <Insets left="5.0" />
+                        </HBox.margin>
+                     </Button>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                             <VBox.margin>

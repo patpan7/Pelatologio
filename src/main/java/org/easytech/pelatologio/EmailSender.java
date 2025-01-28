@@ -4,7 +4,11 @@ import javafx.scene.control.Alert;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.io.File;
+import java.util.List;
 import java.util.Properties;
 
 public class EmailSender {
@@ -57,6 +61,51 @@ public class EmailSender {
             System.out.println("Η αποστολή του email απέτυχε.");
             Platform.runLater(() -> showAlert("Attention", "Η αποστολή του email απέτυχε."));
         }
+    }
+
+    public void sendEmailWithAttachments(String recipientEmail, String subject, String body, List<File> attachments) throws Exception {
+        // Ρυθμίσεις για το SMTP
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", port);
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true"); // Για ασφαλή σύνδεση
+
+        Session session = Session.getInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+
+        // Δημιουργία μηνύματος
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+        message.setSubject(subject);
+
+        // Δημιουργία του περιεχομένου με συνημμένα
+        Multipart multipart = new MimeMultipart();
+
+        // Κείμενο μηνύματος
+        MimeBodyPart textPart = new MimeBodyPart();
+        textPart.setText(body);
+        multipart.addBodyPart(textPart);
+
+        // Προσθήκη συνημμένων
+        if (attachments != null) {
+            for (File file : attachments) {
+                MimeBodyPart attachmentPart = new MimeBodyPart();
+                attachmentPart.attachFile(file);
+                multipart.addBodyPart(attachmentPart);
+            }
+        }
+
+        // Ορισμός του περιεχομένου στο μήνυμα
+        message.setContent(multipart);
+
+        // Αποστολή του μηνύματος
+        Transport.send(message);
     }
 
     private void showAlert(String title, String message) {

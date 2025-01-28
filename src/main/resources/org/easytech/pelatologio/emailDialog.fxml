@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane prefHeight="700.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EmailDialogController">
+   <content>
+      <VBox spacing="10" styleClass="normal-label" stylesheets="@external.css">
+          <padding>
+              <Insets bottom="10" left="10" right="10" top="10" />
+          </padding>
+      
+          <!-- Παραλήπτης -->
+          <Label text="Παραλήπτης:" />
+          <TextField fx:id="emailField" prefWidth="400" promptText="Email παραλήπτη" />
+      
+          <!-- Θέμα -->
+          <Label styleClass="normal-label" text="Θέμα:" />
+          <TextField fx:id="subjectField" promptText="Θέμα" />
+      
+          <!-- Περιεχόμενο -->
+          <Label text="Μήνυμα:" />
+          <TextArea fx:id="bodyArea" prefHeight="200" promptText="Περιεχόμενο email" />
+      
+          <!-- Συνημμένα -->
+          <Label text="Συνημμένα:" />
+          <ListView fx:id="attachmentList" />
+
+          <!-- Κουμπιά -->
+          <HBox alignment="CENTER_LEFT" spacing="10">
+             <Button fx:id="attachButton" styleClass="click-button" text="Προσθήκη Συνημμένων" />
+            <Separator visible="false" HBox.hgrow="ALWAYS" />
+              <Button fx:id="sendButton" styleClass="click-button" text="Αποστολή" />
+          </HBox>
+          <ProgressBar fx:id="progressBar" prefWidth="200.0" visible="false" />
+      </VBox>
+   </content>
+</DialogPane>

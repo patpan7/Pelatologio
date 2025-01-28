@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -637,5 +638,24 @@ public class AddNewCustomerController {
         tooltip.setShowDelay(Duration.seconds(0.3));
         tooltip.setText(text);
         button.setTooltip(tooltip);
+    }
+
+    @FXML
+    private void showEmailDialog(ActionEvent actionEvent) {
+        if (customer != null) {
+            try {
+                // Φόρτωση του FXML για προσθήκη ραντεβού
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Αποστολή Email");
+                EmailDialogController controller = loader.getController();
+                controller.setCustomer(customer);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+                dialog.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
