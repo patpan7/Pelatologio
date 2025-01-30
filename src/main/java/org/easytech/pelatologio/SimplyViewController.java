@@ -7,12 +7,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
@@ -91,11 +93,15 @@ public class SimplyViewController {
             dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
 
             // Όταν ο χρήστης πατά το OK, θα καλέσει τη μέθοδο για αποθήκευση
-            dialog.setResultConverter(dialogButton -> {
-                if (dialogButton == ButtonType.OK) {
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, e -> {
+                if (!addLoginController.validateInputs()) {
+                    e.consume(); // Εμποδίζει το κλείσιμο του dialog
+                }
+                else {
+                    // Εάν οι εισαγωγές είναι έγκυρες, συνεχίστε με την αποθήκευση
                     addLoginController.handleSaveLogin(event,2);
                 }
-                return null;
             });
 
             dialog.showAndWait();
@@ -110,7 +116,15 @@ public class SimplyViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
+            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
             return;
         }
@@ -136,7 +150,15 @@ public class SimplyViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς επεξεργασία."));
+            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς επεξεργασία."));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
             return;
         }
@@ -187,14 +209,36 @@ public class SimplyViewController {
                         "\nΚινητό: "+customer.getMobile()+
                         "\n";
                 copyTextToClipboard(msg);
-                showAlert("Attention", "Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.");
+                //showAlert("Attention", "Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.");
+                Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                notifications.showInformation();
             } else {
-                showAlert("Attention", "Please select a login to copy.");
+                //showAlert("Attention", "Please select a login to copy.");
+                Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Παρακαλώ επιλέξτε ένα login.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                notifications.showError();
             }
         } else {
             if (selectedLogin == null) {
                 // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-                Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
+                //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Παρακαλώ επιλέξτε ένα login.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();});
                 //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
                 return;
             }
@@ -248,11 +292,24 @@ public class SimplyViewController {
                     }
                 });
                } else {
-                showAlert("Attention", "Please select a login to copy.");
+                    Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Παρακαλώ επιλέξτε ένα login.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();
             }
         } else { // Left-click for regular functionality
             if (selectedLogin == null) {
-                Platform.runLater(() -> showAlert("Attention", "Please select a login."));
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Παρακαλώ επιλέξτε ένα login.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();});
                 return;
             }
 
@@ -306,11 +363,24 @@ public class SimplyViewController {
                     }
                 });
             } else {
-                showAlert("Attention", "Please select a login to copy.");
+                Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Παρακαλώ επιλέξτε ένα login.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                notifications.showError();
             }
         } else if (event.getButton() == MouseButton.PRIMARY) { // Left-click for regular functionality
             if (selectedLogin == null) {
-                Platform.runLater(() -> showAlert("Attention", "Please select a login."));
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Παρακαλώ επιλέξτε ένα login.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();});
                 return;
             }
 
@@ -377,7 +447,14 @@ public class SimplyViewController {
         ClipboardContent content = new ClipboardContent();
         content.putString(msg);  // Replace with the desired text
         clipboard.setContent(content);
-        showAlert("Copied to Clipboard", msg);
+        //showAlert("Copied to Clipboard", msg);
+        Notifications notifications = Notifications.create()
+                    .title("Αντιγραφή στο πρόχειρο")
+                    .text(msg)
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT);
+        notifications.showInformation();
     }
 
 

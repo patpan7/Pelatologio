@@ -20,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 import org.openqa.selenium.By;
 
 import javax.swing.text.View;
@@ -240,7 +241,14 @@ public class AddNewCustomerController {
                 e.printStackTrace();
             }
         } else {
-            showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο τηλέφωνο.");
+            //showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο τηλέφωνο.");
+            Notifications notifications = Notifications.create()
+                    .title("Προσοχή")
+                    .text("Παρακαλώ εισάγετε ένα έγκυρο τηλέφωνο")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showError();
         }
     }
 
@@ -273,7 +281,14 @@ public class AddNewCustomerController {
                 }
             }).start(); // Ξεκινάμε το thread για την αποστολή του email
         } else {
-            showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο email.");
+            //showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο email.");
+            Notifications notifications = Notifications.create()
+                    .title("Προσοχή")
+                    .text("Παρακαλώ εισάγετε ένα έγκυρο email.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showError();
         }
     }
 
@@ -343,7 +358,14 @@ public class AddNewCustomerController {
         tfPostCode.setText("");
         String afm = tfAfm.getText();
         if (afm == null || afm.isEmpty()) {
-            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο ΑΦΜ."));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ εισάγετε ένα έγκυρο ΑΦΜ.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return;
         }
 
@@ -353,7 +375,14 @@ public class AddNewCustomerController {
         // Έλεγχος για μήνυμα σφάλματος
         String errorDescr = AfmResponseParser.getXPathValue(responseXml, "//error_rec/error_descr");
         if (errorDescr != null && !errorDescr.isEmpty()) {
-            Platform.runLater(() -> showAlert("Προσοχή", errorDescr));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text(errorDescr)
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return;
         }
 
@@ -367,7 +396,14 @@ public class AddNewCustomerController {
             tfTown.setText(companyInfo.getTown());
             tfPostCode.setText(companyInfo.getPostcode());
         } else {
-            Platform.runLater(() -> showAlert("Προσοχή", "Σφάλμα κατά την ανάγνωση των δεδομένων."));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Σφάλμα κατά την ανάγνωση των δεδομένων")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
         }
     }
 
@@ -413,12 +449,26 @@ public class AddNewCustomerController {
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         if (dbHelper.isAfmExists(afm)) {
-            Platform.runLater(() -> showAlert("Προσοχή", "Ο πελάτης με ΑΦΜ " + afm + " υπάρχει ήδη."));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Ο πελάτης με ΑΦΜ " + afm + " υπάρχει ήδη.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(3))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
             int customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, manager, managerPhone, notes);
             // Εμφάνιση επιτυχίας
-            Platform.runLater(() -> showAlert("Επιτυχία", "Ο πελάτης εισήχθη με επιτυχία στη βάση δεδομένων."));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Επιτυχία")
+                        .text("Ο πελάτης εισήχθη με επιτυχία στη βάση δεδομένων.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(3))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showInformation();});
         }
     }
 
@@ -453,7 +503,14 @@ public class AddNewCustomerController {
         managerPhone = managerPhone.replaceAll("\\s+", "");
 
         dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, manager, managerPhone, notes);
-        showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
+        //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
+        Notifications notifications = Notifications.create()
+                .title("Επιτυχία")
+                .text("Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.")
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT);
+        notifications.showInformation();
     }
 
     private void showAlert(String title, String message) {
@@ -465,10 +522,13 @@ public class AddNewCustomerController {
 
     public void addAddress(ActionEvent event) {
         if (tfAddress.getText() == null || tfAddress.getText().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν υπάρχει κεντρική διεύθυνση!");
-            Optional<ButtonType> result = alert.showAndWait();
+            Notifications notifications = Notifications.create()
+                    .title("Προσοχή")
+                    .text("Δεν υπάρχει κεντρική διεύθυνση!")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showError();
             return;
         }
         try {

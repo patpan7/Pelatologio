@@ -1,6 +1,9 @@
 package org.easytech.pelatologio;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -54,12 +57,28 @@ public class EmailSender {
 
             // Αποστολή του email
             Transport.send(message);
-            Platform.runLater(() -> showAlert("Attention", "Το email στάλθηκε επιτυχώς."));
+            //Platform.runLater(() -> showAlert("Attention", "Το email στάλθηκε επιτυχώς."));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Attention")
+                        .text("Το email στάλθηκε επιτυχώς.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showInformation();});
             System.out.println("Το email στάλθηκε επιτυχώς!");
         } catch (MessagingException e) {
             e.printStackTrace();
             System.out.println("Η αποστολή του email απέτυχε.");
-            Platform.runLater(() -> showAlert("Attention", "Η αποστολή του email απέτυχε."));
+            //Platform.runLater(() -> showAlert("Attention", "Η αποστολή του email απέτυχε."));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Attention")
+                        .text("Η αποστολή του email απέτυχε.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
         }
     }
 

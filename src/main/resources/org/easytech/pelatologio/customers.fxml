@@ -70,6 +70,18 @@
                             <Insets />
                         </opaqueInsets>
                     </TextField>
+                    <Button fx:id="btnEmail" mnemonicParsing="false" onAction="#clean" styleClass="click-button">
+                        <graphic>
+                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@icons/clean.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                            <Insets left="5.0" />
+                        </HBox.margin>
+                    </Button>
                     <Separator prefWidth="200.0" visible="false" HBox.hgrow="ALWAYS" />
                     <Button mnemonicParsing="false" onAction="#customerAddNew" styleClass="click-button" text="Προσθήκη Νέου Πελάτη">
                         <graphic>

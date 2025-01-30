@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
@@ -18,6 +19,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 import java.awt.*;
 import java.io.File;
@@ -551,10 +553,13 @@ public class CustomersController implements Initializable {
         } else {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
             if (selectedCustomer == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Προσοχή");
-                alert.setContentText("Δεν έχει επιλεγεί Πελάτης!");
-                Optional<ButtonType> result = alert.showAndWait();
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Δεν έχει επιλεγεί Πελάτης!")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(3))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();
                 return;
             }
             try {
@@ -582,10 +587,13 @@ public class CustomersController implements Initializable {
     public void myposClick(ActionEvent event) {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
         if (selectedCustomer == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί Πελάτης!");
-            Optional<ButtonType> result = alert.showAndWait();
+            Notifications notifications = Notifications.create()
+                    .title("Προσοχή")
+                    .text("Δεν έχει επιλεγεί Πελάτης!")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showError();
             return;
         }
         try {
@@ -612,10 +620,13 @@ public class CustomersController implements Initializable {
     public void simplyClick(ActionEvent event) {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
         if (selectedCustomer == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί Πελάτης!");
-            Optional<ButtonType> result = alert.showAndWait();
+            Notifications notifications = Notifications.create()
+                    .title("Προσοχή")
+                    .text("Δεν έχει επιλεγεί Πελάτης!")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showError();
             return;
         }
         try {
@@ -678,14 +689,13 @@ public class CustomersController implements Initializable {
         ClipboardContent content = new ClipboardContent();
         content.putString(msg);  // Replace with the desired text
         clipboard.setContent(content);
-        showAlert("Copied to Clipboard", msg);
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
+        Notifications notifications = Notifications.create()
+                .title("Αντιγραγή στο πρόχειρο")
+                .text(msg)
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT);
+        notifications.showInformation();
     }
 
     private void setTooltip(Button button, String text) {
@@ -693,5 +703,10 @@ public class CustomersController implements Initializable {
         tooltip.setShowDelay(Duration.seconds(0.3));
         tooltip.setText(text);
         button.setTooltip(tooltip);
+    }
+
+    public void clean(ActionEvent actionEvent) {
+        filterField.setText("");
+        customerTable.getSelectionModel().clearSelection();
     }
 }

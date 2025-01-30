@@ -83,11 +83,11 @@ public class AddLoginController {
     public void handleSaveLogin(ActionEvent event, int appicationId) {
         String username = usernameField.getText();
         String password = passwordField.getText();
-        String tag = tagField.getSelectionModel().getSelectedItem().toString();
         String phone = phoneField.getText();
-        Logins newLogin = new Logins(username, password, tag, phone);
 
         if (!username.isEmpty() && !password.isEmpty()) {
+            String tag = tagField.getSelectionModel().getSelectedItem().toString();
+            Logins newLogin = new Logins(username, password, tag, phone);
             DBHelper dbHelper = new DBHelper();
             dbHelper.addLogin(customer.getCode(),newLogin,appicationId); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
 
@@ -135,6 +135,18 @@ public class AddLoginController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean validateInputs() {
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText().trim();
+        Object selectedTag = tagField.getSelectionModel().getSelectedItem();
+
+        if (username.isEmpty() || password.isEmpty() || selectedTag == null) {
+            showAlert("Σφάλμα", "Παρακαλώ συμπληρώστε όλα τα πεδία!");
+            return false;
+        }
+        return true;
     }
 
     private void showAlert(String title, String message) {
