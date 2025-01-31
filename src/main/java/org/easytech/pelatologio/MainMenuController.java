@@ -116,4 +116,11 @@ public class MainMenuController implements Initializable {
         stackPane.getChildren().clear();
         stackPane.getChildren().add(root);
     }
+
+    public void devicesClick(ActionEvent actionEvent) throws IOException {
+//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("devicesView.fxml"));
+//        root = fxmlLoader.load();
+//        stackPane.getChildren().clear();
+//        stackPane.getChildren().add(root);
+    }
 }
