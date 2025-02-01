@@ -97,7 +97,7 @@
                              <children>
 
 
-                                 <Button contentDisplay="TOP" layoutX="119.0" layoutY="324.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#devicesClick" styleClass="click-button" text="Είδη" textAlignment="CENTER" GridPane.rowIndex="3">
+                                 <Button contentDisplay="TOP" layoutX="119.0" layoutY="324.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#itemsClick" styleClass="click-button" text="Είδη" textAlignment="CENTER" GridPane.rowIndex="3">
                                      <graphic>
                                          <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                              <image>

@@ -49,7 +49,7 @@ public class MainMenuController implements Initializable {
     public void customersClick(ActionEvent e) throws IOException {
         DBHelper dbHelper = new DBHelper();
         dbHelper.customerUnlockAll(AppSettings.loadSetting("appuser"));
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("customers.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("customersView.fxml"));
         root = fxmlLoader.load();
         stackPane.getChildren().clear();
         stackPane.getChildren().add(root);
@@ -117,10 +117,17 @@ public class MainMenuController implements Initializable {
         stackPane.getChildren().add(root);
     }
 
+    public void itemsClick(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("itemsView.fxml"));
+        root = fxmlLoader.load();
+        stackPane.getChildren().clear();
+        stackPane.getChildren().add(root);
+    }
+
     public void devicesClick(ActionEvent actionEvent) throws IOException {
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("devicesView.fxml"));
-//        root = fxmlLoader.load();
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(root);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("deviceView.fxml"));
+        root = fxmlLoader.load();
+        stackPane.getChildren().clear();
+        stackPane.getChildren().add(root);
     }
 }

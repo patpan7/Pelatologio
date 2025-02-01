@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.ItemsController">
+    <BorderPane minHeight="800.0" minWidth="1200.0" styleClass="pane" stylesheets="@external.css">
+        <top>
+            <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                </BorderPane.margin>
+                <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                    <Label styleClass="header-label" text="Πελατολόγιο - Είδη" HBox.hgrow="ALWAYS">
+                        <font>
+                            <Font size="38.0" />
+                        </font>
+                        <HBox.margin>
+                            <Insets />
+                        </HBox.margin>
+                    </Label>
+                </HBox>
+                <HBox alignment="CENTER_RIGHT">
+                    <opaqueInsets>
+                        <Insets right="20.0" />
+                    </opaqueInsets>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                    <Button mnemonicParsing="false" onAction="#mainMenuClick" styleClass="click-button" text="Επιστροφή">
+                        <graphic>
+                            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@icons/menu.png" />
+                            </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                            <Insets />
+                        </HBox.margin>
+                    </Button>
+                </HBox>
+            </HBox>
+        </top>
+        <center>
+            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets />
+                </BorderPane.margin>
+                <HBox alignment="CENTER" VBox.vgrow="NEVER">
+                    <VBox.margin>
+                        <Insets bottom="10.0" left="20.0" right="20.0" />
+                    </VBox.margin>
+                    <Label alignment="CENTER" contentDisplay="CENTER" styleClass="normal-label" text="Αναζήτηση">
+                        <font>
+                            <Font name="System Bold" size="30.0" />
+                        </font>
+                        <opaqueInsets>
+                            <Insets />
+                        </opaqueInsets>
+                        <padding>
+                            <Insets right="20.0" />
+                        </padding>
+                    </Label>
+                    <TextField fx:id="filterField" prefWidth="300.0">
+                        <opaqueInsets>
+                            <Insets />
+                        </opaqueInsets>
+                    </TextField>
+                    <Button fx:id="btnEmail" mnemonicParsing="false" onAction="#clean" styleClass="click-button">
+                        <graphic>
+                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@icons/clean.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                            <Insets left="5.0" />
+                        </HBox.margin>
+                    </Button>
+                    <Separator prefWidth="200.0" visible="false" HBox.hgrow="ALWAYS" />
+                    <Button mnemonicParsing="false" onAction="#itemAddNew" styleClass="click-button" text="Προσθήκη Νέου Είδους">
+                        <graphic>
+                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@icons/add.png" />
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+                <TableView fx:id="itemsTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                  <TableColumn fx:id="idColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Id" />
+                        <TableColumn fx:id="nameColumn" maxWidth="400.0" minWidth="400.0" prefWidth="400.0" resizable="true" sortable="false" text="Όνομα" />
+                        <TableColumn fx:id="descriptionColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="846.0" resizable="true" sortable="false" text="Περιγραφή" />
+                    </columns>
+                    <contextMenu>
+                        <ContextMenu>
+                            <items>
+                                <MenuItem onAction="#handleEditOption" styleClass="menu-item" text="Επεξεργασία" />
+                                <MenuItem mnemonicParsing="false" onAction="#itemAddNew" styleClass="menu-item" text="Προσθήκη" />
+                            </items>
+                        </ContextMenu>
+                    </contextMenu>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                </TableView>
+            </VBox>
+        </center>
+    </BorderPane>
+</StackPane>

@@ -903,4 +903,180 @@ public class DBHelper {
         }
         return 0;
     }
+
+    public List<Item> getItems() throws SQLException {
+        List<Item> dataList = new ArrayList<>();
+        try (Connection conn = getConnection();
+             Statement statement = conn.createStatement()) {
+
+            String query = "SELECT * FROM Items where id > 0 order by id desc";
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                Item item = new Item();
+                item.setId(resultSet.getInt("id"));
+                item.setName(resultSet.getString("name"));
+                item.setDescription(resultSet.getString("description"));
+                dataList.add(item);
+            }
+            closeConnection(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dataList;
+    }
+
+    public boolean isItemExists(String name) {
+        String query = "SELECT COUNT(*) FROM Items WHERE name = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public int insertItem(String name, String description) {
+        String insertQuery = "INSERT INTO Items (name, description) "
+                + "VALUES (?, ?)";
+        int newItemId = -1; // Default value for error handling
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setString(1, name);
+            pstmt.setString(2, description);
+
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Η εισαγωγή του είδους ήταν επιτυχής.");
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        newItemId = generatedKeys.getInt(1);
+                    }
+                }
+            } else {
+                System.out.println("Η εισαγωγή του είδους απέτυχε.");
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            System.err.println("Σφάλμα κατά την εισαγωγή του είδους: " + e.getMessage());
+        }
+
+        return newItemId; // Επιστρέφει το CustomerID ή -1 αν υπήρξε σφάλμα
+    }
+
+    public void updateItem(int code, String name, String description) {
+        String sql = "UPDATE items SET name = ?, description = ? WHERE id = ?";
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, name);
+            pstmt.setString(2, description);
+            pstmt.setInt(3, code);
+
+            int rowsUpdated = pstmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Η ενημέρωση ήταν επιτυχής!");
+                // Μπορείς να προσθέσεις εδώ και μια ενημέρωση της λίστας πελατών στην κύρια σκηνή.
+            } else {
+                System.out.println("Δεν βρέθηκε είδος με αυτό το κωδικό.");
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List <Device> getAllDevices() {
+        List<Device> devices = new ArrayList<>();
+        String query = "SELECT d.id, d.serial, d.description, d.itemId, d.customerId, i.name AS itemName, c.name " +
+                "FROM Devices d " +
+                "LEFT JOIN Customers c ON t.customerId = c.code" +
+                "LEFT JOIN Items i ON d.itemId = i.id";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet resultSet = stmt.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String serial = resultSet.getString("serial");
+                String description = resultSet.getString("description");
+                Integer itemId = resultSet.getInt("itemId");
+                Integer customerId = resultSet.getObject("customerId", Integer.class);
+                String item = resultSet.getString("item");
+                String customerName = resultSet.getString("name");
+
+                Device device = new Device(id, serial, description,itemId, customerId, item, customerName);
+                devices.add(device);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return devices;
+    }
+
+    public boolean saveDevice(Device newDevice) {
+        String query = "INSERT INTO Devices (serial, description, itemId, customerId) VALUES (?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, newDevice.getSerial());
+            stmt.setString(2, newDevice.getDescription());
+            stmt.setInt(3, newDevice.getItemId());
+            if (newDevice.getCustomerId() != null) {
+                stmt.setInt(4, newDevice.getCustomerId());
+            } else {
+                stmt.setNull(4, java.sql.Types.INTEGER);
+            }
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                closeConnection(conn);
+                return true; // Ενημερώθηκε επιτυχώς
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                return saveDevice(newDevice);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Boolean updateDevice(Device device) {
+        String query = "UPDATE Devices SET serial = ?, description = ?, itemId = ?, customerId = ? WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, device.getSerial());
+            stmt.setString(2, device.getDescription());
+            stmt.setInt(3, device.getItemId());
+            if (device.getCustomerId() != null) {
+                stmt.setInt(4, device.getCustomerId());
+            } else {
+                stmt.setNull(4, java.sql.Types.INTEGER);
+            }
+            stmt.setInt(5, device.getId());
+
+            if (stmt.executeUpdate() > 0) {
+                closeConnection(conn);
+                return true; // Ενημερώθηκε επιτυχώς
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
