@@ -998,8 +998,9 @@ public class DBHelper {
         List<Device> devices = new ArrayList<>();
         String query = "SELECT d.id, d.serial, d.description, d.itemId, d.customerId, i.name AS itemName, c.name " +
                 "FROM Devices d " +
-                "LEFT JOIN Customers c ON t.customerId = c.code" +
-                "LEFT JOIN Items i ON d.itemId = i.id";
+                "LEFT JOIN Customers c ON d.customerId = c.code " +
+                "LEFT JOIN Items i ON d.itemId = i.id " +
+                "ORDER BY d.id DESC";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
@@ -1011,7 +1012,7 @@ public class DBHelper {
                 String description = resultSet.getString("description");
                 Integer itemId = resultSet.getInt("itemId");
                 Integer customerId = resultSet.getObject("customerId", Integer.class);
-                String item = resultSet.getString("item");
+                String item = resultSet.getString("itemName");
                 String customerName = resultSet.getString("name");
 
                 Device device = new Device(id, serial, description,itemId, customerId, item, customerName);
@@ -1025,6 +1026,21 @@ public class DBHelper {
         return devices;
     }
 
+    public boolean isSerialUnique(String serial) {
+        String query = "SELECT COUNT(*) FROM Devices WHERE serial = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, serial);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) == 0; // Αν το COUNT είναι 0, ο σειριακός είναι μοναδικός
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Σε περίπτωση σφάλματος, θεωρούμε ότι δεν είναι μοναδικός
+    }
+
     public boolean saveDevice(Device newDevice) {
         String query = "INSERT INTO Devices (serial, description, itemId, customerId) VALUES (?, ?, ?, ?)";
         try (Connection conn = getConnection();
@@ -1035,28 +1051,23 @@ public class DBHelper {
             if (newDevice.getCustomerId() != null) {
                 stmt.setInt(4, newDevice.getCustomerId());
             } else {
-                stmt.setNull(4, java.sql.Types.INTEGER);
+                stmt.setInt(4, 0);
             }
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 closeConnection(conn);
-                return true; // Ενημερώθηκε επιτυχώς
-            } else {
-                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
-                return saveDevice(newDevice);
+                return true; // Εισαγωγή επιτυχής
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return false; // Αποτυχία εισαγωγής
     }
 
     public Boolean updateDevice(Device device) {
         String query = "UPDATE Devices SET serial = ?, description = ?, itemId = ?, customerId = ? WHERE id = ?";
-
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-
             stmt.setString(1, device.getSerial());
             stmt.setString(2, device.getDescription());
             stmt.setInt(3, device.getItemId());
@@ -1069,14 +1080,117 @@ public class DBHelper {
 
             if (stmt.executeUpdate() > 0) {
                 closeConnection(conn);
-                return true; // Ενημερώθηκε επιτυχώς
-            } else {
-                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
-                return false;
+                return true; // Ενημέρωση επιτυχής
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false; // Αποτυχία ενημέρωσης
+    }
+
+    public List<Device> getCustomerDevices(int customerId) {
+        List<Device> devices = new ArrayList<>();
+        String query = "SELECT d.id, d.serial, d.description, d.itemId, d.customerId, i.name AS itemName " +
+                "FROM Devices d " +
+                "LEFT JOIN Items i ON d.itemId = i.id " +
+                "WHERE d.customerId = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, customerId);
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String serial = resultSet.getString("serial");
+                String description = resultSet.getString("description");
+                Integer itemId = resultSet.getInt("itemId");
+                String item = resultSet.getString("itemName");
+
+                Device device = new Device(id, serial, description,itemId, customerId, item);
+                devices.add(device);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return devices;
+    }
+
+    public Boolean recoverDevice(int id) {
+        String query = "UPDATE Devices SET customerId = 0 WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, id);
+
+            if (stmt.executeUpdate() > 0) {
+                closeConnection(conn);
+                return true; // Ενημέρωση επιτυχής
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Αποτυχία ενημέρωσης
+    }
+
+    public Boolean deleteDevice(int id) {
+        String checkQuery = "SELECT customerId FROM devices WHERE id = ?";
+        String deleteQuery = "DELETE FROM devices WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
+             PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery)) {
+
+            checkStmt.setInt(1, id);
+            ResultSet rs = checkStmt.executeQuery();
+
+            if (rs.next()) {
+                int customerId = rs.getInt("customerId");
+                if (customerId == 0) {
+                    deleteStmt.setInt(1, id);
+                    deleteStmt.executeUpdate();
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isSerialAssigned(String serial, int customerId) {
+        String query = "SELECT customerId FROM Devices WHERE serial = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, serial);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                int existingCustomer = rs.getInt("customerId");
+                if (existingCustomer != 0) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean assignDevice(String serial, int customerId) {
+        String query = "UPDATE Devices SET customerId = ? WHERE serial = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, customerId);
+            stmt.setString(2, serial);
+
+            if (stmt.executeUpdate() > 0) {
+                closeConnection(conn);
+                return true; // Ενημέρωση επιτυχής
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Αποτυχία ενημέρωσης
     }
 }

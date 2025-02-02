@@ -14,7 +14,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -151,7 +150,7 @@ public class ItemsController implements Initializable {
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Εισαγωγή Νέου Είδους");
 
-            AddNewItemController controller = loader.getController();
+            AddItemController controller = loader.getController();
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
@@ -180,7 +179,7 @@ public class ItemsController implements Initializable {
                 dialog.setTitle("Ενημέρωση Είδους");
                 dialog.initModality(Modality.WINDOW_MODAL);
 
-                AddNewItemController controller = loader.getController();
+                AddItemController controller = loader.getController();
 
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
                 controller.setItemData(selectedItem);

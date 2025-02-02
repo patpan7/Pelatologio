@@ -5,7 +5,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -21,15 +20,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
-import org.openqa.selenium.By;
 
-import javax.swing.text.View;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
-public class AddNewCustomerController {
+public class AddCustomerController {
 
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail,tfManager, tfManagerPhone;
@@ -42,7 +38,7 @@ public class AddNewCustomerController {
     @FXML
     private ProgressIndicator progressIndicator;
     @FXML
-    Button btnTaxis, btnMypos, btnSimply, btnData, btnAppointment,btnTask;
+    Button btnTaxis, btnMypos, btnSimply, btnData, btnAppointment,btnTask, btnDevices;
 
     int code = 0;
 
@@ -56,6 +52,7 @@ public class AddNewCustomerController {
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
         setTooltip(btnAppointment,"Προσθήκη νέου ραντεβού");
         setTooltip(btnTask,"Προσθήκη νέας εργασίας");
+        setTooltip(btnDevices,"Διαχείριση συσκευών του πελάτη");
 
 
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
@@ -78,6 +75,8 @@ public class AddNewCustomerController {
         btnAppointment.setVisible(false);
         btnTask.setDisable(true);
         btnTask.setVisible(false);
+        btnDevices.setDisable(true);
+        btnDevices.setVisible(false);
 
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
@@ -332,6 +331,8 @@ public class AddNewCustomerController {
         btnAppointment.setVisible(true);
         btnTask.setDisable(false);
         btnTask.setVisible(true);
+        btnDevices.setDisable(false);
+        btnDevices.setVisible(true);
 
         btnTaxis.setStyle("-fx-border-color: #D6D8DE;");
         btnMypos.setStyle("-fx-border-color: #D6D8DE;");
@@ -513,13 +514,6 @@ public class AddNewCustomerController {
         notifications.showInformation();
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     public void addAddress(ActionEvent event) {
         if (tfAddress.getText() == null || tfAddress.getText().isEmpty()) {
             Notifications notifications = Notifications.create()
@@ -690,6 +684,28 @@ public class AddNewCustomerController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void newDevices(ActionEvent actionEvent){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("customerDevicesView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+            // Τώρα μπορείς να πάρεις τον controller
+            CustomerDevicesController controller = loader.getController();
+
+            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+            controller.setCustomer(customer);
+
+            dialog.setTitle("Συσκευές Πελάτη");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

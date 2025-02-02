@@ -234,7 +234,7 @@ public class CustomersController implements Initializable {
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Εισαγωγή Νέου Πελάτη");
 
-            AddNewCustomerController controller = loader.getController();
+            AddCustomerController controller = loader.getController();
             String filterValue = filterField.getText();
             if (filterValue != null && filterValue.matches("\\d{9}")) {
                 controller.setInitialAFM(filterValue); // Προ-συμπλήρωση ΑΦΜ
@@ -270,7 +270,7 @@ public class CustomersController implements Initializable {
                 dialog.setTitle("Ενημέρωση Πελάτη");
                 dialog.initModality(Modality.WINDOW_MODAL);
 
-                AddNewCustomerController controller = loader.getController();
+                AddCustomerController controller = loader.getController();
 
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
                 controller.setCustomerData(selectedCustomer);

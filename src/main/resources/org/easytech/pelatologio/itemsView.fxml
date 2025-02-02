@@ -68,7 +68,7 @@
                             <Insets />
                         </opaqueInsets>
                     </TextField>
-                    <Button fx:id="btnEmail" mnemonicParsing="false" onAction="#clean" styleClass="click-button">
+                    <Button fx:id="btnClear" mnemonicParsing="false" onAction="#clean" styleClass="click-button">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <image>

@@ -1,8 +1,6 @@
 package org.easytech.pelatologio;
 
 import com.calendarfx.model.Entry;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -212,7 +210,7 @@ public class EditAppointmentController {
                 dialog.setTitle("Ενημέρωση Πελάτη");
                 dialog.initModality(Modality.WINDOW_MODAL);
 
-                AddNewCustomerController controller = loader.getController();
+                AddCustomerController controller = loader.getController();
 
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
                 controller.setCustomerData(selectedCustomer);

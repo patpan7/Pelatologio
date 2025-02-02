@@ -1,17 +1,20 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
+import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,6 +26,8 @@ import java.util.ResourceBundle;
 public class DeviceController implements Initializable {
     @FXML
     StackPane stackPane;
+    @FXML
+    TextField filterField;
     @FXML
     private TableView<Device> devicesTable;
     @FXML
@@ -74,6 +79,9 @@ public class DeviceController implements Initializable {
                 showWithoutCustomerCheckbox
         };
         configureSingleSelectionCheckBoxes(checkBoxes1);
+
+        filterField.textProperty().addListener((observable, oldValue, newValue) -> updateDevicesTable());
+
 
         DBHelper dbHelper = new DBHelper();
         List<Item> items = null;
@@ -136,31 +144,36 @@ public class DeviceController implements Initializable {
 
     private void updateDevicesTable() {
         // Ξεκινάμε με όλες τις εργασίες
-        ObservableList<Device> filteredTasks = FXCollections.observableArrayList(allDevices);
+        ObservableList<Device> filteredDevices  = FXCollections.observableArrayList(allDevices);
 
         // Φιλτράρισμα βάσει Πελάτη
         if (!showAllCheckbox.isSelected()) {
             if (showWithCustomerCheckbox.isSelected()) {
-                filteredTasks.removeIf(task -> task.getCustomerId() == 0);
+                filteredDevices .removeIf(device -> device.getCustomerId() == 0);
             } else if (showWithoutCustomerCheckbox.isSelected()) {
-                filteredTasks.removeIf(task -> task.getCustomerId() != 0);
+                filteredDevices .removeIf(device -> device.getCustomerId() != 0);
             }
         }
 
 
-        // Φιλτράρισμα βάσει κατηγορίας
+        // Φιλτράρισμα βάσει τύπου συσκευής
         Item selectedItem = itemFilterComboBox.getValue(); // Η επιλεγμένη κατηγορία από το ComboBox
         if (selectedItem != null && selectedItem.getId() != 0) { // Εξαιρείται η κατηγορία "Όλες"
-            filteredTasks.removeIf(task -> task.getItemId() != selectedItem.getId());
+            filteredDevices .removeIf(device -> device.getItemId() != selectedItem.getId());
         }
 
+        // Φιλτράρισμα βάσει σειριακού αριθμού
+        String serialFilter = filterField.getText().trim().toLowerCase();
+        if (!serialFilter.isEmpty()) {
+            filteredDevices.removeIf(device -> !device.getSerial().toLowerCase().contains(serialFilter));
+        }
 
         // Ανανεώνουμε τα δεδομένα του πίνακα
-        devicesTable.setItems(filteredTasks);
+        devicesTable.setItems(filteredDevices);
     }
 
 
-
+    @FXML
     private void handleAddDevice() {
             try {
                 // Φόρτωση του FXML για προσθήκη ραντεβού
@@ -175,7 +188,7 @@ public class DeviceController implements Initializable {
                 Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.addEventFilter(ActionEvent.ACTION, event -> {
                     // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveTask();
+                    boolean success = controller.handleSaveDevice();
 
                     if (!success) {
                         // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
@@ -190,6 +203,7 @@ public class DeviceController implements Initializable {
             }
     }
 
+    @FXML
     private void handleEditDevice() throws IOException {
         // Επεξεργασία επιλεγμένης εργασίας
         Device selectedDevice = devicesTable.getSelectionModel().getSelectedItem();
@@ -214,7 +228,7 @@ public class DeviceController implements Initializable {
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.addEventFilter(ActionEvent.ACTION, event -> {
                 // Εκτελούμε το handleSaveAppointment
-                boolean success = controller.handleSaveTask();
+                boolean success = controller.handleSaveDevice();
 
                 if (!success) {
                     // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
@@ -228,6 +242,48 @@ public class DeviceController implements Initializable {
         }
     }
 
+    @FXML
+    private void handleDeleteDevice() {
+        Device selectedDevice = devicesTable.getSelectionModel().getSelectedItem();
+        if (selectedDevice == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Προσοχή");
+            alert.setContentText("Δεν έχει επιλεγεί συσκευή!");
+            alert.showAndWait();
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Επιβεβαίωση");
+        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την συσκευή " + selectedDevice.getSerial() + ";" );
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            DBHelper dbHelper = new DBHelper();
+            boolean deleted = dbHelper.deleteDevice(selectedDevice.getId());
+            if (deleted) {
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Επιτυχία")
+                            .text("Ο σειριακός αριθμός " + selectedDevice.getSerial() + " διαγράψετε!")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showInformation();});
+                loadDevices();
+            }
+            else {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText("Η συσκευή δεν μπορεί να διαγραφεί επειδή είναι δεσμευμένη σε πελάτη!");
+                alert.showAndWait();
+                return;
+            }
+        }
+    }
+
+    public void clean(ActionEvent actionEvent) {
+        filterField.setText("");
+        devicesTable.getSelectionModel().clearSelection();
+    }
 
     public void mainMenuClick(ActionEvent event) throws IOException {
         MainMenuController mainMenuController = new MainMenuController();

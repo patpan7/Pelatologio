@@ -1,8 +1,20 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
+import org.controlsfx.control.Notifications;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -26,6 +38,7 @@ public class AddTaskController {
     private int customerId;
     private String customerName;
     private Customer selectedCustomer;
+    private FilteredList<Customer> filteredCustomers;
 
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
@@ -67,21 +80,11 @@ public class AddTaskController {
         // Φόρτωση πελατών
         DBHelper dbHelper = new DBHelper();
         List<Customer> customers = dbHelper.getCustomers();
-        customerComboBox.getItems().addAll(customers); // Προσθήκη αντικειμένων Customer
-        customerComboBox.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(Customer customer) {
-                return customer != null ? customer.getName() : "";
-            }
+        filteredCustomers = new FilteredList<>(FXCollections.observableArrayList(customers));
+        customerComboBox.getItems().addAll(filteredCustomers); // Προσθήκη αντικειμένων Customer
+        customerComboBox.setEditable(true);
 
-            @Override
-            public Customer fromString(String string) {
-                return customerComboBox.getItems().stream()
-                        .filter(customer -> customer.getName().equals(string))
-                        .findFirst()
-                        .orElse(null);
-            }
-        });
+        setupComboBoxFilter(customerComboBox, filteredCustomers);
 
         List<TaskCategory> categories = dbHelper.getAllTaskCategory();
         categoryComboBox.getItems().addAll(categories);
@@ -101,6 +104,36 @@ public class AddTaskController {
         });
 
         dueDatePicker.setValue(LocalDate.now());
+    }
+
+    private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
+        // Ακροατής για το TextField του ComboBox
+        comboBox.getEditor().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+            String filterText = comboBox.getEditor().getText().toLowerCase();
+            filteredList.setPredicate(item -> {
+                if (filterText.isEmpty()) {
+                    return true; // Εμφάνιση όλων των στοιχείων αν δεν υπάρχει φίλτρο
+                }
+                // Ελέγχουμε αν το όνομα του αντικειμένου ταιριάζει με το φίλτρο
+                return item.toString().toLowerCase().contains(filterText);
+            });
+        });
+
+        // Ακροατής για την επιλογή ενός στοιχείου
+        comboBox.setOnHidden(event -> {
+            T selectedItem = comboBox.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                comboBox.getEditor().setText(selectedItem.toString());
+            }
+        });
+
+        // Ακροατής για την αλλαγή της επιλογής
+        comboBox.setOnAction(event -> {
+            T selectedItem = comboBox.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                comboBox.getEditor().setText(selectedItem.toString());
+            }
+        });
     }
 
     public boolean handleSaveTask() {
@@ -133,7 +166,14 @@ public class AddTaskController {
                 dbHelper.updateTask(task);
             }
 
-            showAlert(Alert.AlertType.INFORMATION, "Επιτυχία", "Η εργασία αποθηκεύτηκε!");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Επιτυχία")
+                        .text("Η εργασία αποθηκεύτηκε!")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showConfirm();});
             return true;
 
         } catch (Exception e) {
@@ -141,6 +181,48 @@ public class AddTaskController {
             showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Υπήρξε πρόβλημα με την αποθήκευση της εργασίας!");
             return false;
         }
+    }
+
+    @FXML
+    private void handleMouseClick(MouseEvent event) {
+        // Έλεγχος για διπλό κλικ
+        if (event.getClickCount() == 2) {
+            openNotesDialog(descriptionField.getText());
+        }
+    }
+
+    private void openNotesDialog(String currentNotes) {
+        // Ο κώδικας για το παράθυρο διαλόγου, όπως περιγράφεται
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("Επεξεργασία Σημειώσεων");
+
+        TextArea expandedTextArea = new TextArea(currentNotes);
+        expandedTextArea.setWrapText(true);
+        expandedTextArea.setPrefSize(400, 300);
+        expandedTextArea.setStyle("-fx-font-size: 24px;");
+        if (currentNotes != null && !currentNotes.isEmpty()) {
+            expandedTextArea.setText(currentNotes);
+            expandedTextArea.positionCaret(currentNotes.length());
+        } else {
+            expandedTextArea.setText(""); // Βεβαιωθείτε ότι το TextArea είναι κενό
+            expandedTextArea.positionCaret(0); // Τοποθετήστε τον κέρσορα στην αρχή
+        }
+
+        Button btnOk = new Button("OK");
+        btnOk.setPrefWidth(100);
+        btnOk.setOnAction(event -> {
+            descriptionField.setText(expandedTextArea.getText()); // Ενημέρωση του αρχικού TextArea
+            dialogStage.close();
+        });
+
+        VBox vbox = new VBox(10, expandedTextArea, btnOk);
+        vbox.setAlignment(Pos.CENTER);
+        //vbox.setPadding(new Insets(10));
+
+        Scene scene = new Scene(vbox);
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();
     }
 
 
