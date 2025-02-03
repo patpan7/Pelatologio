@@ -200,6 +200,9 @@ public class EditAppointmentController {
         DBHelper dbHelper = new DBHelper();
 
         Customer selectedCustomer = dbHelper.getSelectedCustomer(appointment.getCustomerId());
+        if (selectedCustomer.getCode() == 0) {
+            return;
+        }
         try {
             String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
             if (res.equals("unlocked")) {

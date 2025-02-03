@@ -3,10 +3,13 @@ package org.easytech.pelatologio;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -16,6 +19,7 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -234,5 +238,58 @@ public class AddTaskController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void showCustomer(ActionEvent evt) {
+        DBHelper dbHelper = new DBHelper();
+
+        Customer selectedCustomer = dbHelper.getSelectedCustomer(task.getCustomerId());
+        if (selectedCustomer.getCode() == 0) {
+            return;
+        }
+        try {
+            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+            if (res.equals("unlocked")) {
+                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Ενημέρωση Πελάτη");
+                dialog.initModality(Modality.WINDOW_MODAL);
+
+                AddCustomerController controller = loader.getController();
+
+                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                controller.setCustomerData(selectedCustomer);
+
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setOnAction(event -> {
+                    controller.handleOkButton();
+                });
+
+                // Προσθήκη listener για το κλείσιμο του παραθύρου
+                dialog.setOnHidden(event -> {
+                    dbHelper.customerUnlock(selectedCustomer.getCode());
+                });
+
+                // Add a key listener to save when Enter is pressed
+                dialog.getDialogPane().setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ENTER) {
+                        okButton.fire();  // Triggers the OK button action
+                    }
+                });
+                dialog.show();
+
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText(res);
+                alert.showAndWait();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

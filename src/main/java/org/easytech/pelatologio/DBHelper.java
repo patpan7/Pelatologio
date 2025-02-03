@@ -480,14 +480,33 @@ public class DBHelper {
         }
     }
 
+    public boolean hasDevice(int code) {
+        String query = "SELECT COUNT(*) FROM Devices WHERE CustomerID = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, code);
+            pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            closeConnection(conn);
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void customerDelete(int code) {
         String query = "DELETE FROM CustomerAddresses WHERE CustomerID = ?";
         String query2 = "DELETE FROM CustomerLogins WHERE CustomerID = ?";
         String query3 = "DELETE FROM Customers WHERE code = ?";
+        String query4 = "UPDATE Devices set customerId = 0 WHERE customerId = ?";
         try (Connection conn = getConnection()) {
             try (PreparedStatement pstmt1 = conn.prepareStatement(query);
                  PreparedStatement pstmt2 = conn.prepareStatement(query2);
-                 PreparedStatement pstmt3 = conn.prepareStatement(query3)) {
+                 PreparedStatement pstmt3 = conn.prepareStatement(query3);
+                PreparedStatement pstmt4 = conn.prepareStatement(query4)) {
 
                 pstmt1.setInt(1, code);
                 pstmt1.executeUpdate();
@@ -497,6 +516,9 @@ public class DBHelper {
 
                 pstmt3.setInt(1, code);
                 pstmt3.executeUpdate();
+
+                pstmt4.setInt(1, code);
+                pstmt4.executeUpdate();
             }
             closeConnection(conn);
         } catch (SQLException e) {
@@ -1008,9 +1030,9 @@ public class DBHelper {
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                String serial = resultSet.getString("serial");
-                String description = resultSet.getString("description");
-                String rate = resultSet.getString("rate");
+                String serial = resultSet.getString("serial").trim();
+                String description = resultSet.getString("description").trim();
+                String rate = resultSet.getString("rate").trim();
                 Integer itemId = resultSet.getInt("itemId");
                 Integer customerId = resultSet.getObject("customerId", Integer.class);
                 String item = resultSet.getString("itemName");
@@ -1043,16 +1065,17 @@ public class DBHelper {
     }
 
     public boolean saveDevice(Device newDevice) {
-        String query = "INSERT INTO Devices (serial, description, itemId, customerId) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Devices (serial, description, rate, itemId, customerId) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, newDevice.getSerial());
             stmt.setString(2, newDevice.getDescription());
-            stmt.setInt(3, newDevice.getItemId());
+            stmt.setString(3, newDevice.getRate());
+            stmt.setInt(4, newDevice.getItemId());
             if (newDevice.getCustomerId() != null) {
-                stmt.setInt(4, newDevice.getCustomerId());
+                stmt.setInt(5, newDevice.getCustomerId());
             } else {
-                stmt.setInt(4, 0);
+                stmt.setInt(5, 0);
             }
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
@@ -1092,7 +1115,7 @@ public class DBHelper {
 
     public List<Device> getCustomerDevices(int customerId) {
         List<Device> devices = new ArrayList<>();
-        String query = "SELECT d.id, d.serial, d.description,d.rate, d.itemId, d.customerId, i.name AS itemName " +
+        String query = "SELECT d.id, d.serial, d.description, d.rate, d.itemId, d.customerId, i.name AS itemName " +
                 "FROM Devices d " +
                 "LEFT JOIN Items i ON d.itemId = i.id " +
                 "WHERE d.customerId = ?";
@@ -1104,9 +1127,9 @@ public class DBHelper {
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                String serial = resultSet.getString("serial");
-                String description = resultSet.getString("description");
-                String rate = resultSet.getString("rate");
+                String serial = resultSet.getString("serial").trim();
+                String description = resultSet.getString("description").trim();
+                String rate = resultSet.getString("rate").trim();
                 Integer itemId = resultSet.getInt("itemId");
                 String item = resultSet.getString("itemName");
 
@@ -1195,5 +1218,25 @@ public class DBHelper {
             e.printStackTrace();
         }
         return false; // Αποτυχία ενημέρωσης
+    }
+
+    public List<String> getRates() {
+        List<String> rates = new ArrayList<>();
+        String query = "SELECT DISTINCT(rate) FROM Devices ORDER BY rate ASC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                String rate = resultSet.getString("RATE").trim();
+                rates.add(rate);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return rates;
     }
 }

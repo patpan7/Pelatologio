@@ -373,6 +373,7 @@ public class AddDeviceController {
                 device.setSerial(serialNumbers.get(0));
                 System.out.println(serialNumbers.get(0));
                 device.setDescription(description);
+                device.setRate(rate);
                 device.setItemId(itemId);
                 int customerId = selectedCustomer != null ? selectedCustomer.getCode() : 0;
                 device.setCustomerId(customerId);

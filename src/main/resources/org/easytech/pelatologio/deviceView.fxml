@@ -48,7 +48,7 @@
                 <HBox alignment="CENTER_LEFT">
                     <Label styleClass="normal-label" text="Φίλτρα:">
                   <HBox.margin>
-                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     <Insets right="5.0" />
                   </HBox.margin></Label>
                     <CheckBox fx:id="showAllCheckbox" selected="true" styleClass="normal-label" text="Όλες">
                   <HBox.margin>
@@ -72,28 +72,31 @@
                      <Insets left="10.0" right="10.0" />
                   </HBox.margin></ComboBox>
                <VBox.margin>
-                  <Insets />
+                  <Insets left="20.0" right="20.0" />
                </VBox.margin>
                 </HBox>
                 <HBox alignment="CENTER" VBox.vgrow="NEVER">
                     <VBox.margin>
                         <Insets bottom="10.0" left="20.0" right="20.0" />
                     </VBox.margin>
-                    <Label alignment="CENTER" contentDisplay="CENTER" styleClass="normal-label" text="Αναζήτηση">
+                    <Label alignment="CENTER" contentDisplay="CENTER" styleClass="normal-label" text="S/N">
                         <font>
                             <Font name="System Bold" size="30.0" />
                         </font>
                         <opaqueInsets>
                             <Insets />
                         </opaqueInsets>
-                        <padding>
-                            <Insets right="20.0" />
-                        </padding>
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
                     </Label>
                     <TextField fx:id="filterField" prefWidth="300.0">
                         <opaqueInsets>
                             <Insets />
                         </opaqueInsets>
+                  <HBox.margin>
+                     <Insets left="10.0" right="5.0" />
+                  </HBox.margin>
                     </TextField>
                     <Button fx:id="btnClear" mnemonicParsing="false" onAction="#clean" styleClass="click-button">
                         <graphic>
@@ -104,10 +107,20 @@
                             </ImageView>
                         </graphic>
                         <HBox.margin>
-                            <Insets left="5.0" />
+                            <Insets left="5.0" right="10.0" />
                         </HBox.margin>
                     </Button>
-                    <Separator prefWidth="200.0" visible="false" HBox.hgrow="ALWAYS" />
+               <Separator orientation="VERTICAL" />
+               <Label styleClass="normal-label" text="Ποσοστό:">
+                  <HBox.margin>
+                     <Insets left="10.0" right="10.0" />
+                  </HBox.margin>
+               </Label>
+                    <ComboBox fx:id="rateFilterComboBox" editable="true" prefHeight="51.0" prefWidth="150.0" HBox.hgrow="ALWAYS">
+                        <HBox.margin>
+                            <Insets left="10.0" right="10.0" />
+                        </HBox.margin></ComboBox>
+                    <Separator visible="false" HBox.hgrow="ALWAYS" />
                <Button fx:id="addDeviceButton" mnemonicParsing="false" styleClass="click-button" text="Προσθήκη S/N">
                    <graphic>
                        <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
@@ -127,7 +140,7 @@
                         <TableColumn fx:id="itemColumn" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="Είδος" />
                         <TableColumn fx:id="descriptionColumn" maxWidth="700.0" minWidth="300.0" prefWidth="300.0" text="Περιγραφή" />
                         <TableColumn fx:id="customerColumn" minWidth="280.0" prefWidth="280.0" text="Πελάτης" />
-                        <TableColumn fx:id="rateColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Rate" />
+                        <TableColumn fx:id="rateColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Rate" />
                     </columns>
                     <contextMenu>
                         <ContextMenu>

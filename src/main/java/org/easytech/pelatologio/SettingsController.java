@@ -1,10 +1,14 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 import java.io.*;
 import java.net.URL;
@@ -133,6 +137,14 @@ public class SettingsController implements Initializable {
         } else if (rbEdge.isSelected()) {
             AppSettings.saveSetting("browser", "edge");
         }
+        Platform.runLater(() -> {
+            Notifications notifications = Notifications.create()
+                    .title("Επιτυχία")
+                    .text("Οι ρυθμίσεις αποθηκεύτηκαν!")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showInformation();});
     }
 
     public void syncClick(ActionEvent event) {

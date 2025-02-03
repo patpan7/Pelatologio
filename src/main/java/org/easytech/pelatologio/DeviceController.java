@@ -39,6 +39,8 @@ public class DeviceController implements Initializable {
     @FXML
     private ComboBox <Item> itemFilterComboBox;
     @FXML
+    private ComboBox<String> rateFilterComboBox;
+    @FXML
     private Button addDeviceButton;
 
     private ObservableList<Device> allDevices = FXCollections.observableArrayList();
@@ -86,8 +88,10 @@ public class DeviceController implements Initializable {
 
         DBHelper dbHelper = new DBHelper();
         List<Item> items = null;
+        List<String> rates = null;
         try {
             items = dbHelper.getItems();
+            rates = dbHelper.getRates();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -109,9 +113,13 @@ public class DeviceController implements Initializable {
             }
         });
 
+        rateFilterComboBox.getItems().add("Όλα");
+        rateFilterComboBox.getItems().addAll(rates);
+        rateFilterComboBox.getSelectionModel().selectFirst();
 
+        //Φίλτρα
         itemFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateDevicesTable());
-
+        rateFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateDevicesTable());
 
         showAllCheckbox.setOnAction(e -> updateDevicesTable());
         showWithCustomerCheckbox.setOnAction(e -> updateDevicesTable());
@@ -150,9 +158,9 @@ public class DeviceController implements Initializable {
         // Φιλτράρισμα βάσει Πελάτη
         if (!showAllCheckbox.isSelected()) {
             if (showWithCustomerCheckbox.isSelected()) {
-                filteredDevices .removeIf(device -> device.getCustomerId() == 0);
+                filteredDevices.removeIf(device -> device.getCustomerId() == 0);
             } else if (showWithoutCustomerCheckbox.isSelected()) {
-                filteredDevices .removeIf(device -> device.getCustomerId() != 0);
+                filteredDevices.removeIf(device -> device.getCustomerId() != 0);
             }
         }
 
@@ -160,13 +168,20 @@ public class DeviceController implements Initializable {
         // Φιλτράρισμα βάσει τύπου συσκευής
         Item selectedItem = itemFilterComboBox.getValue(); // Η επιλεγμένη κατηγορία από το ComboBox
         if (selectedItem != null && selectedItem.getId() != 0) { // Εξαιρείται η κατηγορία "Όλες"
-            filteredDevices .removeIf(device -> device.getItemId() != selectedItem.getId());
+            filteredDevices.removeIf(device -> device.getItemId() != selectedItem.getId());
         }
 
         // Φιλτράρισμα βάσει σειριακού αριθμού
         String serialFilter = filterField.getText().trim().toLowerCase();
         if (!serialFilter.isEmpty()) {
             filteredDevices.removeIf(device -> !device.getSerial().toLowerCase().contains(serialFilter));
+        }
+
+        // Φιλτράρισμα βάσει ποσοστού
+        String selectedRate = rateFilterComboBox.getValue(); // Η επιλεγμένη κατηγορία από το ComboBox
+        if (selectedRate != null && !selectedRate.equals("Όλα")) { // Εξαιρείται η κατηγορία "Όλες"
+            System.out.println(selectedRate);
+            filteredDevices.removeIf(device -> !device.getRate().equals(selectedRate));
         }
 
         // Ανανεώνουμε τα δεδομένα του πίνακα

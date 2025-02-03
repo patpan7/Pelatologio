@@ -337,6 +337,7 @@ public class AddCustomerController {
         btnTaxis.setStyle("-fx-border-color: #D6D8DE;");
         btnMypos.setStyle("-fx-border-color: #D6D8DE;");
         btnSimply.setStyle("-fx-border-color: #D6D8DE;");
+        btnDevices.setStyle("-fx-border-color: #D6D8DE;");
 
         if(dbHelper.hasApp(customer.getCode(),2)){
             btnSimply.setStyle("-fx-border-color: #FF0000;");
@@ -346,6 +347,9 @@ public class AddCustomerController {
         }
         if(dbHelper.hasApp(customer.getCode(),3)){
             btnTaxis.setStyle("-fx-border-color: #FF0000;");
+        }
+        if(dbHelper.hasDevice(customer.getCode())){
+            btnDevices.setStyle("-fx-border-color: #FF0000;");
         }
     }
 
