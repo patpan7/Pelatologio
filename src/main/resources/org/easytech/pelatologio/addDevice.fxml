@@ -64,6 +64,19 @@
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                      </VBox.margin>
                   </HBox>
+                      <HBox alignment="CENTER_LEFT">
+                          <children>
+                              <Label prefWidth="140.0" styleClass="normal-label" text="Ποσοστό">
+                                  <HBox.margin>
+                                      <Insets />
+                                  </HBox.margin>
+                              </Label>
+                              <TextField fx:id="rateField" prefWidth="300" />
+                          </children>
+                          <VBox.margin>
+                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                          </VBox.margin>
+                      </HBox>
                   <HBox alignment="CENTER_LEFT">
                      <children>
          

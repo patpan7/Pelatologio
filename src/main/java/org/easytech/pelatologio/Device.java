@@ -4,15 +4,17 @@ public class Device {
     int id;
     String serial;
     String description;
+    String rate;
     int itemId;
     Integer customerId;
     String itemName;
     String customerName;
 
-    public Device(int id, String serial, String description, int itemId, int customerId) {
+    public Device(int id, String serial, String description, String rate, int itemId, int customerId) {
         this.id = id;
         this.serial = serial;
         this.description = description;
+        this.rate = rate;
         this.itemId = itemId;
         this.customerId = customerId;
     }
@@ -20,19 +22,21 @@ public class Device {
     public Device() {
     }
 
-    public Device(int id, String serial, String description, int itemId, int customerId, String itemName) {
+    public Device(int id, String serial, String description, String rate, int itemId, int customerId, String itemName) {
         this.id = id;
         this.serial = serial;
         this.description = description;
+        this.rate = rate;
         this.itemId = itemId;
         this.customerId = customerId;
         this.itemName = itemName;
     }
 
-    public Device(int id, String serial, String description, int itemId, int customerId, String itemName, String customerName) {
+    public Device(int id, String serial, String description, String rate, int itemId, int customerId, String itemName, String customerName) {
         this.id = id;
         this.serial = serial;
         this.description = description;
+        this.rate = rate;
         this.itemId = itemId;
         this.customerId = customerId;
         this.itemName = itemName;
@@ -61,6 +65,14 @@ public class Device {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
     }
 
     public int getItemId() {

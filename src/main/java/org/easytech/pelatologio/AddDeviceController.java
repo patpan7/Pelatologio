@@ -33,7 +33,8 @@ public class AddDeviceController {
     private TextField serialField;
     @FXML
     private TextArea descriptionField;
-
+    @FXML
+    private TextField rateField;
     @FXML
     private ComboBox<Customer> customerComboBox;
     @FXML
@@ -71,6 +72,7 @@ public class AddDeviceController {
         this.device = device;
         serialField.setText(device.getSerial());
         descriptionField.setText(device.getDescription());
+        rateField.setText(device.getRate());
         for (Item item : itemComboBox.getItems()) {
             if (item.getName().equals(device.getItemName())) {
                 itemComboBox.setValue(item);
@@ -288,7 +290,7 @@ public class AddDeviceController {
             }
 
             String description = descriptionField.getText();
-
+            String rate = rateField.getText();
             // Επιλογή πελάτη
             Object value = customerComboBox.getValue();
             Customer selectedCustomer = null;
@@ -353,7 +355,7 @@ public class AddDeviceController {
 
                 // Δημιουργία νέας συσκευής
                 for (String serial : serialNumbers) {
-                    Device newDevice = new Device(0, serial, description, itemId, selectedCustomer != null ? selectedCustomer.getCode() : 0);
+                    Device newDevice = new Device(0, serial, description, rate, itemId, selectedCustomer != null ? selectedCustomer.getCode() : 0);
                     if (dbHelper.saveDevice(newDevice)) {
                         Platform.runLater(() -> {
                             Notifications notifications = Notifications.create()

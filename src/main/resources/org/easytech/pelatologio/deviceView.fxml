@@ -127,6 +127,7 @@
                         <TableColumn fx:id="itemColumn" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="Είδος" />
                         <TableColumn fx:id="descriptionColumn" maxWidth="700.0" minWidth="300.0" prefWidth="300.0" text="Περιγραφή" />
                         <TableColumn fx:id="customerColumn" minWidth="280.0" prefWidth="280.0" text="Πελάτης" />
+                        <TableColumn fx:id="rateColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Rate" />
                     </columns>
                     <contextMenu>
                         <ContextMenu>

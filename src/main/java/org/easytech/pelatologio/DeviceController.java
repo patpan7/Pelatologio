@@ -31,7 +31,7 @@ public class DeviceController implements Initializable {
     @FXML
     private TableView<Device> devicesTable;
     @FXML
-    private TableColumn idColumn, serialColumn, itemColumn, descriptionColumn, customerColumn;
+    private TableColumn idColumn, serialColumn, itemColumn, descriptionColumn, customerColumn, rateColumn;
 
     @FXML
     private CheckBox showAllCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox;
@@ -51,6 +51,7 @@ public class DeviceController implements Initializable {
         itemColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        rateColumn.setCellValueFactory(new PropertyValueFactory<>("rate"));
         // Αρχικό γέμισμα του πίνακα
         loadDevices();
 

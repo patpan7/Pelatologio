@@ -996,7 +996,7 @@ public class DBHelper {
 
     public List <Device> getAllDevices() {
         List<Device> devices = new ArrayList<>();
-        String query = "SELECT d.id, d.serial, d.description, d.itemId, d.customerId, i.name AS itemName, c.name " +
+        String query = "SELECT d.id, d.serial, d.description, d.rate, d.itemId, d.customerId, i.name AS itemName, c.name " +
                 "FROM Devices d " +
                 "LEFT JOIN Customers c ON d.customerId = c.code " +
                 "LEFT JOIN Items i ON d.itemId = i.id " +
@@ -1010,12 +1010,13 @@ public class DBHelper {
                 int id = resultSet.getInt("id");
                 String serial = resultSet.getString("serial");
                 String description = resultSet.getString("description");
+                String rate = resultSet.getString("rate");
                 Integer itemId = resultSet.getInt("itemId");
                 Integer customerId = resultSet.getObject("customerId", Integer.class);
                 String item = resultSet.getString("itemName");
                 String customerName = resultSet.getString("name");
 
-                Device device = new Device(id, serial, description,itemId, customerId, item, customerName);
+                Device device = new Device(id, serial, description,rate, itemId, customerId, item, customerName);
                 devices.add(device);
             }
             closeConnection(conn);
@@ -1065,18 +1066,19 @@ public class DBHelper {
     }
 
     public Boolean updateDevice(Device device) {
-        String query = "UPDATE Devices SET serial = ?, description = ?, itemId = ?, customerId = ? WHERE id = ?";
+        String query = "UPDATE Devices SET serial = ?, description = ?, rate = ?, itemId = ?, customerId = ? WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, device.getSerial());
             stmt.setString(2, device.getDescription());
-            stmt.setInt(3, device.getItemId());
+            stmt.setString(3, device.getRate());
+            stmt.setInt(4, device.getItemId());
             if (device.getCustomerId() != null) {
-                stmt.setInt(4, device.getCustomerId());
+                stmt.setInt(5, device.getCustomerId());
             } else {
-                stmt.setNull(4, java.sql.Types.INTEGER);
+                stmt.setNull(5, java.sql.Types.INTEGER);
             }
-            stmt.setInt(5, device.getId());
+            stmt.setInt(6, device.getId());
 
             if (stmt.executeUpdate() > 0) {
                 closeConnection(conn);
@@ -1090,7 +1092,7 @@ public class DBHelper {
 
     public List<Device> getCustomerDevices(int customerId) {
         List<Device> devices = new ArrayList<>();
-        String query = "SELECT d.id, d.serial, d.description, d.itemId, d.customerId, i.name AS itemName " +
+        String query = "SELECT d.id, d.serial, d.description,d.rate, d.itemId, d.customerId, i.name AS itemName " +
                 "FROM Devices d " +
                 "LEFT JOIN Items i ON d.itemId = i.id " +
                 "WHERE d.customerId = ?";
@@ -1104,10 +1106,11 @@ public class DBHelper {
                 int id = resultSet.getInt("id");
                 String serial = resultSet.getString("serial");
                 String description = resultSet.getString("description");
+                String rate = resultSet.getString("rate");
                 Integer itemId = resultSet.getInt("itemId");
                 String item = resultSet.getString("itemName");
 
-                Device device = new Device(id, serial, description,itemId, customerId, item);
+                Device device = new Device(id, serial, description,rate, itemId, customerId, item);
                 devices.add(device);
             }
             closeConnection(conn);
