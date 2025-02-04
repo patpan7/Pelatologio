@@ -91,4 +91,21 @@ public class LoginAutomator {
         searchBar.sendKeys(afm);
 
     }
+
+    public void openAndFillLoginFormAuthorizations(String url, String username, String password, By usernameLocator, By passwordLocator, By btnLogin) {
+        driver.get(url);
+
+        // Εντοπισμός πεδίων username και password και εισαγωγή τιμών
+        WebElement usernameField = driver.findElement(usernameLocator);
+        WebElement passwordField = driver.findElement(passwordLocator);
+
+        usernameField.sendKeys(username);
+        passwordField.sendKeys(password);
+
+        // Υποβολή φόρμας ή πάτημα κουμπιού αν χρειάζεται
+        driver.findElement(btnLogin).click();
+        driver.get("https://www1.gsis.gr/taxisnet/mytaxisnet/protected/grantEInvoiceProviderAuthorization.htm");
+        WebElement vatField = driver.findElement(By.name("authorizationRequest.granteeVatNumber"));
+        vatField.sendKeys("801400290");
+    }
 }

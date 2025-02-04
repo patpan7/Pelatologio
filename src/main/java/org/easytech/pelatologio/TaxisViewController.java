@@ -261,7 +261,7 @@ public class TaxisViewController {
         }
         try {
             LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openAndFillLoginForm(
+            loginAutomation.openAndFillLoginFormAuthorizations(
                     "https://www1.gsis.gr/taxisnet/mytaxisnet/protected/authorizations.htm",
                     selectedLogin.getUsername(),
                     selectedLogin.getPassword(),
