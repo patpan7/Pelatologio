@@ -1,51 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane expanded="true" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddAppointmentController">
+<DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddAppointmentController">
 <content>
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
         <VBox alignment="CENTER">
             <Label fx:id="customerName" styleClass="normal-label" />
-        <GridPane hgap="10" vgap="10">
-            <Label text="Τίτλος:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <TextField fx:id="titleField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-
-            <Label text="Περιγραφή:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <TextArea fx:id="descriptionField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-
-            <ComboBox fx:id="calendarComboBox" editable="true" layoutX="150" layoutY="100" prefWidth="478.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-
-
-            <Label text="Ημερομηνία Έναρξης:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-            <DatePicker fx:id="startDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-
-            <Label text="Ώρα Έναρξης:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-            <HBox GridPane.columnIndex="1" GridPane.rowIndex="4">
-            <ComboBox fx:id="startHourComboBox" editable="true" prefWidth="160.0" promptText="Ώρα" />
-            <ComboBox fx:id="startMinuteComboBox" editable="true" prefWidth="160.0" promptText="Λεπτά" />
+            <HBox alignment="CENTER_LEFT">
+                <Label prefWidth="180.0" styleClass="normal-label" text="Τίτλος:" />
+                <TextField fx:id="titleField" prefWidth="450.0" />
+               <VBox.margin>
+                  <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+               </VBox.margin>
             </HBox>
-            <Label text="Διάρκεια (λεπτά):" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-            <ComboBox fx:id="durationComboBox" editable="true" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-               <Label layoutX="10.0" layoutY="153.0" text="Ημερολόγιο:" GridPane.rowIndex="2" />
-               <columnConstraints>
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-               </rowConstraints>
-        </GridPane>
+            <HBox alignment="CENTER_LEFT">
+                <Label prefWidth="180.0" styleClass="normal-label" text="Περιγραφή:" />
+                <TextArea fx:id="descriptionField" prefWidth="450.0" />
+                <VBox.margin>
+                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER_LEFT">
+                <Label prefWidth="180.0" styleClass="normal-label" text="Ημερολόγιο:" />
+                <ComboBox fx:id="calendarComboBox" editable="true" prefWidth="450.0" />
+                <VBox.margin>
+                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER_LEFT">
+                <Label prefWidth="180.0" styleClass="normal-label" text="Ημερομηνία Έναρξης:" wrapText="true" />
+                <DatePicker fx:id="startDatePicker" />
+                <VBox.margin>
+                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER_LEFT">
+                <Label prefWidth="180.0" styleClass="normal-label" text="Ώρα Έναρξης:"/>
+                <ComboBox fx:id="startHourComboBox" editable="true" prefWidth="160.0" promptText="Ώρα" />
+                <ComboBox fx:id="startMinuteComboBox" editable="true" prefWidth="160.0" promptText="Λεπτά" />
+                <VBox.margin>
+                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER_LEFT">
+                <Label prefWidth="180.0" styleClass="normal-label" text="Διάρκεια (λεπτά):" wrapText="true"/>
+                <ComboBox fx:id="durationComboBox" editable="true" prefWidth="160.0" />
+                <VBox.margin>
+                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                </VBox.margin>
+            </HBox>
         </VBox>
     </ScrollPane>
 </content>

@@ -23,8 +23,6 @@ import java.util.Optional;
 
 public class CustomerDevicesController {
     @FXML
-    public Button btnSimplyPOS, btnSimplyCash, btnSimplyRest, btnSimplyPOSRegister, btnSimplyCloudRegister;
-    @FXML
     private Label customerLabel;
 
     @FXML
@@ -55,7 +53,7 @@ public class CustomerDevicesController {
 
         devicesTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2){
-                handleEditLogin(null);
+                handleEditDevice(null);
             }
         });
 
@@ -156,7 +154,7 @@ public class CustomerDevicesController {
         }
     }
 
-    public void handleEditLogin(ActionEvent event) {
+    public void handleEditDevice(ActionEvent event) {
         Device selectedDevice = devicesTable.getSelectionModel().getSelectedItem();
         if (selectedDevice == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -188,6 +186,45 @@ public class CustomerDevicesController {
                 }
                 loadDevicesForCustomer(customer.getCode());
             });
+            dialog.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleAddTask(ActionEvent evt) {
+        Device selectedDevice = devicesTable.getSelectionModel().getSelectedItem();
+        if (selectedDevice == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Προσοχή");
+            alert.setContentText("Δεν έχει επιλεγεί συσκευή!");
+            Optional<ButtonType> result = alert.showAndWait();
+            return;
+        }
+        try {
+            // Φόρτωση του FXML για προσθήκη ραντεβού
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Προσθήκη Εργασίας");
+            AddTaskController controller = loader.getController();
+            controller.setDeviceTask(selectedDevice);
+            controller.setCustomerName(customer.getName());
+            controller.setCustomerId(customer.getCode());
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                // Εκτελούμε το handleSaveAppointment
+                boolean success = controller.handleSaveTask();
+
+                if (!success) {
+                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                    event.consume();
+                }
+            });
+
             dialog.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();

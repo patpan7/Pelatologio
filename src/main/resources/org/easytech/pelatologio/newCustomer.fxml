@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddCustomerController">
     <content>
         <BorderPane>
@@ -87,7 +88,7 @@
                                     <Font size="24.0" />
                                 </font>
                             </TextField>
-                            <Button fx:id="btnAfmSearch" mnemonicParsing="false" styleClass="click-button">
+                            <JFXButton fx:id="btnAfmSearch" mnemonicParsing="false" styleClass="click-button" text="">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                         <Image url="@icons/Search.png" />
@@ -96,7 +97,7 @@
                                 <HBox.margin>
                                     <Insets left="5.0" />
                                 </HBox.margin>
-                            </Button>
+                            </JFXButton>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                             <VBox.margin>
@@ -173,7 +174,7 @@
                                     <Font size="24.0" />
                                 </font>
                             </TextField>
-                            <Button fx:id="btnAddressAdd" mnemonicParsing="false" onAction="#addAddress" styleClass="click-button">
+                            <JFXButton fx:id="btnAddressAdd" mnemonicParsing="false" onAction="#addAddress" styleClass="click-button" text="">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                         <Image url="@icons/add.png" />
@@ -182,7 +183,7 @@
                                 <HBox.margin>
                                     <Insets left="5.0" />
                                 </HBox.margin>
-                            </Button>
+                            </JFXButton>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                             <VBox.margin>
@@ -234,7 +235,7 @@
                                     <Font size="24.0" />
                                 </font>
                             </TextField>
-                     <Button fx:id="btnEmail" mnemonicParsing="false" onAction="#showEmailDialog" styleClass="click-button">
+                     <JFXButton fx:id="btnEmail" mnemonicParsing="false" onAction="#showEmailDialog" styleClass="click-button" text="">
                         <graphic>
                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                               <image>
@@ -245,7 +246,7 @@
                         <HBox.margin>
                            <Insets left="5.0" />
                         </HBox.margin>
-                     </Button>
+                     </JFXButton>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                             <VBox.margin>
@@ -310,55 +311,55 @@
             </center>
             <right>
                 <VBox alignment="CENTER" spacing="10.0" styleClass="pane">
-                    <Button fx:id="btnTaxis" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#taxisClick" prefWidth="175.0" styleClass="click-button" text="Taxis" HBox.hgrow="ALWAYS">
+                    <JFXButton fx:id="btnTaxis" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#taxisClick" prefWidth="175.0" styleClass="click-button" text="Taxis" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@icons/gsis.png" />
                             </ImageView>
                         </graphic>
-                    </Button>
-                    <Button fx:id="btnMypos" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#myposClick" prefWidth="175.0" styleClass="click-button" text="myPOS" HBox.hgrow="ALWAYS">
+                    </JFXButton>
+                    <JFXButton fx:id="btnMypos" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#myposClick" prefWidth="175.0" styleClass="click-button" text="myPOS" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@icons/mypos1.png" />
                             </ImageView>
                         </graphic>
-                    </Button>
-                    <Button fx:id="btnSimply" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#simplyClick" prefWidth="175.0" styleClass="click-button" text="Simply" HBox.hgrow="ALWAYS">
+                    </JFXButton>
+                    <JFXButton fx:id="btnSimply" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#simplyClick" prefWidth="175.0" styleClass="click-button" text="Simply" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@icons/simply1.png" />
                             </ImageView>
                         </graphic>
-                    </Button>
-                    <Button fx:id="btnData" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#folderClick" prefWidth="175.0" styleClass="click-button" text="Data" HBox.hgrow="ALWAYS">
+                    </JFXButton>
+                    <JFXButton fx:id="btnData" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#folderClick" prefWidth="175.0" styleClass="click-button" text="Data" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@icons/folder.png" />
                             </ImageView>
                         </graphic>
-                    </Button>
-                    <Button fx:id="btnAppointment" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#newAppointment" prefWidth="175.0" styleClass="click-button" text="Ραντεβού" wrapText="true" HBox.hgrow="ALWAYS">
+                    </JFXButton>
+                    <JFXButton fx:id="btnAppointment" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#newAppointment" prefWidth="175.0" styleClass="click-button" text="Ραντεβού" wrapText="true" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@icons/calendar.png" />
                             </ImageView>
                         </graphic>
-                    </Button>
-                    <Button fx:id="btnTask" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#newTask" prefWidth="175.0" styleClass="click-button" text="Εργασία" wrapText="true" HBox.hgrow="ALWAYS">
+                    </JFXButton>
+                    <JFXButton fx:id="btnTask" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#newTask" prefWidth="175.0" styleClass="click-button" text="Εργασία" wrapText="true" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@icons/tasks.png" />
                             </ImageView>
                         </graphic>
-                    </Button>
-                    <Button fx:id="btnDevices" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#newDevices" prefWidth="175.0" styleClass="click-button" text="Συσκευές" wrapText="true" HBox.hgrow="ALWAYS">
+                    </JFXButton>
+                    <JFXButton fx:id="btnDevices" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#newDevices" prefWidth="175.0" styleClass="click-button" text="Συσκευές" wrapText="true" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@icons/device.png" />
                             </ImageView>
                         </graphic>
-                    </Button>
+                    </JFXButton>
                <BorderPane.margin>
                   <Insets left="10.0" right="10.0" />
                </BorderPane.margin>

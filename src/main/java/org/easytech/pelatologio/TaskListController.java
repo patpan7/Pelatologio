@@ -1,4 +1,5 @@
 package org.easytech.pelatologio;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -42,6 +43,7 @@ public class TaskListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Platform.runLater(() -> stackPane.requestFocus());
         setTooltip(addTaskButton, "Προσθήκη νέας εργασίας");
         setTooltip(editTaskButton, "Επεξεργασία εργασίας");
         setTooltip(deleteTaskButton, "Διαγραφή εργασίας");

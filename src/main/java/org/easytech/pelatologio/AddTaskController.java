@@ -57,6 +57,13 @@ public class AddTaskController {
         }
     }
 
+    public void setDeviceTask(Device device) {
+        titleField.setText("Συσκευή: " + device.getSerial());
+        //setCustomerId(device.getCustomerId());
+        //setCustomerName(device.getCustomerName());
+        //categoryComboBox.getSelectionModel().select(0);
+    }
+
     public void setTaskForEdit(Task task) {
         this.task = task;
         titleField.setText(task.getTitle());

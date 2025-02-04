@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -51,6 +52,7 @@ public class CustomersController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Platform.runLater(() -> stackPane.requestFocus());
         setTooltip(btnTaxis, "1) Διαχείριση κωδικών Taxis του πελάτη\n2) Είσοδος με κωδικούς νέου πελάτη");
         setTooltip(btnMypos, "Διαχείριση κωδικών myPOS του πελάτη");
         setTooltip(btnSimply, "Διαχείριση κωδικών Simply του πελάτη");

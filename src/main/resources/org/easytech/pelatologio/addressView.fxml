@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <DialogPane prefHeight="800.0" prefWidth="1100.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddressViewController">
     <content>
         <VBox alignment="TOP_CENTER">
@@ -22,21 +23,21 @@
                 </TableView>
 
                 <!-- Κουμπί για προσθήκη νέου login -->
-                <Button fx:id="addLoginButton" onAction="#handleAddLogin" prefHeight="55.0" prefWidth="355.0" styleClass="click-button" text="Προσθήκη υποκαταστήματος">
+                <JFXButton fx:id="addLoginButton" onAction="#handleAddLogin" prefHeight="55.0" prefWidth="355.0" styleClass="click-button" text="Προσθήκη υποκαταστήματος">
                     <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </VBox.margin>
-                </Button>
-                <Button fx:id="editButton" onAction="#handleEditLogin" prefHeight="55.0" prefWidth="355.0" styleClass="click-button" text="Επεξεργασία">
+                </JFXButton>
+                <JFXButton fx:id="editButton" onAction="#handleEditLogin" prefHeight="55.0" prefWidth="355.0" styleClass="click-button" text="Επεξεργασία">
                     <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </VBox.margin>
-                </Button>
-                <Button fx:id="deleteButton" onAction="#handleDeleteLogin" prefHeight="55.0" prefWidth="355.0" styleClass="click-button" text="Διαγραφή">
+                </JFXButton>
+                <JFXButton fx:id="deleteButton" onAction="#handleDeleteLogin" prefHeight="55.0" prefWidth="355.0" styleClass="click-button" text="Διαγραφή">
                     <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </VBox.margin>
-                </Button>
+                </JFXButton>
         </VBox>
     </content>
 </DialogPane>

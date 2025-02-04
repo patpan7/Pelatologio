@@ -73,6 +73,7 @@ public class SettingsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Platform.runLater(() -> stackPane.requestFocus());
         browserToggleGroup = new ToggleGroup();
         rbChrome.setToggleGroup(browserToggleGroup);
         rbEdge.setToggleGroup(browserToggleGroup);

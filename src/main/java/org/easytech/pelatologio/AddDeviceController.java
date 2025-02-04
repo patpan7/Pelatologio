@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class AddDeviceController {
-    ;
+
     @FXML
     private TextField serialField;
     @FXML

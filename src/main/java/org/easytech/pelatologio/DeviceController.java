@@ -41,12 +41,15 @@ public class DeviceController implements Initializable {
     @FXML
     private ComboBox<String> rateFilterComboBox;
     @FXML
+    private Label countLabel;
+    @FXML
     private Button addDeviceButton;
 
     private ObservableList<Device> allDevices = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Platform.runLater(() -> stackPane.requestFocus());
         // Σύνδεση στηλών πίνακα με πεδία του Task
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         serialColumn.setCellValueFactory(new PropertyValueFactory<>("serial"));
@@ -186,6 +189,7 @@ public class DeviceController implements Initializable {
 
         // Ανανεώνουμε τα δεδομένα του πίνακα
         devicesTable.setItems(filteredDevices);
+        countLabel.setText("Πλήθος: " + filteredDevices.size());
     }
 
 

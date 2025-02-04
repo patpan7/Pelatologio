@@ -5,6 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <DialogPane prefHeight="800.0" prefWidth="1100.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.TaxisViewController">
     <content>
         <VBox alignment="TOP_CENTER">
@@ -27,21 +28,21 @@
                             </TableView>
 
                             <!-- Κουμπί για προσθήκη νέου login -->
-                            <Button fx:id="addLoginButton" onAction="#handleAddLogin" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Προσθήκη Νέου Login">
+                            <JFXButton fx:id="addLoginButton" onAction="#handleAddLogin" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Προσθήκη Νέου Login">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
-                            </Button>
-                            <Button fx:id="editButton" onAction="#handleEditLogin" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Επεξεργασία">
+                            </JFXButton>
+                            <JFXButton fx:id="editButton" onAction="#handleEditLogin" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Επεξεργασία">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
-                            </Button>
-                            <Button fx:id="deleteButton" onAction="#handleDeleteLogin" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Διαγραφή">
+                            </JFXButton>
+                            <JFXButton fx:id="deleteButton" onAction="#handleDeleteLogin" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Διαγραφή">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
-                            </Button>
+                            </JFXButton>
                         </children>
                   <HBox.margin>
                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -50,49 +51,49 @@
                     <!-- Λίστα με κουμπιά για άλλες εργασίες -->
                     <VBox alignment="TOP_CENTER">
                         <children>
-                            <Button fx:id="btnTaxis" mnemonicParsing="false" onMouseClicked="#taxisOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="TaxisNet">
+                            <JFXButton fx:id="btnTaxis" mnemonicParsing="false" onMouseClicked="#taxisOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="TaxisNet">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
                         <cursor>
                            <Cursor fx:constant="HAND" />
                         </cursor>
-                            </Button>
-                            <Button fx:id="btnAuthorizations" mnemonicParsing="false" onAction="#authorizationsOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Εξουσιοδότηση ΑΑΔΕ">
+                            </JFXButton>
+                            <JFXButton fx:id="btnAuthorizations" mnemonicParsing="false" onAction="#authorizationsOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Εξουσιοδότηση ΑΑΔΕ">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
-                            </Button>
-                            <Button fx:id="btnMyData" mnemonicParsing="false" onAction="#mydataOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="myDATA">
+                            </JFXButton>
+                            <JFXButton fx:id="btnMyData" mnemonicParsing="false" onAction="#mydataOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="myDATA">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
-                            </Button>
-                            <Button fx:id="btnESend" mnemonicParsing="false" onAction="#esendOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="eSend">
+                            </JFXButton>
+                            <JFXButton fx:id="btnESend" mnemonicParsing="false" onAction="#esendOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="eSend">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
-                            </Button>
-                            <Button fx:id="btnAfm1" lineSpacing="1.0" mnemonicParsing="false" onAction="#afm1Open" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Ανεύρεσης ΑΦΜ" textOverrun="CLIP">
+                            </JFXButton>
+                            <JFXButton fx:id="btnAfm1" lineSpacing="1.0" mnemonicParsing="false" onAction="#afm1Open" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Ανεύρεσης ΑΦΜ" textOverrun="CLIP">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
-                            </Button>
-                            <Button fx:id="btnAfm2" mnemonicParsing="false" onAction="#afm2Open" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Ειδικοί Κωδικοί">
+                            </JFXButton>
+                            <JFXButton fx:id="btnAfm2" mnemonicParsing="false" onAction="#afm2Open" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Ειδικοί Κωδικοί">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
-                            </Button>
-                            <Button fx:id="btnTameiakes" mnemonicParsing="false" onAction="#tameiakesOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Ταμειακές">
+                            </JFXButton>
+                            <JFXButton fx:id="btnTameiakes" mnemonicParsing="false" onAction="#tameiakesOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Ταμειακές">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
-                            </Button>
-                            <Button fx:id="btnGemi" mnemonicParsing="false" onAction="#gemiSearch" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="ΓΕΜΗ">
+                            </JFXButton>
+                            <JFXButton fx:id="btnGemi" mnemonicParsing="false" onAction="#gemiSearch" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="ΓΕΜΗ">
                                 <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </VBox.margin>
-                            </Button>
+                            </JFXButton>
                         </children>
                   <HBox.margin>
                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

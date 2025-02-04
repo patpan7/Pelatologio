@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,17 +27,27 @@ public class MainMenuController implements Initializable {
     Label lbTasks;
     @FXML
     Label lbAppointments;
+    @FXML
+    Label lbSimply;
+    @FXML
+    Label lbMypos;
+
 
     public Parent root;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Platform.runLater(() -> stackPane.requestFocus());
         lbAppUser.setText("Χειριστή: "+AppSettings.loadSetting("appuser"));
         DBHelper dbHelper = new DBHelper();
         int tasksCount = dbHelper.getTasksCount();
         lbTasks.setText("Εκκρεμής εργασίες: "+tasksCount);
         int appointmentsCount = dbHelper.getAppointmentsCount();
         lbAppointments.setText("Ραντεβού ημέρας: "+appointmentsCount);
+        int simplyCount = dbHelper.getLoginsCount(2);
+        lbSimply.setText("Πελάτες Simply: "+simplyCount);
+        int myposCount = dbHelper.getLoginsCount(1);
+        lbMypos.setText("Πελάτες myPOS: " + myposCount);
     }
 
     public void mainMenuClick(StackPane stackPane) throws IOException {

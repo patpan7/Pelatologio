@@ -165,6 +165,11 @@
             <artifactId>slf4j-simple</artifactId>
             <version>2.0.9</version>
         </dependency>
+        <dependency>
+            <groupId>com.jfoenix</groupId>
+            <artifactId>jfoenix</artifactId>
+            <version>9.0.10</version>
+        </dependency>
 
     </dependencies>
 

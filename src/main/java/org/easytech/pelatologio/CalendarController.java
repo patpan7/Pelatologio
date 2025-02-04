@@ -5,6 +5,7 @@ import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.CalendarView;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,6 +34,7 @@ public class CalendarController {
 
     @FXML
     public void initialize() {
+        Platform.runLater(() -> stackPane.requestFocus());
         // Ανάκτηση ημερολογίων από τη βάση
         dbHelper = new DBHelper();
         List<Calendars> customCalendars = dbHelper.getAllCalendars();

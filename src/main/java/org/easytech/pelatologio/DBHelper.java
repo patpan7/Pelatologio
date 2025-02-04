@@ -1239,4 +1239,22 @@ public class DBHelper {
 
         return rates;
     }
+
+    public int getLoginsCount(int appId) {
+        String query = "SELECT COUNT(DISTINCT customerId) FROM CustomerLogins WHERE ApplicationID = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+             stmt.setInt(1, appId);
+
+             ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+                closeConnection(conn);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

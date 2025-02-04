@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -35,6 +36,7 @@ public class ItemsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Platform.runLater(() -> stackPane.requestFocus());
         dbHelper = new DBHelper();
 
         // Δημιουργία και αρχικοποίηση των στηλών
