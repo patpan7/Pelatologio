@@ -22,7 +22,6 @@ import org.controlsfx.control.Notifications;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class AddTaskController {
@@ -57,8 +56,8 @@ public class AddTaskController {
         }
     }
 
-    public void setDeviceTask(Device device) {
-        titleField.setText("Συσκευή: " + device.getSerial());
+    public void setTaskTitle(String title) {
+        titleField.setText(title);
         //setCustomerId(device.getCustomerId());
         //setCustomerName(device.getCustomerName());
         //categoryComboBox.getSelectionModel().select(0);

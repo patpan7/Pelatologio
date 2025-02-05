@@ -12,11 +12,10 @@ module org.easytech.pelatologio {
     requires org.seleniumhq.selenium.chrome_driver;
     requires org.seleniumhq.selenium.firefox_driver;
     requires org.seleniumhq.selenium.edge_driver;
-    //requires org.seleniumhq.selenium.devtools.v128;
     requires dev.failsafe.core;
-    requires java.desktop;
     requires java.mail;
     requires com.calendarfx.view;
+    requires javafx.swing;
 
     opens org.easytech.pelatologio to javafx.fxml;
     exports org.easytech.pelatologio;

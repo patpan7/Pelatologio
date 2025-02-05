@@ -1,7 +1,6 @@
 package org.easytech.pelatologio;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,13 +9,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
-import org.openqa.selenium.By;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -102,7 +96,7 @@ public class CustomerDevicesController {
         }
     }
 
-    public void handleDeleteLogin(ActionEvent event) {
+    public void handleDeleteDevice(ActionEvent event) {
         Device selectedDevice = devicesTable.getSelectionModel().getSelectedItem();
         if (selectedDevice == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
@@ -208,7 +202,7 @@ public class CustomerDevicesController {
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Προσθήκη Εργασίας");
             AddTaskController controller = loader.getController();
-            controller.setDeviceTask(selectedDevice);
+            controller.setTaskTitle("Συσκευή: " + selectedDevice.getSerial());
             controller.setCustomerName(customer.getName());
             controller.setCustomerId(customer.getCode());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
