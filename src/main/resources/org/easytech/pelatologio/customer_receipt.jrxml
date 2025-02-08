@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CustomerReceipt" pageWidth="127" pageHeight="99" columnWidth="127" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+    <detail>
+        <band height="99">
+            <staticText>
+                <reportElement x="5" y="5" width="117" height="10"/>
+                <textElement>
+                    <font size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Στοιχεία Πελάτη]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="5" y="15" width="117" height="10"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{name}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="5" y="25" width="117" height="10"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{title}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="5" y="35" width="117" height="10"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{job}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="5" y="45" width="117" height="10"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{address}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="5" y="55" width="117" height="10"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{town} + ", " + $P{postcode}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="5" y="65" width="117" height="10"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA["ΑΦΜ: " + $P{afm}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="5" y="75" width="117" height="10"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Τηλ: " + $P{phone} + " / " + $P{mobile}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

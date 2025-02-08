@@ -16,6 +16,7 @@ module org.easytech.pelatologio {
     requires java.mail;
     requires com.calendarfx.view;
     requires javafx.swing;
+    requires net.sf.jasperreports.core;
 
     opens org.easytech.pelatologio to javafx.fxml;
     exports org.easytech.pelatologio;
