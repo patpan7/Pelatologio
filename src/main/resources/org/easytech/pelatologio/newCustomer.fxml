@@ -311,6 +311,16 @@
             </center>
             <right>
                 <VBox alignment="CENTER" spacing="10.0" styleClass="pane">
+               <JFXButton fx:id="btnAddToMegasoft" alignment="TOP_LEFT" layoutX="10.0" layoutY="654.0" mnemonicParsing="false" onAction="#addMegasoft" prefWidth="175.0" styleClass="click-button" text="Εισαγωγή Prisma" wrapText="true">
+                  <graphic>
+                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@icons/megasoft.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+               </JFXButton>
+               <Separator orientation="VERTICAL" prefHeight="200.0" visible="false" />
                     <JFXButton fx:id="btnTaxis" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#taxisClick" prefWidth="175.0" styleClass="click-button" text="Taxis" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">

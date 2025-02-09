@@ -38,7 +38,7 @@ public class AddCustomerController {
     @FXML
     private ProgressIndicator progressIndicator;
     @FXML
-    Button btnTaxis, btnMypos, btnSimply, btnData, btnLabel, btnAppointment,btnTask, btnDevices;
+    Button btnAddToMegasoft, btnTaxis, btnMypos, btnSimply, btnData, btnLabel, btnAppointment,btnTask, btnDevices;
 
     int code = 0;
 
@@ -54,6 +54,7 @@ public class AddCustomerController {
         setTooltip(btnAppointment,"Προσθήκη νέου ραντεβού");
         setTooltip(btnTask,"Προσθήκη νέας εργασίας");
         setTooltip(btnDevices,"Διαχείριση συσκευών του πελάτη");
+        setTooltip(btnAddToMegasoft, "Προσθήκη πελάτη στο Megasoft");
 
 
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
@@ -64,6 +65,8 @@ public class AddCustomerController {
 //            System.out.println("Έχει υποδιεύθυνση");
 //        } else
         btnAddressAdd.setDisable(true);
+        btnAddToMegasoft.setDisable(true);
+        btnAddToMegasoft.setVisible(false);
         btnTaxis.setDisable(true);
         btnTaxis.setVisible(false);
         btnMypos.setDisable(true);
@@ -322,6 +325,8 @@ public class AddCustomerController {
         this.code = customer.getCode();
         this.customer = customer;
 
+        btnAddToMegasoft.setDisable(false);
+        btnAddToMegasoft.setVisible(true);
         btnTaxis.setDisable(false);
         btnTaxis.setVisible(true);
         btnMypos.setDisable(false);
@@ -431,15 +436,15 @@ public class AddCustomerController {
         String title = tfTitle.getText();
         String job = tfJob.getText().substring(0, Math.min(tfJob.getText().length(), 255));
         String afm = tfAfm.getText();
-        String phone1 = tfPhone1.getText();
-        String phone2 = tfPhone2.getText();
-        String mobile = tfMobile.getText();
+        String phone1 = (tfPhone1.getText() != null ? tfPhone1.getText() : "");
+        String phone2 = (tfPhone2.getText() != null ? tfPhone2.getText() : "");
+        String mobile = (tfMobile.getText() != null ? tfMobile.getText() : "");
         String primaryAddress = tfAddress.getText();  // Πρώτη διεύθυνση
         String town = tfTown.getText();
         String postcode = tfPostCode.getText();
-        String email = tfEmail.getText();
-        String manager = tfManager.getText();
-        String managerPhone = tfManagerPhone.getText();
+        String email = (tfEmail.getText() != null ? tfEmail.getText() : "");
+        String manager = (tfManager.getText() != null ? tfManager.getText() : "");
+        String managerPhone = (tfManagerPhone.getText() != null ? tfManagerPhone.getText() : "");
         String notes = taNotes.getText();
 
         if (mobile.startsWith("+30"))
@@ -483,20 +488,21 @@ public class AddCustomerController {
     }
 
     void updateCustomer() {
+        DBHelper dbHelper = new DBHelper();
+
         String name = tfName.getText();
         String title = tfTitle.getText();
         String job = tfJob.getText().substring(0, Math.min(tfJob.getText().length(), 255));
         String afm = tfAfm.getText();
-        String phone1 = tfPhone1.getText();
-        String phone2 = tfPhone2.getText();
-        String mobile = tfMobile.getText();
+        String phone1 = (tfPhone1.getText() != null ? tfPhone1.getText() : "");
+        String phone2 = (tfPhone2.getText() != null ? tfPhone2.getText() : "");
+        String mobile = (tfMobile.getText() != null ? tfMobile.getText() : "");
         String address = tfAddress.getText();
         String town = tfTown.getText();
         String posCode = tfPostCode.getText();
-        String email = tfEmail.getText();
-        String manager = tfManager.getText();
-        String managerPhone = tfManagerPhone.getText();
-        DBHelper dbHelper = new DBHelper();
+        String email = (tfEmail.getText() != null ? tfEmail.getText() : "");
+        String manager = (tfManager.getText() != null ? tfManager.getText() : "");
+        String managerPhone = (tfManagerPhone.getText() != null ? tfManagerPhone.getText() : "");
         String notes = taNotes.getText();
 
         if (mobile.startsWith("+30"))
@@ -746,5 +752,9 @@ public class AddCustomerController {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void addMegasoft(ActionEvent event) {
+        PrismaWinAutomation.run(customer);
     }
 }
