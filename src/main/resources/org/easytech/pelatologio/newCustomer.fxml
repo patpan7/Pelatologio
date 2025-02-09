@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddCustomerController">
     <content>
         <BorderPane>
@@ -235,18 +235,18 @@
                                     <Font size="24.0" />
                                 </font>
                             </TextField>
-                     <JFXButton fx:id="btnEmail" mnemonicParsing="false" onAction="#showEmailDialog" styleClass="click-button" text="">
-                        <graphic>
-                           <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                 <Image url="@icons/mail.png" />
-                              </image>
-                           </ImageView>
-                        </graphic>
-                        <HBox.margin>
-                           <Insets left="5.0" />
-                        </HBox.margin>
-                     </JFXButton>
+                            <JFXButton fx:id="btnEmail" mnemonicParsing="false" onAction="#showEmailDialog" styleClass="click-button" text="">
+                                <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                        <image>
+                                            <Image url="@icons/mail.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                                <HBox.margin>
+                                    <Insets left="5.0" />
+                                </HBox.margin>
+                            </JFXButton>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
                             <VBox.margin>
@@ -339,6 +339,15 @@
                             </ImageView>
                         </graphic>
                     </JFXButton>
+                    <JFXButton fx:id="btnLabel" alignment="TOP_LEFT" layoutX="10.0" layoutY="433.0" mnemonicParsing="false" onAction="#labelClick" prefWidth="175.0" styleClass="click-button" text="Ετικέτα">
+                        <graphic>
+                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@icons/label.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </JFXButton>
                     <JFXButton fx:id="btnAppointment" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#newAppointment" prefWidth="175.0" styleClass="click-button" text="Ραντεβού" wrapText="true" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -360,9 +369,9 @@
                             </ImageView>
                         </graphic>
                     </JFXButton>
-               <BorderPane.margin>
-                  <Insets left="10.0" right="10.0" />
-               </BorderPane.margin>
+                    <BorderPane.margin>
+                        <Insets left="10.0" right="10.0" />
+                    </BorderPane.margin>
                 </VBox>
             </right>
         </BorderPane>

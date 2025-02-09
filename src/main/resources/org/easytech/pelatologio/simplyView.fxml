@@ -29,6 +29,8 @@
                                     <MenuItem mnemonicParsing="false" onAction="#handleAddLogin" styleClass="menu-item" text="Προσθήκη" />
                                     <MenuItem mnemonicParsing="false" onAction="#handleDeleteLogin" styleClass="menu-item" text="Διαγραφή" />
                                     <SeparatorMenuItem />
+                                    <MenuItem mnemonicParsing="false" onAction="#handleLabel" styleClass="menu-item" text="Ετικέτα" />
+                                    <SeparatorMenuItem />
                                     <MenuItem mnemonicParsing="false" onAction="#handleAddTask" styleClass="menu-item" text="Προσθήκη εργασίας" />
                                 </items>
                             </ContextMenu>

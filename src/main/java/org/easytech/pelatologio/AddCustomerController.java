@@ -38,7 +38,7 @@ public class AddCustomerController {
     @FXML
     private ProgressIndicator progressIndicator;
     @FXML
-    Button btnTaxis, btnMypos, btnSimply, btnData, btnAppointment,btnTask, btnDevices;
+    Button btnTaxis, btnMypos, btnSimply, btnData, btnLabel, btnAppointment,btnTask, btnDevices;
 
     int code = 0;
 
@@ -50,6 +50,7 @@ public class AddCustomerController {
         setTooltip(btnMypos, "Διαχείριση κωδικών myPOS του πελάτη");
         setTooltip(btnSimply, "Διαχείριση κωδικών Simply του πελάτη");
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
+        setTooltip(btnLabel, "Εκτύπωση ετικέτας πελάτη");
         setTooltip(btnAppointment,"Προσθήκη νέου ραντεβού");
         setTooltip(btnTask,"Προσθήκη νέας εργασίας");
         setTooltip(btnDevices,"Διαχείριση συσκευών του πελάτη");
@@ -71,6 +72,8 @@ public class AddCustomerController {
         btnSimply.setVisible(false);
         btnData.setDisable(true);
         btnData.setVisible(false);
+        btnLabel.setDisable(true);
+        btnLabel.setVisible(false);
         btnAppointment.setDisable(true);
         btnAppointment.setVisible(false);
         btnTask.setDisable(true);
@@ -327,6 +330,8 @@ public class AddCustomerController {
         btnSimply.setVisible(true);
         btnData.setDisable(false);
         btnData.setVisible(true);
+        btnLabel.setDisable(false);
+        btnLabel.setVisible(true);
         btnAppointment.setDisable(false);
         btnAppointment.setVisible(true);
         btnTask.setDisable(false);
@@ -621,6 +626,10 @@ public class AddCustomerController {
 
         // Κλήση της μεθόδου για δημιουργία ή άνοιγμα του φακέλου
         folderManager.createOrOpenCustomerFolder(customer.getName(), customer.getAfm());
+    }
+
+    public void labelClick(ActionEvent event) {
+        LabelPrintHelper.printCustomerLabel(customer);
     }
 
     public void newAppointment(ActionEvent actionEvent) {

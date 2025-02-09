@@ -80,6 +80,13 @@ public class SimplyViewController {
         if (loginTable.getItems().size() == 1)
             loginTable.getSelectionModel().select(0);
     }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+        customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
+        loadLoginsForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
+    }
+
     public void handleAddLogin(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addLogin.fxml"));
@@ -193,10 +200,23 @@ public class SimplyViewController {
         }
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-        customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
-        loadLoginsForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
+    public void handleLabel(ActionEvent event) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
+            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
+            return;
+        }
+        LabelPrintHelper.printLoginLabel(selectedLogin,customer,"Στοιχεία Simply "+selectedLogin.getTag());
     }
 
     public void handleAddTask(ActionEvent evt) {
@@ -259,20 +279,20 @@ public class SimplyViewController {
                 copyTextToClipboard(msg);
                 //showAlert("Attention", "Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.");
                 Notifications notifications = Notifications.create()
-                            .title("Προσοχή")
-                            .text("Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.")
-                            .graphic(null)
-                            .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
+                        .title("Προσοχή")
+                        .text("Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
                 notifications.showInformation();
             } else {
                 //showAlert("Attention", "Please select a login to copy.");
                 Notifications notifications = Notifications.create()
-                            .title("Προσοχή")
-                            .text("Παρακαλώ επιλέξτε ένα login.")
-                            .graphic(null)
-                            .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
                 notifications.showError();
             }
         } else {
@@ -339,14 +359,14 @@ public class SimplyViewController {
                         copyTextToClipboard(msg);
                     }
                 });
-               } else {
-                    Notifications notifications = Notifications.create()
-                            .title("Προσοχή")
-                            .text("Παρακαλώ επιλέξτε ένα login.")
-                            .graphic(null)
-                            .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();
+            } else {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();
             }
         } else { // Left-click for regular functionality
             if (selectedLogin == null) {
@@ -412,11 +432,11 @@ public class SimplyViewController {
                 });
             } else {
                 Notifications notifications = Notifications.create()
-                            .title("Προσοχή")
-                            .text("Παρακαλώ επιλέξτε ένα login.")
-                            .graphic(null)
-                            .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
                 notifications.showError();
             }
         } else if (event.getButton() == MouseButton.PRIMARY) { // Left-click for regular functionality
@@ -433,14 +453,14 @@ public class SimplyViewController {
             }
 
             try {
-            LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openAndFillLoginForm(
-                    "https://rest.simplypos.com/",
-                    selectedLogin.getUsername(),
-                    selectedLogin.getPassword(),
-                    By.name("Email"),
-                    By.name("Password"),
-                    By.id("kt_sign_in_submit")
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openAndFillLoginForm(
+                        "https://rest.simplypos.com/",
+                        selectedLogin.getUsername(),
+                        selectedLogin.getPassword(),
+                        By.name("Email"),
+                        By.name("Password"),
+                        By.id("kt_sign_in_submit")
                 );
             } catch (IOException e) {
                 e.printStackTrace();
@@ -497,11 +517,11 @@ public class SimplyViewController {
         clipboard.setContent(content);
         //showAlert("Copied to Clipboard", msg);
         Notifications notifications = Notifications.create()
-                    .title("Αντιγραφή στο πρόχειρο")
-                    .text(msg)
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
+                .title("Αντιγραφή στο πρόχειρο")
+                .text(msg)
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT);
         notifications.showInformation();
     }
 

@@ -192,6 +192,71 @@ public class MyposViewController {
         }
     }
 
+    public void handleLabel(ActionEvent event) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
+            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
+            return;
+        }
+        LabelPrintHelper.printLoginLabel(selectedLogin,customer,"Στοιχεία myPOS");
+    }
+
+    public void handleAddTask(ActionEvent evt) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
+            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
+            return;
+        }
+        try {
+            // Φόρτωση του FXML για προσθήκη ραντεβού
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Προσθήκη Εργασίας");
+            AddTaskController controller = loader.getController();
+            controller.setTaskTitle("myPOS: "+ customer.getName());
+            controller.setCustomerName(customer.getName());
+            controller.setCustomerId(customer.getCode());
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                // Εκτελούμε το handleSaveAppointment
+                boolean success = controller.handleSaveTask();
+
+                if (!success) {
+                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                    event.consume();
+                }
+            });
+
+            dialog.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setCustomer(Customer customer) {
         this.customer = customer;
         customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
@@ -248,21 +313,21 @@ public class MyposViewController {
                 content.putString(msg);  // Replace with the desired text
                 clipboard.setContent(content);
                 Notifications notifications = Notifications.create()
-                            .title("Αντιγραφή στο clipboard")
-                            .text(msg)
-                            .graphic(null)
-                            .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
+                        .title("Αντιγραφή στο clipboard")
+                        .text(msg)
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
                 notifications.showInformation();
                 //showAlert("Copied to Clipboard", msg);
-                } else {
-                    Notifications notifications = Notifications.create()
-                            .title("Προσοχή")
-                            .text("Παρακαλώ επιλέξτε ένα login.")
-                            .graphic(null)
-                            .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();
+            } else {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();
             }
         } else if (event.getButton() == MouseButton.PRIMARY) {
             // Left-click for regular functionality

@@ -21,12 +21,16 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 import org.controlsfx.control.Notifications;
 
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.HashPrintServiceAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.PrintServiceAttributeSet;
 import javax.print.attribute.standard.PrinterName;
 import java.awt.*;
 import java.io.File;
@@ -449,53 +453,16 @@ public class CustomersController implements Initializable {
                     "\nΤηλέφωνο: " + selectedCustomer.getPhone1()+
                     "\nΚινητό: "+selectedCustomer.getMobile();
             copyTextToClipboard(msg);
-            printCustomerLabel(selectedCustomer);
         }
     }
-    // Μέθοδος για την εκτύπωση της ετικέτας
-    public void printCustomerLabel(Customer customer) {
-        try {
-            // Φόρτωση του JasperReport
-            JasperReport jasperReport = JasperCompileManager.compileReport("customer_receipt.jrxml");
 
-            // Δημιουργία dataset με δεδομένα πελάτη
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("name", customer.getName());
-            parameters.put("title", customer.getTitle());
-            parameters.put("job", customer.getJob());
-            parameters.put("address", customer.getAddress());
-            parameters.put("town", customer.getTown());
-            parameters.put("postcode", customer.getPostcode());
-            parameters.put("afm", customer.getAfm());
-            parameters.put("phone", customer.getPhone1());
-            parameters.put("mobile", customer.getMobile());
-
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
-
-            // Επιλογή εκτυπωτή από τα Windows
-            PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
-            if (printServices.length == 0) {
-                System.out.println("Δεν βρέθηκαν εκτυπωτές.");
-                return;
-            }
-
-            PrintService selectedPrinter = printServices[0]; // Προεπιλογή πρώτου εκτυπωτή
-            for (PrintService printer : printServices) {
-                if (printer.getName().contains("desired_printer_name")) { // Αντικατάστησε το με το όνομα του εκτυπωτή που θέλεις
-                    selectedPrinter = printer;
-                    break;
-                }
-            }
-
-            PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
-            printRequestAttributeSet.add(new PrinterName(selectedPrinter.getName(), null));
-
-            JasperPrintManager.printReport(jasperPrint, false); // Εκτύπωση χωρίς προεπισκόπηση
-
-        } catch (JRException e) {
-            e.printStackTrace();
+    public void customerLabel(ActionEvent actionEvent) {
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        if (selectedCustomer != null) {
+            LabelPrintHelper.printCustomerLabel(selectedCustomer);
         }
     }
+
 
     public void viberOpen(ActionEvent event) {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
