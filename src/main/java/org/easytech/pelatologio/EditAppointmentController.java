@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -50,9 +51,31 @@ public class EditAppointmentController {
     private void populateTimeFields() {
         for (int hour = 0; hour < 24; hour++) {
             startHourComboBox.getItems().add(hour);
+            startHourComboBox.setConverter(new StringConverter<Integer>() {
+                @Override
+                public String toString(Integer object) {
+                    return object == null ? "" : object.toString();
+                }
+
+                @Override
+                public Integer fromString(String string) {
+                    return string.isEmpty() ? null : Integer.parseInt(string);
+                }
+            });
         }
         for (int minute = 0; minute < 60; minute += 5) { // Βήμα 5 λεπτών
             startMinuteComboBox.getItems().add(minute);
+            startMinuteComboBox.setConverter(new StringConverter<Integer>() {
+                @Override
+                public String toString(Integer object) {
+                    return object == null ? "" : object.toString();
+                }
+
+                @Override
+                public Integer fromString(String string) {
+                    return string.isEmpty() ? null : Integer.parseInt(string);
+                }
+            });
         }
     }
 

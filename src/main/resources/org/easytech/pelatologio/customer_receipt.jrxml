@@ -11,34 +11,42 @@
 	<parameter name="mobile" class="java.lang.String"/>
 	<detail>
 		<band height="99" splitType="Stretch">
-			<element kind="textField" uuid="26369520-43c9-43c4-948e-b8331850441e" x="5" y="10" width="122" height="10" fontSize="6.0">
+			<element kind="textField" uuid="26369520-43c9-43c4-948e-b8331850441e" x="2" y="16" width="122" height="14" fontSize="10.0" bold="true">
 				<expression><![CDATA[$P{name}]]></expression>
 				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			</element>
-			<element kind="textField" uuid="98551efd-e605-463e-9692-23cdcb853484" x="5" y="20" width="122" height="10" fontSize="6.0">
-				<expression><![CDATA[$P{title}]]></expression>
-			</element>
-			<element kind="textField" uuid="d73bb1d9-c8ee-41b3-9093-0f78061729cf" x="5" y="30" width="122" height="10" fontSize="6.0">
+			<element kind="textField" uuid="d73bb1d9-c8ee-41b3-9093-0f78061729cf" x="2" y="26" width="122" height="14">
 				<expression><![CDATA[$P{job}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			</element>
-			<element kind="textField" uuid="10ea08ed-4605-4e4e-8e4d-2cd1274fbf66" x="5" y="50" width="122" height="10" fontSize="6.0">
+			<element kind="textField" uuid="10ea08ed-4605-4e4e-8e4d-2cd1274fbf66" x="2" y="46" width="122" height="14">
 				<expression><![CDATA[$P{address}]]></expression>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
 			</element>
-			<element kind="textField" uuid="b1024e31-74de-4126-9569-49c153239d62" x="5" y="60" width="122" height="10" fontSize="6.0">
+			<element kind="textField" uuid="b1024e31-74de-4126-9569-49c153239d62" x="2" y="56" width="122" height="14">
 				<expression><![CDATA[$P{postcode}]]></expression>
 			</element>
-			<element kind="textField" uuid="f3bf013a-3eba-4d69-a971-e146f53671cb" x="5" y="40" width="122" height="10" fontSize="6.0">
+			<element kind="textField" uuid="f3bf013a-3eba-4d69-a971-e146f53671cb" x="2" y="36" width="122" height="14">
 				<expression><![CDATA[$P{afm}]]></expression>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
 			</element>
-			<element kind="textField" uuid="27cef807-ad00-4452-a86a-67faaa1a14ec" x="5" y="70" width="122" height="10" fontSize="6.0">
+			<element kind="textField" uuid="27cef807-ad00-4452-a86a-67faaa1a14ec" x="2" y="66" width="122" height="14">
 				<expression><![CDATA[$P{phone}]]></expression>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
 			</element>
-			<element kind="textField" uuid="a96dd5c7-1c41-4b07-8213-c0957a05e8c9" x="5" y="80" width="122" height="8" fontSize="6.0">
+			<element kind="textField" uuid="a96dd5c7-1c41-4b07-8213-c0957a05e8c9" x="2" y="76" width="122" height="14">
 				<expression><![CDATA[$P{mobile}]]></expression>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
 			</element>
-			<element kind="staticText" uuid="3768ff16-d380-45d1-b630-5d612b3a3048" x="0" y="0" width="127" height="10" fontSize="7.0" bold="true" hTextAlign="Center">
+			<element kind="staticText" uuid="3768ff16-d380-45d1-b630-5d612b3a3048" x="21" y="1" width="90" height="14" fontSize="11.0" bold="true" hTextAlign="Center">
 				<text><![CDATA[Στοιχεία πελάτη]]></text>
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+				</box>
 			</element>
 		</band>
 	</detail>

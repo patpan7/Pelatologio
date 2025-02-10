@@ -22,7 +22,7 @@ public class LabelPrintHelper {
             // Δημιουργία dataset με δεδομένα πελάτη
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("name", customer.getName()== null ? "" : customer.getName());
-            parameters.put("title", customer.getTitle() == null ? "" : customer.getTitle());
+            //parameters.put("title", customer.getTitle() == null ? "" : customer.getTitle());
             parameters.put("job", customer.getJob() == null ? "" : customer.getJob());
             parameters.put("address", customer.getAddress() == null ? "" : customer.getAddress());
             parameters.put("town", customer.getTown() == null ? "" : customer.getTown());

@@ -84,9 +84,10 @@ public class PrismaWinAutomation {
             // Εκτέλεση SikuliX script
             try {
                 Screen screen = new Screen();
+                Thread.sleep(500); // Αναμονή για φόρτωμα
                 String imagePath = PrismaWinAutomation.class.getResource("/org/easytech/pelatologio/megasoft/pelates.png").getPath(); // Αν η εικόνα είναι στο resources/images/
                 screen.click(imagePath);
-                Thread.sleep(2000); // Αναμονή για φόρτωμα
+                Thread.sleep(5000); // Αναμονή για φόρτωμα
                 imagePath = PrismaWinAutomation.class.getResource("/org/easytech/pelatologio/megasoft/neos.png").getPath(); // Αν η εικόνα είναι στο resources/images/
                 screen.click(imagePath);
                 Thread.sleep(1000); // Αναμονή για φόρτωμα
