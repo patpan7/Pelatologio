@@ -19,6 +19,8 @@ module org.easytech.pelatologio {
     requires net.sf.jasperreports.core;
     requires sikulixapi;
     requires com.sun.jna.platform;
+    requires com.sun.jna;
+    requires org.seleniumhq.selenium.support;
 
     opens org.easytech.pelatologio to javafx.fxml;
     exports org.easytech.pelatologio;

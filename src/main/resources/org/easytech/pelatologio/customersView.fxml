@@ -52,7 +52,7 @@
                     <BorderPane.margin>
                         <Insets />
                     </BorderPane.margin>
-                    <HBox alignment="CENTER" VBox.vgrow="NEVER">
+                    <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
                         <VBox.margin>
                             <Insets bottom="10.0" left="20.0" right="20.0" />
                         </VBox.margin>
@@ -72,6 +72,18 @@
                                 <Insets />
                             </opaqueInsets>
                         </TextField>
+
+
+                        <JFXButton mnemonicParsing="false" onAction="#customerAddNew" styleClass="click-button" text="Προσθήκη Νέου Πελάτη">
+                            <graphic>
+                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@icons/add.png" />
+                                </ImageView>
+                            </graphic>
+                     <HBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </HBox.margin>
+                        </JFXButton>
                         <JFXButton fx:id="btnClean" mnemonicParsing="false" onAction="#clean" styleClass="click-button" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -83,14 +95,6 @@
                             <HBox.margin>
                                 <Insets left="5.0" />
                             </HBox.margin>
-                        </JFXButton>
-                        <Separator prefWidth="200.0" visible="false" HBox.hgrow="ALWAYS" />
-                        <JFXButton mnemonicParsing="false" onAction="#customerAddNew" styleClass="click-button" text="Προσθήκη Νέου Πελάτη">
-                            <graphic>
-                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/add.png" />
-                                </ImageView>
-                            </graphic>
                         </JFXButton>
                     </HBox>
                     <TableView fx:id="customerTable" VBox.vgrow="ALWAYS">
@@ -146,7 +150,7 @@
                         </cursor>
                     </JFXButton>
                     <Separator visible="false" HBox.hgrow="ALWAYS" />
-                    <JFXButton fx:id="btnMypos" mnemonicParsing="false" onAction="#myposClick" prefWidth="175.0" styleClass="click-button" text="myPOS" HBox.hgrow="ALWAYS">
+                    <JFXButton fx:id="btnMypos" mnemonicParsing="false" onMouseClicked="#myposClick" prefWidth="175.0" styleClass="click-button" text="myPOS" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
@@ -156,7 +160,7 @@
                         </graphic>
                     </JFXButton>
                     <Separator visible="false" HBox.hgrow="ALWAYS" />
-                    <JFXButton fx:id="btnSimply" mnemonicParsing="false" onAction="#simplyClick" prefWidth="175.0" styleClass="click-button" text="Simply" HBox.hgrow="ALWAYS">
+                    <JFXButton fx:id="btnSimply" mnemonicParsing="false" onMouseClicked="#simplyClick" prefWidth="175.0" styleClass="click-button" text="Simply" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
@@ -166,6 +170,16 @@
                         </graphic>
                     </JFXButton>
                     <Separator visible="false" HBox.hgrow="ALWAYS" />
+                  <JFXButton fx:id="btnEmblem" layoutX="513.0" layoutY="11.0" mnemonicParsing="false" onMouseClicked="#emblemClick" prefWidth="175.0" styleClass="click-button" text="Emblem">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@icons/emblem.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+                  <Separator layoutX="600.0" layoutY="43.0" visible="false" HBox.hgrow="ALWAYS" />
                     <JFXButton fx:id="btnData" mnemonicParsing="false" onAction="#folderClick" prefWidth="175.0" styleClass="click-button" text="Data" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">

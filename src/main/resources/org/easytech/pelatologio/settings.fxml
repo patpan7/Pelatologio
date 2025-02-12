@@ -32,7 +32,7 @@
                         <HBox.margin>
                             <Insets />
                         </HBox.margin>
-                        <JFXButton mnemonicParsing="false" onAction="#mainMenuClick" pickOnBounds="false" ripplerFill="RED" styleClass="click-button" text="Επιστροφή">
+                        <JFXButton mnemonicParsing="false" onAction="#mainMenuClick" pickOnBounds="false" styleClass="click-button" text="Επιστροφή">
                             <graphic>
                                 <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/menu.png" />
@@ -205,6 +205,33 @@
 
                                         <Label styleClass="normal-label" text="E-mail Simply" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                                         <TextField fx:id="tfSimplyRegisterMail" text="" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    </children>
+                                    <columnConstraints>
+                                        <ColumnConstraints />
+                                        <ColumnConstraints />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                        <RowConstraints />
+                                    </rowConstraints>
+                                </GridPane>
+                            </content>
+                        </TitledPane>
+                        <TitledPane styleClass="menu-label" text="Ρυθμίσεις Emblem">
+                            <content>
+                                <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
+                                    <children>
+                                        <Label styleClass="normal-label" text="Emblem User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                        <TextField fx:id="tfEmblemUser" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                        <Label styleClass="normal-label" text="Emblem Pass" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                        <TextField fx:id="tfEmblemPass" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                        <Label styleClass="normal-label" text="E-mail Emblem" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                        <TextField fx:id="tfEmblemRegisterMail" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     </children>
                                     <columnConstraints>
                                         <ColumnConstraints />

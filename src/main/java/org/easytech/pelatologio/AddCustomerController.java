@@ -38,7 +38,7 @@ public class AddCustomerController {
     @FXML
     private ProgressIndicator progressIndicator;
     @FXML
-    Button btnAddToMegasoft, btnTaxis, btnMypos, btnSimply, btnData, btnLabel, btnAppointment,btnTask, btnDevices;
+    Button btnAddToMegasoft, btnTaxis, btnMypos, btnSimply, btnEmblem, btnData, btnLabel, btnAppointment,btnTask, btnDevices;
 
     int code = 0;
 
@@ -49,6 +49,7 @@ public class AddCustomerController {
         setTooltip(btnTaxis, "1) Διαχείριση κωδικών Taxis του πελάτη");
         setTooltip(btnMypos, "Διαχείριση κωδικών myPOS του πελάτη");
         setTooltip(btnSimply, "Διαχείριση κωδικών Simply του πελάτη");
+        setTooltip(btnEmblem, "Διαχείριση κωδικών Emblem του πελάτη");
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
         setTooltip(btnLabel, "Εκτύπωση ετικέτας πελάτη");
         setTooltip(btnAppointment,"Προσθήκη νέου ραντεβού");
@@ -73,6 +74,8 @@ public class AddCustomerController {
         btnMypos.setVisible(false);
         btnSimply.setDisable(true);
         btnSimply.setVisible(false);
+        btnEmblem.setDisable(true);
+        btnEmblem.setVisible(false);
         btnData.setDisable(true);
         btnData.setVisible(false);
         btnLabel.setDisable(true);
@@ -333,6 +336,8 @@ public class AddCustomerController {
         btnMypos.setVisible(true);
         btnSimply.setDisable(false);
         btnSimply.setVisible(true);
+        btnEmblem.setDisable(false);
+        btnEmblem.setVisible(true);
         btnData.setDisable(false);
         btnData.setVisible(true);
         btnLabel.setDisable(false);
@@ -347,6 +352,7 @@ public class AddCustomerController {
         btnTaxis.setStyle("-fx-border-color: #D6D8DE;");
         btnMypos.setStyle("-fx-border-color: #D6D8DE;");
         btnSimply.setStyle("-fx-border-color: #D6D8DE;");
+        btnEmblem.setStyle("-fx-border-color: #D6D8DE;");
         btnDevices.setStyle("-fx-border-color: #D6D8DE;");
 
         if(dbHelper.hasApp(customer.getCode(),2)){
@@ -358,9 +364,13 @@ public class AddCustomerController {
         if(dbHelper.hasApp(customer.getCode(),3)){
             btnTaxis.setStyle("-fx-border-color: #FF0000;");
         }
+        if(dbHelper.hasApp(customer.getCode(),4)){
+            btnEmblem.setStyle("-fx-border-color: #FF0000;");
+        }
         if(dbHelper.hasDevice(customer.getCode())){
             btnDevices.setStyle("-fx-border-color: #FF0000;");
         }
+
     }
 
 
@@ -618,6 +628,28 @@ public class AddCustomerController {
             controller.setCustomer(customer);
 
             dialog.setTitle("Κωδικοί Simply");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void emblemClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("emblemView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+            // Τώρα μπορείς να πάρεις τον controller
+            EmblemViewController controller = loader.getController();
+
+            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+            controller.setCustomer(customer);
+
+            dialog.setTitle("Κωδικοί Emblem");
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
             dialog.initModality(Modality.WINDOW_MODAL);
             dialog.show();

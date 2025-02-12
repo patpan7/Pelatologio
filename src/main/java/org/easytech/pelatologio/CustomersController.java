@@ -20,22 +20,13 @@ import javafx.scene.input.*;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.view.JasperViewer;
 import org.controlsfx.control.Notifications;
+import org.openqa.selenium.By;
+import org.sikuli.script.Mouse;
 
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.HashPrintServiceAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.PrintServiceAttributeSet;
-import javax.print.attribute.standard.PrinterName;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -54,7 +45,7 @@ public class CustomersController implements Initializable {
     @FXML
     TextField filterField;
     @FXML
-    Button btnTaxis, btnMypos, btnSimply, btnData, openFileButton;
+    Button btnTaxis, btnMypos, btnSimply, btnEmblem, btnData, openFileButton;
 
     ObservableList<Customer> observableList;
     FilteredList<Customer> filteredData;
@@ -65,8 +56,9 @@ public class CustomersController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> stackPane.requestFocus());
         setTooltip(btnTaxis, "1) Διαχείριση κωδικών Taxis του πελάτη\n2) Είσοδος με κωδικούς νέου πελάτη");
-        setTooltip(btnMypos, "Διαχείριση κωδικών myPOS του πελάτη");
-        setTooltip(btnSimply, "Διαχείριση κωδικών Simply του πελάτη");
+        setTooltip(btnMypos, "1) Διαχείριση κωδικών myPOS του πελάτη\n2) Είσοδος στο DAS της myPOS");
+        setTooltip(btnSimply, "1) Διαχείριση κωδικών Simply του πελάτη\n2) Είσοδος στο DAS της Simply");
+        setTooltip(btnEmblem, "1) Διαχείριση κωδικών Emblem του πελάτη\n2) Είσοδος στο DAS της Emblem");
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
         setTooltip(openFileButton,"1) Αντιγραφή πληροφοριών\n2) Άνοιγμα φακέλου με δεδομένα");
 
@@ -92,17 +84,20 @@ public class CustomersController implements Initializable {
                 btnTaxis.setStyle("-fx-border-color: #D6D8DE;");
                 btnMypos.setStyle("-fx-border-color: #D6D8DE;");
                 btnSimply.setStyle("-fx-border-color: #D6D8DE;");
+                btnEmblem.setStyle("-fx-border-color: #D6D8DE;");
                 // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
                 Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-
-                if(dbHelper.hasApp(selectedCustomer.getCode(),2)){
-                    btnSimply.setStyle("-fx-border-color: #FF0000;");
-                }
                 if(dbHelper.hasApp(selectedCustomer.getCode(),1)){
                     btnMypos.setStyle("-fx-border-color: #FF0000;");
                 }
+                if(dbHelper.hasApp(selectedCustomer.getCode(),2)){
+                    btnSimply.setStyle("-fx-border-color: #FF0000;");
+                }
                 if(dbHelper.hasApp(selectedCustomer.getCode(),3)){
                     btnTaxis.setStyle("-fx-border-color: #FF0000;");
+                }
+                if(dbHelper.hasApp(selectedCustomer.getCode(),4)){
+                    btnEmblem.setStyle("-fx-border-color: #FF0000;");
                 }
             }
             if (event.getClickCount() == 2) { // Έλεγχος για δύο κλικ
@@ -605,69 +600,144 @@ public class CustomersController implements Initializable {
         }
     }
 
-    public void myposClick(ActionEvent event) {
-        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-        if (selectedCustomer == null) {
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Δεν έχει επιλεγεί Πελάτης!")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
-            return;
-        }
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("myposView.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+    public void myposClick(MouseEvent event) {
+        if (event.getButton() == MouseButton.SECONDARY) {
+            try {
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openAndFillLoginFormDas("https://das.mypos.eu/en/login",
+                        AppSettings.loadSetting("myposUser"),
+                        AppSettings.loadSetting("myposPass"),
+                        By.id("username"),
+                        By.className("btn-primary"),
+                        By.id("password"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+            if (selectedCustomer == null) {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Δεν έχει επιλεγεί Πελάτης!")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(3))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();
+                return;
+            }
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("myposView.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
 
-            // Τώρα μπορείς να πάρεις τον controller
-            MyposViewController controller = loader.getController();
+                // Τώρα μπορείς να πάρεις τον controller
+                MyposViewController controller = loader.getController();
 
-            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-            controller.setCustomer(selectedCustomer);
+                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                controller.setCustomer(selectedCustomer);
 
-            dialog.setTitle("Κωδικοί myPOS");
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            dialog.initModality(Modality.WINDOW_MODAL);
-            dialog.show();
+                dialog.setTitle("Κωδικοί myPOS");
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+                dialog.initModality(Modality.WINDOW_MODAL);
+                dialog.show();
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public void simplyClick(ActionEvent event) {
-        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-        if (selectedCustomer == null) {
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Δεν έχει επιλεγεί Πελάτης!")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
-            return;
+    public void simplyClick(MouseEvent event) {
+        if (event.getButton() == MouseButton.SECONDARY) {
+            try {
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openAndFillLoginForm("https://app.simplycloud.gr/Partners",
+                        AppSettings.loadSetting("simplyCloudUser"),
+                        AppSettings.loadSetting("simplyCloudPass"),
+                        By.name("Email"),
+                        By.id("Password"),
+                        By.id("btnSubmit"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+            if (selectedCustomer == null) {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Δεν έχει επιλεγεί Πελάτης!")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(3))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();
+                return;
+            }
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("simplyView.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+                // Τώρα μπορείς να πάρεις τον controller
+                SimplyViewController controller = loader.getController();
+
+                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                controller.setCustomer(selectedCustomer);
+
+                dialog.setTitle("Κωδικοί Simply");
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+                dialog.initModality(Modality.WINDOW_MODAL);
+                dialog.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("simplyView.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+    }
 
-            // Τώρα μπορείς να πάρεις τον controller
-            SimplyViewController controller = loader.getController();
+    public void emblemClick(MouseEvent event) {
+        if (event.getButton() == MouseButton.SECONDARY) {
+            try {
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openAndFillLoginForm("https://pool2.emblem.gr/resellers/",
+                        AppSettings.loadSetting("emblemUser"),
+                        AppSettings.loadSetting("emblemPass"),
+                        By.id("inputEmail"),
+                        By.id("inputPassword"),
+                        By.xpath("//button[@onclick=\"validateLogin()\"]"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+            if (selectedCustomer == null) {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Δεν έχει επιλεγεί Πελάτης!")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(3))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();
+                return;
+            }
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("emblemView.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
 
-            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-            controller.setCustomer(selectedCustomer);
+                // Τώρα μπορείς να πάρεις τον controller
+                EmblemViewController controller = loader.getController();
 
-            dialog.setTitle("Κωδικοί Simply");
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            dialog.initModality(Modality.WINDOW_MODAL);
-            dialog.show();
+                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                controller.setCustomer(selectedCustomer);
 
-        } catch (IOException e) {
-            e.printStackTrace();
+                dialog.setTitle("Κωδικοί Emblem");
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+                dialog.initModality(Modality.WINDOW_MODAL);
+                dialog.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

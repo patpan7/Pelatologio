@@ -178,33 +178,6 @@
             <version>7.0.1</version>
         </dependency>
 
-        <!-- Χειρισμός PDF (απαραίτητο για εκτυπώσεις) -->
-        <dependency>
-            <groupId>com.lowagie</groupId>
-            <artifactId>itext</artifactId>
-            <version>2.1.7</version>
-        </dependency>
-
-        <!-- Χειρισμός εικόνων -->
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-all</artifactId>
-            <version>1.17</version>
-        </dependency>
-
-        <!-- Java Beans (προαιρετικό αλλά βοηθά στη δημιουργία των αναφορών) -->
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.9.4</version>
-        </dependency>
-
-        <!-- Χειρισμός XML -->
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.12.2</version>
-        </dependency>
 
         <dependency>
             <groupId>com.sikulix</groupId>

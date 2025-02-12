@@ -7,8 +7,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
@@ -31,12 +36,22 @@ public class MainMenuController implements Initializable {
     Label lbSimply;
     @FXML
     Label lbMypos;
+    @FXML
+    Button btnCustomers, btnMyPOS, btnTasks, btnCalendar, btnD11, btnMyDataStatus, btnItems, btnDevices, btnSettings;
 
 
     public Parent root;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        setTooltip(btnCustomers, "Διαχείριση πελατών");
+        setTooltip(btnMyPOS, "1)Είσοδος στο DAS της myPOS\n2)Έλεγχος κατάστασης myPOS");
+        setTooltip(btnTasks, "Διαχείριση εργασιών");
+        setTooltip(btnCalendar, "Διαχείριση ραντεβού");
+        setTooltip(btnD11, "Καταχώρηση Δ11");
+        setTooltip(btnMyDataStatus, "Έλεγχος κατάστασης myData");
+        setTooltip(btnItems, "Διαχείριση ειδών");
+        setTooltip(btnDevices, "Διαχείριση συσκευών");
         Platform.runLater(() -> stackPane.requestFocus());
         lbAppUser.setText("Χειριστή: "+AppSettings.loadSetting("appuser"));
         DBHelper dbHelper = new DBHelper();
@@ -74,17 +89,27 @@ public class MainMenuController implements Initializable {
         stackPane.getChildren().add(root);
     }
 
-    public void myposdasClick(ActionEvent event) {
-        try {
-            LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openAndFillLoginFormDas("https://das.mypos.eu/en/login",
-                    AppSettings.loadSetting("myposUser"),
-                    AppSettings.loadSetting("myposPass"),
-                    By.id("username"),
-                    By.className("btn-primary"),
-                    By.id("password"));
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void myposdasClick(MouseEvent event) {
+
+        if (event.getButton() == MouseButton.SECONDARY) {
+            try {
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openPage("https://status.mypos.com/");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openAndFillLoginFormDas("https://das.mypos.eu/en/login",
+                        AppSettings.loadSetting("myposUser"),
+                        AppSettings.loadSetting("myposPass"),
+                        By.id("username"),
+                        By.className("btn-primary"),
+                        By.id("password"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -140,5 +165,12 @@ public class MainMenuController implements Initializable {
         root = fxmlLoader.load();
         stackPane.getChildren().clear();
         stackPane.getChildren().add(root);
+    }
+
+    private void setTooltip(Button button, String text) {
+        Tooltip tooltip = new Tooltip();
+        tooltip.setShowDelay(Duration.seconds(0.3));
+        tooltip.setText(text);
+        button.setTooltip(tooltip);
     }
 }

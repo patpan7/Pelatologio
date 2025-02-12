@@ -40,6 +40,12 @@ public class SettingsController implements Initializable {
     @FXML
     TextField tfSimplyRegisterMail;
     @FXML
+    TextField tfEmblemUser;
+    @FXML
+    TextField tfEmblemPass;
+    @FXML
+    TextField tfEmblemRegisterMail;
+    @FXML
     TextField tfTaxisUser;
     @FXML
     TextField tfTaxisPass;
@@ -88,6 +94,7 @@ public class SettingsController implements Initializable {
         tfSimplyPosPass.setText(AppSettings.loadSetting("simplyPosPass") != null ? AppSettings.loadSetting("simplyPosPass") : "");
         tfSimplyCloudUser.setText(AppSettings.loadSetting("simplyCloudUser") != null ? AppSettings.loadSetting("simplyCloudUser") : "");
         tfSimplyCloudPass.setText(AppSettings.loadSetting("simplyCloudPass") != null ? AppSettings.loadSetting("simplyCloudPass") : "");
+        tfSimplyRegisterMail.setText(AppSettings.loadSetting("simplyRegisterMail") != null ? AppSettings.loadSetting("simplyRegisterMail") : "");
         tfTaxisUser.setText(AppSettings.loadSetting("taxisUser") != null ? AppSettings.loadSetting("taxisUser") : "");
         tfTaxisPass.setText(AppSettings.loadSetting("taxisPass") != null ? AppSettings.loadSetting("taxisPass") : "");
         tfAfmUser.setText(AppSettings.loadSetting("afmUser") != null ? AppSettings.loadSetting("afmUser") : "");
@@ -98,7 +105,11 @@ public class SettingsController implements Initializable {
         tfEmailPassKey.setText(AppSettings.loadSetting("emailPass") != null ? AppSettings.loadSetting("emailPass") : "");
         tfSMTP.setText(AppSettings.loadSetting("smtp") != null ? AppSettings.loadSetting("smtp") : "");
         tfSMTPPort.setText(AppSettings.loadSetting("smtpport") != null ? AppSettings.loadSetting("smtpport") : "");
-        tfSimplyRegisterMail.setText(AppSettings.loadSetting("simplyRegisterMail") != null ? AppSettings.loadSetting("simplyRegisterMail") : "");
+
+        tfEmblemUser.setText(AppSettings.loadSetting("emblemUser") != null ? AppSettings.loadSetting("emblemUser") : "");
+        tfEmblemPass.setText(AppSettings.loadSetting("emblemPass") != null ? AppSettings.loadSetting("emblemPass") : "");
+        tfEmblemRegisterMail.setText(AppSettings.loadSetting("emblemRegisterMail") != null ? AppSettings.loadSetting("emblemRegisterMail") : "");
+
         String browser = AppSettings.loadSetting("browser") != null ? AppSettings.loadSetting("browser") : "";
         switch (browser) {
             case "chrome" -> rbChrome.setSelected(true);
@@ -120,6 +131,7 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("simplyPosPass", tfSimplyPosPass.getText());
         AppSettings.saveSetting("simplyCloudUser", tfSimplyCloudUser.getText());
         AppSettings.saveSetting("simplyCloudPass", tfSimplyCloudPass.getText());
+        AppSettings.saveSetting("simplyRegisterMail", tfSimplyRegisterMail.getText());
         AppSettings.saveSetting("taxisUser", tfTaxisUser.getText());
         AppSettings.saveSetting("taxisPass", tfTaxisPass.getText());
         AppSettings.saveSetting("afmUser", tfAfmUser.getText());
@@ -130,7 +142,9 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("emailPass", tfEmailPassKey.getText());
         AppSettings.saveSetting("smtp", tfSMTP.getText());
         AppSettings.saveSetting("smtpport", tfSMTPPort.getText());
-        AppSettings.saveSetting("simplyRegisterMail", tfSimplyRegisterMail.getText());
+        AppSettings.saveSetting("emblemUser", tfEmblemUser.getText());
+        AppSettings.saveSetting("emblemPass", tfEmblemPass.getText());
+        AppSettings.saveSetting("emblemRegisterMail", tfEmblemRegisterMail.getText());
         if (rbChrome.isSelected()) {
             AppSettings.saveSetting("browser", "chrome");
         } else if (rbFirefox.isSelected()) {

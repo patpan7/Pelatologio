@@ -9,7 +9,11 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.io.IOException;
+import java.time.Duration;
 
 public class LoginAutomator {
     private WebDriver driver = null;
@@ -107,5 +111,64 @@ public class LoginAutomator {
         driver.get("https://www1.gsis.gr/taxisnet/mytaxisnet/protected/grantEInvoiceProviderAuthorization.htm");
         WebElement vatField = driver.findElement(By.name("authorizationRequest.granteeVatNumber"));
         vatField.sendKeys("801400290");
+    }
+
+    public void openAndFillLoginRegisterCloud(String url, String username, String password, By usernameLocator, By passwordLocator, By btnLogin,Customer customer, Logins login) {
+        driver.get(url);
+
+        // Εντοπισμός πεδίων username και password και εισαγωγή τιμών
+        WebElement usernameField = driver.findElement(usernameLocator);
+        WebElement passwordField = driver.findElement(passwordLocator);
+
+        usernameField.sendKeys(username);
+        passwordField.sendKeys(password);
+
+        // Υποβολή φόρμας ή πάτημα κουμπιού αν χρειάζεται
+        driver.findElement(btnLogin).click();
+        driver.get("https://app.simplycloud.gr/Partners/NewAccount");
+        WebElement email = driver.findElement(By.id("email"));
+        email.sendKeys(login.getUsername());
+        WebElement passwordField2 = driver.findElement(By.id("password"));
+        passwordField2.sendKeys(login.getPassword());
+        WebElement name = driver.findElement(By.id("name"));
+        name.sendKeys(customer.getName());
+        WebElement mobile = driver.findElement(By.id("mobile"));
+        mobile.sendKeys(login.getPhone());
+        WebElement VATNumber = driver.findElement(By.id("VATNumber"));
+        VATNumber.sendKeys(customer.getAfm());
+    }
+
+    public void openAndFillLoginRegisterEmblem(String url, String username, String password, By usernameLocator, By passwordLocator, By btnLogin,Customer customer, Logins login) {
+        driver.get(url);
+
+        // Εντοπισμός πεδίων username και password και εισαγωγή τιμών
+        WebElement usernameField = driver.findElement(usernameLocator);
+        WebElement passwordField = driver.findElement(passwordLocator);
+
+        usernameField.sendKeys(username);
+        passwordField.sendKeys(password);
+
+        // Υποβολή φόρμας ή πάτημα κουμπιού αν χρειάζεται
+        driver.findElement(btnLogin).click();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement addCustomerButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Προσθήκη Πελάτη')]")));
+        addCustomerButton.click();
+
+        WebElement email2 = driver.findElement(By.name("userEmail"));
+        email2.sendKeys(login.getUsername());
+        WebElement userPassword2 = driver.findElement(By.id("userPassword"));
+        userPassword2.sendKeys(login.getPassword());
+        WebElement userFname = driver.findElement(By.id("userFname"));
+        userFname.sendKeys(customer.getName());
+        WebElement email = driver.findElement(By.id("afm"));
+        email.sendKeys(customer.getAfm());
+        WebElement afmSearch = driver.findElement(By.id("taxisAfmButton"));
+        afmSearch.click();
+        WebElement mobile = driver.findElement(By.id("phone1"));
+        mobile.sendKeys(login.getPhone());
+        WebElement email1 = driver.findElement(By.id("email1"));
+        email1.sendKeys(login.getUsername());
+
     }
 }

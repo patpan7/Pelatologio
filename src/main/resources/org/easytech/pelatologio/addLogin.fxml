@@ -33,6 +33,7 @@
                         <String fx:value="Rest" />
                         <String fx:value="Full" />
                         <String fx:value="Invoice" />
+                        <String fx:value="Emblem" />
                     </FXCollections>
                 </items>
 

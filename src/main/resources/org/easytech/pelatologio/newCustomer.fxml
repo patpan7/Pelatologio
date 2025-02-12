@@ -320,7 +320,7 @@
                      </ImageView>
                   </graphic>
                </JFXButton>
-               <Separator orientation="VERTICAL" prefHeight="200.0" visible="false" />
+               <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                     <JFXButton fx:id="btnTaxis" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#taxisClick" prefWidth="175.0" styleClass="click-button" text="Taxis" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -342,6 +342,15 @@
                             </ImageView>
                         </graphic>
                     </JFXButton>
+               <JFXButton fx:id="btnEmblem" alignment="TOP_LEFT" layoutX="10.0" layoutY="493.0" mnemonicParsing="false" onAction="#emblemClick" prefWidth="175.0" styleClass="click-button" text="Emblem">
+                  <graphic>
+                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@icons/emblem.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+               </JFXButton>
                     <JFXButton fx:id="btnData" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#folderClick" prefWidth="175.0" styleClass="click-button" text="Data" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">

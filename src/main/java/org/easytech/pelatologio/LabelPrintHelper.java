@@ -1,13 +1,17 @@
 package org.easytech.pelatologio;
 
+import javafx.geometry.Pos;
+import javafx.util.Duration;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
+import org.controlsfx.control.Notifications;
 
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.attribute.HashPrintServiceAttributeSet;
 import javax.print.attribute.PrintServiceAttributeSet;
 import javax.print.attribute.standard.PrinterName;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +20,8 @@ public class LabelPrintHelper {
     public static void printCustomerLabel(Customer customer) {
         try {
             // Φόρτωση του JasperReport
-            JasperReport jasperReport = JasperCompileManager.compileReport("src/main/resources/org/easytech/pelatologio/customer_receipt.jrxml");
+            String fullPath = getPath("customer_receipt.jrxml");
+            JasperReport jasperReport = JasperCompileManager.compileReport(fullPath);
             //JasperReport jasperReport = (JasperReport) JRLoader.loadObject(getClass().getResourceAsStream("/org/easytech/pelatologio/customer_receipt.jasper"));
 
             // Δημιουργία dataset με δεδομένα πελάτη
@@ -64,7 +69,8 @@ public class LabelPrintHelper {
     public static void printLoginLabel(Logins login, Customer customer, String title) {
         try {
             // Φόρτωση του JasperReport
-            JasperReport jasperReport = JasperCompileManager.compileReport("src/main/resources/org/easytech/pelatologio/login_receipt.jrxml");
+            String fullPath = getPath("login_receipt.jrxml");
+            JasperReport jasperReport = JasperCompileManager.compileReport(fullPath);
             //JasperReport jasperReport = (JasperReport) JRLoader.loadObject(getClass().getResourceAsStream("/org/easytech/pelatologio/customer_receipt.jasper"));
 
             // Δημιουργία dataset με δεδομένα πελάτη
@@ -103,5 +109,30 @@ public class LabelPrintHelper {
         } catch (JRException e) {
             e.printStackTrace();
         }
+
+
     }
+
+    private static String getPath(String name) {
+        // Παίρνει τον φάκελο που τρέχει η εφαρμογή (ο φάκελος του .exe)
+        String currentDir = System.getProperty("user.dir");
+        String fullPath = currentDir + File.separator + "images" + File.separator + name;
+
+        // Έλεγχος αν υπάρχει το αρχείο
+        File imageFile = new File(fullPath);
+        if (!imageFile.exists()) {
+            System.out.println("❌ Δεν βρέθηκε η εικόνα: " + fullPath);
+            Notifications notifications = Notifications.create()
+                    .title("Σφάλμα")
+                    .text("❌ Δεν βρέθηκε η εικόνα: " + fullPath)
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showError();
+            return null;
+        }
+
+        return fullPath;
+    }
+
 }
