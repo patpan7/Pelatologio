@@ -1,123 +1,82 @@
+/* Κεντρικές χρωματικές μεταβλητές */
 * {
-	-fx-primary-color: #ffcc00;
-	-fx-secondary-color: #4B6EAF;
-	-fx-light-grey-color: #d1d1d1;
-	-fx-light-blue-color: #90caf9;
-
-
-	-fx-focus-color: -fx-secondary-color;
+    -fx-primary-color: #ffcc00;
+    -fx-secondary-color: #4B6EAF;
+    -fx-light-grey-color: #d1d1d1;
+    -fx-light-blue-color: #90caf9;
+    -fx-focus-color: -fx-secondary-color;
 }
 
 /*------------------tableView----------------*/
-/* Στυλ του tableView */
 .table-view {
     -fx-background-color: transparent;
     -fx-border-color: #d1d1d1;
 }
 
-/* Στυλ της γραμμής τίτλου κάθε στήλης */
 .table-view .column-header {
-    -fx-background-color: #e0e0e0; /* Ανοιχτό γκρι για πιο ευδιάκριτο τίτλο */
+    -fx-background-color: #e0e0e0;
     -fx-font-weight: bold;
-    -fx-text-fill: #333333; /* Σκούρο γκρι κείμενο */
+    -fx-text-fill: #333;
     -fx-font-size: 16px;
-    -fx-padding: 5 0 5 0;
+    -fx-padding: 5 0;
 }
 
-/* Στυλ των κελιών στον πίνακα */
 .table-view .table-cell {
     -fx-font-size: 16px;
-    -fx-padding: 5 5 5 5;
-    -fx-text-fill: #333333; /* Σκούρο γκρι κείμενο */
+    -fx-padding: 5;
+    -fx-text-fill: #333;
 }
 
-/* Εναλλασσόμενο χρώμα γραμμών */
 .table-row-cell:odd {
-    -fx-background-color: #f9f9f9; /* Ανοιχτό γκρι */
+    -fx-background-color: #f9f9f9;
 }
+
 .table-row-cell:even {
-    -fx-background-color: #ffffff; /* Λευκό */
+    -fx-background-color: #ffffff;
 }
 
-/* Χρώμα επιλεγμένης γραμμής */
 .table-row-cell:selected {
-    -fx-background-color: -fx-primary-color ; /* Πορτοκαλί χρώμα για επιλεγμένη γραμμή */
-    -fx-text-fill: white; /* Λευκό κείμενο για ευκρίνεια */
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
 }
 
-/* Χρώμα γραμμής όταν το ποντίκι αιωρείται από πάνω */
 .table-row-cell:hover {
-    -fx-background-color: -fx-light-blue-color; /* Ανοιχτό μπλε για hovered γραμμές */
+    -fx-background-color: -fx-light-blue-color;
     -fx-text-fill: black;
 }
 
-/* Κενές γραμμές (για διατήρηση οπτικής συνοχής) */
 .table-row-cell:empty {
     -fx-background-color: white;
     -fx-border-color: white;
 }
 
-/* Στυλ για ανενεργές (inactive) γραμμές */
 .inactive-row {
-    -fx-background-color: #cccccc; /* Σκούρο γκρι φόντο */
+    -fx-background-color: #cccccc;
     -fx-text-fill: white;
 }
 
-/* Στυλ για ComboBox */
+/*------------------ComboBox----------------*/
 .combo-box .list-cell {
     -fx-background-color: transparent;
-    -fx-text-fill: #333333; /* Σκούρο γκρι κείμενο */
+    -fx-text-fill: #333;
 }
 
-/* Hover και επιλογή σε ComboBox */
 .combo-box .list-cell:hover {
-    -fx-background-color: -fx-light-blue-color; /* Ανοιχτό μπλε για hovered items */
+    -fx-background-color: -fx-light-blue-color;
     -fx-text-fill: black;
 }
 
 .combo-box .list-cell:selected {
-    -fx-background-color: -fx-primary-color; /* Πορτοκαλί χρώμα για επιλεγμένο item */
+    -fx-background-color: -fx-primary-color;
     -fx-text-fill: white;
 }
 
-/*------------------MenuItem----------------*/
-/* Βασικό στυλ για όλα τα MenuItem */
-.menu-item {
-    -fx-font-size: 16px;
-    -fx-padding: 5 5 5 5;
-    -fx-text-fill: #333333; /* Σκούρο γκρι κείμενο */
-}
-
-
-/*------------------TextFields----------------*/
-.text-field {
-    -fx-background-color: #a9a9a9 ,  white ,  white;
-    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
-    -fx-font-size: 24px;
-    -fx-prompt-text-fill: gray;
-}
-
-.text-field:focused {
-    -fx-background-color: #a9a9a9 , white , white;
-    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
-    -fx-font-size: 24px;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
-        -fx-prompt-translate-y: -25%;
-}
-
-/*------------------combo-box----------------*/
-.combo-box {
--fx-background-color: #a9a9a9 , white , white;
-    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
-    -fx-font-size: 24px;
-}
-
-/*------------------button----------------*/
+/*------------------Buttons----------------*/
 .click-button {
     -fx-background-color: #e5f8fd;
     -fx-background-radius: 50;
     -fx-font-family: CrackMan;
-    -fx-font-size: 24;
+    -fx-font-size: 24px;
     -fx-border-color: #D6D8DE;
     -fx-border-radius: 50;
     -fx-border-width: 1;
@@ -126,98 +85,54 @@
 
 .click-button:hover {
     -fx-background-color: #03C1F4;
-    -fx-background-radius: 50;
-    -fx-font-family: CrackMan;
-    -fx-font-size: 24;
-    -fx-border-color: #D6D8DE;
-    -fx-border-radius: 50;
-    -fx-border-width: 1;
     -fx-text-fill: white;
 }
 
 .click-button:pressed {
-
     -fx-background-radius: 50;
     -fx-font-family: CrackMan;
-    -fx-font-size: 24;
+    -fx-font-size: 24px;
     -fx-border-color: #D6D8DE;
-    -fx-border-radius: 50;
-    -fx-border-width: 1;
     -fx-text-fill: white;
     -fx-rotate: 1;
 }
 
-.jfx-button {
-     -jfx-button-type: RAISED;
-     -jfx-disable-visual-focus: true;
+/*------------------TextFields----------------*/
+.text-field {
+    -fx-background-color: #a9a9a9, white, white;
+    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
+    -fx-font-size: 24px;
+    -fx-prompt-text-fill: gray;
 }
 
-/*------------------label----------------*/
-.header-label{
--fx-font-size: 36px;
+.text-field:focused {
+    -fx-background-color: #a9a9a9, white, white;
+    -fx-font-size: 24px;
+    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
+    -fx-prompt-translate-y: -25%;
+}
+
+/*------------------Labels----------------*/
+.header-label {
+    -fx-font-size: 36px;
     -fx-font-weight: bold;
-    -fx-text-fill: #333333;
-    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+    -fx-text-fill: #333;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.5), 0,0,0,1);
 }
 
 .normal-label {
     -fx-font-size: 24px;
     -fx-font-weight: bold;
-    -fx-text-fill: #333333;
-    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+    -fx-text-fill: #333;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.5), 0,0,0,1);
 }
 
-.menu-label {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
-    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
-}
-
-/*------------------pane----------------*/
-/* Στυλ για όλα τα Pane */
+/*------------------General Pane----------------*/
 .pane {
     -fx-background-color: #EEF1F7;
 }
 
-/* Στυλ για την Agenda */
-.agenda {
-    -fx-background-color: #f4f4f4;  /* Απαλή γκρι απόχρωση φόντου */
-    -fx-font-size: 14px;
-    -fx-font-family: "Arial", sans-serif;
-}
-
-/* Στυλ για τα ραντεβού */
-.agenda-appointment {
-    -fx-background-color: #4CAF50; /* Χρώμα πράσινο για τα ραντεβού */
-    -fx-text-fill: white;           /* Λευκό κείμενο */
-    -fx-border-radius: 5px;        /* Στρογγυλεμένες γωνίες */
-}
-
-
-/* Στυλ για το label της ημερομηνίας */
-#dateRangeLabel {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333;  /* Σκούρο γκρι χρώμα */
-    -fx-padding: 10px;
-    -fx-background-color: #ecf0f1;  /* Ελαφρύ γκρι φόντο */
-    -fx-border-radius: 5px;
-}
-
-/* Ειδικό στυλ για την προβολή ημερών */
-.agenda-day {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #ccc;
-    -fx-border-width: 1px;
-    -fx-padding: 5px;
-}
-
-/* Ειδικό στυλ για την τρέχουσα ημέρα */
-.agenda-day-today {
-    -fx-background-color: #ffeb3b;  /* Κίτρινο για την τρέχουσα ημέρα */
-}
-
+/*------------------Tooltips----------------*/
 .tooltip {
     -fx-background-color: #2a2a2a;
     -fx-text-fill: #ffffff;
@@ -227,12 +142,53 @@
     -fx-border-width: 1px;
 }
 
+/*------------------Checkbox----------------*/
 .jfx-check-box {
-     -jfx-checked-color: #004fe1;
-     -jfx-unchecked-color: black;
+    -jfx-checked-color: #004fe1;
+    -jfx-unchecked-color: black;
 }
 
-/* Styling checkmark */
 .jfx-check-box .mark {
-     -fx-border-color: white;
+    -fx-border-color: white;
+}
+
+/*------------------Tab----------------*/
+
+/* Στυλ για τα TabPane και Tab */
+.tab-pane {
+    -fx-background-color: transparent;
+}
+
+.tab {
+    -fx-background-color: transparent;
+    -fx-font-size: 18px;
+    -fx-text-fill: #333333;
+    -fx-padding: 10px;
+    -fx-background-radius: 10px 10px 0 0;
+    -fx-border-color: #d1d1d1;
+    -fx-border-width: 1px;
+}
+
+/* Στυλ για το ενεργό Tab */
+.tab:selected {
+    -fx-background-color: -fx-primary-color; /* Πορτοκαλί χρώμα για το ενεργό Tab */
+    -fx-text-fill: white; /* Λευκό κείμενο για το ενεργό Tab */
+}
+
+/* Στυλ για το Tab όταν το ποντίκι αιωρείται από πάνω */
+.tab:hover {
+    -fx-background-color: -fx-light-blue-color; /* Ανοιχτό μπλε όταν το Tab είναι hovered */
+    -fx-text-fill: black; /* Σκούρο κείμενο για hovered Tab */
+}
+
+/* Στυλ για τα Tab Pane περιθώρια */
+.tab-header-area {
+    -fx-background-color: #f4f4f4; /* Απαλή γκρι απόχρωση φόντου */
+    -fx-padding: 0 5px 0 5px; /* Ελαφρύ padding γύρω από τα tabs */
+}
+
+/* Στυλ για το περιεχόμενο του Tab */
+.tab-content {
+    -fx-background-color: #ffffff; /* Λευκό φόντο για το περιεχόμενο του Tab */
+    -fx-padding: 10px;
 }

@@ -12,45 +12,10 @@
 <StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CustomersController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" styleClass="pane">
         <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
-            <top>
-                <HBox alignment="CENTER" BorderPane.alignment="CENTER">
-                    <BorderPane.margin>
-                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-                    </BorderPane.margin>
-                    <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                        <Label styleClass="header-label" text="Πελατολόγιο - Πελάτες" HBox.hgrow="ALWAYS">
-                            <font>
-                                <Font size="38.0" />
-                            </font>
-                            <HBox.margin>
-                                <Insets />
-                            </HBox.margin>
-                        </Label>
-                    </HBox>
-                    <HBox alignment="CENTER_RIGHT">
-                        <opaqueInsets>
-                            <Insets right="20.0" />
-                        </opaqueInsets>
-                        <HBox.margin>
-                            <Insets />
-                        </HBox.margin>
-                        <JFXButton mnemonicParsing="false" onAction="#mainMenuClick" styleClass="click-button" text="Επιστροφή">
-                            <graphic>
-                                <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/menu.png" />
-                                </ImageView>
-                            </graphic>
-                            <HBox.margin>
-                                <Insets />
-                            </HBox.margin>
-                        </JFXButton>
-                    </HBox>
-                </HBox>
-            </top>
             <center>
                 <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                     <BorderPane.margin>
-                        <Insets />
+                        <Insets top="10.0" />
                     </BorderPane.margin>
                     <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
                         <VBox.margin>
