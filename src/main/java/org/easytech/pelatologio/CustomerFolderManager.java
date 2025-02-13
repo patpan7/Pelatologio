@@ -5,8 +5,34 @@ import java.io.File;
 import java.io.IOException;
 
 public class CustomerFolderManager {
-    // Δημιουργία ή έλεγχος του φακέλου πελάτη
+
+    // Εύρεση φακέλου με βάση το ΑΦΜ
+    private File findFolderByAfm(String afm) {
+        String dataFolderPath = AppSettings.loadSetting("datafolder");
+        File dataFolder = new File(dataFolderPath);
+
+        if (dataFolder.exists() && dataFolder.isDirectory()) {
+            File[] folders = dataFolder.listFiles(File::isDirectory);
+            if (folders != null) {
+                for (File folder : folders) {
+                    if (folder.getName().endsWith("_" + afm)) {
+                        return folder; // Επιστροφή υπάρχοντος φακέλου
+                    }
+                }
+            }
+        }
+        return null; // Αν δεν βρέθηκε φακέλος με το συγκεκριμένο ΑΦΜ
+    }
+
+    // Δημιουργία ή έλεγχος φακέλου πελάτη
     public File customerFolder(String customerName, String afm) {
+        File existingFolder = findFolderByAfm(afm);
+
+        if (existingFolder != null) {
+            System.out.println("Βρέθηκε φάκελος για το ΑΦΜ: " + existingFolder.getAbsolutePath());
+            return existingFolder;
+        }
+
         String folderPath = AppSettings.loadSetting("datafolder") + customerName + "_" + afm;
         File folder = new File(folderPath);
 
@@ -15,13 +41,13 @@ public class CustomerFolderManager {
                 System.out.println("Ο φάκελος δημιουργήθηκε: " + folderPath);
             } else {
                 System.err.println("Αποτυχία δημιουργίας του φακέλου.");
-                return null; // Επιστροφή null σε περίπτωση αποτυχίας
+                return null;
             }
         } else {
             System.out.println("Ο φάκελος υπάρχει ήδη: " + folderPath);
         }
 
-        return folder; // Επιστροφή του φακέλου
+        return folder;
     }
 
     // Δημιουργία ή άνοιγμα του φακέλου πελάτη
@@ -38,6 +64,6 @@ public class CustomerFolderManager {
             }
         }
 
-        return folder; // Επιστροφή του φακέλου
+        return folder;
     }
 }
