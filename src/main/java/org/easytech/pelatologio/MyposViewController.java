@@ -108,7 +108,8 @@ public class MyposViewController {
             // Ανανέωση του πίνακα logins
             loadLoginsForCustomer(customer.getCode());
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
     }
 
@@ -116,7 +117,6 @@ public class MyposViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -125,7 +125,6 @@ public class MyposViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
             return;
         }
 
@@ -151,7 +150,6 @@ public class MyposViewController {
         System.out.println(selectedLogin.getPhone());
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς επεξεργασία."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -160,7 +158,6 @@ public class MyposViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
             return;
         }
 
@@ -188,7 +185,8 @@ public class MyposViewController {
                 loginTable.refresh();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την ενημέρωση.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
     }
 
@@ -196,7 +194,6 @@ public class MyposViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -205,7 +202,6 @@ public class MyposViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
             return;
         }
         LabelPrintHelper.printLoginLabel(selectedLogin,customer,"Στοιχεία myPOS");
@@ -215,7 +211,6 @@ public class MyposViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -224,7 +219,6 @@ public class MyposViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
             return;
         }
         try {
@@ -253,7 +247,8 @@ public class MyposViewController {
 
             dialog.showAndWait();
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
     }
 
@@ -268,7 +263,6 @@ public class MyposViewController {
 
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -277,7 +271,6 @@ public class MyposViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
             return;
         }
         try {
@@ -291,7 +284,8 @@ public class MyposViewController {
                     By.cssSelector("button[data-testid='mypos_login_btn']")
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
 
     }
@@ -319,7 +313,6 @@ public class MyposViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showInformation();
-                //showAlert("Copied to Clipboard", msg);
             } else {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -338,7 +331,6 @@ public class MyposViewController {
                 e.printStackTrace();
             }
             if (selectedLogin == null) {
-                //Platform.runLater(() -> showAlert("Attention", "Please select a login."));
                 Platform.runLater(() -> {
                     Notifications notifications = Notifications.create()
                             .title("Προσοχή")
@@ -352,12 +344,6 @@ public class MyposViewController {
         }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();
         tooltip.setShowDelay(Duration.seconds(0.3));

@@ -320,6 +320,15 @@
                      </ImageView>
                   </graphic>
                </JFXButton>
+               <JFXButton fx:id="btnShowToMegasoft" alignment="TOP_LEFT" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#showMegasoft" prefWidth="175.0" styleClass="click-button" text="ΕμφάνισηPrisma" wrapText="true">
+                  <graphic>
+                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@icons/megasoft.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+               </JFXButton>
                <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                     <JFXButton fx:id="btnTaxis" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#taxisClick" prefWidth="175.0" styleClass="click-button" text="Taxis" HBox.hgrow="ALWAYS">
                         <graphic>

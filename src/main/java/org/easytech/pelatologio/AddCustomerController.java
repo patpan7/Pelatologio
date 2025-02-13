@@ -59,12 +59,6 @@ public class AddCustomerController {
 
 
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
-//        DBHelper dbHelper = new DBHelper();
-//        if (dbHelper.hasSubAddress(customer.getCode())) {
-//            btnAddressAdd.setDisable(false);
-//            btnAddressAdd.setBorder(new Border(new BorderStroke(javafx.scene.paint.Color.GREEN, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-//            System.out.println("Έχει υποδιεύθυνση");
-//        } else
         btnAddressAdd.setDisable(true);
         btnAddToMegasoft.setDisable(true);
         btnAddToMegasoft.setVisible(false);
@@ -249,7 +243,6 @@ public class AddCustomerController {
                 e.printStackTrace();
             }
         } else {
-            //showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο τηλέφωνο.");
             Notifications notifications = Notifications.create()
                     .title("Προσοχή")
                     .text("Παρακαλώ εισάγετε ένα έγκυρο τηλέφωνο")
@@ -277,15 +270,21 @@ public class AddCustomerController {
 
                     // Ενημερώνουμε το UI όταν ολοκληρωθεί η αποστολή του email
                     Platform.runLater(() -> {
-//                        showAlert("Επιτυχία", "Το email στάλθηκε με επιτυχία.");
+                        Notifications notifications = Notifications.create()
+                                .title("Επιτυχία")
+                                .text("Το email στάλθηκε με επιτυχία.")
+                                .graphic(null)
+                                .hideAfter(Duration.seconds(5))
+                                .position(Pos.TOP_RIGHT);
+                        notifications.showConfirm();
                         progressIndicator.setVisible(false); // Απόκρυψη του progress indicator
                     });
                 } catch (Exception e) {
                     Platform.runLater(() -> {
-//                        showAlert("Προσοχή", "Υπήρξε πρόβλημα με την αποστολή του email.");
+                        AlertDialogHelper.showDialog("Σφάλμα", "Υπήρξε πρόβλημα με την αποστολή του email.", e.getMessage(), Alert.AlertType.ERROR);
                         progressIndicator.setVisible(false); // Απόκρυψη του progress indicator
                     });
-                    e.printStackTrace();
+                    Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
                 }
             }).start(); // Ξεκινάμε το thread για την αποστολή του email
         } else {
@@ -567,7 +566,7 @@ public class AddCustomerController {
             dialog.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -589,7 +588,7 @@ public class AddCustomerController {
             dialog.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -611,7 +610,7 @@ public class AddCustomerController {
             dialog.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -633,7 +632,7 @@ public class AddCustomerController {
             dialog.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -655,7 +654,7 @@ public class AddCustomerController {
             dialog.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -701,7 +700,7 @@ public class AddCustomerController {
 
                 dialog.showAndWait();
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη ραντεβού.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -733,7 +732,7 @@ public class AddCustomerController {
 
                 dialog.showAndWait();
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -756,7 +755,7 @@ public class AddCustomerController {
             dialog.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -781,12 +780,15 @@ public class AddCustomerController {
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
                 dialog.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
 
     public void addMegasoft(ActionEvent event) {
-        PrismaWinAutomation.run(customer);
+        PrismaWinAutomation.addCustomer(customer);
+    }
+    public void showMegasoft(ActionEvent event) {
+        PrismaWinAutomation.showCustomer(customer);
     }
 }

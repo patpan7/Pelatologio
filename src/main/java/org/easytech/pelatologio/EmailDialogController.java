@@ -2,9 +2,12 @@ package org.easytech.pelatologio;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -46,7 +49,6 @@ public class EmailDialogController {
     public void setCustomer(Customer customer) {
         this.customer = customer;
         emailField.setText(customer.getEmail());
-
     }
 
     @FXML
@@ -74,7 +76,14 @@ public class EmailDialogController {
         String body = bodyArea.getText();
 
         if (email == null || email.isEmpty()) {
-            showAlert("Σφάλμα", "Το πεδίο παραλήπτη δεν μπορεί να είναι κενό!");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Σφάλμα")
+                        .text("Το πεδίο παραλήπτη δεν μπορεί να είναι κενό.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             progressBar.setVisible(false); // Απόκρυψη προόδου σε περίπτωση σφάλματος
             return;
         }
@@ -93,8 +102,14 @@ public class EmailDialogController {
                 emailSender.sendEmailWithAttachments(email, subject, body, attachments);
 
                 // Ενημέρωση του UI με επιτυχία (πρέπει να γίνει στο JavaFX thread)
-                Platform.runLater(() -> {
-                    showAlert("Επιτυχία", "Το email στάλθηκε με επιτυχία!");
+                    Platform.runLater(() -> {
+                        Notifications notifications = Notifications.create()
+                                .title("Επιτυχία")
+                                .text("Το email στάλθηκε με επιτυχία.")
+                                .graphic(null)
+                                .hideAfter(Duration.seconds(5))
+                                .position(Pos.TOP_RIGHT);
+                        notifications.showConfirm();
                     subjectField.setText("");
                     bodyArea.setText("");
                     attachmentList.getItems().clear();
@@ -107,10 +122,15 @@ public class EmailDialogController {
             } catch (Exception e) {
                 // Ενημέρωση του UI για αποτυχία (στο JavaFX thread)
                 Platform.runLater(() -> {
-                    showAlert("Σφάλμα", "Υπήρξε πρόβλημα κατά την αποστολή του email.");
+                    Notifications notifications = Notifications.create()
+                            .title("Σφάλμα")
+                            .text("Υπήρξε πρόβλημα κατά την αποστολή του email.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();});
                     progressBar.setVisible(false); // Απόκρυψη προόδου
-                });
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }).start();
     }
@@ -176,18 +196,7 @@ public class EmailDialogController {
             System.out.println("Το email αποθηκεύτηκε στον φάκελο: " + emailFile.getAbsolutePath());
             progressBar.setVisible(false);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Σφάλμα κατά την αποθήκευση του email.");
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποθήκευση του email.", e.getMessage(), Alert.AlertType.ERROR));
         }
-    }
-
-
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

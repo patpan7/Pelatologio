@@ -40,6 +40,10 @@ public class SettingsController implements Initializable {
     @FXML
     TextField tfSimplyRegisterMail;
     @FXML
+    TextField tfSimplyMail1;
+    @FXML
+    TextField tfSimplyMail2;
+    @FXML
     TextField tfEmblemUser;
     @FXML
     TextField tfEmblemPass;
@@ -95,6 +99,8 @@ public class SettingsController implements Initializable {
         tfSimplyCloudUser.setText(AppSettings.loadSetting("simplyCloudUser") != null ? AppSettings.loadSetting("simplyCloudUser") : "");
         tfSimplyCloudPass.setText(AppSettings.loadSetting("simplyCloudPass") != null ? AppSettings.loadSetting("simplyCloudPass") : "");
         tfSimplyRegisterMail.setText(AppSettings.loadSetting("simplyRegisterMail") != null ? AppSettings.loadSetting("simplyRegisterMail") : "");
+        tfSimplyMail1.setText(AppSettings.loadSetting("simplyMail1") != null ? AppSettings.loadSetting("simplyMail1") : "");
+        tfSimplyMail2.setText(AppSettings.loadSetting("simplyMail2") != null ? AppSettings.loadSetting("simplyMail2") : "");
         tfTaxisUser.setText(AppSettings.loadSetting("taxisUser") != null ? AppSettings.loadSetting("taxisUser") : "");
         tfTaxisPass.setText(AppSettings.loadSetting("taxisPass") != null ? AppSettings.loadSetting("taxisPass") : "");
         tfAfmUser.setText(AppSettings.loadSetting("afmUser") != null ? AppSettings.loadSetting("afmUser") : "");
@@ -132,6 +138,8 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("simplyCloudUser", tfSimplyCloudUser.getText());
         AppSettings.saveSetting("simplyCloudPass", tfSimplyCloudPass.getText());
         AppSettings.saveSetting("simplyRegisterMail", tfSimplyRegisterMail.getText());
+        AppSettings.saveSetting("simplyMail1", tfSimplyMail1.getText());
+        AppSettings.saveSetting("simplyMail2", tfSimplyMail2.getText());
         AppSettings.saveSetting("taxisUser", tfTaxisUser.getText());
         AppSettings.saveSetting("taxisPass", tfTaxisPass.getText());
         AppSettings.saveSetting("afmUser", tfAfmUser.getText());

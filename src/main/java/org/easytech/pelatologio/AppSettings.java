@@ -1,5 +1,8 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+
 import java.io.*;
 import java.util.Properties;
 
@@ -37,8 +40,8 @@ public class AppSettings {
         try (OutputStream output = new FileOutputStream(FILE_NAME)) {
             prop.setProperty(key, value);
             prop.store(output, null);
-        } catch (IOException io) {
-            io.printStackTrace();
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποθήκευση.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -48,8 +51,8 @@ public class AppSettings {
             Properties prop = new Properties();
             prop.load(input);
             return prop.getProperty(key);
-        } catch (IOException | NullPointerException io) {
-            io.printStackTrace();
+        } catch (IOException | NullPointerException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την ανάκτηση.", e.getMessage(), Alert.AlertType.ERROR));
             return null;
         }
     }

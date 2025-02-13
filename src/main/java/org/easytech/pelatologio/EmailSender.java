@@ -68,9 +68,6 @@ public class EmailSender {
                 notifications.showInformation();});
             System.out.println("Το email στάλθηκε επιτυχώς!");
         } catch (MessagingException e) {
-            e.printStackTrace();
-            System.out.println("Η αποστολή του email απέτυχε.");
-            //Platform.runLater(() -> showAlert("Attention", "Η αποστολή του email απέτυχε."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Attention")
@@ -79,6 +76,8 @@ public class EmailSender {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
     }
 
@@ -125,13 +124,6 @@ public class EmailSender {
 
         // Αποστολή του μηνύματος
         Transport.send(message);
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }
 

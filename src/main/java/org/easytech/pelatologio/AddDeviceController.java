@@ -456,8 +456,7 @@ public class AddDeviceController {
             return true;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Υπήρξε πρόβλημα με την αποθήκευση της συσκευής!");
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Υπήρξε πρόβλημα με την αποθήκευση της συσκευής.", e.getMessage(), Alert.AlertType.ERROR));
             return false;
         }
     }

@@ -112,7 +112,8 @@ public class EmblemViewController {
             // Ανανέωση του πίνακα logins
             loadLoginsForCustomer(customer.getCode());
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
     }
 
@@ -120,7 +121,6 @@ public class EmblemViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -129,7 +129,6 @@ public class EmblemViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
             return;
         }
 
@@ -154,7 +153,6 @@ public class EmblemViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς επεξεργασία."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -163,7 +161,6 @@ public class EmblemViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
             return;
         }
 
@@ -191,7 +188,7 @@ public class EmblemViewController {
                 loginTable.refresh();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -199,7 +196,6 @@ public class EmblemViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -208,7 +204,6 @@ public class EmblemViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
             return;
         }
         LabelPrintHelper.printLoginLabel(selectedLogin,customer,"Στοιχεία "+selectedLogin.getTag());
@@ -218,7 +213,6 @@ public class EmblemViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -227,7 +221,6 @@ public class EmblemViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
             return;
         }
         try {
@@ -256,7 +249,7 @@ public class EmblemViewController {
 
             dialog.showAndWait();
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -264,15 +257,14 @@ public class EmblemViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
             if (selectedLogin != null) {
-                String msg ="Νέος Πελάτης Emblem" +
-                        "\nΕπωνυμία: "+customer.getName()+
-                        "\nΑΦΜ: "+customer.getAfm()+
-                        "\nEmail: "+selectedLogin.getUsername()+
-                        "\nΚωδικός: "+selectedLogin.getPassword()+
-                        "\nΚινητό: "+customer.getMobile()+
+                String msg = "Νέος Πελάτης Emblem" +
+                        "\nΕπωνυμία: " + customer.getName() +
+                        "\nΑΦΜ: " + customer.getAfm() +
+                        "\nEmail: " + selectedLogin.getUsername() +
+                        "\nΚωδικός: " + selectedLogin.getPassword() +
+                        "\nΚινητό: " + customer.getMobile() +
                         "\n";
                 copyTextToClipboard(msg);
-                //showAlert("Attention", "Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.");
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
                         .text("Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.")
@@ -281,7 +273,6 @@ public class EmblemViewController {
                         .position(Pos.TOP_RIGHT);
                 notifications.showInformation();
             } else {
-                //showAlert("Attention", "Please select a login to copy.");
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ επιλέξτε ένα login.")
@@ -293,7 +284,6 @@ public class EmblemViewController {
         } else {
             if (selectedLogin == null) {
                 // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-                //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
                 Platform.runLater(() -> {
                     Notifications notifications = Notifications.create()
                             .title("Προσοχή")
@@ -301,8 +291,8 @@ public class EmblemViewController {
                             .graphic(null)
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT);
-                    notifications.showError();});
-                //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
+                    notifications.showError();
+                });
                 return;
             }
             try {
@@ -316,7 +306,7 @@ public class EmblemViewController {
                         By.cssSelector("button.g-recaptcha")
                 );
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -345,7 +335,7 @@ public class EmblemViewController {
                     selectedLogin
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -363,7 +353,6 @@ public class EmblemViewController {
         ClipboardContent content = new ClipboardContent();
         content.putString(msg);  // Replace with the desired text
         clipboard.setContent(content);
-        //showAlert("Copied to Clipboard", msg);
         Notifications notifications = Notifications.create()
                 .title("Αντιγραφή στο πρόχειρο")
                 .text(msg)
@@ -372,7 +361,6 @@ public class EmblemViewController {
                 .position(Pos.TOP_RIGHT);
         notifications.showInformation();
     }
-
 
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();

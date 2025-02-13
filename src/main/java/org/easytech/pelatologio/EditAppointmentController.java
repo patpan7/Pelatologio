@@ -1,14 +1,18 @@
 package org.easytech.pelatologio;
 
 import com.calendarfx.model.Entry;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
+import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -149,7 +153,14 @@ public class EditAppointmentController {
             isSaved = true; // Ενημερώνουμε το flag
             return true;
         } else {
-            showAlert("Σφάλμα", "Η ενημέρωση του ραντεβού στη βάση απέτυχε.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Σφάλμα")
+                        .text("Η ενημέρωση του ραντεβού στη βάση απέτυχε.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return false;
         }
     }
@@ -165,35 +176,63 @@ public class EditAppointmentController {
 
     private boolean validateInput() {
         if (titleField.getText() == null || titleField.getText().isEmpty()) {
-            showAlert("Σφάλμα Εισαγωγής", "Ο τίτλος δεν μπορεί να είναι κενός.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Σφάλμα Εισαγωγής")
+                        .text("Ο τίτλος δεν μπορεί να είναι κενός.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return false;
         }
         if (calendarComboBox.getValue() == null || calendarComboBox.getValue().isEmpty()) {
-            showAlert("Σφάλμα Εισαγωγής", "Επιλέξτε ένα ημερολόγιο.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Σφάλμα Εισαγωγής")
+                        .text("Επιλέξτε ένα ημερολόγιο.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return false;
         }
         if (startDatePicker.getValue() == null) {
-            showAlert("Σφάλμα Εισαγωγής", "Επιλέξτε ημερομηνία έναρξης.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Σφάλμα Εισαγωγής")
+                        .text("Επιλέξτε ημερομηνία έναρξης.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return false;
         }
         if (startHourComboBox.getValue() == null || startMinuteComboBox.getValue() == null) {
-            showAlert("Σφάλμα Εισαγωγής", "Επιλέξτε ώρα και λεπτά έναρξης.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Σφάλμα Εισαγωγής")
+                        .text("Επιλέξτε ώρα και λεπτά έναρξης.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return false;
         }
         if (durationComboBox.getValue() == null) {
-            showAlert("Σφάλμα Εισαγωγής", "Επιλέξτε έγκυρη διάρκεια.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Σφάλμα Εισαγωγής")
+                        .text("Επιλέξτε έγκυρη διάρκεια.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return false;
         }
         return true;
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
     public boolean isSaved() {
         return isSaved;
@@ -268,7 +307,8 @@ public class EditAppointmentController {
                 alert.showAndWait();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εμφάνιση πελάτη.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
     }
 }

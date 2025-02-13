@@ -1,7 +1,11 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -67,7 +71,7 @@ public class AddAppointmentController {
                 calendarComboBox.getItems().add(calendar.getName());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
 
         for (int hour = 7; hour < 23; hour++) {
@@ -89,8 +93,14 @@ public class AddAppointmentController {
             if (startDatePicker.getValue() == null || startHourComboBox.getValue() == null ||
                     startMinuteComboBox.getValue() == null || durationComboBox.getValue() == null ||
                     calendarComboBox.getValue() == null) {
-
-                showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Συμπληρώστε όλα τα απαραίτητα πεδία!");
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Συμπληρώστε όλα τα απαραίτητα πεδία.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();});
                 return false; // Αποτυχία
             }
 
@@ -114,12 +124,19 @@ public class AddAppointmentController {
             DBHelper dbHelper = new DBHelper();
             dbHelper.saveAppointment(appointment);
 
-            showAlert(Alert.AlertType.INFORMATION, "Επιτυχία", "Το ραντεβού αποθηκεύτηκε!");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Επιτυχία")
+                        .text("Το ραντεβού αποθηκεύτηκε.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showConfirm();});
             return true; // Επιτυχία
 
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Υπήρξε πρόβλημα με την αποθήκευση του ραντεβού!");
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποθήκευση του ραντεβού.", e.getMessage(), Alert.AlertType.ERROR));
             return false; // Αποτυχία
         }
     }
@@ -130,8 +147,14 @@ public class AddAppointmentController {
             if (startDatePicker.getValue() == null || startHourComboBox.getValue() == null ||
                     startMinuteComboBox.getValue() == null || durationComboBox.getValue() == null ||
                     calendarComboBox.getValue() == null) {
-
-                showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Συμπληρώστε όλα τα απαραίτητα πεδία!");
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Σφάλμα")
+                            .text("Συμπληρώστε όλα τα απαραίτητα πεδία.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();});
                 return false; // Αποτυχία
             }
 
@@ -150,7 +173,14 @@ public class AddAppointmentController {
                     .orElse(null);
 
             if (selectedCalendar == null) {
-                showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Δεν επιλέχθηκε έγκυρο ημερολόγιο!");
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Σφάλμα")
+                            .text("Δεν επιλέχθηκε έγκυρο ημερολόγιο.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();});
                 return false;
             }
 
@@ -167,18 +197,31 @@ public class AddAppointmentController {
             if (appointmentId == 0) {
                 // Νέο ραντεβού
                 dbHelper.saveAppointment(appointment);
-                showAlert(Alert.AlertType.INFORMATION, "Επιτυχία", "Το ραντεβού αποθηκεύτηκε!");
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Επιτυχία")
+                            .text("Το ραντεβού αποθηκεύτηκε.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showConfirm();});
             } else {
                 // Ενημέρωση υπάρχοντος ραντεβού
                 dbHelper.updateAppointment(appointment);
-                showAlert(Alert.AlertType.INFORMATION, "Επιτυχία", "Το ραντεβού ενημερώθηκε!");
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Επιτυχία")
+                            .text("Το ραντεβού ενημερώθηκε.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showConfirm();});
             }
 
             return true; // Επιτυχία
 
         } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Υπήρξε πρόβλημα με την αποθήκευση του ραντεβού!");
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποθήκευση του ραντεβού.", e.getMessage(), Alert.AlertType.ERROR));
             return false; // Αποτυχία
         }
     }
@@ -188,14 +231,4 @@ public class AddAppointmentController {
     public LocalDateTime getUpdatedEnd() { return updatedEnd; }
     public String getUpdatedTitle() { return updatedTitle; }
 
-
-
-    // Μέθοδος για εμφάνιση Alert
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 }

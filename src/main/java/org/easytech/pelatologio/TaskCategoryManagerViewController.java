@@ -7,7 +7,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -76,7 +79,7 @@ public class TaskCategoryManagerViewController {
             // Ανανέωση του πίνακα logins
             loadTaskCategories();
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -84,8 +87,14 @@ public class TaskCategoryManagerViewController {
         TaskCategory selectedCategory = taskCategoryTable.getSelectionModel().getSelectedItem();
         if (selectedCategory == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε κάποια κατηγορία προς διαγραφή."));
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε κάποια κατηγορία προς διαγραφή.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return;
         }
 
@@ -110,8 +119,14 @@ public class TaskCategoryManagerViewController {
         TaskCategory selectedCategory = taskCategoryTable.getSelectionModel().getSelectedItem();
         if (selectedCategory == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε κάποια κατηγορία προς επεξεργασία."));
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε κατηγορία προς επεξεργασία.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return;
         }
 
@@ -139,15 +154,7 @@ public class TaskCategoryManagerViewController {
                 taskCategoryTable.refresh();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
-    }
-
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

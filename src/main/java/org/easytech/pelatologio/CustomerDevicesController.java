@@ -92,7 +92,7 @@ public class CustomerDevicesController {
             // Ανανέωση του πίνακα logins
             loadDevicesForCustomer(customer.getCode());
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -100,7 +100,6 @@ public class CustomerDevicesController {
         Device selectedDevice = devicesTable.getSelectionModel().getSelectedItem();
         if (selectedDevice == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -109,7 +108,6 @@ public class CustomerDevicesController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
             return;
         }
 
@@ -182,7 +180,7 @@ public class CustomerDevicesController {
             });
             dialog.showAndWait();
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -221,7 +219,7 @@ public class CustomerDevicesController {
 
             dialog.showAndWait();
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 

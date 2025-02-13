@@ -262,7 +262,7 @@ public class CustomersController implements Initializable {
             });
             dialog.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -324,7 +324,7 @@ public class CustomersController implements Initializable {
                 alert.showAndWait();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -394,7 +394,7 @@ public class CustomersController implements Initializable {
 
                 dialog.showAndWait();
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -427,7 +427,7 @@ public class CustomersController implements Initializable {
 
                 dialog.showAndWait();
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -469,7 +469,7 @@ public class CustomersController implements Initializable {
             content.putString(selectedCustomer.getMobile());  // Replace with the desired text
             clipboard.setContent(content);
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -564,7 +564,7 @@ public class CustomersController implements Initializable {
 
                 dialog.showAndWait();
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         } else {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
@@ -595,7 +595,7 @@ public class CustomersController implements Initializable {
                 dialog.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -611,7 +611,7 @@ public class CustomersController implements Initializable {
                         By.className("btn-primary"),
                         By.id("password"));
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         } else {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
@@ -642,7 +642,7 @@ public class CustomersController implements Initializable {
                 dialog.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -658,7 +658,8 @@ public class CustomersController implements Initializable {
                         By.id("Password"),
                         By.id("btnSubmit"));
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+
             }
         } else {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
@@ -689,7 +690,7 @@ public class CustomersController implements Initializable {
                 dialog.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -705,7 +706,7 @@ public class CustomersController implements Initializable {
                         By.id("inputPassword"),
                         By.xpath("//button[@onclick=\"validateLogin()\"]"));
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         } else {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
@@ -736,7 +737,7 @@ public class CustomersController implements Initializable {
                 dialog.show();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -761,7 +762,7 @@ public class CustomersController implements Initializable {
             clipboardContent.putString(content);
             clipboard.setContent(clipboardContent);
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αντιγραφή.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -770,7 +771,7 @@ public class CustomersController implements Initializable {
         try {
             Desktop.getDesktop().open(new File(folderPath));
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα φακέλου.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 

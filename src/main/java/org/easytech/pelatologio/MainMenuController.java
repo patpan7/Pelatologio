@@ -108,7 +108,8 @@ public class MainMenuController implements Initializable {
                         By.className("btn-primary"),
                         By.id("password"));
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+
             }
         }
     }
@@ -125,8 +126,9 @@ public class MainMenuController implements Initializable {
                 By.name("btn_login")
         );
     } catch (IOException e) {
-        e.printStackTrace();
-    }
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+
+        }
     }
 
     public void tasksClick(ActionEvent event) throws IOException {
@@ -142,7 +144,8 @@ public class MainMenuController implements Initializable {
             LoginAutomator loginAutomation = new LoginAutomator(true);
             loginAutomation.openPage("https://status.mydatacloud.gr/");
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
     }
 

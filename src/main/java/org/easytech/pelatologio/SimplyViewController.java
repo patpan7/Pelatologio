@@ -117,7 +117,8 @@ public class SimplyViewController {
             // Ανανέωση του πίνακα logins
             loadLoginsForCustomer(customer.getCode());
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
     }
 
@@ -125,7 +126,6 @@ public class SimplyViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -134,7 +134,6 @@ public class SimplyViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
             return;
         }
 
@@ -159,7 +158,6 @@ public class SimplyViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς επεξεργασία."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -168,7 +166,6 @@ public class SimplyViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
             return;
         }
 
@@ -196,7 +193,7 @@ public class SimplyViewController {
                 loginTable.refresh();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -204,7 +201,6 @@ public class SimplyViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -213,7 +209,6 @@ public class SimplyViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
             return;
         }
         LabelPrintHelper.printLoginLabel(selectedLogin,customer,"Στοιχεία Simply "+selectedLogin.getTag());
@@ -223,7 +218,6 @@ public class SimplyViewController {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή."));
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -232,7 +226,6 @@ public class SimplyViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showError();});
-            //System.out.println("Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
             return;
         }
         try {
@@ -261,7 +254,7 @@ public class SimplyViewController {
 
             dialog.showAndWait();
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -277,7 +270,6 @@ public class SimplyViewController {
                         "\nΚινητό: "+customer.getMobile()+
                         "\n";
                 copyTextToClipboard(msg);
-                //showAlert("Attention", "Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.");
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
                         .text("Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.")
@@ -286,7 +278,6 @@ public class SimplyViewController {
                         .position(Pos.TOP_RIGHT);
                 notifications.showInformation();
             } else {
-                //showAlert("Attention", "Please select a login to copy.");
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ επιλέξτε ένα login.")
@@ -298,7 +289,6 @@ public class SimplyViewController {
         } else {
             if (selectedLogin == null) {
                 // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-                //Platform.runLater(() -> showAlert("Προσοχή", "Παρακαλώ επιλέξτε ένα login."));
                 Platform.runLater(() -> {
                     Notifications notifications = Notifications.create()
                             .title("Προσοχή")
@@ -307,7 +297,6 @@ public class SimplyViewController {
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT);
                     notifications.showError();});
-                //System.out.println("Παρακαλώ επιλέξτε ένα login προς επεξεργασία.");
                 return;
             }
             try {
@@ -321,7 +310,7 @@ public class SimplyViewController {
                         By.id("btnSubmit")
                 );
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα Simply POS.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -392,7 +381,7 @@ public class SimplyViewController {
                         By.id("btnSubmit")
                 );
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα Simply Cash.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -463,7 +452,7 @@ public class SimplyViewController {
                         By.id("kt_sign_in_submit")
                 );
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα Simply Rest.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
 
@@ -481,7 +470,7 @@ public class SimplyViewController {
                     By.cssSelector("button.btn.green.pull-right[type='submit']")
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα εγγραφής Simply POS.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -509,7 +498,8 @@ public class SimplyViewController {
                     selectedLogin
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα Simply Cloud.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
     }
 
@@ -538,12 +528,6 @@ public class SimplyViewController {
     }
 
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();
         tooltip.setShowDelay(Duration.seconds(0.3));

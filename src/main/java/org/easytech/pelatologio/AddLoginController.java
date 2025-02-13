@@ -3,9 +3,12 @@ package org.easytech.pelatologio;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
@@ -119,7 +122,14 @@ public class AddLoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
         if (username.isEmpty() || password.isEmpty()) {
-            Platform.runLater(() -> showAlert("Attention", "Συμπλήρωσε το Username και το Password."));
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Συμπλήρωσε το Username και το Password.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return;
         }
         try {
@@ -133,7 +143,7 @@ public class AddLoginController {
                     By.name("btn_login")
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -143,16 +153,16 @@ public class AddLoginController {
         Object selectedTag = tagField.getSelectionModel().getSelectedItem();
 
         if (username.isEmpty() || password.isEmpty() || selectedTag == null) {
-            showAlert("Σφάλμα", "Παρακαλώ συμπληρώστε όλα τα πεδία!");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ συμπληρώστε όλα τα πεδία.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return false;
         }
         return true;
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

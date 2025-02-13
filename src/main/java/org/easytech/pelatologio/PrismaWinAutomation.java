@@ -7,7 +7,11 @@ import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
 import com.sun.jna.platform.win32.WinDef.HWND;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.sikuli.script.*;
@@ -15,6 +19,8 @@ import org.sikuli.script.*;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PrismaWinAutomation {
@@ -39,11 +45,11 @@ public class PrismaWinAutomation {
     public class WindowUtils {
         interface User32Library extends Library {
             User32Library INSTANCE = Native.load("user32", User32Library.class);
-            boolean SetForegroundWindow(WinDef.HWND hWnd);
+            boolean SetForegroundWindow(HWND hWnd);
         }
 
         public static void bringToFront(String windowTitle) {
-            WinDef.HWND hWnd = User32.INSTANCE.FindWindow(null, windowTitle);
+            HWND hWnd = User32.INSTANCE.FindWindow(null, windowTitle);
             if (hWnd != null) {
                 User32Library.INSTANCE.SetForegroundWindow(hWnd);
             }
@@ -68,7 +74,7 @@ public class PrismaWinAutomation {
 
     public static void maximizeWindow(String windowTitle) {
         User32 user32 = User32.INSTANCE;
-        WinDef.HWND hWnd = user32.FindWindow(null, windowTitle);
+        HWND hWnd = user32.FindWindow(null, windowTitle);
 
         if (hWnd != null) {
             User32.INSTANCE.ShowWindow(hWnd, User32.SW_RESTORE);  // Επαναφορά παραθύρου
@@ -80,7 +86,7 @@ public class PrismaWinAutomation {
     }
 
 
-    public static void run(Customer customer) {
+    public static void addCustomer(Customer customer) {
         try {
             String processName = "Prisma.exe";
             String windowTitle = "Megasoft PRISMA Win - Εμπορική Διαχείριση";
@@ -119,6 +125,40 @@ public class PrismaWinAutomation {
             if (customer.getManager() != null) {
                 waitForImageAndPaste(screen, "manager.png", customer.getManager(), 10);
             }
+            waitForImageAndClick(screen, "note.png", 10);
+            DBHelper dbHelper = new DBHelper();
+            List<Logins> myposLogins = dbHelper.getLogins(customer.getCode(), 1);
+            if (!myposLogins.isEmpty()) {
+                for (Logins login : myposLogins) {
+                    String loginstr = "\n\nmyPOS"+
+                            "\nEmail: " + login.getUsername() +
+                            "\nΚωδικός: " + login.getPassword() +
+                            "\nΚινητό: " + login.getPhone();
+                    waitForImageAndPaste(screen, "note2.png", loginstr, 10);
+                }
+            }
+            List<Logins> simplyLogins = dbHelper.getLogins(customer.getCode(), 2);
+            if (!simplyLogins.isEmpty()) {
+                for (Logins login : simplyLogins) {
+                    System.out.println(login.getTag());
+                    String loginstr = "\n\nSimply "+ login.getTag() +
+                            "\nEmail: " + login.getUsername() +
+                            "\nΚωδικός: " + login.getPassword() +
+                            "\nΚινητό: " + login.getPhone();
+                    waitForImageAndPaste(screen, "note2.png", loginstr, 10);
+                }
+            }
+            List<Logins> emblemLogins = dbHelper.getLogins(customer.getCode(), 4);
+            if (!emblemLogins.isEmpty()) {
+                for (Logins login : emblemLogins) {
+                    String loginstr = "\n\nEmblem"+
+                            "\nEmail: " + login.getUsername() +
+                            "\nΚωδικός: " + login.getPassword() +
+                            "\nΚινητό: " + login.getPhone();
+                    waitForImageAndPaste(screen, "note2.png", loginstr, 10);
+                }
+            }
+            
 
             System.out.println("Εισαγωγή ολοκληρώθηκε!");
             Notifications notifications = Notifications.create()
@@ -133,7 +173,50 @@ public class PrismaWinAutomation {
             System.gc();  // Κλήση garbage collection
             WindowUtils.minimizeWindow("Megasoft PRISMA Win - Εμπορική Διαχείριση");
         } catch (Exception e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα.", e.getMessage(), Alert.AlertType.ERROR));
+
+        }
+    }
+
+    public static void showCustomer(Customer customer) {
+        try {
+            String processName = "Prisma.exe";
+            String windowTitle = "Megasoft PRISMA Win - Εμπορική Διαχείριση";
+            Screen screen = new Screen();
+
+            // Έλεγχος αν το Prisma Win είναι ανοιχτό
+            if (!isProcessRunning(processName)) {
+                System.out.println("Το Prisma Win δεν είναι ανοιχτό. Εκκίνηση...");
+                Runtime.getRuntime().exec("C:\\Program Files (x86)\\Megasoft\\PRISMA Win\\Prisma.exe");
+                waitForSeconds(5); // Περιμένει να ανοίξει
+            } else {
+                System.out.println("Το Prisma Win είναι ήδη ανοιχτό.");
+                WindowUtils.bringToFront("Megasoft PRISMA Win - Εμπορική Διαχείριση");
+                maximizeWindow(windowTitle);
+            }
+
+            // Δοκιμή εύρεσης και κλικ σε εικόνες χωρίς σταθερό Thread.sleep
+            waitForImageAndClick(screen, "pelates0.png", 10);
+            waitForImageAndClick(screen, "afm2.png", 10);
+            screen.type(Key.F7);
+            screen.paste(customer.getAfm());
+            waitForImageAndClick(screen, "select.png", 10);
+
+            System.out.println("Εισαγωγή ολοκληρώθηκε!");
+            Notifications notifications = Notifications.create()
+                    .title("Ολοκλήρωση")
+                    .text("Η εμφάνιση ολοκληρώθηκε")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showInformation();
+            WindowUtils.removeAlwaysOnTop("Megasoft PRISMA Win - Εμπορική Διαχείριση");
+            screen = null;  // Ελευθέρωση της μνήμης του SikuliX
+            System.gc();  // Κλήση garbage collection
+            WindowUtils.minimizeWindow("Megasoft PRISMA Win - Εμπορική Διαχείριση");
+        } catch (Exception e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
     }
 

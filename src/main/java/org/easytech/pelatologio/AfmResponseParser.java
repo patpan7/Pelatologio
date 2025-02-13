@@ -1,5 +1,7 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -39,7 +41,7 @@ public class AfmResponseParser {
             return new Customer(onomasia, commerTitle, epaggelma, afm, "", "", "", postalAddress + " " + postalAddressNo, postalAreaDescription, tk,"");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα.", e.getMessage(), Alert.AlertType.ERROR));
             return null;
         }
     }
@@ -62,7 +64,7 @@ public class AfmResponseParser {
 
             return getXPathValue(document, xpath, expression);
         } catch (Exception e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα.", e.getMessage(), Alert.AlertType.ERROR));
             return null;
         }
     }

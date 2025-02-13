@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -15,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.stage.Modality;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
+import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
 import java.net.URL;
@@ -177,19 +179,39 @@ public class TaskListController implements Initializable {
     private void toggleComplete(boolean complete) {
         Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
         if (selectedTask == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί εργασία!");
-            Optional<ButtonType> result = alert.showAndWait();
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Δεν έχει επιλεγεί εργασία.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
             return;
         }
 
         DBHelper dbHelper = new DBHelper();
         if (dbHelper.completeTask(selectedTask.getId(), complete)) {
             System.out.println("Task completion status updated.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Ενημέρωση")
+                        .text("Ενημέρωση εργασίας επιτυχής.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showConfirm();});
             loadTasks(); // Φορτώνει ξανά τις εργασίες
         } else {
             System.out.println("Failed to update task completion status.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Ενημέρωση")
+                        .text("Αποτυχία ενημέρωση εργασίας.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
         }
     }
 
@@ -261,7 +283,7 @@ public class TaskListController implements Initializable {
                 dialog.showAndWait();
                 loadTasks();
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
             }
     }
 
@@ -299,7 +321,7 @@ public class TaskListController implements Initializable {
             dialog.showAndWait();
             loadTasks();
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -341,7 +363,7 @@ public class TaskListController implements Initializable {
             dialog.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα των κατηγοριών εργασιών.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 

@@ -109,7 +109,7 @@ public class TaxisViewController {
             // Ανανέωση του πίνακα logins
             loadLoginsForCustomer(customer.getCode());
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη του login.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -186,7 +186,7 @@ public class TaxisViewController {
                 loginTable.refresh();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την ενημέρωση.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -239,7 +239,7 @@ public class TaxisViewController {
                         By.name("btn_login")
                 );
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -270,7 +270,7 @@ public class TaxisViewController {
                     By.name("btn_login")
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -300,7 +300,7 @@ public class TaxisViewController {
                     By.name("btn_login")
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -330,7 +330,7 @@ public class TaxisViewController {
                     By.cssSelector("input.btn.btn-primary[value='Σύνδεση']")
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -360,7 +360,7 @@ public class TaxisViewController {
                     By.name("btn_login")
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -390,7 +390,7 @@ public class TaxisViewController {
                     By.name("btn_login")
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -420,7 +420,7 @@ public class TaxisViewController {
                     By.name("btn_login")
             );
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -434,7 +434,7 @@ public class TaxisViewController {
                         customer.getAfm()
                 );
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
     }
@@ -454,13 +454,6 @@ public class TaxisViewController {
                     .hideAfter(Duration.seconds(5))
                     .position(Pos.TOP_RIGHT);
         notifications.showInformation();
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     private void setTooltip(Button button, String text) {

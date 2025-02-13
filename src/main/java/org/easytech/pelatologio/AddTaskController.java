@@ -58,9 +58,6 @@ public class AddTaskController {
 
     public void setTaskTitle(String title) {
         titleField.setText(title);
-        //setCustomerId(device.getCustomerId());
-        //setCustomerName(device.getCustomerName());
-        //categoryComboBox.getSelectionModel().select(0);
     }
 
     public void setTaskForEdit(Task task) {
@@ -149,7 +146,14 @@ public class AddTaskController {
     public boolean handleSaveTask() {
         try {
             if (dueDatePicker.getValue() == null || titleField.getText() == null || descriptionField.getText() == null) {
-                showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Συμπληρώστε όλα τα απαραίτητα πεδία!");
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Συμπληρώστε όλα τα απαραίτητα πεδία.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();});
                 return false;
             }
 
@@ -188,7 +192,7 @@ public class AddTaskController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Υπήρξε πρόβλημα με την αποθήκευση της εργασίας!");
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Υπήρξε πρόβλημα με την αποθήκευση της εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
             return false;
         }
     }
@@ -228,22 +232,10 @@ public class AddTaskController {
 
         VBox vbox = new VBox(10, expandedTextArea, btnOk);
         vbox.setAlignment(Pos.CENTER);
-        //vbox.setPadding(new Insets(10));
 
         Scene scene = new Scene(vbox);
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
-    }
-
-
-
-    // Μέθοδος για εμφάνιση Alert
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     public void showCustomer(ActionEvent evt) {
@@ -295,7 +287,7 @@ public class AddTaskController {
                 alert.showAndWait();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εμφάνιση του πελάτη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 }

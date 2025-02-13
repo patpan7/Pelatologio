@@ -64,9 +64,7 @@ public class ItemsController implements Initializable {
                 }
             }
         });
-
         itemsTable.getSelectionModel().clearSelection();
-
     }
 
     private void initializeTable() {
@@ -168,7 +166,7 @@ public class ItemsController implements Initializable {
             });
             dialog.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -221,7 +219,7 @@ public class ItemsController implements Initializable {
                 dialog.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την ενημέρωση.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 

@@ -1,6 +1,8 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.util.Duration;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
@@ -62,7 +64,7 @@ public class LabelPrintHelper {
             JasperPrintManager.printReport(jasperPrint, true); // Εκτύπωση χωρίς προεπισκόπηση
 
         } catch (JRException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εκτύπωση.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -71,7 +73,6 @@ public class LabelPrintHelper {
             // Φόρτωση του JasperReport
             String fullPath = getPath("login_receipt.jrxml");
             JasperReport jasperReport = JasperCompileManager.compileReport(fullPath);
-            //JasperReport jasperReport = (JasperReport) JRLoader.loadObject(getClass().getResourceAsStream("/org/easytech/pelatologio/customer_receipt.jasper"));
 
             // Δημιουργία dataset με δεδομένα πελάτη
             Map<String, Object> parameters = new HashMap<>();
@@ -82,7 +83,6 @@ public class LabelPrintHelper {
             parameters.put("phone", login.getPhone() == null ? "" : login.getPhone());
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
-            //JasperViewer.viewReport(jasperPrint, false);
 
             // Επιλογή εκτυπωτή από τα Windows
             PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
@@ -99,15 +99,14 @@ public class LabelPrintHelper {
                 }
             }
 
-            //PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
-            //printRequestAttributeSet.add(new PrinterName(selectedPrinter.getName(), null));
             PrintServiceAttributeSet printServiceAttributeSet = new HashPrintServiceAttributeSet();
             printServiceAttributeSet.add(new PrinterName(selectedPrinter.getName(), null));
 
             JasperPrintManager.printReport(jasperPrint, true); // Εκτύπωση χωρίς προεπισκόπηση
 
         } catch (JRException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εκτύπωση.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
 
 
@@ -131,8 +130,6 @@ public class LabelPrintHelper {
             notifications.showError();
             return null;
         }
-
         return fullPath;
     }
-
 }

@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -16,6 +17,8 @@ import javafx.scene.control.Dialog;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -75,7 +78,6 @@ public class CalendarController {
                             " στο ημερολόγιο: " + fxCalendar.getName());
                 }
             }
-
             calendarSource.getCalendars().addAll(fxCalendar);
         }
 
@@ -170,14 +172,28 @@ public class CalendarController {
             dialog.showAndWait();
             // Έλεγχος αν αποθηκεύτηκε
             if (controller.isSaved()) {
-                System.out.println("Το ραντεβού αποθηκεύτηκε επιτυχώς!");
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Επιτυχία")
+                            .text("Το ραντεβού αποθηκεύτηκε επιτυχώς.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showConfirm();});
                 updateCalendarEntry(fxCalendar, entry.getUserObject());
                 // Ενημέρωση του ημερολογίου
             } else {
-                System.out.println("Το ραντεβού δεν αποθηκεύτηκε.");
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Αποτυχία")
+                            .text("Το ραντεβού δεν αποθηκεύτηκε.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();});
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
@@ -200,7 +216,14 @@ public class CalendarController {
             entryToUpdate.changeEndDate(updatedAppointment.getEndTime().toLocalDate());
             entryToUpdate.changeEndTime(updatedAppointment.getEndTime().toLocalTime());
             entryToUpdate.setCalendar(fxCalendar);
-            System.out.println("Το ραντεβού ενημερώθηκε στο ημερολόγιο.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Ενημέρωση")
+                        .text("Το ραντεβού ενημερώθηκε στο ημερολόγιο.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showInformation();});
         } else {
             // Προσθήκη νέου Entry αν δεν βρεθεί υπάρχον
             Entry<Appointment> newEntry = new Entry<>(updatedAppointment.getTitle());
@@ -209,7 +232,14 @@ public class CalendarController {
             newEntry.setUserObject(updatedAppointment);
 
             fxCalendar.addEntry(newEntry);
-            System.out.println("Νέο ραντεβού προστέθηκε στο ημερολόγιο.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Ενημέρωση")
+                        .text("Νέο ραντεβού προστέθηκε στο ημερολόγιο.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
         }
     }
 
@@ -251,7 +281,7 @@ public class CalendarController {
             dialog.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
