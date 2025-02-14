@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
@@ -22,7 +23,6 @@ import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.openqa.selenium.By;
-import org.sikuli.script.Mouse;
 
 import java.awt.*;
 import java.io.File;
@@ -51,6 +51,12 @@ public class CustomersController implements Initializable {
     FilteredList<Customer> filteredData;
     DBHelper dbHelper;
 
+    private TabPane mainTabPane;  // Θα το περάσουμε από τον MainMenuController
+
+    // Μέθοδος για να περάσουμε το TabPane
+    public void setMainTabPane(TabPane mainTabPane) {
+        this.mainTabPane = mainTabPane;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -237,30 +243,29 @@ public class CustomersController implements Initializable {
 
     public void customerAddNew(ActionEvent actionEvent) throws IOException {
         try {
+            // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
+            for (Tab tab : mainTabPane.getTabs()) {
+                if (tab.getText().equals("Νέος Πελάτης")) {
+                    mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                    return;
+                }
+            }
+            // Φόρτωση του FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Εισαγωγή Νέου Πελάτη");
+            Parent customerForm = loader.load();
+            // Δημιουργία νέου tab για τη δημιουργία του πελάτη
+            Tab customerTab = new Tab("Νέος Πελάτης");
+            customerTab.setContent(customerForm);
 
             AddCustomerController controller = loader.getController();
             String filterValue = filterField.getText();
             if (filterValue != null && filterValue.matches("\\d{9}")) {
                 controller.setInitialAFM(filterValue); // Προ-συμπλήρωση ΑΦΜ
             }
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.setOnAction(event -> {controller.handleOkButton();
-                refreshTableData();
-            });
-            // Add a key listener to save when Enter is pressed
-            dialog.getDialogPane().setOnKeyPressed(event -> {
-                if (event.getCode() == KeyCode.ENTER) {
-                    okButton.fire();  // Triggers the OK button action
-                    refreshTableData();
-                }
-            });
-            dialog.show();
+            // Προσθήκη του tab στο TabPane
+            mainTabPane.getTabs().add(customerTab);
+            mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -272,50 +277,61 @@ public class CustomersController implements Initializable {
             String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
             if (res.equals("unlocked")) {
                 dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
+                for (Tab tab : mainTabPane.getTabs()) {
+                    if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
+                        mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                        return;
+                    }
+                }
+// Φόρτωση του FXML
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Ενημέρωση Πελάτη");
-                dialog.initModality(Modality.WINDOW_MODAL);
+                Parent customerForm = loader.load();
+
+                // Δημιουργία νέου tab για την ενημέρωση του πελάτη
+                Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
+                customerTab.setContent(customerForm);
 
                 AddCustomerController controller = loader.getController();
-
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
                 controller.setCustomerData(selectedCustomer);
 
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setOnAction(event -> {
-                    controller.handleOkButton();
-                    // Reinitialize the table and apply the search filter when OK is pressed
-                    //tableInit();
-                    refreshTableData();
-                    filteredData = new FilteredList<>(observableList, b -> true);
-
-                    filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-                        applyFilters(newValue);
-                    });
-
-                    applyFilters(filterField.getText());
-
-                    SortedList<Customer> sortedData = new SortedList<>(filteredData);
-                    sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
-                    customerTable.setItems(sortedData);
-                });
-
-                // Προσθήκη listener για το κλείσιμο του παραθύρου
-                dialog.setOnHidden(event -> {
-                    dbHelper.customerUnlock(selectedCustomer.getCode());
-                });
-
-                // Add a key listener to save when Enter is pressed
-                dialog.getDialogPane().setOnKeyPressed(event -> {
-                    if (event.getCode() == KeyCode.ENTER) {
-                        okButton.fire();  // Triggers the OK button action
-                    }
-                });
-                dialog.show();
+                // Προσθήκη του tab στο TabPane
+                mainTabPane.getTabs().add(customerTab);
+                mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
+//                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+//
+//                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+//                okButton.setOnAction(event -> {
+//                    controller.handleOkButton();
+//                    // Reinitialize the table and apply the search filter when OK is pressed
+//                    //tableInit();
+//                    refreshTableData();
+//                    filteredData = new FilteredList<>(observableList, b -> true);
+//
+//                    filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+//                        applyFilters(newValue);
+//                    });
+//
+//                    applyFilters(filterField.getText());
+//
+//                    SortedList<Customer> sortedData = new SortedList<>(filteredData);
+//                    sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
+//                    customerTable.setItems(sortedData);
+//                });
+//
+//                // Προσθήκη listener για το κλείσιμο του παραθύρου
+//                dialog.setOnHidden(event -> {
+//                    dbHelper.customerUnlock(selectedCustomer.getCode());
+//                });
+//
+//                // Add a key listener to save when Enter is pressed
+//                dialog.getDialogPane().setOnKeyPressed(event -> {
+//                    if (event.getCode() == KeyCode.ENTER) {
+//                        okButton.fire();  // Triggers the OK button action
+//                    }
+//                });
+//                dialog.show();
 
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -542,7 +558,7 @@ public class CustomersController implements Initializable {
     }
 
     public void taxisClick(MouseEvent event) {
-        if (event.getButton() == MouseButton.SECONDARY){
+        if (event.getButton() == MouseButton.SECONDARY) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("addLogin.fxml"));
                 DialogPane dialogPane = loader.load();
@@ -579,21 +595,36 @@ public class CustomersController implements Initializable {
                 return;
             }
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("taxisView.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+                String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                if (res.equals("unlocked")) {
+                    dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                    // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
+                    for (Tab tab : mainTabPane.getTabs()) {
+                        if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
+                            mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                            // Πάρε τον controller και άλλαξε tab στο "Taxis"
+                            AddCustomerController controller = (AddCustomerController) tab.getUserData();
+                            Platform.runLater(() -> controller.selectTaxisTab());
+                            return;
+                        }
+                    }
+                    // Φόρτωση του FXML
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
+                    Parent customerForm = loader.load();
 
-                // Τώρα μπορείς να πάρεις τον controller
-                TaxisViewController controller = loader.getController();
+                    // Δημιουργία νέου tab για την ενημέρωση του πελάτη
+                    Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
+                    customerTab.setContent(customerForm);
 
-                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setCustomer(selectedCustomer);
+                    AddCustomerController controller = loader.getController();
+                    // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                    controller.setCustomerData(selectedCustomer);
 
-                dialog.setTitle("Κωδικοί Taxis");
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-                dialog.initModality(Modality.WINDOW_MODAL);
-                dialog.show();
-
+                    // Προσθήκη του tab στο TabPane
+                    mainTabPane.getTabs().add(customerTab);
+                    mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
+                    Platform.runLater(() -> controller.selectTaxisTab());
+                }
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
@@ -626,21 +657,36 @@ public class CustomersController implements Initializable {
                 return;
             }
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("myposView.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+                String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                if (res.equals("unlocked")) {
+                    dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                    // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
+                    for (Tab tab : mainTabPane.getTabs()) {
+                        if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
+                            mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                            // Πάρε τον controller και άλλαξε tab στο "myPOS"
+                            AddCustomerController controller = (AddCustomerController) tab.getUserData();
+                            Platform.runLater(() -> controller.selectMyPOSTab());
+                            return;
+                        }
+                    }
+                    // Φόρτωση του FXML
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
+                    Parent customerForm = loader.load();
 
-                // Τώρα μπορείς να πάρεις τον controller
-                MyposViewController controller = loader.getController();
+                    // Δημιουργία νέου tab για την ενημέρωση του πελάτη
+                    Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
+                    customerTab.setContent(customerForm);
 
-                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setCustomer(selectedCustomer);
+                    AddCustomerController controller = loader.getController();
+                    // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                    controller.setCustomerData(selectedCustomer);
 
-                dialog.setTitle("Κωδικοί myPOS");
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-                dialog.initModality(Modality.WINDOW_MODAL);
-                dialog.show();
-
+                    // Προσθήκη του tab στο TabPane
+                    mainTabPane.getTabs().add(customerTab);
+                    mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
+                    Platform.runLater(() -> controller.selectMyPOSTab());
+                }
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
@@ -674,21 +720,36 @@ public class CustomersController implements Initializable {
                 return;
             }
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("simplyView.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+                String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                if (res.equals("unlocked")) {
+                    dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                    // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
+                    for (Tab tab : mainTabPane.getTabs()) {
+                        if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
+                            mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                            // Πάρε τον controller και άλλαξε tab στο "Simply"
+                            AddCustomerController controller = (AddCustomerController) tab.getUserData();
+                            Platform.runLater(() -> controller.selectSimplyTab());
+                            return;
+                        }
+                    }
+                    // Φόρτωση του FXML
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
+                    Parent customerForm = loader.load();
 
-                // Τώρα μπορείς να πάρεις τον controller
-                SimplyViewController controller = loader.getController();
+                    // Δημιουργία νέου tab για την ενημέρωση του πελάτη
+                    Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
+                    customerTab.setContent(customerForm);
 
-                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setCustomer(selectedCustomer);
+                    AddCustomerController controller = loader.getController();
+                    // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                    controller.setCustomerData(selectedCustomer);
 
-                dialog.setTitle("Κωδικοί Simply");
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-                dialog.initModality(Modality.WINDOW_MODAL);
-                dialog.show();
-
+                    // Προσθήκη του tab στο TabPane
+                    mainTabPane.getTabs().add(customerTab);
+                    mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
+                    Platform.runLater(() -> controller.selectSimplyTab());
+                }
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
@@ -721,20 +782,36 @@ public class CustomersController implements Initializable {
                 return;
             }
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("emblemView.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+                String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                if (res.equals("unlocked")) {
+                    dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                    // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
+                    for (Tab tab : mainTabPane.getTabs()) {
+                        if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
+                            mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                            // Πάρε τον controller και άλλαξε tab στο "Emblem"
+                            AddCustomerController controller = (AddCustomerController) tab.getUserData();
+                            Platform.runLater(() -> controller.selectEmbelmTab());
+                            return;
+                        }
+                    }
+                    // Φόρτωση του FXML
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
+                    Parent customerForm = loader.load();
 
-                // Τώρα μπορείς να πάρεις τον controller
-                EmblemViewController controller = loader.getController();
+                    // Δημιουργία νέου tab για την ενημέρωση του πελάτη
+                    Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
+                    customerTab.setContent(customerForm);
 
-                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setCustomer(selectedCustomer);
+                    AddCustomerController controller = loader.getController();
+                    // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                    controller.setCustomerData(selectedCustomer);
 
-                dialog.setTitle("Κωδικοί Emblem");
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-                dialog.initModality(Modality.WINDOW_MODAL);
-                dialog.show();
+                    // Προσθήκη του tab στο TabPane
+                    mainTabPane.getTabs().add(customerTab);
+                    mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
+                    Platform.runLater(() -> controller.selectEmbelmTab());
+                }
 
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));

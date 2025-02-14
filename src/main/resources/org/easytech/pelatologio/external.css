@@ -1,7 +1,7 @@
 /* Κεντρικές χρωματικές μεταβλητές */
 * {
-    -fx-primary-color: #ffcc00;
-    -fx-secondary-color: #4B6EAF;
+    -fx-primary-color: #47b9d0;
+    -fx-secondary-color: #eab676;
     -fx-light-grey-color: #d1d1d1;
     -fx-light-blue-color: #90caf9;
     -fx-focus-color: -fx-secondary-color;
@@ -156,17 +156,34 @@
 
 /* Στυλ για τα TabPane και Tab */
 .tab-pane {
-    -fx-background-color: transparent;
+    -fx-background-color: #EEF1F7;
 }
-
+.tab-pane .tab-header-background {
+    -fx-background-color: #EEF1F7;
+}
+.tab-pane:top .tab-header-area {
+    -fx-background-insets: 0 0 0 0;
+    -fx-padding: 0 0 0 0;
+}
 .tab {
     -fx-background-color: transparent;
     -fx-font-size: 18px;
     -fx-text-fill: #333333;
     -fx-padding: 10px;
     -fx-background-radius: 10px 10px 0 0;
-    -fx-border-color: #d1d1d1;
-    -fx-border-width: 1px;
+    -fx-border-color: -fx-primary-color;
+    -fx-border-radius: 10px 10px 0 0;
+    -fx-border-width: 2px;
+}
+.tabHas {
+    -fx-background-color: transparent;
+    -fx-font-size: 18px;
+    -fx-text-fill: #333333;
+    -fx-padding: 10px;
+    -fx-background-radius: 10px 10px 0 0;
+    -fx-border-color: #FF0000;
+    -fx-border-radius: 10px 10px 0 0;
+    -fx-border-width: 3px;
 }
 
 /* Στυλ για το ενεργό Tab */

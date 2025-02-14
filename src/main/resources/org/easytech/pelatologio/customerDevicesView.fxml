@@ -5,11 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<DialogPane prefHeight="800.0" prefWidth="1100.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CustomerDevicesController">
-    <content>
-        <VBox alignment="TOP_CENTER">
-            <Label fx:id="customerLabel" styleClass="header-label" text="Όνομα Πελάτη: [Όνομα Πελάτη]" textOverrun="CLIP" />
-            <HBox alignment="TOP_CENTER">
+            <HBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1100.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CustomerDevicesController">
                 <children>
                     <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
                         <children>
@@ -56,7 +52,3 @@
                     </VBox>
                 </children>
             </HBox>
-
-        </VBox>
-    </content>
-</DialogPane>

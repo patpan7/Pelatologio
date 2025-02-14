@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -15,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -26,7 +28,12 @@ import java.io.File;
 import java.io.IOException;
 
 public class AddCustomerController {
-
+    @FXML
+    private TabPane tabPane;
+    @FXML
+    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, devicesContainer;
+    @FXML
+    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabDevices;
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail,tfManager, tfManagerPhone;
     @FXML
@@ -38,23 +45,75 @@ public class AddCustomerController {
     @FXML
     private ProgressIndicator progressIndicator;
     @FXML
-    Button btnAddToMegasoft, btnTaxis, btnMypos, btnSimply, btnEmblem, btnData, btnLabel, btnAppointment,btnTask, btnDevices;
+    Button btnAddToMegasoft, btnShowToMegasoft, btnData, btnLabel, btnAppointment,btnTask;
+
+    private TaxisViewController taxisViewController;
+    private MyposViewController myposViewController;
+    private SimplyViewController simplyViewController;
+    private EmblemViewController emblemViewController;
+    private CustomerDevicesController customerDevicesController;
 
     int code = 0;
 
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
     private Customer customer;
 
+
     public void initialize() {
-        setTooltip(btnTaxis, "1) Διαχείριση κωδικών Taxis του πελάτη");
-        setTooltip(btnMypos, "Διαχείριση κωδικών myPOS του πελάτη");
-        setTooltip(btnSimply, "Διαχείριση κωδικών Simply του πελάτη");
-        setTooltip(btnEmblem, "Διαχείριση κωδικών Emblem του πελάτη");
+        try {
+            FXMLLoader loaderTaxis = new FXMLLoader(getClass().getResource("taxisView.fxml"));
+            Parent taxisContent = loaderTaxis.load();
+            taxisViewController = loaderTaxis.getController(); // Πάρε τον controller
+            taxisContainer.getChildren().setAll(taxisContent);
+            AnchorPane.setTopAnchor(taxisContent, 0.0);
+            AnchorPane.setBottomAnchor(taxisContent, 0.0);
+            AnchorPane.setLeftAnchor(taxisContent, 0.0);
+            AnchorPane.setRightAnchor(taxisContent, 0.0);
+
+            FXMLLoader loaderMypos = new FXMLLoader(getClass().getResource("myposView.fxml"));
+            Parent myposContent = loaderMypos.load();
+            myposViewController = loaderMypos.getController(); // Πάρε τον controller
+            myposContainer.getChildren().setAll(myposContent);
+            AnchorPane.setTopAnchor(myposContent, 0.0);
+            AnchorPane.setBottomAnchor(myposContent, 0.0);
+            AnchorPane.setLeftAnchor(myposContent, 0.0);
+            AnchorPane.setRightAnchor(myposContent, 0.0);
+
+            FXMLLoader loaderSimply = new FXMLLoader(getClass().getResource("simplyView.fxml"));
+            Parent simplyContent = loaderSimply.load();
+            simplyViewController = loaderSimply.getController(); // Πάρε τον controller
+            simplyContainer.getChildren().setAll(simplyContent);
+            AnchorPane.setTopAnchor(simplyContent, 0.0);
+            AnchorPane.setBottomAnchor(simplyContent, 0.0);
+            AnchorPane.setLeftAnchor(simplyContent, 0.0);
+            AnchorPane.setRightAnchor(simplyContent, 0.0);
+
+            FXMLLoader loaderEmblem = new FXMLLoader(getClass().getResource("emblemView.fxml"));
+            Parent emblemContent = loaderEmblem.load();
+            emblemViewController = loaderEmblem.getController(); // Πάρε τον controller
+            emblemContainer.getChildren().setAll(emblemContent);
+            AnchorPane.setTopAnchor(emblemContent, 0.0);
+            AnchorPane.setBottomAnchor(emblemContent, 0.0);
+            AnchorPane.setLeftAnchor(emblemContent, 0.0);
+            AnchorPane.setRightAnchor(emblemContent, 0.0);
+
+            FXMLLoader loaderDevices = new FXMLLoader(getClass().getResource("customerDevicesView.fxml"));
+            Parent devicesContent = loaderDevices.load();
+            customerDevicesController = loaderDevices.getController(); // Πάρε τον controller
+            devicesContainer.getChildren().setAll(devicesContent);
+            AnchorPane.setTopAnchor(devicesContent, 0.0);
+            AnchorPane.setBottomAnchor(devicesContent, 0.0);
+            AnchorPane.setLeftAnchor(devicesContent, 0.0);
+            AnchorPane.setRightAnchor(devicesContent, 0.0);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
         setTooltip(btnLabel, "Εκτύπωση ετικέτας πελάτη");
         setTooltip(btnAppointment,"Προσθήκη νέου ραντεβού");
         setTooltip(btnTask,"Προσθήκη νέας εργασίας");
-        setTooltip(btnDevices,"Διαχείριση συσκευών του πελάτη");
         setTooltip(btnAddToMegasoft, "Προσθήκη πελάτη στο Megasoft");
 
 
@@ -62,14 +121,8 @@ public class AddCustomerController {
         btnAddressAdd.setDisable(true);
         btnAddToMegasoft.setDisable(true);
         btnAddToMegasoft.setVisible(false);
-        btnTaxis.setDisable(true);
-        btnTaxis.setVisible(false);
-        btnMypos.setDisable(true);
-        btnMypos.setVisible(false);
-        btnSimply.setDisable(true);
-        btnSimply.setVisible(false);
-        btnEmblem.setDisable(true);
-        btnEmblem.setVisible(false);
+        btnShowToMegasoft.setDisable(true);
+        btnShowToMegasoft.setVisible(false);
         btnData.setDisable(true);
         btnData.setVisible(false);
         btnLabel.setDisable(true);
@@ -78,8 +131,11 @@ public class AddCustomerController {
         btnAppointment.setVisible(false);
         btnTask.setDisable(true);
         btnTask.setVisible(false);
-        btnDevices.setDisable(true);
-        btnDevices.setVisible(false);
+        tabTaxis.setDisable(true);
+        tabMypos.setDisable(true);
+        tabSimply.setDisable(true);
+        tabEmblem.setDisable(true);
+        tabDevices.setDisable(true);
 
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
@@ -322,21 +378,53 @@ public class AddCustomerController {
             System.out.println("Έχει υποδιεύθυνση");
             btnAddressAdd.setStyle("-fx-border-color: #FF0000;");
         }
+        if(dbHelper.hasApp(customer.getCode(),1)){
+            tabMypos.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasApp(customer.getCode(),2)){
+            tabSimply.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasApp(customer.getCode(),3)){
+            tabTaxis.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasApp(customer.getCode(),4)){
+            tabEmblem.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasDevice(customer.getCode())){
+            tabDevices.getStyleClass().add("tabHas");
+        }
 
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = customer.getCode();
         this.customer = customer;
+        if (taxisViewController != null) {
+            taxisViewController.setCustomer(customer);
+        } else {
+            System.out.println("TaxisViewController δεν είναι ακόμα έτοιμος.");
+        }
+        if (myposViewController != null) {
+            myposViewController.setCustomer(customer);
+        } else {
+            System.out.println("myposViewController δεν είναι ακόμα έτοιμος.");
+        }
+        if (simplyViewController != null) {
+            simplyViewController.setCustomer(customer);
+        } else {
+            System.out.println("simplyViewController δεν είναι ακόμα έτοιμος.");
+        }
+        if (emblemViewController != null) {
+            emblemViewController.setCustomer(customer);
+        } else {
+            System.out.println("emblemViewController δεν είναι ακόμα έτοιμος.");
+        }
+        if (customerDevicesController != null) {
+            customerDevicesController.setCustomer(customer);
+        } else {
+            System.out.println("customerDevicesController δεν είναι ακόμα έτοιμος.");
+        }
 
         btnAddToMegasoft.setDisable(false);
         btnAddToMegasoft.setVisible(true);
-        btnTaxis.setDisable(false);
-        btnTaxis.setVisible(true);
-        btnMypos.setDisable(false);
-        btnMypos.setVisible(true);
-        btnSimply.setDisable(false);
-        btnSimply.setVisible(true);
-        btnEmblem.setDisable(false);
-        btnEmblem.setVisible(true);
         btnData.setDisable(false);
         btnData.setVisible(true);
         btnLabel.setDisable(false);
@@ -345,31 +433,11 @@ public class AddCustomerController {
         btnAppointment.setVisible(true);
         btnTask.setDisable(false);
         btnTask.setVisible(true);
-        btnDevices.setDisable(false);
-        btnDevices.setVisible(true);
-
-        btnTaxis.setStyle("-fx-border-color: #D6D8DE;");
-        btnMypos.setStyle("-fx-border-color: #D6D8DE;");
-        btnSimply.setStyle("-fx-border-color: #D6D8DE;");
-        btnEmblem.setStyle("-fx-border-color: #D6D8DE;");
-        btnDevices.setStyle("-fx-border-color: #D6D8DE;");
-
-        if(dbHelper.hasApp(customer.getCode(),2)){
-            btnSimply.setStyle("-fx-border-color: #FF0000;");
-        }
-        if(dbHelper.hasApp(customer.getCode(),1)){
-            btnMypos.setStyle("-fx-border-color: #FF0000;");
-        }
-        if(dbHelper.hasApp(customer.getCode(),3)){
-            btnTaxis.setStyle("-fx-border-color: #FF0000;");
-        }
-        if(dbHelper.hasApp(customer.getCode(),4)){
-            btnEmblem.setStyle("-fx-border-color: #FF0000;");
-        }
-        if(dbHelper.hasDevice(customer.getCode())){
-            btnDevices.setStyle("-fx-border-color: #FF0000;");
-        }
-
+        tabTaxis.setDisable(false);
+        tabMypos.setDisable(false);
+        tabSimply.setDisable(false);
+        tabEmblem.setDisable(false);
+        tabDevices.setDisable(false);
     }
 
 
@@ -570,93 +638,6 @@ public class AddCustomerController {
         }
     }
 
-    public void taxisClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("taxisView.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
-
-            // Τώρα μπορείς να πάρεις τον controller
-            TaxisViewController controller = loader.getController();
-
-            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-            controller.setCustomer(customer);
-
-            dialog.setTitle("Κωδικοί Taxis");
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            dialog.initModality(Modality.WINDOW_MODAL);
-            dialog.show();
-
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-        }
-    }
-
-    public void myposClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("myposView.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
-
-            // Τώρα μπορείς να πάρεις τον controller
-            MyposViewController controller = loader.getController();
-
-            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-            controller.setCustomer(customer);
-
-            dialog.setTitle("Κωδικοί myPOS");
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            dialog.initModality(Modality.WINDOW_MODAL);
-            dialog.show();
-
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-        }
-    }
-
-    public void simplyClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("simplyView.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
-
-            // Τώρα μπορείς να πάρεις τον controller
-            SimplyViewController controller = loader.getController();
-
-            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-            controller.setCustomer(customer);
-
-            dialog.setTitle("Κωδικοί Simply");
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            dialog.initModality(Modality.WINDOW_MODAL);
-            dialog.show();
-
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-        }
-    }
-
-    public void emblemClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("emblemView.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
-
-            // Τώρα μπορείς να πάρεις τον controller
-            EmblemViewController controller = loader.getController();
-
-            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-            controller.setCustomer(customer);
-
-            dialog.setTitle("Κωδικοί Emblem");
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            dialog.initModality(Modality.WINDOW_MODAL);
-            dialog.show();
-
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-        }
-    }
 
     public void folderClick(ActionEvent event) {
         CustomerFolderManager folderManager = new CustomerFolderManager();
@@ -737,27 +718,6 @@ public class AddCustomerController {
         }
     }
 
-    public void newDevices(ActionEvent actionEvent){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("customerDevicesView.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
-
-            // Τώρα μπορείς να πάρεις τον controller
-            CustomerDevicesController controller = loader.getController();
-
-            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-            controller.setCustomer(customer);
-
-            dialog.setTitle("Συσκευές Πελάτη");
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            dialog.initModality(Modality.WINDOW_MODAL);
-            dialog.show();
-
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-        }
-    }
 
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();
@@ -790,5 +750,21 @@ public class AddCustomerController {
     }
     public void showMegasoft(ActionEvent event) {
         PrismaWinAutomation.showCustomer(customer);
+    }
+
+    public void selectTaxisTab() {
+        Platform.runLater(() -> tabPane.getSelectionModel().select(tabTaxis));
+    }
+
+    public void selectMyPOSTab() {
+        Platform.runLater(() -> tabPane.getSelectionModel().select(tabMypos));
+    }
+
+    public void selectSimplyTab() {
+        Platform.runLater(() -> tabPane.getSelectionModel().select(tabSimply));
+    }
+
+    public void selectEmbelmTab() {
+        Platform.runLater(() -> tabPane.getSelectionModel().select(tabEmblem));
     }
 }

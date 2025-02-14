@@ -92,6 +92,10 @@ public class MainMenuController implements Initializable {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("customersView.fxml"));
         Parent customersContent = fxmlLoader.load();
 
+        // Περνάμε το mainTabPane στον CustomersController
+        CustomersController customersController = fxmlLoader.getController();
+        customersController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
+
 
         // Δημιουργία νέου tab
         Tab newTab = new Tab("Πελάτες");
