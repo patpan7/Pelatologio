@@ -33,11 +33,9 @@ public class AddCustomerController {
     @FXML
     private TabPane tabPane;
     @FXML
-    private AnchorPane myposContainer, simplyContainer, emblemContainer, devicesContainer;
+    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, devicesContainer, tasksContainer;
     @FXML
-    VBox taxisContainer;
-    @FXML
-    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabDevices;
+    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabDevices, tabTasks;
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail,tfManager, tfManagerPhone;
     @FXML
@@ -56,6 +54,7 @@ public class AddCustomerController {
     private SimplyViewController simplyViewController;
     private EmblemViewController emblemViewController;
     private CustomerDevicesController customerDevicesController;
+    private CustomerTasksController customerTasksController;
 
     int code = 0;
 
@@ -122,6 +121,15 @@ public class AddCustomerController {
             AnchorPane.setLeftAnchor(devicesContent, 0.0);
             AnchorPane.setRightAnchor(devicesContent, 0.0);
 
+            FXMLLoader loaderTasks = new FXMLLoader(getClass().getResource("customerTasksView.fxml"));
+            Parent tasksContent = loaderTasks.load();
+            customerTasksController = loaderTasks.getController();// Πάρε τον controller
+            tasksContainer.getChildren().setAll(tasksContent);
+            AnchorPane.setTopAnchor(tasksContent, 0.0);
+            AnchorPane.setBottomAnchor(tasksContent, 0.0);
+            AnchorPane.setLeftAnchor(tasksContent, 0.0);
+            AnchorPane.setRightAnchor(tasksContent, 0.0);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -152,6 +160,7 @@ public class AddCustomerController {
         tabSimply.setDisable(true);
         tabEmblem.setDisable(true);
         tabDevices.setDisable(true);
+        tabTasks.setDisable(true);
 
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
@@ -431,9 +440,16 @@ public class AddCustomerController {
         } else {
             System.out.println("customerDevicesController δεν είναι ακόμα έτοιμος.");
         }
+        if (customerTasksController != null) {
+            customerTasksController.setCustomer(customer);
+        } else {
+            System.out.println("customerTasksController δεν είναι ακόμα έτοιμος.");
+        }
 
         btnAddToMegasoft.setDisable(false);
         btnAddToMegasoft.setVisible(true);
+        btnShowToMegasoft.setDisable(false);
+        btnShowToMegasoft.setVisible(true);
         btnData.setDisable(false);
         btnData.setVisible(true);
         btnLabel.setDisable(false);
@@ -447,6 +463,7 @@ public class AddCustomerController {
         tabSimply.setDisable(false);
         tabEmblem.setDisable(false);
         tabDevices.setDisable(false);
+        tabTasks.setDisable(false);
     }
 
 
@@ -727,6 +744,7 @@ public class AddCustomerController {
                 AddTaskController controller = loader.getController();
                 controller.setCustomerId(customer.getCode());
                 controller.setCustomerName(customer.getName());
+                controller.lock();
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
                 // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
@@ -778,6 +796,7 @@ public class AddCustomerController {
     public void addMegasoft(ActionEvent event) {
         PrismaWinAutomation.addCustomer(customer);
     }
+
     public void showMegasoft(ActionEvent event) {
         PrismaWinAutomation.showCustomer(customer);
     }

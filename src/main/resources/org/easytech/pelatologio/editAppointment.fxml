@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EditAppointmentController">
     <content>
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
@@ -54,7 +54,7 @@
                     <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                 </VBox.margin>
             </HBox>
-            <JFXButton mnemonicParsing="false" onAction="#showCustomer" styleClass="click-button" text="Προβολή πελάτη" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <JFXButton buttonType="RAISED" mnemonicParsing="false" onAction="#showCustomer" styleClass="click-button" text="Προβολή πελάτη" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
                 <GridPane.margin>
                     <Insets />
                 </GridPane.margin>

@@ -87,10 +87,10 @@ public class CustomersController implements Initializable {
         // Διπλό κλικ για επεξεργασία πελάτη
         customerTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1){
-                btnTaxis.setStyle("-fx-border-color: #D6D8DE;");
-                btnMypos.setStyle("-fx-border-color: #D6D8DE;");
-                btnSimply.setStyle("-fx-border-color: #D6D8DE;");
-                btnEmblem.setStyle("-fx-border-color: #D6D8DE;");
+                btnTaxis.setStyle("-fx-border-color: #005599;");
+                btnMypos.setStyle("-fx-border-color: #005599;");
+                btnSimply.setStyle("-fx-border-color: #005599;");
+                btnEmblem.setStyle("-fx-border-color: #005599;");
                 // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
                 Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
                 if(dbHelper.hasApp(selectedCustomer.getCode(),1)){
@@ -664,10 +664,6 @@ public class CustomersController implements Initializable {
         GREEK_TO_ENGLISH.put('\u0396', '\u005A');  // uppercase Ζ
     }
 
-    public void mainMenuClick(ActionEvent event) throws IOException {
-        MainMenuController mainMenuController = new MainMenuController();
-        mainMenuController.mainMenuClick(stackPane);
-    }
 
     public void taxisClick(MouseEvent event) {
         if (event.getButton() == MouseButton.SECONDARY) {

@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -7,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -36,6 +38,8 @@ public class AddTaskController {
     private ComboBox<Customer> customerComboBox;
     @FXML
     private ComboBox<TaskCategory> categoryComboBox;
+    @FXML
+    private JFXButton btnCustomer;
 
     private Task task;
     private int customerId;
@@ -250,36 +254,23 @@ public class AddTaskController {
             if (res.equals("unlocked")) {
                 dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Ενημέρωση Πελάτη");
-                dialog.initModality(Modality.WINDOW_MODAL);
+                Parent root = loader.load();
+
+                Stage stage = new Stage();
+                stage.setTitle("Λεπτομέρειες Πελάτη");
+                stage.setScene(new Scene(root));
+                stage.initModality(Modality.APPLICATION_MODAL); // Κλειδώνει το parent window αν το θες σαν dialog
 
                 AddCustomerController controller = loader.getController();
 
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
                 controller.setCustomerData(selectedCustomer);
 
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setOnAction(event -> {
-                    controller.handleOkButton();
-                });
-
-                // Προσθήκη listener για το κλείσιμο του παραθύρου
-                dialog.setOnHidden(event -> {
+                stage.show();
+                stage.setOnCloseRequest(event -> {
+                    System.out.println("Το παράθυρο κλείνει!");
                     dbHelper.customerUnlock(selectedCustomer.getCode());
                 });
-
-                // Add a key listener to save when Enter is pressed
-                dialog.getDialogPane().setOnKeyPressed(event -> {
-                    if (event.getCode() == KeyCode.ENTER) {
-                        okButton.fire();  // Triggers the OK button action
-                    }
-                });
-                dialog.show();
-
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Προσοχή");
@@ -289,5 +280,10 @@ public class AddTaskController {
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εμφάνιση του πελάτη.", e.getMessage(), Alert.AlertType.ERROR));
         }
+    }
+
+    public void lock() {
+        customerComboBox.setDisable(true);
+        btnCustomer.setDisable(true);
     }
 }

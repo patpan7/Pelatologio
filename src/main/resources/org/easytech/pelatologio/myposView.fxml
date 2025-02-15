@@ -11,7 +11,7 @@
                     <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
                         <children>
                             <!-- Πίνακας για τα Logins -->
-                            <TableView fx:id="loginTable">
+                            <TableView fx:id="loginTable" VBox.vgrow="ALWAYS">
                                 <columns>
                                     <TableColumn fx:id="usernameColumn" text="Username" />
                                     <TableColumn fx:id="passwordColumn" text="Password" />
@@ -37,17 +37,17 @@
                             </TableView>
 
                             <!-- Κουμπί για προσθήκη νέου login -->
-                            <JFXButton fx:id="addLoginButton" onAction="#handleAddLogin" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Προσθήκη Νέου Login">
+                            <JFXButton fx:id="addLoginButton" buttonType="RAISED" onAction="#handleAddLogin" prefWidth="277.0" styleClass="click-button" text="Προσθήκη Νέου Login">
                                 <VBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                 </VBox.margin>
                             </JFXButton>
-                            <JFXButton fx:id="editButton" onAction="#handleEditLogin" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Επεξεργασία">
+                            <JFXButton fx:id="editButton" buttonType="RAISED" onAction="#handleEditLogin" prefWidth="277.0" styleClass="click-button" text="Επεξεργασία">
                                 <VBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                 </VBox.margin>
                             </JFXButton>
-                            <JFXButton fx:id="deleteButton" onAction="#handleDeleteLogin" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Διαγραφή">
+                            <JFXButton fx:id="deleteButton" buttonType="RAISED" onAction="#handleDeleteLogin" prefWidth="277.0" styleClass="click-button" text="Διαγραφή">
                                 <VBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                 </VBox.margin>
@@ -58,14 +58,14 @@
                         </HBox.margin>
                     </VBox>
                     <!-- Λίστα με κουμπιά για άλλες εργασίες -->
-                    <VBox alignment="TOP_CENTER">
+                    <VBox alignment="TOP_CENTER" HBox.hgrow="NEVER">
                         <children>
-                            <JFXButton fx:id="btnLogin" maxWidth="277.0" mnemonicParsing="false" onAction="#myposloginOpen" prefHeight="55.0" styleClass="click-button" text="Σύνδεση myPOS">
+                            <JFXButton fx:id="btnLogin" buttonType="RAISED" mnemonicParsing="false" onAction="#myposloginOpen" prefWidth="277.0" styleClass="click-button" text="Σύνδεση myPOS">
                                 <VBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                 </VBox.margin>
                             </JFXButton>
-                            <JFXButton fx:id="btnRegister" mnemonicParsing="false" onMouseClicked="#myposregisterOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Εγγραφή myPOS">
+                            <JFXButton fx:id="btnRegister" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#myposregisterOpen" prefWidth="277.0" styleClass="click-button" text="Εγγραφή myPOS">
                                 <VBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                 </VBox.margin>

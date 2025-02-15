@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane prefHeight="700.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EmailDialogController">
+<DialogPane prefHeight="700.0" prefWidth="600.0" styleClass="pane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EmailDialogController">
    <content>
-      <VBox spacing="10" styleClass="normal-label" stylesheets="@external.css">
+      <VBox spacing="10" styleClass="pane" stylesheets="@external.css">
           <padding>
               <Insets bottom="10" left="10" right="10" top="10" />
           </padding>
       
           <!-- Παραλήπτης -->
-          <Label text="Παραλήπτης:" />
+          <Label styleClass="normal-label" text="Παραλήπτης:" />
           <TextField fx:id="emailField" prefWidth="400" promptText="Email παραλήπτη" />
       
           <!-- Θέμα -->
@@ -20,18 +22,34 @@
           <TextField fx:id="subjectField" promptText="Θέμα" />
       
           <!-- Περιεχόμενο -->
-          <Label text="Μήνυμα:" />
-          <TextArea fx:id="bodyArea" prefHeight="200" promptText="Περιεχόμενο email" />
+          <Label styleClass="normal-label" text="Μήνυμα:" />
+          <TextArea fx:id="bodyArea" prefHeight="454.0" prefWidth="580.0" promptText="Περιεχόμενο email" styleClass="text-field" VBox.vgrow="ALWAYS" />
       
           <!-- Συνημμένα -->
-          <Label text="Συνημμένα:" />
+          <Label styleClass="normal-label" text="Συνημμένα:" />
           <ListView fx:id="attachmentList" />
 
           <!-- Κουμπιά -->
           <HBox alignment="CENTER_LEFT" spacing="10">
-             <Button fx:id="attachButton" styleClass="click-button" text="Προσθήκη Συνημμένων" />
+             <JFXButton fx:id="attachButton" styleClass="click-button" text="Προσθήκη Συνημμένων">
+              <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                          <Image url="@icons/attach.png" />
+                      </image>
+                  </ImageView>
+              </graphic>
+              </JFXButton>
             <Separator visible="false" HBox.hgrow="ALWAYS" />
-              <Button fx:id="sendButton" styleClass="click-button" text="Αποστολή" />
+              <JFXButton fx:id="sendButton" styleClass="click-button" text="Αποστολή">
+              <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                          <Image url="@icons/send.png" />
+                      </image>
+                  </ImageView>
+              </graphic>
+              </JFXButton>
           </HBox>
           <ProgressBar fx:id="progressBar" prefWidth="200.0" visible="false" />
       </VBox>

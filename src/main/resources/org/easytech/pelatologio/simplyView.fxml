@@ -12,7 +12,7 @@
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </HBox.margin>
                     <!-- Πίνακας για τα Logins -->
-                    <TableView fx:id="loginTable">
+                    <TableView fx:id="loginTable" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="usernameColumn" text="Username" />
                             <TableColumn fx:id="passwordColumn" text="Password" />
@@ -37,17 +37,17 @@
                     </TableView>
 
                     <!-- Κουμπί για προσθήκη νέου login -->
-                    <JFXButton fx:id="addLoginButton" maxWidth="277.0" onAction="#handleAddLogin" prefHeight="55.0" styleClass="click-button" text="Προσθήκη Νέου Login">
+                    <JFXButton fx:id="addLoginButton" buttonType="RAISED" onAction="#handleAddLogin" prefWidth="277.0" styleClass="click-button" text="Προσθήκη Νέου Login">
                         <VBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                         </VBox.margin>
                     </JFXButton>
-                    <JFXButton fx:id="editButton" maxWidth="277.0" onAction="#handleEditLogin" prefHeight="55.0" styleClass="click-button" text="Επεξεργασία">
+                    <JFXButton fx:id="editButton" buttonType="RAISED" onAction="#handleEditLogin" prefWidth="277.0" styleClass="click-button" text="Επεξεργασία">
                         <VBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                         </VBox.margin>
                     </JFXButton>
-                    <JFXButton fx:id="deleteButton" maxWidth="277.0" onAction="#handleDeleteLogin" prefHeight="55.0" styleClass="click-button" text="Διαγραφή">
+                    <JFXButton fx:id="deleteButton" buttonType="RAISED" onAction="#handleDeleteLogin" prefWidth="277.0" styleClass="click-button" text="Διαγραφή">
                         <VBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                         </VBox.margin>
@@ -56,7 +56,7 @@
                 <!-- Λίστα με κουμπιά για άλλες εργασίες -->
                 <VBox alignment="TOP_CENTER" prefWidth="300.0" HBox.hgrow="NEVER">
                     <children>
-                        <JFXButton fx:id="btnSimplyPOS" maxWidth="277.0" mnemonicParsing="false" onMouseClicked="#simplyposOpen" prefHeight="55.0" styleClass="click-button" text="Simply POS">
+                        <JFXButton fx:id="btnSimplyPOS" buttonType="RAISED" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#simplyposOpen" prefWidth="277.0" styleClass="click-button" text="Simply POS">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
@@ -64,7 +64,7 @@
                                 <Cursor fx:constant="HAND" />
                             </cursor>
                         </JFXButton>
-                        <JFXButton fx:id="btnSimplyCash" maxWidth="277.0" mnemonicParsing="false" onMouseClicked="#simplycashOpen" prefHeight="55.0" styleClass="click-button" text="Simply Cash">
+                        <JFXButton fx:id="btnSimplyCash" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#simplycashOpen" prefWidth="277.0" styleClass="click-button" text="Simply Cash">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
@@ -72,7 +72,7 @@
                                 <Cursor fx:constant="HAND" />
                             </cursor>
                         </JFXButton>
-                        <JFXButton fx:id="btnSimplyRest" maxWidth="277.0" mnemonicParsing="false" onMouseClicked="#simplyrestOpen" prefHeight="55.0" styleClass="click-button" text="Simply Rest" VBox.vgrow="ALWAYS">
+                        <JFXButton fx:id="btnSimplyRest" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#simplyrestOpen" prefWidth="277.0" styleClass="click-button" text="Simply Rest" VBox.vgrow="ALWAYS">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
@@ -83,12 +83,12 @@
                                 <Cursor fx:constant="HAND" />
                             </cursor>
                         </JFXButton>
-                        <JFXButton fx:id="btnSimplyPOSRegister" maxWidth="277.0" mnemonicParsing="false" onAction="#registerposOpen" prefHeight="55.0" styleClass="click-button" text="Εγγραφή Simply POS" VBox.vgrow="ALWAYS">
+                        <JFXButton fx:id="btnSimplyPOSRegister" buttonType="RAISED" mnemonicParsing="false" onAction="#registerposOpen" prefWidth="277.0" styleClass="click-button" text="Εγγραφή Simply POS" VBox.vgrow="ALWAYS">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </JFXButton>
-                        <JFXButton fx:id="btnSimplyCloudRegister" mnemonicParsing="false" onAction="#registercloudOpen" prefHeight="55.0" styleClass="click-button" text="Εγγραφή Simply Cloud">
+                        <JFXButton fx:id="btnSimplyCloudRegister" buttonType="RAISED" mnemonicParsing="false" onAction="#registercloudOpen" prefWidth="277.0" styleClass="click-button" text="Εγγραφή Simply Cloud">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>

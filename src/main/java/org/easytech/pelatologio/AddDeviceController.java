@@ -112,7 +112,6 @@ public class AddDeviceController {
         filteredCustomers = new FilteredList<>(FXCollections.observableArrayList(customers));
         customerComboBox.setItems(filteredCustomers);
         customerComboBox.setEditable(true);
-
         // Φόρτωση ειδών
         List<Item> items = dbHelper.getItems();
         filteredItems = new FilteredList<>(FXCollections.observableArrayList(items));

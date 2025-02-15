@@ -1,22 +1,27 @@
 /* Κεντρικές χρωματικές μεταβλητές */
 * {
-    -fx-primary-color: #47b9d0;
-    -fx-secondary-color: #eab676;
-    -fx-light-grey-color: #d1d1d1;
-    -fx-light-blue-color: #90caf9;
-    -fx-focus-color: -fx-secondary-color;
+    -fx-primary: #0077cc; /* Κύριο μπλε */
+    -fx-secondary: #005599; /* Σκούρο μπλε */
+    -fx-accent: #b3d5ff; /* Απαλό μπλε */
+    -fx-background: #e6f2ff; /* Απαλό γαλάζιο */
+    -fx-text: #333333; /* Σκούρο γκρι για κείμενο */
+    -fx-hover: #3399ff; /* Χρώμα hover */
+    -fx-border: #005599; /* Χρώμα περιγράμματος */
+    -fx-selected: #0077cc; /* Χρώμα επιλογής */
+
+     -fx-font-family: Arial;
 }
 
 /*------------------tableView----------------*/
 .table-view {
     -fx-background-color: transparent;
-    -fx-border-color: #d1d1d1;
+    -fx-border-color: -fx-border;
 }
 
 .table-view .column-header {
-    -fx-background-color: #e0e0e0;
+    -fx-background-color: -fx-accent;
     -fx-font-weight: bold;
-    -fx-text-fill: #333;
+    -fx-text-fill: -fx-text;
     -fx-font-size: 16px;
     -fx-padding: 5 0;
 }
@@ -24,11 +29,11 @@
 .table-view .table-cell {
     -fx-font-size: 16px;
     -fx-padding: 5;
-    -fx-text-fill: #333;
+    -fx-text-fill: -fx-text;
 }
 
 .table-row-cell:odd {
-    -fx-background-color: #f9f9f9;
+    -fx-background-color: #e8f2ff;
 }
 
 .table-row-cell:even {
@@ -36,63 +41,61 @@
 }
 
 .table-row-cell:selected {
-    -fx-background-color: -fx-primary-color;
+    -fx-background-color: -fx-selected;
     -fx-text-fill: white;
 }
 
+.table-row-cell:selected .text{
+    -fx-fill: white;
+    -fx-font-weight: bold;
+}
+
 .table-row-cell:hover {
-    -fx-background-color: -fx-light-blue-color;
+    -fx-background-color: -fx-hover;
     -fx-text-fill: black;
 }
 
 .table-row-cell:empty {
     -fx-background-color: white;
-    -fx-border-color: white;
-}
-
-.inactive-row {
-    -fx-background-color: #cccccc;
-    -fx-text-fill: white;
 }
 
 /*------------------ComboBox----------------*/
 .combo-box .list-cell {
     -fx-background-color: transparent;
-    -fx-text-fill: #333;
+    -fx-text-fill: -fx-text;
+    -fx-font-size: 20px;
 }
 
 .combo-box .list-cell:hover {
-    -fx-background-color: -fx-light-blue-color;
+    -fx-background-color: -fx-hover;
     -fx-text-fill: black;
 }
 
 .combo-box .list-cell:selected {
-    -fx-background-color: -fx-primary-color;
+    -fx-background-color: -fx-selected;
     -fx-text-fill: white;
 }
 
 /*------------------Buttons----------------*/
 .click-button {
-    -fx-background-color: #e5f8fd;
+    -fx-background-color: -fx-background;
     -fx-background-radius: 50;
-    -fx-font-family: CrackMan;
-    -fx-font-size: 24px;
-    -fx-border-color: #D6D8DE;
+    -fx-font-size: 20px;
+    -fx-border-color: -fx-border;
     -fx-border-radius: 50;
     -fx-border-width: 1;
     -fx-text-fill: black;
 }
 
 .click-button:hover {
-    -fx-background-color: #03C1F4;
+    -fx-background-color: -fx-hover;
     -fx-text-fill: white;
 }
 
 .click-button:pressed {
     -fx-background-radius: 50;
-    -fx-font-family: CrackMan;
-    -fx-font-size: 24px;
-    -fx-border-color: #D6D8DE;
+    -fx-font-size: 20px;
+    -fx-border-color: -fx-border;
     -fx-text-fill: white;
     -fx-rotate: 1;
 }
@@ -112,6 +115,14 @@
     -fx-prompt-translate-y: -25%;
 }
 
+/*------------------TextArea----------------*/
+.text-area {
+    -fx-background-color: #a9a9a9, white, white;
+    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
+    -fx-font-size: 24px;
+    -fx-prompt-text-fill: gray;
+}
+
 /*------------------Labels----------------*/
 .header-label {
     -fx-font-size: 36px;
@@ -127,24 +138,45 @@
     -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.5), 0,0,0,1);
 }
 
+/*------------------Context Menu----------------*/
+.context-menu {
+    -fx-background-color: -fx-background;
+    -fx-border-color: -fx-border;
+    -fx-border-width: 2px;
+}
+
+/* Μορφοποίηση των MenuItem */
+.context-menu .menu-item {
+    -fx-background-color: -fx-background;
+    -fx-text-fill: white;
+    -fx-padding: 10px;
+    -fx-font-size: 16px;
+}
+
+/* Αλλαγή χρώματος όταν το στοιχείο είναι επιλεγμένο */
+.context-menu .menu-item:hover {
+    -fx-background-color: -fx-hover;
+    -fx-text-fill: white;
+}
+
 /*------------------General Pane----------------*/
 .pane {
-    -fx-background-color: #EEF1F7;
+    -fx-background-color: -fx-background;
 }
 
 /*------------------Tooltips----------------*/
 .tooltip {
-    -fx-background-color: #2a2a2a;
-    -fx-text-fill: #ffffff;
+    -fx-background-color: -fx-background;
+    -fx-text-fill: -fx-text;
     -fx-font-size: 14px;
     -fx-padding: 10px;
-    -fx-border-color: #cccccc;
+    -fx-border-color: -fx-border;
     -fx-border-width: 1px;
 }
 
 /*------------------Checkbox----------------*/
 .jfx-check-box {
-    -jfx-checked-color: #004fe1;
+    -jfx-checked-color: -fx-primary;
     -jfx-unchecked-color: black;
 }
 
@@ -153,59 +185,81 @@
 }
 
 /*------------------Tab----------------*/
-
-/* Στυλ για τα TabPane και Tab */
 .tab-pane {
-    -fx-background-color: #EEF1F7;
+    -fx-background-color: -fx-background;
+    -fx-text-fill: white;
 }
+
 .tab-pane .tab-header-background {
-    -fx-background-color: #EEF1F7;
+    -fx-background-color: -fx-background;
 }
+
 .tab-pane:top .tab-header-area {
     -fx-background-insets: 0 0 0 0;
     -fx-padding: 0 0 0 0;
 }
+
 .tab {
     -fx-background-color: transparent;
-    -fx-font-size: 18px;
-    -fx-text-fill: #333333;
-    -fx-padding: 10px;
+    -fx-font-size: 20px; /* Μεγαλύτερη γραμματοσειρά */
+    -fx-padding: 10px 10px 10px 10px; /* Μεγαλύτερο padding (πάνω-κάτω, αριστερά-δεξιά) */
     -fx-background-radius: 10px 10px 0 0;
-    -fx-border-color: -fx-primary-color;
+    -fx-border-color: -fx-border;
     -fx-border-radius: 10px 10px 0 0;
     -fx-border-width: 2px;
 }
+
 .tabHas {
     -fx-background-color: transparent;
-    -fx-font-size: 18px;
-    -fx-text-fill: #333333;
-    -fx-padding: 10px;
+    -fx-font-size: 20px; /* Μεγαλύτερη γραμματοσειρά */
+    -fx-padding: 10px 10px 10px 10px; /* Μεγαλύτερο padding (πάνω-κάτω, αριστερά-δεξιά) */
+    -fx-text-fill: -fx-text;
     -fx-background-radius: 10px 10px 0 0;
-    -fx-border-color: #FF0000;
+    -fx-border-color: #ff0000;
     -fx-border-radius: 10px 10px 0 0;
-    -fx-border-width: 3px;
+    -fx-border-width: 2px;
 }
-
-/* Στυλ για το ενεργό Tab */
 .tab:selected {
-    -fx-background-color: -fx-primary-color; /* Πορτοκαλί χρώμα για το ενεργό Tab */
-    -fx-text-fill: white; /* Λευκό κείμενο για το ενεργό Tab */
+    -fx-background-color: -fx-primary;
 }
-
-/* Στυλ για το Tab όταν το ποντίκι αιωρείται από πάνω */
+.tab:selected .tab-label {
+    -fx-text-fill: white; /* Κείμενο λευκό όταν η καρτέλα είναι επιλεγμένη */
+    -fx-font-weight: bold; /* Εντονο κείμενο όταν η καρτέλα είναι επιλεγμένη */
+}
 .tab:hover {
-    -fx-background-color: -fx-light-blue-color; /* Ανοιχτό μπλε όταν το Tab είναι hovered */
-    -fx-text-fill: black; /* Σκούρο κείμενο για hovered Tab */
+    -fx-background-color: -fx-hover;
 }
 
-/* Στυλ για τα Tab Pane περιθώρια */
-.tab-header-area {
-    -fx-background-color: #f4f4f4; /* Απαλή γκρι απόχρωση φόντου */
-    -fx-padding: 0 5px 0 5px; /* Ελαφρύ padding γύρω από τα tabs */
+/*------------------titled pane----------------*/
+.titled-pane {
+    -fx-background-color: -fx-background;
 }
 
-/* Στυλ για το περιεχόμενο του Tab */
-.tab-content {
-    -fx-background-color: #ffffff; /* Λευκό φόντο για το περιεχόμενο του Tab */
+.titled-pane > .title {
+     -fx-background-color: transparent;
+     -fx-font-size: 20px; /* Μεγαλύτερη γραμματοσειρά */
+     -fx-padding: 10px 10px 10px 10px; /* Μεγαλύτερο padding (πάνω-κάτω, αριστερά-δεξιά) */
+     -fx-background-radius: 10px 10px 0 0;
+     -fx-border-color: -fx-border;
+     -fx-border-radius: 10px 10px 0 0;
+     -fx-border-width: 2px;
+}
+
+.titled-pane:hover > .title {
+    -fx-background-color: -fx-hover;
+}
+
+.titled-pane:expanded > .title {
+    -fx-background-color: -fx-primary;
+}
+
+.titled-pane:expanded > .title .text {
+    -fx-fill: white;
+    -fx-font-weight: bold;
+}
+
+.titled-pane > .content {
+    -fx-background-color: -fx-background;
     -fx-padding: 10px;
+    -fx-border-radius: 0 0 10px 10px;
 }

@@ -13,7 +13,7 @@
             <center>
                 <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                     <BorderPane.margin>
-                        <Insets left="10.0" top="10.0" />
+                        <Insets top="10.0" />
                     </BorderPane.margin>
                     <HBox alignment="CENTER" VBox.vgrow="NEVER">
                         <VBox.margin>
@@ -35,7 +35,7 @@
                                 <Insets />
                             </opaqueInsets>
                         </TextField>
-                        <JFXButton fx:id="btnClear" mnemonicParsing="false" onAction="#clean" styleClass="click-button" text="">
+                        <JFXButton fx:id="btnClear" buttonType="RAISED" mnemonicParsing="false" onAction="#clean" styleClass="click-button" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
@@ -48,7 +48,7 @@
                             </HBox.margin>
                         </JFXButton>
                         <Separator prefWidth="200.0" visible="false" HBox.hgrow="ALWAYS" />
-                        <JFXButton mnemonicParsing="false" onAction="#itemAddNew" styleClass="click-button" text="Προσθήκη Νέου Είδους">
+                        <JFXButton buttonType="RAISED" mnemonicParsing="false" onAction="#itemAddNew" styleClass="click-button" text="Προσθήκη Νέου Είδους">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/add.png" />

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
@@ -56,7 +57,7 @@
                <VBox.margin>
                   <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                </VBox.margin>
-                <Button fx:id="btnCustomer" mnemonicParsing="false" onAction="#showCustomer" styleClass="click-button">
+                <JFXButton fx:id="btnCustomer" buttonType="RAISED" mnemonicParsing="false" onAction="#showCustomer" styleClass="click-button" text="">
                     <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -67,7 +68,7 @@
                     <HBox.margin>
                         <Insets left="5.0" right="10.0" />
                     </HBox.margin>
-                </Button>
+                </JFXButton>
             </HBox>
             <HBox alignment="CENTER_LEFT">
                <children>
