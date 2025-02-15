@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import com.jfoenix.controls.JFXButton?>
-            <HBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1100.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MyposViewController">
+<HBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MyposViewController">
                 <children>
                     <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
                         <children>
                             <!-- Πίνακας για τα Logins -->
-                            <TableView fx:id="loginTable" VBox.vgrow="ALWAYS">
+                            <TableView fx:id="loginTable">
                                 <columns>
                                     <TableColumn fx:id="usernameColumn" text="Username" />
                                     <TableColumn fx:id="passwordColumn" text="Password" />
@@ -39,35 +39,35 @@
                             <!-- Κουμπί για προσθήκη νέου login -->
                             <JFXButton fx:id="addLoginButton" onAction="#handleAddLogin" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Προσθήκη Νέου Login">
                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                 </VBox.margin>
                             </JFXButton>
                             <JFXButton fx:id="editButton" onAction="#handleEditLogin" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Επεξεργασία">
                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                 </VBox.margin>
                             </JFXButton>
                             <JFXButton fx:id="deleteButton" onAction="#handleDeleteLogin" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Διαγραφή">
                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                 </VBox.margin>
                             </JFXButton>
                         </children>
                         <HBox.margin>
-                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                         </HBox.margin>
                     </VBox>
                     <!-- Λίστα με κουμπιά για άλλες εργασίες -->
                     <VBox alignment="TOP_CENTER">
                         <children>
-                            <JFXButton fx:id="btnLogin"  maxWidth="277.0" mnemonicParsing="false" onAction="#myposloginOpen" prefHeight="55.0" styleClass="click-button" text="Σύνδεση myPOS">
+                            <JFXButton fx:id="btnLogin" maxWidth="277.0" mnemonicParsing="false" onAction="#myposloginOpen" prefHeight="55.0" styleClass="click-button" text="Σύνδεση myPOS">
                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                 </VBox.margin>
                             </JFXButton>
                             <JFXButton fx:id="btnRegister" mnemonicParsing="false" onMouseClicked="#myposregisterOpen" prefHeight="55.0" prefWidth="277.0" styleClass="click-button" text="Εγγραφή myPOS">
                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                 </VBox.margin>
                                 <cursor>
                                     <Cursor fx:constant="HAND" />
@@ -75,7 +75,7 @@
                             </JFXButton>
                         </children>
                         <HBox.margin>
-                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                         </HBox.margin>
                     </VBox>
                 </children>

@@ -17,6 +17,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -28,10 +29,13 @@ import java.io.File;
 import java.io.IOException;
 
 public class AddCustomerController {
+    private TabPane mainTabPane;
     @FXML
     private TabPane tabPane;
     @FXML
-    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, devicesContainer;
+    private AnchorPane myposContainer, simplyContainer, emblemContainer, devicesContainer;
+    @FXML
+    VBox taxisContainer;
     @FXML
     private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabDevices;
     @FXML
@@ -58,8 +62,20 @@ public class AddCustomerController {
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
     private Customer customer;
 
+    private CustomersController customersController;
+
+    // Θα περάσουμε το TabPane από τον MainMenuController
+    public void setMainTabPane(TabPane mainTabPane) {
+        this.mainTabPane = mainTabPane;
+    }
+
+    public void setCustomersController(CustomersController controller) {
+        this.customersController = controller;
+    }
+
 
     public void initialize() {
+        Platform.runLater(() -> tabPane.requestFocus());
         try {
             FXMLLoader loaderTaxis = new FXMLLoader(getClass().getResource("taxisView.fxml"));
             Parent taxisContent = loaderTaxis.load();
@@ -207,13 +223,6 @@ public class AddCustomerController {
         });
     }
 
-    @FXML
-    private void handleMouseClick(MouseEvent event) {
-        // Έλεγχος για διπλό κλικ
-        if (event.getClickCount() == 2) {
-            openNotesDialog(taNotes.getText());
-        }
-    }
 
     public void setInitialAFM(String afm) {
         tfAfm.setText(afm); // Ορισμός αρχικής τιμής στο πεδίο ΑΦΜ
@@ -507,6 +516,14 @@ public class AddCustomerController {
             updateCustomer();
         }
     }
+    private void closeCurrentTab() {
+        Platform.runLater(() -> {
+            Tab currentTab = mainTabPane.getSelectionModel().getSelectedItem();
+            System.out.println("Τρέχον tab: " + currentTab.getText());
+            TabPane parentTabPane = currentTab.getTabPane();
+            parentTabPane.getTabs().remove(currentTab);
+        });
+    }
 
     void addCustomer() {
         String name = tfName.getText();
@@ -540,6 +557,7 @@ public class AddCustomerController {
         DBHelper dbHelper = new DBHelper();
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
+        int customerId;
         if (dbHelper.isAfmExists(afm)) {
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -548,10 +566,11 @@ public class AddCustomerController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(3))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
-            int customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, manager, managerPhone, notes);
+            customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, manager, managerPhone, notes);
             // Εμφάνιση επιτυχίας
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -560,9 +579,20 @@ public class AddCustomerController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(3))
                         .position(Pos.TOP_RIGHT);
-                notifications.showInformation();});
+                notifications.showInformation();
+                closeCurrentTab(); // Κλείσιμο του "Νέος Πελάτης"
+                openCustomerTab(customerId); // Άνοιγμα καρτέλας με τον νέο πελάτη
+            });
+        }
+
+    }
+    private void openCustomerTab(int customerId) {
+        if (customersController != null) {
+            System.out.println(customerId);
+            customersController.openCustomerTab(customerId);
         }
     }
+
 
     void updateCustomer() {
         DBHelper dbHelper = new DBHelper();

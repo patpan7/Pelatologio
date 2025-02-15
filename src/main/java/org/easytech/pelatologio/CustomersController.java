@@ -258,6 +258,8 @@ public class CustomersController implements Initializable {
             customerTab.setContent(customerForm);
 
             AddCustomerController controller = loader.getController();
+            controller.setMainTabPane(mainTabPane);
+            controller.setCustomersController(this); // Περνάμε το instance του CustomersController
             String filterValue = filterField.getText();
             if (filterValue != null && filterValue.matches("\\d{9}")) {
                 controller.setInitialAFM(filterValue); // Προ-συμπλήρωση ΑΦΜ
@@ -266,6 +268,20 @@ public class CustomersController implements Initializable {
             // Προσθήκη του tab στο TabPane
             mainTabPane.getTabs().add(customerTab);
             mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
+            customerTab.setOnClosed(event -> {
+                refreshTableData(); // Ανανεώνει τη λίστα πελατών
+                filteredData = new FilteredList<>(observableList, b -> true);
+
+                filterField.textProperty().addListener((observable, oldValue, newValue) ->
+                    applyFilters(newValue)
+                );
+
+                applyFilters(filterField.getText());
+
+                SortedList<Customer> sortedData = new SortedList<>(filteredData);
+                sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
+                customerTable.setItems(sortedData);
+            });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -284,7 +300,7 @@ public class CustomersController implements Initializable {
                         return;
                     }
                 }
-// Φόρτωση του FXML
+                // Φόρτωση του FXML
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
                 Parent customerForm = loader.load();
 
@@ -295,17 +311,36 @@ public class CustomersController implements Initializable {
                 AddCustomerController controller = loader.getController();
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
                 controller.setCustomerData(selectedCustomer);
-
+                controller.setMainTabPane(mainTabPane);
                 // Προσθήκη του tab στο TabPane
                 mainTabPane.getTabs().add(customerTab);
                 mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
+
+                customerTab.setOnCloseRequest(event -> {
+                    dbHelper.customerUnlock(selectedCustomer.getCode());
+                });
+
+                customerTab.setOnClosed(event -> {
+                    refreshTableData(); // Ανανεώνει τη λίστα πελατών
+                    filteredData = new FilteredList<>(observableList, b -> true);
+
+                    filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+                        applyFilters(newValue);
+                    });
+
+                    applyFilters(filterField.getText());
+
+                    SortedList<Customer> sortedData = new SortedList<>(filteredData);
+                    sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
+                    customerTable.setItems(sortedData);
+                });
+
 //                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 //
 //                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
 //                okButton.setOnAction(event -> {
 //                    controller.handleOkButton();
 //                    // Reinitialize the table and apply the search filter when OK is pressed
-//                    //tableInit();
 //                    refreshTableData();
 //                    filteredData = new FilteredList<>(observableList, b -> true);
 //
@@ -333,6 +368,83 @@ public class CustomersController implements Initializable {
 //                });
 //                dialog.show();
 
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText(res);
+                alert.showAndWait();
+            }
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+    public void openCustomerTab(int customerId) {
+        System.out.println("customerId: " + customerId);
+            refreshTableData(); // Ανανεώνει τη λίστα πελατών
+            filteredData = new FilteredList<>(observableList, b -> true);
+
+            filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+                applyFilters(newValue);
+            });
+
+            applyFilters(filterField.getText());
+
+            SortedList<Customer> sortedData = new SortedList<>(filteredData);
+            sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
+            customerTable.setItems(sortedData);
+            // Έλεγχος αν υπάρχει ήδη ανοικτό tab για τον συγκεκριμένο πελάτη
+            Customer selectedCustomer = dbHelper.getSelectedCustomer(customerId);
+        System.out.println("selectedCustomer: " + selectedCustomer);
+        try {
+            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+            if (res.equals("unlocked")) {
+                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
+                for (Tab tab : mainTabPane.getTabs()) {
+                    if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
+                        mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                        return;
+                    }
+                }
+                // Φόρτωση του FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
+                Parent customerForm = loader.load();
+
+                // Δημιουργία νέου tab για την ενημέρωση του πελάτη
+                Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
+
+                customerTab.setContent(customerForm);
+
+                AddCustomerController controller = loader.getController();
+                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                controller.setCustomerData(selectedCustomer);
+                controller.setMainTabPane(mainTabPane);
+                // Προσθήκη του tab στο TabPane
+                Platform.runLater(() -> {
+                    mainTabPane.getTabs().add(customerTab);
+                    mainTabPane.getSelectionModel().select(customerTab);
+                    System.out.println("Tab added successfully: " + customerTab.getText());
+                });
+
+                customerTab.setOnCloseRequest(event -> {
+                    dbHelper.customerUnlock(selectedCustomer.getCode());
+
+                });
+
+                customerTab.setOnClosed(event -> {
+                    refreshTableData(); // Ανανεώνει τη λίστα πελατών
+                    filteredData = new FilteredList<>(observableList, b -> true);
+
+                    filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+                        applyFilters(newValue);
+                    });
+
+                    applyFilters(filterField.getText());
+
+                    SortedList<Customer> sortedData1 = new SortedList<>(filteredData);
+                    sortedData1.comparatorProperty().bind(customerTable.comparatorProperty());
+                    customerTable.setItems(sortedData1);
+                });
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Προσοχή");
