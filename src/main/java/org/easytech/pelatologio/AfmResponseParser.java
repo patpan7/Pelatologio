@@ -38,7 +38,7 @@ public class AfmResponseParser {
             String epaggelma = getXPathValue(document, xpath, "//firm_act_tab/item/firm_act_descr");
 
             // Επιστροφή των πληροφοριών σε αντικείμενο
-            return new Customer(onomasia, commerTitle, epaggelma, afm, "", "", "", postalAddress + " " + postalAddressNo, postalAreaDescription, tk,"");
+            return new Customer(onomasia, commerTitle, epaggelma, afm, "", "", "", postalAddress + " " + postalAddressNo, postalAreaDescription, tk,"","");
 
         } catch (Exception e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα.", e.getMessage(), Alert.AlertType.ERROR));

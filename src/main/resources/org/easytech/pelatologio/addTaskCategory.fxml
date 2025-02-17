@@ -6,13 +6,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddTaskCategoryController">
+<DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddTaskCategoryController">
     <content>
         <VBox alignment="CENTER">
-            <Label styleClass="normal-label" text="Επεξεργασία Κατηγορίας Εργασίας" />
+            <Label styleClass="normal-label" text="Επεξεργασία Κατηγορίας Εργασίας"/>
             <TextField fx:id="nameField" promptText="Κατηγορία Εργασίας">
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                 </VBox.margin>
             </TextField>
         </VBox>

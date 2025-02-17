@@ -11,6 +11,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
@@ -20,6 +21,7 @@ public class EmailSender {
     private final String port;
     private final String username;
     private final String password;
+    private String signature;
 
     public EmailSender(String host, String port, String username, String password) {
         this.host = host;
@@ -35,6 +37,7 @@ public class EmailSender {
         properties.put("mail.smtp.port", port);
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true"); // Για ασφαλή σύνδεση
+        signature = AppSettings.loadSetting("signature");
 
         // Αυθεντικοποίηση του λογαριασμού
         Authenticator auth = new Authenticator() {
@@ -48,25 +51,32 @@ public class EmailSender {
         Session session = Session.getInstance(properties, auth);
 
         try {
-            // Δημιουργία του email
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toAddress));
             message.setSubject(subject);
-            message.setText(messageContent);
 
-            // Αποστολή του email
+            // 1. Δημιουργία του HTML μέρους
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            String htmlContent = "<html><body>" + messageContent + "<br><br>" + signature + "</body></html>";
+            messageBodyPart.setContent(htmlContent, "text/html; charset=UTF-8");
+
+            // 2. Επισύναψη εικόνας
+            String currentDir = System.getProperty("user.dir");
+            String fullPath = currentDir + File.separator + "images" + File.separator + "logo.png";
+            MimeBodyPart imagePart = new MimeBodyPart();
+            imagePart.attachFile(fullPath);
+            imagePart.setContentID("<logo>");
+            imagePart.setDisposition(MimeBodyPart.INLINE);
+
+            // 3. Σύνθεση του email
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+            multipart.addBodyPart(imagePart);
+
+            message.setContent(multipart);
+
             Transport.send(message);
-            //Platform.runLater(() -> showAlert("Attention", "Το email στάλθηκε επιτυχώς."));
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Attention")
-                        .text("Το email στάλθηκε επιτυχώς.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showInformation();});
-            System.out.println("Το email στάλθηκε επιτυχώς!");
         } catch (MessagingException e) {
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -78,6 +88,8 @@ public class EmailSender {
                 notifications.showError();});
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
 
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -88,6 +100,7 @@ public class EmailSender {
         properties.put("mail.smtp.port", port);
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true"); // Για ασφαλή σύνδεση
+        signature = AppSettings.loadSetting("signature");
 
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
@@ -97,18 +110,28 @@ public class EmailSender {
         });
 
         // Δημιουργία μηνύματος
-        Message message = new MimeMessage(session);
+        MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(username));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
         message.setSubject(subject);
 
-        // Δημιουργία του περιεχομένου με συνημμένα
-        Multipart multipart = new MimeMultipart();
+        // 1. Δημιουργία του HTML μέρους
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
+        String htmlContent = "<html><body>" + body + "<br><br>" + signature + "</body></html>";
+        messageBodyPart.setContent(htmlContent, "text/html; charset=UTF-8");
 
-        // Κείμενο μηνύματος
-        MimeBodyPart textPart = new MimeBodyPart();
-        textPart.setText(body);
-        multipart.addBodyPart(textPart);
+        // 2. Επισύναψη εικόνας
+        String currentDir = System.getProperty("user.dir");
+        String fullPath = currentDir + File.separator + "images" + File.separator + "logo.png";
+        MimeBodyPart imagePart = new MimeBodyPart();
+        imagePart.attachFile(fullPath);
+        imagePart.setContentID("<logo>");
+        imagePart.setDisposition(MimeBodyPart.INLINE);
+
+        // 3. Σύνθεση του email
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(messageBodyPart);
+        multipart.addBodyPart(imagePart);
 
         // Προσθήκη συνημμένων
         if (attachments != null) {

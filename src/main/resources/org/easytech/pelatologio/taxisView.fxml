@@ -6,95 +6,103 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.TaxisViewController">
-            <HBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
-                <children>
-                    <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
-                        <children>
-                            <!-- Πίνακας για τα Logins -->
-                            <TableView fx:id="loginTable" VBox.vgrow="ALWAYS">
-                                <columns>
-                                    <TableColumn fx:id="usernameColumn" text="Username" />
-                                    <TableColumn fx:id="passwordColumn" text="Password" />
-                                    <TableColumn fx:id="tagColumn" text="Tag" />
-                                </columns>
-                        <columnResizePolicy>
-                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                        </columnResizePolicy>
-                            </TableView>
+<VBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.TaxisViewController">
+    <HBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+        <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+            <HBox.margin>
+                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+            </HBox.margin>
+            <!-- Πίνακας για τα Logins -->
+            <TableView fx:id="loginTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="usernameColumn" text="Username"/>
+                    <TableColumn fx:id="passwordColumn" text="Password"/>
+                    <TableColumn fx:id="tagColumn" text="Tag"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
 
-                            <!-- Κουμπί για προσθήκη νέου login -->
-                            <JFXButton fx:id="addLoginButton" buttonType="RAISED" onAction="#handleAddLogin" prefWidth="277.0" styleClass="click-button" text="Προσθήκη Νέου Login">
-                                <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                </VBox.margin>
-                            </JFXButton>
-                            <JFXButton fx:id="editButton" buttonType="RAISED" onAction="#handleEditLogin" prefWidth="277.0" styleClass="click-button" text="Επεξεργασία">
-                                <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                </VBox.margin>
-                            </JFXButton>
-                            <JFXButton fx:id="deleteButton" buttonType="RAISED" onAction="#handleDeleteLogin" prefWidth="277.0" styleClass="click-button" text="Διαγραφή">
-                                <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                </VBox.margin>
-                            </JFXButton>
-                        </children>
-                  <HBox.margin>
-                     <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                  </HBox.margin>
-                    </VBox>
-                    <!-- Λίστα με κουμπιά για άλλες εργασίες -->
-                    <VBox alignment="TOP_CENTER" HBox.hgrow="NEVER">
-                        <children>
-                            <JFXButton fx:id="btnTaxis" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#taxisOpen" prefWidth="277.0" styleClass="click-button" text="TaxisNet">
-                                <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                </VBox.margin>
-                        <cursor>
-                           <Cursor fx:constant="HAND" />
-                        </cursor>
-                            </JFXButton>
-                            <JFXButton fx:id="btnAuthorizations" buttonType="RAISED" mnemonicParsing="false" onAction="#authorizationsOpen" prefWidth="277.0" styleClass="click-button" text="Εξουσιοδότηση ΑΑΔΕ">
-                                <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                </VBox.margin>
-                            </JFXButton>
-                            <JFXButton fx:id="btnMyData" buttonType="RAISED" mnemonicParsing="false" onAction="#mydataOpen" prefWidth="277.0" styleClass="click-button" text="myDATA">
-                                <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                </VBox.margin>
-                            </JFXButton>
-                            <JFXButton fx:id="btnESend" buttonType="RAISED" mnemonicParsing="false" onAction="#esendOpen" prefWidth="277.0" styleClass="click-button" text="eSend">
-                                <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                </VBox.margin>
-                            </JFXButton>
-                            <JFXButton fx:id="btnAfm1" buttonType="RAISED" lineSpacing="1.0" mnemonicParsing="false" onAction="#afm1Open" prefWidth="277.0" styleClass="click-button" text="Ανεύρεσης ΑΦΜ" textOverrun="CLIP">
-                                <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                </VBox.margin>
-                            </JFXButton>
-                            <JFXButton fx:id="btnAfm2" buttonType="RAISED" mnemonicParsing="false" onAction="#afm2Open" prefWidth="277.0" styleClass="click-button" text="Ειδικοί Κωδικοί">
-                                <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                      </VBox.margin>
-                            </JFXButton>
-                            <JFXButton fx:id="btnTameiakes" buttonType="RAISED" mnemonicParsing="false" onAction="#tameiakesOpen" prefWidth="277.0" styleClass="click-button" text="Ταμειακές">
-                                <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                </VBox.margin>
-                            </JFXButton>
-                            <JFXButton fx:id="btnGemi" buttonType="RAISED" mnemonicParsing="false" onAction="#gemiSearch" prefWidth="277.0" styleClass="click-button" text="ΓΕΜΗ">
-                                <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                </VBox.margin>
-                            </JFXButton>
-                        </children>
-                  <HBox.margin>
-                     <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                  </HBox.margin>
-                    </VBox>
-                </children>
-            </HBox>
+            <!-- Κουμπί για προσθήκη νέου login -->
+            <JFXButton fx:id="addLoginButton" buttonType="RAISED" onAction="#handleAddLogin" prefWidth="277.0"
+                       styleClass="click-button" text="Προσθήκη Νέου Login">
+                <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="editButton" buttonType="RAISED" onAction="#handleEditLogin" prefWidth="277.0"
+                       styleClass="click-button" text="Επεξεργασία">
+                <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="deleteButton" buttonType="RAISED" onAction="#handleDeleteLogin" prefWidth="277.0"
+                       styleClass="click-button" text="Διαγραφή">
+                <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+            </JFXButton>
         </VBox>
+        <!-- Λίστα με κουμπιά για άλλες εργασίες -->
+        <VBox alignment="TOP_CENTER" HBox.hgrow="NEVER">
+            <HBox.margin>
+                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+            </HBox.margin>
+            <JFXButton fx:id="btnTaxis" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#taxisOpen"
+                       prefWidth="277.0" styleClass="click-button" text="TaxisNet">
+                <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+                <cursor>
+                    <Cursor fx:constant="HAND"/>
+                </cursor>
+            </JFXButton>
+            <JFXButton fx:id="btnAuthorizations" buttonType="RAISED" mnemonicParsing="false"
+                       onAction="#authorizationsOpen" prefWidth="277.0" styleClass="click-button"
+                       text="Εξουσιοδότηση ΑΑΔΕ">
+                <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="btnMyData" buttonType="RAISED" mnemonicParsing="false" onAction="#mydataOpen"
+                       prefWidth="277.0" styleClass="click-button" text="myDATA">
+                <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="btnESend" buttonType="RAISED" mnemonicParsing="false" onAction="#esendOpen"
+                       prefWidth="277.0" styleClass="click-button" text="eSend">
+                <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="btnAfm1" buttonType="RAISED" lineSpacing="1.0" mnemonicParsing="false"
+                       onAction="#afm1Open" prefWidth="277.0" styleClass="click-button" text="Ανεύρεσης ΑΦΜ"
+                       textOverrun="CLIP">
+                <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="btnAfm2" buttonType="RAISED" mnemonicParsing="false" onAction="#afm2Open"
+                       prefWidth="277.0" styleClass="click-button" text="Ειδικοί Κωδικοί">
+                <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="btnTameiakes" buttonType="RAISED" mnemonicParsing="false"
+                       onAction="#tameiakesOpen" prefWidth="277.0" styleClass="click-button" text="Ταμειακές">
+                <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="btnGemi" buttonType="RAISED" mnemonicParsing="false" onAction="#gemiSearch"
+                       prefWidth="277.0" styleClass="click-button" text="ΓΕΜΗ">
+                <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+            </JFXButton>
+        </VBox>
+    </HBox>
+</VBox>

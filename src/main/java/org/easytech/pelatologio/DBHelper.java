@@ -60,9 +60,14 @@ public class DBHelper {
                 data.setTown(resultSet.getString("town"));
                 data.setPostcode(resultSet.getString("postcode"));
                 data.setEmail(resultSet.getString("email"));
+                data.setEmail2(resultSet.getString("email2"));
                 data.setManager(resultSet.getString("manager"));
                 data.setManagerPhone(resultSet.getString("managerPhone"));
                 data.setNotes(resultSet.getString("notes"));
+                data.setAccName(resultSet.getString("accName"));
+                data.setAccPhone(resultSet.getString("accPhone"));
+                data.setAccMobile(resultSet.getString("accMobile"));
+                data.setAccEmail(resultSet.getString("accEmail"));
                 dataList.add(data);
             }
             closeConnection(conn);
@@ -91,9 +96,9 @@ public class DBHelper {
 
     public int insertCustomer(String name, String title, String job, String afm, String phone1,
                               String phone2, String mobile, String address,
-                              String town, String postcode, String email, String manager, String managerPhone, String notes) {
-        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, manager, managerPhone, notes) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                              String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, String accName, String accPhone, String accMobile, String accEmail) {
+        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, email2, manager, managerPhone, notes, accName, accPhone, accMobile, accEmail) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int newCustomerId = -1; // Default value for error handling
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -109,9 +114,15 @@ public class DBHelper {
             pstmt.setString(9, town);
             pstmt.setString(10, postcode);
             pstmt.setString(11, email);
-            pstmt.setString(12, manager);
-            pstmt.setString(13, managerPhone);
-            pstmt.setString(14, notes);
+            pstmt.setString(12, email2);
+            pstmt.setString(13, manager);
+            pstmt.setString(14, managerPhone);
+            pstmt.setString(15, notes);
+            pstmt.setString(16, accName);
+            pstmt.setString(17, accPhone);
+            pstmt.setString(18, accMobile);
+            pstmt.setString(19, accEmail);
+
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -132,9 +143,9 @@ public class DBHelper {
         return newCustomerId; // Επιστρέφει το CustomerID ή -1 αν υπήρξε σφάλμα
     }
 
-    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String manager, String managerPhone, String notes) {
+    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, String accName, String accPhone, String accMobile, String accEmail) {
         String sql = "UPDATE customers SET name = ?, title = ?, job = ?,afm = ?, phone1 = ?, " +
-                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, manager = ?, managerPhone = ?, notes = ? WHERE code = ?";
+                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, email2 = ?,manager = ?, managerPhone = ?, notes = ?, accName = ?, accPhone = ?, accMobile = ?, accEmail = ? WHERE code = ?";
 
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -149,10 +160,15 @@ public class DBHelper {
             pstmt.setString(9, town);
             pstmt.setString(10, postcode);
             pstmt.setString(11, email);
-            pstmt.setString(12, manager);
-            pstmt.setString(13, managerPhone);
-            pstmt.setString(14, notes);
-            pstmt.setInt(15, code);
+            pstmt.setString(12, email2);
+            pstmt.setString(13, manager);
+            pstmt.setString(14, managerPhone);
+            pstmt.setString(15, notes);
+            pstmt.setString(16, accName);
+            pstmt.setString(17, accPhone);
+            pstmt.setString(18, accMobile);
+            pstmt.setString(19, accEmail);
+            pstmt.setInt(20, code);
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -506,7 +522,7 @@ public class DBHelper {
             try (PreparedStatement pstmt1 = conn.prepareStatement(query);
                  PreparedStatement pstmt2 = conn.prepareStatement(query2);
                  PreparedStatement pstmt3 = conn.prepareStatement(query3);
-                PreparedStatement pstmt4 = conn.prepareStatement(query4)) {
+                 PreparedStatement pstmt4 = conn.prepareStatement(query4)) {
 
                 pstmt1.setInt(1, code);
                 pstmt1.executeUpdate();
@@ -566,11 +582,11 @@ public class DBHelper {
     public boolean saveAppointment(Appointment appointment) {
         String query = "INSERT INTO appointments (customerid, title, description, calendar_id, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)) {
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, appointment.getCustomerId());
             stmt.setString(2, appointment.getTitle());
             stmt.setString(3, appointment.getDescription());
-            stmt.setInt(4,appointment.getCalendarId());
+            stmt.setInt(4, appointment.getCalendarId());
             stmt.setTimestamp(5, Timestamp.valueOf(appointment.getStartTime()));
             stmt.setTimestamp(6, Timestamp.valueOf(appointment.getEndTime()));
             int affectedRows = stmt.executeUpdate();
@@ -741,7 +757,6 @@ public class DBHelper {
     }
 
 
-
     public boolean completeTask(int taskId, boolean isCompleted) {
         String query = "UPDATE tasks SET is_completed = ? WHERE id = ?";
         try (Connection conn = getConnection();
@@ -769,7 +784,7 @@ public class DBHelper {
             stmt.setString(1, task.getTitle());
             stmt.setString(2, task.getDescription());
             stmt.setDate(3, Date.valueOf(task.getDueDate()));
-            stmt.setBoolean(4,task.getCompleted());
+            stmt.setBoolean(4, task.getCompleted());
             if (task.getCustomerId() != null) {
                 stmt.setInt(5, task.getCustomerId());
             } else {
@@ -832,20 +847,20 @@ public class DBHelper {
     }
 
     public void saveTaskCategory(TaskCategory newTaskCategory) {
-            String query = "INSERT INTO TaskCategories (name) VALUES (?)";
-            try (Connection conn = getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-                stmt.setString(1, newTaskCategory.getName());
-                stmt.executeUpdate();
+        String query = "INSERT INTO TaskCategories (name) VALUES (?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, newTaskCategory.getName());
+            stmt.executeUpdate();
 
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    newTaskCategory.setId(rs.getInt(1));
-                }
-                closeConnection(conn);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                newTaskCategory.setId(rs.getInt(1));
             }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteTaskCategory(int id) {
@@ -1016,7 +1031,7 @@ public class DBHelper {
         }
     }
 
-    public List <Device> getAllDevices() {
+    public List<Device> getAllDevices() {
         List<Device> devices = new ArrayList<>();
         String query = "SELECT d.id, d.serial, d.description, d.rate, d.itemId, d.customerId, i.name AS itemName, c.name " +
                 "FROM Devices d " +
@@ -1038,7 +1053,7 @@ public class DBHelper {
                 String item = resultSet.getString("itemName");
                 String customerName = resultSet.getString("name");
 
-                Device device = new Device(id, serial, description,rate, itemId, customerId, item, customerName);
+                Device device = new Device(id, serial, description, rate, itemId, customerId, item, customerName);
                 devices.add(device);
             }
             closeConnection(conn);
@@ -1133,7 +1148,7 @@ public class DBHelper {
                 Integer itemId = resultSet.getInt("itemId");
                 String item = resultSet.getString("itemName");
 
-                Device device = new Device(id, serial, description,rate, itemId, customerId, item);
+                Device device = new Device(id, serial, description, rate, itemId, customerId, item);
                 devices.add(device);
             }
             closeConnection(conn);
@@ -1244,13 +1259,13 @@ public class DBHelper {
         String query = "SELECT COUNT(DISTINCT customerId) FROM CustomerLogins WHERE ApplicationID = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-             stmt.setInt(1, appId);
+            stmt.setInt(1, appId);
 
-             ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-                closeConnection(conn);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            closeConnection(conn);
 
         } catch (SQLException e) {
             e.printStackTrace();

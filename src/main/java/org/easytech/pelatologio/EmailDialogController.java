@@ -49,7 +49,10 @@ public class EmailDialogController {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
-        emailField.setText(customer.getEmail());
+    }
+
+    public void setEmail(String text) {
+        emailField.setText(text);
     }
 
     @FXML

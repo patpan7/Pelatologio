@@ -5,8 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
@@ -77,6 +82,8 @@ public class SettingsController implements Initializable {
     TextField tfSMTP;
     @FXML
     TextField tfSMTPPort;
+    @FXML
+    TextArea taSignature;
 
 
 
@@ -115,6 +122,8 @@ public class SettingsController implements Initializable {
         tfEmblemUser.setText(AppSettings.loadSetting("emblemUser") != null ? AppSettings.loadSetting("emblemUser") : "");
         tfEmblemPass.setText(AppSettings.loadSetting("emblemPass") != null ? AppSettings.loadSetting("emblemPass") : "");
         tfEmblemRegisterMail.setText(AppSettings.loadSetting("emblemRegisterMail") != null ? AppSettings.loadSetting("emblemRegisterMail") : "");
+        taSignature.setText(AppSettings.loadSetting("signature") != null ? AppSettings.loadSetting("signature") : "");
+
 
         String browser = AppSettings.loadSetting("browser") != null ? AppSettings.loadSetting("browser") : "";
         switch (browser) {
@@ -150,6 +159,7 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("emailPass", tfEmailPassKey.getText());
         AppSettings.saveSetting("smtp", tfSMTP.getText());
         AppSettings.saveSetting("smtpport", tfSMTPPort.getText());
+        AppSettings.saveSetting("signature", taSignature.getText());
         AppSettings.saveSetting("emblemUser", tfEmblemUser.getText());
         AppSettings.saveSetting("emblemPass", tfEmblemPass.getText());
         AppSettings.saveSetting("emblemRegisterMail", tfEmblemRegisterMail.getText());
@@ -175,9 +185,45 @@ public class SettingsController implements Initializable {
         dbHelper.syncMegasoft();
     }
 
-    public void mainMenuClick(ActionEvent event) throws IOException {
-        MainMenuController mainMenuController = new MainMenuController();
-        mainMenuController.mainMenuClick(stackPane);
+    private void openNotesDialog(String currentNotes) {
+        // Ο κώδικας για το παράθυρο διαλόγου, όπως περιγράφεται
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("Επεξεργασία Σημειώσεων");
+
+        TextArea expandedTextArea = new TextArea(currentNotes);
+        expandedTextArea.setWrapText(true);
+        expandedTextArea.setPrefSize(400, 300);
+        expandedTextArea.setStyle("-fx-font-size: 24px;");
+        if (currentNotes != null && !currentNotes.isEmpty()) {
+            expandedTextArea.setText(currentNotes);
+            expandedTextArea.positionCaret(currentNotes.length());
+        } else {
+            expandedTextArea.setText(""); // Βεβαιωθείτε ότι το TextArea είναι κενό
+            expandedTextArea.positionCaret(0); // Τοποθετήστε τον κέρσορα στην αρχή
+        }
+
+        Button btnOk = new Button("OK");
+        btnOk.setPrefWidth(100);
+        btnOk.setOnAction(event -> {
+            taSignature.setText(expandedTextArea.getText()); // Ενημέρωση του αρχικού TextArea
+            dialogStage.close();
+        });
+
+        VBox vbox = new VBox(10, expandedTextArea, btnOk);
+        vbox.setAlignment(Pos.CENTER);
+        //vbox.setPadding(new Insets(10));
+
+        Scene scene = new Scene(vbox);
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();
     }
 
+    @FXML
+    private void handleMouseClick(MouseEvent event) {
+        // Έλεγχος για διπλό κλικ
+        if (event.getClickCount() == 2) {
+            openNotesDialog(taSignature.getText());
+        }
+    }
 }

@@ -35,9 +35,11 @@ public class AddCustomerController {
     @FXML
     private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, devicesContainer, tasksContainer;
     @FXML
-    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabDevices, tabTasks;
+    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabDevices, tabTasks, tabAccountant;
     @FXML
-    private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail,tfManager, tfManagerPhone;
+    private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone;
+    @FXML
+    private TextField tfAccName, tfAccPhone, tfAccMobile, tfAccEmail;
     @FXML
     private Button btnAfmSearch;
     @FXML
@@ -199,10 +201,17 @@ public class AddCustomerController {
         setupTextFieldContextMenu(tfPostCode,contextMenu);
         setupTextFieldContextMenu(tfManager, contextMenu);
         setupTextFieldContextMenu(tfManagerPhone, phoneContextMenu);
+        setupTextFieldContextMenu(tfAccName, emailContextMenu);
+        setupTextFieldContextMenu(tfAccPhone, phoneContextMenu);
+        setupTextFieldContextMenu(tfAccMobile, phoneContextMenu);
 
         // Ανάθεση emailContextMenu στο tfEmail
         tfEmail.setContextMenu(emailContextMenu);
         tfEmail.setOnContextMenuRequested(e -> currentTextField = tfEmail);
+        tfEmail2.setContextMenu(emailContextMenu);
+        tfEmail2.setOnContextMenuRequested(e -> currentTextField = tfEmail2);
+        tfAccEmail.setContextMenu(emailContextMenu);
+        tfAccEmail.setOnContextMenuRequested(e -> currentTextField = tfAccEmail);
 
         // Ενέργειες για τα copy, paste, clear items στο βασικό contextMenu
         copyItem.setOnAction(e -> copyText());
@@ -228,6 +237,11 @@ public class AddCustomerController {
         mailItem.setOnAction(e -> {
             if (currentTextField == tfEmail) { // Εκτέλεση μόνο αν είναι στο tfEmail
                 sendTestEmail(tfEmail);
+            } else if (currentTextField == tfEmail2) { // Εκτέλεση μόνο αν είναι στο tfEmail2
+                sendTestEmail(tfEmail2);
+            }
+            else if (currentTextField == tfAccEmail) { // Εκτέλεση μόνο αν είναι στο tfEmail2
+                sendTestEmail(tfAccEmail);
             }
         });
     }
@@ -236,40 +250,6 @@ public class AddCustomerController {
     public void setInitialAFM(String afm) {
         tfAfm.setText(afm); // Ορισμός αρχικής τιμής στο πεδίο ΑΦΜ
         btnAfmSearch.fire();
-    }
-
-    private void openNotesDialog(String currentNotes) {
-        // Ο κώδικας για το παράθυρο διαλόγου, όπως περιγράφεται
-        Stage dialogStage = new Stage();
-        dialogStage.initModality(Modality.APPLICATION_MODAL);
-        dialogStage.setTitle("Επεξεργασία Σημειώσεων");
-
-        TextArea expandedTextArea = new TextArea(currentNotes);
-        expandedTextArea.setWrapText(true);
-        expandedTextArea.setPrefSize(400, 300);
-        expandedTextArea.setStyle("-fx-font-size: 24px;");
-        if (currentNotes != null && !currentNotes.isEmpty()) {
-            expandedTextArea.setText(currentNotes);
-            expandedTextArea.positionCaret(currentNotes.length());
-        } else {
-            expandedTextArea.setText(""); // Βεβαιωθείτε ότι το TextArea είναι κενό
-            expandedTextArea.positionCaret(0); // Τοποθετήστε τον κέρσορα στην αρχή
-        }
-
-        Button btnOk = new Button("OK");
-        btnOk.setPrefWidth(100);
-        btnOk.setOnAction(event -> {
-            taNotes.setText(expandedTextArea.getText()); // Ενημέρωση του αρχικού TextArea
-            dialogStage.close();
-        });
-
-        VBox vbox = new VBox(10, expandedTextArea, btnOk);
-        vbox.setAlignment(Pos.CENTER);
-        //vbox.setPadding(new Insets(10));
-
-        Scene scene = new Scene(vbox);
-        dialogStage.setScene(scene);
-        dialogStage.showAndWait();
     }
 
 
@@ -387,9 +367,16 @@ public class AddCustomerController {
         tfTown.setText(customer.getTown());
         tfPostCode.setText(customer.getPostcode());
         tfEmail.setText(customer.getEmail());
+        tfEmail2.setText(customer.getEmail2());
         tfManager.setText(customer.getManager());
         tfManagerPhone.setText(customer.getManagerPhone());
         taNotes.setText(customer.getNotes());
+        tfAccName.setText(customer.getAccName());
+        tfAccPhone.setText(customer.getAccPhone());
+        tfAccMobile.setText(customer.getAccMobile());
+        tfAccEmail.setText(customer.getAccEmail());
+
+
         btnAddressAdd.setDisable(false);
         DBHelper dbHelper = new DBHelper();
         if (dbHelper.hasSubAddress(customer.getCode())) {
@@ -554,9 +541,14 @@ public class AddCustomerController {
         String town = tfTown.getText();
         String postcode = tfPostCode.getText();
         String email = (tfEmail.getText() != null ? tfEmail.getText() : "");
+        String email2 = (tfEmail2.getText() != null ? tfEmail2.getText() : "");
         String manager = (tfManager.getText() != null ? tfManager.getText() : "");
         String managerPhone = (tfManagerPhone.getText() != null ? tfManagerPhone.getText() : "");
         String notes = taNotes.getText();
+        String accName = (tfAccName.getText() != null ? tfAccName.getText() : "");
+        String accPhone = (tfAccPhone.getText() != null ? tfAccPhone.getText() : "");
+        String accMobile = (tfAccMobile.getText() != null ? tfAccMobile.getText() : "");
+        String accEmail = (tfAccEmail.getText() != null ? tfAccEmail.getText() : "");
 
         if (mobile.startsWith("+30"))
             mobile = mobile.substring(3);
@@ -587,7 +579,7 @@ public class AddCustomerController {
             });
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
-            customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, manager, managerPhone, notes);
+            customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accName, accPhone, accMobile, accEmail);
             // Εμφάνιση επιτυχίας
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -625,9 +617,14 @@ public class AddCustomerController {
         String town = tfTown.getText();
         String posCode = tfPostCode.getText();
         String email = (tfEmail.getText() != null ? tfEmail.getText() : "");
+        String email2 = (tfEmail2.getText() != null ? tfEmail2.getText() : "");
         String manager = (tfManager.getText() != null ? tfManager.getText() : "");
         String managerPhone = (tfManagerPhone.getText() != null ? tfManagerPhone.getText() : "");
         String notes = taNotes.getText();
+        String accName = (tfAccName.getText() != null ? tfAccName.getText() : "");
+        String accPhone = (tfAccPhone.getText() != null ? tfAccPhone.getText() : "");
+        String accMobile = (tfAccMobile.getText() != null ? tfAccMobile.getText() : "");
+        String accEmail = (tfAccEmail.getText() != null ? tfAccEmail.getText() : "");
 
         if (mobile.startsWith("+30"))
             mobile = mobile.substring(3);
@@ -642,7 +639,7 @@ public class AddCustomerController {
         phone2 = phone2.replaceAll("\\s+", "");
         managerPhone = managerPhone.replaceAll("\\s+", "");
 
-        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, manager, managerPhone, notes);
+        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accName, accPhone, accMobile, accEmail);
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
         Notifications notifications = Notifications.create()
                 .title("Επιτυχία")
@@ -785,6 +782,47 @@ public class AddCustomerController {
                 dialog.setTitle("Αποστολή Email");
                 EmailDialogController controller = loader.getController();
                 controller.setCustomer(customer);
+                controller.setEmail(tfEmail.getText());
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+                dialog.show();
+            } catch (IOException e) {
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+            }
+        }
+    }
+
+    @FXML
+    private void showEmailDialog2(ActionEvent actionEvent) {
+        if (customer != null) {
+            try {
+                // Φόρτωση του FXML για προσθήκη ραντεβού
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Αποστολή Email");
+                EmailDialogController controller = loader.getController();
+                controller.setCustomer(customer);
+                controller.setEmail(tfEmail2.getText());
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+                dialog.show();
+            } catch (IOException e) {
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+            }
+        }
+    }
+
+    @FXML
+    private void showEmailDialogAcc(ActionEvent actionEvent) {
+        if (customer != null) {
+            try {
+                // Φόρτωση του FXML για προσθήκη ραντεβού
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Αποστολή Email");
+                EmailDialogController controller = loader.getController();
+                controller.setCustomer(customer);
+                controller.setEmail(tfAccEmail.getText());
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
                 dialog.show();
             } catch (IOException e) {

@@ -14,15 +14,20 @@ public class Customer {
     String town;
     String postcode;
     String email;
+    String email2;
     String manager;
     String managerPhone;
     String notes;
+    String accName;
+    String accPhone;
+    String accMobile;
+    String accEmail;
 
     public Customer() {
 
     }
 
-    public Customer(String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email) {
+    public Customer(String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2) {
         this.name = name;
         this.title = title;
         this.job = job;
@@ -34,6 +39,7 @@ public class Customer {
         this.town = town;
         this.postcode = postcode;
         this.email = email;
+        this.email2 = email2;
     }
 
 
@@ -129,6 +135,14 @@ public class Customer {
         this.email = email;
     }
 
+    public String getEmail2() {
+        return email2;
+    }
+
+    public void setEmail2(String email) {
+        this.email2 = email;
+    }
+
     public String getManager() {
         return manager;
     }
@@ -148,6 +162,38 @@ public class Customer {
     public String getNotes() {return notes;}
 
     public void setNotes(String notes) {this.notes = notes;}
+
+    public String getAccEmail() {
+        return accEmail;
+    }
+
+    public void setAccEmail(String accEmail) {
+        this.accEmail = accEmail;
+    }
+
+    public String getAccMobile() {
+        return accMobile;
+    }
+
+    public void setAccMobile(String accMobile) {
+        this.accMobile = accMobile;
+    }
+
+    public String getAccPhone() {
+        return accPhone;
+    }
+
+    public void setAccPhone(String accPhone) {
+        this.accPhone = accPhone;
+    }
+
+    public String getAccName() {
+        return accName;
+    }
+
+    public void setAccName(String accName) {
+        this.accName = accName;
+    }
 
     @Override
     public String toString() {
