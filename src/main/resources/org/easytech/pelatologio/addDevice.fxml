@@ -32,7 +32,7 @@
                            </HBox.margin>
                         </Label>
                              <TextField fx:id="serialField" prefWidth="300" />
-                         <JFXButton fx:id="addSerialButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#addSerialNumber" styleClass="click-button" text="" HBox.hgrow="ALWAYS">
+                         <JFXButton fx:id="addSerialButton" alignment="TOP_LEFT" buttonType="RAISED" mnemonicParsing="false" onAction="#addSerialNumber" styleClass="click-button" text="" HBox.hgrow="ALWAYS">
                          <graphic>
                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                  <Image url="@icons/add.png" />

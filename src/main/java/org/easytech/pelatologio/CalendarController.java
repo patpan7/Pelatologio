@@ -72,10 +72,6 @@ public class CalendarController {
                     addDragAndDropListener(entry);
 
                     fxCalendar.addEntry(entry);
-                    System.out.println("Προσθήκη ραντεβού: " + appointment.getTitle() +
-                            " από " + appointment.getStartTime() +
-                            " έως " + appointment.getEndTime() +
-                            " στο ημερολόγιο: " + fxCalendar.getName());
                 }
             }
             calendarSource.getCalendars().addAll(fxCalendar);
@@ -285,9 +281,35 @@ public class CalendarController {
         }
     }
 
+    public void addAppointment(ActionEvent event) {
+        try {
+            // Φόρτωση του FXML για προσθήκη ραντεβού
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addAppointment.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Προσθήκη Ραντεβού");
 
-    public void mainMenuClick(ActionEvent event) throws IOException {
-        MainMenuController mainMenuController = new MainMenuController();
-        mainMenuController.mainMenuClick(stackPane);
+            AddAppointmentController controller = loader.getController();
+
+
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, evt -> {
+                // Εκτελούμε το handleSaveAppointment
+                boolean success = controller.handleSaveAppointment();
+
+                if (!success) {
+                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                    evt.consume();
+                }
+                initialize();
+            });
+
+            dialog.showAndWait();
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+        }
     }
 }

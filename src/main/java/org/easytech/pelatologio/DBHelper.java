@@ -1257,4 +1257,36 @@ public class DBHelper {
         }
         return 0;
     }
+
+    public List<Task> getAllCustomerTasks(int customerCode) {
+        List<Task> tasks = new ArrayList<>();
+        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, c.name " +
+                "FROM Tasks t " +
+                "LEFT JOIN Customers c ON t.customerId = c.code " +
+                "WHERE t.customerId = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, customerCode);
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                LocalDate dueDate = resultSet.getDate("dueDate").toLocalDate();
+                boolean isCompleted = resultSet.getBoolean("is_Completed");
+                Integer customerId = resultSet.getObject("customerId", Integer.class);
+                String category = resultSet.getString("category");
+                String customerName = resultSet.getString("name");
+
+                Task task = new Task(id, title, description, dueDate, isCompleted, category, customerId, customerName);
+                tasks.add(task);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return tasks;
+    }
 }

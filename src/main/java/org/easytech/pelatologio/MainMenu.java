@@ -15,7 +15,6 @@ public class MainMenu extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-
         String username = AppSettings.loadSetting("appuser") != null ? AppSettings.loadSetting("appuser") : "";
         if (username == null || username.isEmpty()) {
             // Prompt user for username if not set
@@ -47,6 +46,8 @@ public class MainMenu extends Application {
     }
 
     public static void main(String[] args) {
+        // Εκκίνηση της καταγραφής κονσόλας
+        Logger.initLogging();
         launch();
     }
 }

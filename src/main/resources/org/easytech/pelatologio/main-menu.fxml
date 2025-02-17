@@ -11,146 +11,159 @@
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" styleClass="pane">
         <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
             <center>
-            <HBox BorderPane.alignment="CENTER">
-               <children>
-                  <VBox prefWidth="200.0">
-                     <children>
-                        <Label fx:id="lbTasks" styleClass="normal-label" text="Εκκρεμής εργασίες: 1" wrapText="true" />
-                        <Label fx:id="lbAppointments" layoutX="10.0" layoutY="10.0" styleClass="normal-label" text="Εκκρεμής εργασίες: 1" wrapText="true">
-                           <VBox.margin>
-                              <Insets bottom="10.0" top="20.0" />
-                           </VBox.margin></Label>
-                        <Separator />
-                        <Label fx:id="lbSimply" layoutX="10.0" layoutY="10.0" styleClass="normal-label" text="Πελάτες Simply: 1" wrapText="true">
-                           <VBox.margin>
-                              <Insets bottom="20.0" top="10.0" />
-                           </VBox.margin></Label>
-                        <Label fx:id="lbMypos" layoutX="10.0" layoutY="10.0" styleClass="normal-label" text="Πελάτες myPOS: 1" wrapText="true" />
-                     </children>
-                     <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </HBox.margin>
-                  </VBox>
-                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
-                     <children>
-                        <HBox alignment="CENTER" spacing="30.0">
-                           <children>
-                                   <JFXButton fx:id="btnCustomers" buttonType="RAISED" cache="true" contentDisplay="TOP" minHeight="110.0" minWidth="220.0" mnemonicParsing="false" onAction="#customersClick" styleClass="click-button" text="Πελάτες" textAlignment="CENTER">
-                                       <graphic>
-                                           <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                               <Image url="@icons/users.png" />
-                                           </ImageView>
-                                       </graphic>
-                                   </JFXButton>
-                              <JFXButton fx:id="btnMyPOS" contentDisplay="TOP" minHeight="110.0" minWidth="220.0" mnemonicParsing="false" onMouseClicked="#myposdasClick" styleClass="click-button" text="myPOS DAS" textAlignment="CENTER">
-                                 <graphic>
-                                     <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                         <Image url="@icons/mypos1.png" />
-                                     </ImageView>
-                                 </graphic>
-                              </JFXButton>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <HBox alignment="CENTER" spacing="30.0">
-                            <children>
-                         <JFXButton fx:id="btnTasks" contentDisplay="TOP" layoutX="364.0" layoutY="10.0" minHeight="110.0" minWidth="220.0" mnemonicParsing="false" onAction="#tasksClick" styleClass="click-button" text="Εργασίες" textAlignment="CENTER" GridPane.rowIndex="1">
-                             <graphic>
-                                 <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                     <Image url="@icons/tasks.png" />
-                                 </ImageView>
-                             </graphic>
-                         </JFXButton>
-                         <JFXButton fx:id="btnCalendar" contentDisplay="TOP" layoutX="364.0" layoutY="10.0" minHeight="110.0" minWidth="220.0" mnemonicParsing="false" onAction="#calendarClick" styleClass="click-button" text="Ημερολόγιο" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                             <graphic>
-                                 <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                     <Image url="@icons/calendar.png" />
-                                 </ImageView>
-                             </graphic>
-                         </JFXButton>
-                            </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" top="10.0" />
-                           </VBox.margin>
-                        </HBox>
-                         <HBox alignment="CENTER" spacing="30.0">
-                             <children>
-                                 <JFXButton fx:id="btnD11" contentDisplay="TOP" layoutX="364.0" layoutY="167.0" minHeight="110.0" minWidth="220.0" mnemonicParsing="false" onAction="#d11Click" styleClass="click-button" text="Δ11" textAlignment="CENTER" GridPane.rowIndex="2">
-                                     <graphic>
-                                         <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                             <Image url="@icons/gsis.png" />
-                                         </ImageView>
-                                     </graphic>
-                                 </JFXButton>
-                         <JFXButton fx:id="btnMyDataStatus" contentDisplay="TOP" minHeight="110.0" minWidth="220.0" mnemonicParsing="false" onAction="#myDataStatusClick" styleClass="click-button" text="myData Status" textAlignment="CENTER">
-                             <graphic>
-                                 <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                     <Image url="@icons/mydatastatus.png" />
-                                 </ImageView>
-                             </graphic>
-                         </JFXButton>
-
-                             </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" top="10.0" />
-                           </VBox.margin>
-                         </HBox>
-                         <HBox alignment="CENTER" spacing="30.0">
-                             <children>
-
-
-                                 <JFXButton fx:id="btnItems" contentDisplay="TOP" layoutX="119.0" layoutY="324.0" minHeight="110.0" minWidth="220.0" mnemonicParsing="false" onAction="#itemsClick" styleClass="click-button" text="Είδη" textAlignment="CENTER" GridPane.rowIndex="3">
-                                     <graphic>
-                                         <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                 <Image url="@icons/item.png" />
-                                             </image>
-                                         </ImageView>
-                                     </graphic>
-                                 </JFXButton>
-                              <JFXButton fx:id="btnDevices" contentDisplay="TOP" layoutX="269.0" layoutY="10.0" minHeight="110.0" minWidth="220.0" mnemonicParsing="false" onAction="#devicesClick" styleClass="click-button" text="Συσεκυές" textAlignment="CENTER">
-                                 <graphic>
-                                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@icons/device.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </JFXButton>
-
-                             </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" top="10.0" />
-                           </VBox.margin>
-                         </HBox>
-                        <HBox alignment="CENTER" spacing="30.0">
-                           <VBox.margin>
-                              <Insets bottom="10.0" top="10.0" />
-                           </VBox.margin>
-                           <children>
-                                 <JFXButton fx:id="btnSettings" contentDisplay="TOP" minHeight="110.0" minWidth="220.0" mnemonicParsing="false" onAction="#settingsClick" styleClass="click-button" text="Ρυθμίσεις" textAlignment="CENTER">
-                                     <graphic>
-                                         <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                             <Image url="@icons/settings.png" />
-                                         </ImageView>
-                                     </graphic>
-                                 </JFXButton>
-                           </children>
-                        </HBox>
-                     </children>
-                     <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </HBox.margin>
-                  </VBox>
-                  <VBox prefWidth="200.0">
-                     <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </HBox.margin>
-                  </VBox>
-               </children>
-            </HBox>
+            <TabPane fx:id="mainTabPane" BorderPane.alignment="CENTER">
+               <tabs>
+                  <Tab fx:id="mainTab" closable="false" text="Κεντρικό menu">
+                     <content>
+                            <HBox>
+                                <children>
+                                    <VBox prefWidth="200.0">
+                                        <children>
+                                            <Label fx:id="lbTasks" styleClass="normal-label" text="Εκκρεμής εργασίες: 1" wrapText="true" />
+                                            <Label fx:id="lbAppointments" layoutX="10.0" layoutY="10.0" styleClass="normal-label" text="Εκκρεμής εργασίες: 1" wrapText="true">
+                                                <VBox.margin>
+                                                    <Insets bottom="10.0" top="20.0" />
+                                                </VBox.margin>
+                                    </Label>
+                                            <Separator />
+                                            <Label fx:id="lbSimply" layoutX="10.0" layoutY="10.0" styleClass="normal-label" text="Πελάτες Simply: 1" wrapText="true">
+                                                <VBox.margin>
+                                                    <Insets bottom="20.0" top="10.0" />
+                                                </VBox.margin>
+                                    </Label>
+                                            <Label fx:id="lbMypos" layoutX="10.0" layoutY="10.0" styleClass="normal-label" text="Πελάτες myPOS: 1" wrapText="true" />
+                                        </children>
+                                        <HBox.margin>
+                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                        </HBox.margin>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                        <children>
+                                            <HBox alignment="CENTER" spacing="30.0">
+                                                <children>
+                                                    <JFXButton fx:id="btnCustomers" buttonType="RAISED" cache="true" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#customersClick" styleClass="click-button" text="Πελάτες" textAlignment="CENTER">
+                                                        <graphic>
+                                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                                <Image url="@icons/users.png" />
+                                                            </ImageView>
+                                                        </graphic>
+                                                    </JFXButton>
+                                                    <JFXButton fx:id="btnMyPOS" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onMouseClicked="#myposdasClick" styleClass="click-button" text="myPOS DAS" textAlignment="CENTER">
+                                                        <graphic>
+                                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                                <Image url="@icons/mypos1.png" />
+                                                            </ImageView>
+                                                        </graphic>
+                                                    </JFXButton>
+                                                </children>
+                                                <VBox.margin>
+                                                    <Insets bottom="10.0" />
+                                                </VBox.margin>
+                                                <padding>
+                                                    <Insets top="10.0" />
+                                                </padding>
+                                            </HBox>
+                                            <HBox alignment="CENTER" spacing="30.0">
+                                                <children>
+                                                    <JFXButton fx:id="btnTasks" buttonType="RAISED" contentDisplay="TOP" layoutX="364.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#tasksClick" styleClass="click-button" text="Εργασίες" textAlignment="CENTER" GridPane.rowIndex="1">
+                                                        <graphic>
+                                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                                <Image url="@icons/tasks.png" />
+                                                            </ImageView>
+                                                        </graphic>
+                                                    </JFXButton>
+                                                    <JFXButton fx:id="btnCalendar" buttonType="RAISED" contentDisplay="TOP" layoutX="364.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#calendarClick" styleClass="click-button" text="Ημερολόγιο" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                        <graphic>
+                                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                                <Image url="@icons/calendar.png" />
+                                                            </ImageView>
+                                                        </graphic>
+                                                    </JFXButton>
+                                                </children>
+                                                <VBox.margin>
+                                                    <Insets bottom="10.0" top="10.0" />
+                                                </VBox.margin>
+                                            </HBox>
+                                            <HBox alignment="CENTER" spacing="30.0">
+                                                <children>
+                                                    <JFXButton fx:id="btnD11" buttonType="RAISED" contentDisplay="TOP" layoutX="364.0" layoutY="167.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#d11Click" styleClass="click-button" text="Δ11" textAlignment="CENTER" GridPane.rowIndex="2">
+                                                        <graphic>
+                                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                                <Image url="@icons/gsis.png" />
+                                                            </ImageView>
+                                                        </graphic>
+                                                    </JFXButton>
+                                                    <JFXButton fx:id="btnMyDataStatus" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#myDataStatusClick" styleClass="click-button" text="myData Status" textAlignment="CENTER">
+                                                        <graphic>
+                                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                                <Image url="@icons/mydatastatus.png" />
+                                                            </ImageView>
+                                                        </graphic>
+                                                    </JFXButton>
+            
+                                                </children>
+                                                <VBox.margin>
+                                                    <Insets bottom="10.0" top="10.0" />
+                                                </VBox.margin>
+                                            </HBox>
+                                            <HBox alignment="CENTER" spacing="30.0">
+                                                <children>
+            
+            
+                                                    <JFXButton fx:id="btnItems" buttonType="RAISED" contentDisplay="TOP" layoutX="119.0" layoutY="324.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#itemsClick" styleClass="click-button" text="Είδη" textAlignment="CENTER" GridPane.rowIndex="3">
+                                                        <graphic>
+                                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                                <image>
+                                                                    <Image url="@icons/item.png" />
+                                                                </image>
+                                                            </ImageView>
+                                                        </graphic>
+                                                    </JFXButton>
+                                                    <JFXButton fx:id="btnDevices" buttonType="RAISED" contentDisplay="TOP" layoutX="269.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#devicesClick" styleClass="click-button" text="Συσεκυές" textAlignment="CENTER">
+                                                        <graphic>
+                                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                                <image>
+                                                                    <Image url="@icons/device.png" />
+                                                                </image>
+                                                            </ImageView>
+                                                        </graphic>
+                                                    </JFXButton>
+            
+                                                </children>
+                                                <VBox.margin>
+                                                    <Insets bottom="10.0" top="10.0" />
+                                                </VBox.margin>
+                                            </HBox>
+                                            <HBox alignment="CENTER" spacing="30.0">
+                                                <VBox.margin>
+                                                    <Insets bottom="10.0" top="10.0" />
+                                                </VBox.margin>
+                                       <children>
+                                                  <JFXButton fx:id="btnSettings" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#settingsClick" styleClass="click-button" text="Ρυθμίσεις" textAlignment="CENTER">
+                                                      <graphic>
+                                                          <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                              <Image url="@icons/settings.png" />
+                                                          </ImageView>
+                                                      </graphic>
+                                                  </JFXButton>
+                                       </children>
+                                            </HBox>
+                                        </children>
+                                        <HBox.margin>
+                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                        </HBox.margin>
+                                    </VBox>
+                                    <VBox prefWidth="200.0">
+                                        <HBox.margin>
+                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                        </HBox.margin>
+                                    </VBox>
+                                </children>
+                            </HBox>
+                     </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
             </center>
             <top>
                 <HBox alignment="CENTER" BorderPane.alignment="CENTER">
@@ -178,20 +191,20 @@
                     </HBox>
                 </HBox>
             </top>
-         <bottom>
-            <VBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
-               <children>
-                  <Label fx:id="vesrion" alignment="CENTER" text="v 2.6.6">
-                     <VBox.margin>
-                        <Insets bottom="10.0" right="20.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-               </children>
-            </VBox>
-         </bottom>
+            <bottom>
+                <VBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
+                    <children>
+                        <Label fx:id="vesrion" alignment="CENTER" text="v 2.7.2">
+                            <VBox.margin>
+                                <Insets bottom="5.0" right="20.0" />
+                            </VBox.margin>
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </VBox>
+            </bottom>
         </BorderPane>
     </ScrollPane>
 </StackPane>

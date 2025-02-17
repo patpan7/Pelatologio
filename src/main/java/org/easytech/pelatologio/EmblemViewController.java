@@ -78,7 +78,7 @@ public class EmblemViewController {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
-        customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
+        //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
         loadLoginsForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
     }
 

@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -32,7 +33,7 @@ public class EmailDialogController {
     private Button attachButton;
 
     @FXML
-    private Button sendButton;
+    private JFXButton sendButton;
     @FXML
     private ProgressBar progressBar;
 
@@ -64,6 +65,26 @@ public class EmailDialogController {
             }
         });
 
+        // Δημιουργία του context menu για διαγραφή
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem deleteItem = new MenuItem("Διαγραφή");
+        contextMenu.getItems().add(deleteItem);
+
+        // Λειτουργία διαγραφής από το context menu
+        deleteItem.setOnAction(event -> {
+            File selectedFile = attachmentList.getSelectionModel().getSelectedItem();
+            if (selectedFile != null) {
+                attachments.remove(selectedFile);
+                attachmentList.getItems().remove(selectedFile);
+                if (selectedFile.exists()) {
+                    selectedFile.delete(); // Διαγραφή του αρχείου
+                }
+            }
+        });
+
+        // Εφαρμογή του context menu στην λίστα
+        attachmentList.setContextMenu(contextMenu);
+
         // Κουμπί αποστολής
         sendButton.setOnAction(event -> sendEmail());
         progressBar.setVisible(false); // Αρχικά κρυφό
@@ -71,7 +92,7 @@ public class EmailDialogController {
 
     private void sendEmail() {
         progressBar.setVisible(true); // Εμφάνιση προόδου
-        String email = emailField.getText();
+        String email = emailField.getText().trim();
         String subject = subjectField.getText();
         String body = bodyArea.getText();
 

@@ -10,41 +10,6 @@
 <StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.DeviceController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" styleClass="pane">
         <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
-        <top>
-            <HBox alignment="CENTER" BorderPane.alignment="CENTER">
-                <BorderPane.margin>
-                    <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-                </BorderPane.margin>
-                <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                    <Label styleClass="header-label" text="Πελατολόγιο -  Συσκευές" HBox.hgrow="ALWAYS">
-                        <font>
-                            <Font size="38.0" />
-                        </font>
-                        <HBox.margin>
-                            <Insets />
-                        </HBox.margin>
-                    </Label>
-                </HBox>
-                <HBox alignment="CENTER_RIGHT">
-                    <opaqueInsets>
-                        <Insets right="20.0" />
-                    </opaqueInsets>
-                    <HBox.margin>
-                        <Insets />
-                    </HBox.margin>
-                    <JFXButton mnemonicParsing="false" onAction="#mainMenuClick" styleClass="click-button" text="Επιστροφή">
-                        <graphic>
-                            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/menu.png" />
-                            </ImageView>
-                        </graphic>
-                        <HBox.margin>
-                            <Insets />
-                        </HBox.margin>
-                    </JFXButton>
-                </HBox>
-            </HBox>
-        </top>
         <center>
             <VBox spacing="10">
                 <HBox alignment="CENTER_LEFT">
@@ -100,7 +65,7 @@
                      <Insets left="10.0" right="5.0" />
                   </HBox.margin>
                     </TextField>
-                    <JFXButton fx:id="btnClear" mnemonicParsing="false" onAction="#clean" styleClass="click-button" text="">
+                    <JFXButton fx:id="btnClear" buttonType="RAISED" mnemonicParsing="false" onAction="#clean" styleClass="click-button" text="">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
@@ -124,7 +89,7 @@
                         </HBox.margin></ComboBox>
                <Label fx:id="countLabel" styleClass="normal-label" text="Label" />
                     <Separator visible="false" HBox.hgrow="ALWAYS" />
-               <JFXButton fx:id="addDeviceButton" mnemonicParsing="false" styleClass="click-button" text="Προσθήκη S/N">
+               <JFXButton fx:id="addDeviceButton" buttonType="RAISED" mnemonicParsing="false" styleClass="click-button" text="Προσθήκη S/N">
                    <graphic>
                        <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                            <Image url="@icons/add.png" />
@@ -159,6 +124,9 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
                 </TableView>
+               <BorderPane.margin>
+                  <Insets top="10.0" />
+               </BorderPane.margin>
             </VBox>
 
         </center>
