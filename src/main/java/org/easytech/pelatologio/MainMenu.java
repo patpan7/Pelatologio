@@ -46,6 +46,8 @@ public class MainMenu extends Application {
     }
 
     public static void main(String[] args) {
+        // Εκκίνηση της καταγραφής κονσόλας
+        Logger.initLogging();
         launch();
     }
 }

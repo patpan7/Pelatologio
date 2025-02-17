@@ -72,10 +72,6 @@ public class CalendarController {
                     addDragAndDropListener(entry);
 
                     fxCalendar.addEntry(entry);
-                    System.out.println("Προσθήκη ραντεβού: " + appointment.getTitle() +
-                            " από " + appointment.getStartTime() +
-                            " έως " + appointment.getEndTime() +
-                            " στο ημερολόγιο: " + fxCalendar.getName());
                 }
             }
             calendarSource.getCalendars().addAll(fxCalendar);
