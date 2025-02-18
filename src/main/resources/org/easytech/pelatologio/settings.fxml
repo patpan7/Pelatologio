@@ -270,7 +270,8 @@
                                     <TextField fx:id="tfSMTPPort" text="587" GridPane.columnIndex="1"
                                                GridPane.rowIndex="3"/>
                                     <TextArea fx:id="taSignature" onMouseClicked="#handleMouseClick" prefHeight="100"
-                                              prefWidth="300" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                                              prefWidth="300" wrapText="true" GridPane.columnIndex="1"
+                                              GridPane.rowIndex="4"/>
                                     <Label styleClass="normal-label" text="Υπογραφή" GridPane.rowIndex="4"/>
                                 </GridPane>
                             </TitledPane>

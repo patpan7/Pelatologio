@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.*?>
 <DialogPane prefHeight="800.0" prefWidth="1100.0" styleClass="pane" stylesheets="@external.css"
             xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.easytech.pelatologio.TaskCategoryManagerViewController">
     <content>
         <VBox alignment="TOP_CENTER">
-            <!-- Πίνακας για τα Logins -->
             <TableView fx:id="taskCategoryTable" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="taskCategoryColumn" prefWidth="866.0" text="Κατηγορίες Εργασιών"/>

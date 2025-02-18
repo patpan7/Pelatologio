@@ -5,8 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-
+<?import javafx.scene.text.Font?>
 <StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css"
            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.easytech.pelatologio.MainMenuController">
@@ -222,7 +221,7 @@
             <bottom>
                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false"
                       BorderPane.alignment="BOTTOM_CENTER">
-                    <Label fx:id="vesrion" alignment="CENTER" text="v 2.7.3" VBox.vgrow="NEVER">
+                    <Label fx:id="vesrion" alignment="CENTER" text="v 2.7.4" VBox.vgrow="NEVER">
                         <VBox.margin>
                             <Insets bottom="5.0" right="20.0"/>
                         </VBox.margin>

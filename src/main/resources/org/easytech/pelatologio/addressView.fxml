@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import javafx.geometry.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <DialogPane prefHeight="800.0" prefWidth="1100.0" styleClass="pane" stylesheets="@external.css"
             xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.easytech.pelatologio.AddressViewController">
@@ -12,7 +11,6 @@
         <VBox alignment="TOP_CENTER">
             <Label fx:id="customerLabel" styleClass="header-label" text="Όνομα Πελάτη: [Όνομα Πελάτη]"
                    textOverrun="CLIP"/>
-            <!-- Πίνακας για τα Logins -->
             <TableView fx:id="addressTable" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="addressColumn" text="Διεύθηνση"/>

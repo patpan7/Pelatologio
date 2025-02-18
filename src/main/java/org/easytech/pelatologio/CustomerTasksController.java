@@ -176,13 +176,7 @@ public class CustomerTasksController {
             });
 
             dialog.showAndWait();
-            dialog.setOnCloseRequest(event -> {
-                // Ελέγχουμε αν ο χρήστης κλείσει το παράθυρο
-                if (dialog.getResult() == null) {
-                    event.consume();
-                    loadTasks(customer.getCode());
-                }
-            });
+            loadTasks(customer.getCode());
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }

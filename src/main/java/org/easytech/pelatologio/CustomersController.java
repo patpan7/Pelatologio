@@ -982,8 +982,17 @@ public class CustomersController implements Initializable {
         button.setTooltip(tooltip);
     }
 
-    public void clean(ActionEvent actionEvent) {
-        filterField.setText("");
-        customerTable.getSelectionModel().clearSelection();
+    public void clean(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            filterField.setText("");
+            customerTable.getSelectionModel().clearSelection();
+        } else if (event.getButton() == MouseButton.SECONDARY) {
+            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+            dbHelper.customerUnlock(selectedCustomer.getCode());
+        }
+    }
+
+    public void refresh(MouseEvent mouseEvent) {
+        refreshTableData();
     }
 }
