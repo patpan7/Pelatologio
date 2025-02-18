@@ -209,6 +209,14 @@
     -fx-border-width: 2px;
 }
 
+.tab-pane .tab .tab-close-button {
+    -fx-background-color: red; /* Κόκκινο background */
+    -fx-padding: 10px; /* Μεγαλύτερο padding */
+    -fx-scale-x: 1.5;
+    -fx-scale-y: 1.5;
+}
+
+
 .tabHas {
     -fx-background-color: transparent;
     -fx-font-size: 20px; /* Μεγαλύτερη γραμματοσειρά */

@@ -51,6 +51,7 @@ public class EmailDialogController {
         this.customer = customer;
     }
 
+
     public void setEmail(String text) {
         emailField.setText(text);
     }

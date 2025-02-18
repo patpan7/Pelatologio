@@ -290,4 +290,30 @@ public class MainMenuController implements Initializable {
         tooltip.setText(text);
         button.setTooltip(tooltip);
     }
+
+    public void accauntantsClick(ActionEvent event) throws IOException {
+        for (Tab tab : mainTabPane.getTabs()) {
+            if (tab.getText().equals("Λογιστές")) {
+                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                return;
+            }
+        }
+
+        // Φόρτωση του FXML
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("accountantsView.fxml"));
+        Parent accountantsContent = fxmlLoader.load();
+
+        // Περνάμε το mainTabPane στον CustomersController
+        AccountantsController accountantsController = fxmlLoader.getController();
+        accountantsController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
+
+
+        // Δημιουργία νέου tab
+        Tab newTab = new Tab("Λογιστές");
+        newTab.setContent(accountantsContent);
+
+        // Προσθήκη του tab στο TabPane
+        mainTabPane.getTabs().add(newTab);
+        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
+    }
 }

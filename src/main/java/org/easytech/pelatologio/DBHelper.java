@@ -1304,4 +1304,104 @@ public class DBHelper {
 
         return tasks;
     }
+
+    public List<Accountant> getAccountants() {
+        List<Accountant> accountants = new ArrayList<>();
+        String query = "SELECT * FROM Accountants";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String phone = rs.getString("phone");
+                String mobile = rs.getString("mobile");
+                String email = rs.getString("email");
+                Accountant accountant = new Accountant(id, name, phone, mobile, email);
+                accountants.add(accountant);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return accountants;
+    }
+
+    public Accountant getSelectedAccountant(int accountantId) {
+        String query = "SELECT * FROM accountants WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, accountantId);
+            ResultSet resultSet = stmt.executeQuery();
+            Accountant data = null;
+            if (resultSet.next()) {
+                data = new Accountant();
+                data.setId(resultSet.getInt("id"));
+                data.setName(resultSet.getString("name"));
+                data.setPhone(resultSet.getString("phone"));
+                data.setMobile(resultSet.getString("mobile"));
+                data.setEmail(resultSet.getString("email"));
+            }
+            closeConnection(conn);
+            return data;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public int insertAccountant(String name, String phone, String mobile, String email) {
+        String insertQuery = "INSERT INTO Accountants (name, phone, mobile, email) "
+                + "VALUES (?, ?, ?, ?)";
+        int newCustomerId = -1; // Default value for error handling
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setString(1, name);
+            pstmt.setString(2, phone);
+            pstmt.setString(3, mobile);
+            pstmt.setString(4, email);
+
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Η εισαγωγή του λογιστή ήταν επιτυχής.");
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        newCustomerId = generatedKeys.getInt(1);
+                    }
+                }
+            } else {
+                System.out.println("Η εισαγωγή του λογιστή απέτυχε.");
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            System.err.println("Σφάλμα κατά την εισαγωγή του λογιστή: " + e.getMessage());
+        }
+
+        return newCustomerId; // Επιστρέφει το CustomerID ή -1 αν υπήρξε σφάλμα
+    }
+
+    public void updateAccountant(int code, String name, String phone, String mobile, String email) {
+        String sql = "UPDATE accountants SET name = ?,phone = ?, mobile = ? WHERE id = ?";
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, name);
+            pstmt.setString(2, phone);
+            pstmt.setString(3, mobile);
+            pstmt.setString(4, email);
+            pstmt.setInt(5, code);
+
+            int rowsUpdated = pstmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Η ενημέρωση ήταν επιτυχής!");
+                // Μπορείς να προσθέσεις εδώ και μια ενημέρωση της λίστας πελατών στην κύρια σκηνή.
+            } else {
+                System.out.println("Δεν βρέθηκε πελάτης με αυτό το κωδικό.");
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
