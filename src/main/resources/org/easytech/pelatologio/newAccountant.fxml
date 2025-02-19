@@ -8,7 +8,7 @@
 
 <VBox styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddAccountantController">
     <TabPane fx:id="tabPane">
-        <Tab closable="false" text="Στοιχεία πελάτη">
+        <Tab closable="false" text="Στοιχεία Λογιστή">
             <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="pane">
                 <HBox styleClass="pane">
                     <VBox styleClass="pane" HBox.hgrow="ALWAYS">
