@@ -67,6 +67,7 @@ public class DBHelper {
                 data.setAccId(resultSet.getInt("accId"));
                 data.setAccName1(resultSet.getString("accName1"));
                 data.setAccEmail1(resultSet.getString("accEmail1"));
+                data.setRecommendation(resultSet.getString("recommendation"));
                 dataList.add(data);
             }
             closeConnection(conn);
@@ -95,10 +96,10 @@ public class DBHelper {
 
     public int insertCustomer(String name, String title, String job, String afm, String phone1,
                               String phone2, String mobile, String address,
-                              String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1) {
+                              String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, String recommendation) {
         // Prepare the SQL query for inserting a new customer
-        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int newCustomerId = -1; // Default value for error handling
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -129,6 +130,7 @@ public class DBHelper {
             }
             pstmt.setString(17, accName1);
             pstmt.setString(18, accEmail1);
+            pstmt.setString(19, recommendation);
 
 
             int rowsInserted = pstmt.executeUpdate();
@@ -150,9 +152,9 @@ public class DBHelper {
         return newCustomerId; // Επιστρέφει το CustomerID ή -1 αν υπήρξε σφάλμα
     }
 
-    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1) {
+    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, String recommendation) {
         String sql = "UPDATE customers SET name = ?, title = ?, job = ?,afm = ?, phone1 = ?, " +
-                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, email2 = ?,manager = ?, managerPhone = ?, notes = ?, accId = ?, accName1 = ?, accEmail1 = ? WHERE code = ?";
+                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, email2 = ?,manager = ?, managerPhone = ?, notes = ?, accId = ?, accName1 = ?, accEmail1 = ?, recommendation = ? WHERE code = ?";
 
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -179,7 +181,8 @@ public class DBHelper {
             }
             pstmt.setString(17, accName1);
             pstmt.setString(18, accEmail1);
-            pstmt.setInt(19, code);
+            pstmt.setString(19, recommendation);
+            pstmt.setInt(20, code);
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -1414,5 +1417,59 @@ public class DBHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Customer> getCustomersByAcc(int accId) {
+        List<Customer> customers = new ArrayList<>();
+        String query = "SELECT * FROM customers WHERE accId = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, accId);
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                Customer data = new Customer();
+                data.setCode(resultSet.getInt("code"));
+                data.setName(resultSet.getString("name"));
+                data.setTitle(resultSet.getString("title"));
+                data.setJob(resultSet.getString("job"));
+                data.setAfm(resultSet.getString("afm"));
+                data.setPhone1(resultSet.getString("phone1"));
+                data.setPhone2(resultSet.getString("phone2"));
+                data.setMobile(resultSet.getString("mobile"));
+                data.setAddress(resultSet.getString("address"));
+                data.setTown(resultSet.getString("town"));
+                data.setPostcode(resultSet.getString("postcode"));
+                data.setEmail(resultSet.getString("email"));
+                data.setEmail2(resultSet.getString("email2"));
+                data.setManager(resultSet.getString("manager"));
+                data.setManagerPhone(resultSet.getString("managerPhone"));
+                data.setNotes(resultSet.getString("notes"));
+                data.setAccId(resultSet.getInt("accId"));
+                data.setAccName1(resultSet.getString("accName1"));
+                data.setAccEmail1(resultSet.getString("accEmail1"));
+                data.setRecommendation(resultSet.getString("recommendation"));
+                customers.add(data);
+            }
+            closeConnection(conn);
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customers;
+    }
+
+    public List<String> getRecomedations() {
+        List<String> recommendations = new ArrayList<>();
+        String query = "SELECT DISTINCT(recommendation) FROM Customers WHERE recommendation IS NOT NULL";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                recommendations.add(resultSet.getString("recommendation"));
+            }
+            closeConnection(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return recommendations;
     }
 }

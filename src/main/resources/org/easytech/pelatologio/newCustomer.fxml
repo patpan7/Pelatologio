@@ -13,7 +13,7 @@
             <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="pane">
                 <HBox styleClass="pane">
                     <VBox styleClass="pane" HBox.hgrow="ALWAYS">
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER_RIGHT">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </VBox.margin>
@@ -21,7 +21,7 @@
                             <Label minWidth="160.0" styleClass="normal-label" text="Επωνυμία:" />
                             <TextField fx:id="tfName" HBox.hgrow="ALWAYS" />
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER_RIGHT">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </VBox.margin>
@@ -29,7 +29,7 @@
                             <Label minWidth="160.0" styleClass="normal-label" text="Τίτλος:" />
                             <TextField fx:id="tfTitle" HBox.hgrow="ALWAYS" />
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER_LEFT">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </VBox.margin>
@@ -37,7 +37,7 @@
                             <Label minWidth="160.0" styleClass="normal-label" text="Επάγγελμα:" />
                             <TextField fx:id="tfJob" HBox.hgrow="ALWAYS" />
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER_RIGHT">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </VBox.margin>
@@ -55,7 +55,7 @@
                                 </HBox.margin>
                             </JFXButton>
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER_RIGHT">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </VBox.margin>
@@ -70,7 +70,7 @@
                             </Label>
                             <TextField fx:id="tfPhone2" alignment="TOP_LEFT" HBox.hgrow="ALWAYS" />
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER_RIGHT">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </VBox.margin>
@@ -78,7 +78,7 @@
                             <Label minWidth="160.0" styleClass="normal-label" text="Κινητό:" />
                             <TextField fx:id="tfMobile" HBox.hgrow="ALWAYS" />
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER_RIGHT">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </VBox.margin>
@@ -96,7 +96,7 @@
                                 </HBox.margin>
                             </JFXButton>
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER_RIGHT">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </VBox.margin>
@@ -110,7 +110,7 @@
                             </Label>
                             <TextField fx:id="tfPostCode" layoutX="215.0" layoutY="10.0" prefWidth="130.0" />
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER_RIGHT">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </VBox.margin>
@@ -144,7 +144,7 @@
                                 </HBox.margin>
                             </JFXButton>
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER_RIGHT">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </VBox.margin>
@@ -157,6 +157,13 @@
                                 </HBox.margin>
                             </Label>
                             <TextField fx:id="tfManagerPhone" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" layoutX="25.0" layoutY="20.0">
+                            <VBox.margin>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                            </VBox.margin>
+                            <Label minWidth="160.0" styleClass="normal-label" text="Σύσταση:" />
+                            <ComboBox fx:id="tfRecommendation" editable="true" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                         </HBox>
                         <padding>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -251,6 +258,11 @@
                 <AnchorPane fx:id="emblemContainer" styleClass="pane" />
             </ScrollPane>
         </Tab>
+        <Tab fx:id="tabErgani" closable="false" text="Εργάνη">
+            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
+                <AnchorPane fx:id="erganiContainer" styleClass="pane" />
+            </ScrollPane>
+        </Tab>
         <Tab fx:id="tabDevices" closable="false" text="Συσκευές">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
                 <AnchorPane fx:id="devicesContainer" styleClass="pane" />
@@ -285,6 +297,16 @@
 
                         <Label minWidth="200.0" styleClass="normal-label" text="Λογιστής:" />
                         <ComboBox fx:id="tfAccName" editable="true" maxWidth="1.7976931348623157E308" promptText="Λογιστής" HBox.hgrow="ALWAYS" />
+                        <JFXButton fx:id="btnAccountantAdd" buttonType="RAISED" mnemonicParsing="false" onAction="#addAccountant" styleClass="click-button" text="">
+                            <graphic>
+                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@icons/add.png" />
+                                </ImageView>
+                            </graphic>
+                            <HBox.margin>
+                                <Insets left="5.0" />
+                            </HBox.margin>
+                        </JFXButton>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
                         <VBox.margin>

@@ -38,11 +38,13 @@ public class AddCustomerController {
     @FXML
     private TabPane tabPane;
     @FXML
-    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, devicesContainer, tasksContainer;
+    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, devicesContainer, tasksContainer;
     @FXML
-    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabDevices, tabTasks, tabAccountant;
+    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabDevices, tabTasks, tabAccountant;
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone;
+    @FXML
+    private ComboBox<String> tfRecommendation;
     @FXML
     private TextField tfAccPhone, tfAccMobile, tfAccEmail, tfAccName1, tfAccEmail1;
     @FXML
@@ -64,6 +66,7 @@ public class AddCustomerController {
     private MyposViewController myposViewController;
     private SimplyViewController simplyViewController;
     private EmblemViewController emblemViewController;
+    private ErganiViewController erganiViewController;
     private CustomerDevicesController customerDevicesController;
     private CustomerTasksController customerTasksController;
 
@@ -72,6 +75,7 @@ public class AddCustomerController {
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
     private Customer customer;
     private ObservableList<Accountant> accountantsList = FXCollections.observableArrayList();
+    private ObservableList<String> recommendationList = FXCollections.observableArrayList();
 
     private CustomersController customersController;
 
@@ -124,6 +128,15 @@ public class AddCustomerController {
             AnchorPane.setLeftAnchor(emblemContent, 0.0);
             AnchorPane.setRightAnchor(emblemContent, 0.0);
 
+            FXMLLoader loaderErgani = new FXMLLoader(getClass().getResource("erganiView.fxml"));
+            Parent erganiContent = loaderErgani.load();
+            erganiViewController = loaderErgani.getController(); // Πάρε τον controller
+            erganiContainer.getChildren().setAll(erganiContent);
+            AnchorPane.setTopAnchor(erganiContent, 0.0);
+            AnchorPane.setBottomAnchor(erganiContent, 0.0);
+            AnchorPane.setLeftAnchor(erganiContent, 0.0);
+            AnchorPane.setRightAnchor(erganiContent, 0.0);
+
             FXMLLoader loaderDevices = new FXMLLoader(getClass().getResource("customerDevicesView.fxml"));
             Parent devicesContent = loaderDevices.load();
             customerDevicesController = loaderDevices.getController(); // Πάρε τον controller
@@ -171,6 +184,7 @@ public class AddCustomerController {
         tabMypos.setDisable(true);
         tabSimply.setDisable(true);
         tabEmblem.setDisable(true);
+        tabErgani.setDisable(true);
         tabDevices.setDisable(true);
         tabTasks.setDisable(true);
 
@@ -296,6 +310,10 @@ public class AddCustomerController {
                 tfAccEmail.clear();
             }
         });
+
+        recommendationList.clear();
+        recommendationList.addAll(dbHelper.getRecomedations());
+        tfRecommendation.setItems(recommendationList);
     }
 
 
@@ -426,6 +444,12 @@ public class AddCustomerController {
         tfAccName1.setText(customer.getAccName1());
         tfAccEmail1.setText(customer.getAccEmail1());
 
+        for (String rec : recommendationList) {
+            if (rec.equals(customer.getRecommendation())) {
+                tfRecommendation.getSelectionModel().select(rec);
+                break;
+            }
+        }
 
         btnAddressAdd.setDisable(false);
         DBHelper dbHelper = new DBHelper();
@@ -483,6 +507,11 @@ public class AddCustomerController {
         } else {
             System.out.println("emblemViewController δεν είναι ακόμα έτοιμος.");
         }
+        if (erganiViewController != null) {
+            erganiViewController.setCustomer(customer);
+        } else {
+            System.out.println("erganiViewController δεν είναι ακόμα έτοιμος.");
+        }
         if (customerDevicesController != null) {
             customerDevicesController.setCustomer(customer);
         } else {
@@ -510,6 +539,7 @@ public class AddCustomerController {
         tabMypos.setDisable(false);
         tabSimply.setDisable(false);
         tabEmblem.setDisable(false);
+        tabErgani.setDisable(false);
         tabDevices.setDisable(false);
         tabTasks.setDisable(false);
     }
@@ -608,7 +638,7 @@ public class AddCustomerController {
         String notes = taNotes.getText();
         String accName1 = (tfAccName1.getText() != null ? tfAccName1.getText() : "");
         String accEmail1 = (tfAccEmail1.getText() != null ? tfAccEmail1.getText() : "");
-
+        String selectedRecommendation = tfRecommendation.getEditor().getText().trim();
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
         int accId = (selectedAccountant != null) ? selectedAccountant.getId() : 0;
 
@@ -642,7 +672,7 @@ public class AddCustomerController {
             });
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
-            customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1);
+            customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation);
             // Εμφάνιση επιτυχίας
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -686,6 +716,7 @@ public class AddCustomerController {
         String notes = taNotes.getText();
         String accName1 = (tfAccName1.getText() != null ? tfAccName1.getText() : "");
         String accEmail1 = (tfAccEmail1.getText() != null ? tfAccEmail1.getText() : "");
+        String selectedRecommendation = tfRecommendation.getEditor().getText().trim();
 
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
         int accId = (selectedAccountant != null) ? selectedAccountant.getId() : 0;
@@ -703,7 +734,7 @@ public class AddCustomerController {
         phone2 = phone2.replaceAll("\\s+", "");
         managerPhone = managerPhone.replaceAll("\\s+", "");
 
-        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1);
+        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation);
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
         Notifications notifications = Notifications.create()
                 .title("Επιτυχία")
@@ -855,6 +886,30 @@ public class AddCustomerController {
             }
         }
     }
+    public void addAccountant(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("newAccountant.fxml"));
+            Parent root = loader.load();
+
+            AddAccountantController controller = loader.getController();
+            controller.setCallback(this::updateAccountantComboBox); // Ορισμός callback για ενημέρωση
+
+            Stage stage = new Stage();
+            controller.setStage(stage);
+            stage.setTitle("Νέος Λογιστής");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait(); // Περιμένει να κλείσει το παράθυρο
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateAccountantComboBox(Accountant newAccountant) {
+        tfAccName.getItems().add(newAccountant); // Προσθήκη στη λίστα
+        tfAccName.getSelectionModel().select(newAccountant); // Επιλογή
+    }
+
 
 
     public void addMegasoft(ActionEvent event) {
@@ -880,4 +935,6 @@ public class AddCustomerController {
     public void selectEmbelmTab() {
         Platform.runLater(() -> tabPane.getSelectionModel().select(tabEmblem));
     }
+
+    public void selectErganiTab(){ Platform.runLater(() -> tabPane.getSelectionModel().select(tabErgani)); }
 }

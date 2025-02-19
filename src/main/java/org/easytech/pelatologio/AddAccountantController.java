@@ -15,12 +15,14 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public class AddAccountantController {
     private TabPane mainTabPane;
@@ -35,7 +37,7 @@ public class AddAccountantController {
     @FXML
     private ProgressIndicator progressIndicator;
 
-    //private CustomerAccViewController customerAccViewController;
+    private CustomerAccViewController customerAccViewController;
 
     int code = 0;
 
@@ -43,6 +45,17 @@ public class AddAccountantController {
     private Accountant accountant;
 
     private AccountantsController accountantsController;
+
+    private Consumer<Accountant> callback; // Callback function
+    private Stage stage;
+
+    public void setCallback(Consumer<Accountant> callback) {
+        this.callback = callback;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 
     // Θα περάσουμε το TabPane από τον MainMenuController
     public void setMainTabPane(TabPane mainTabPane) {
@@ -56,18 +69,18 @@ public class AddAccountantController {
 
     public void initialize() {
         Platform.runLater(() -> tabPane.requestFocus());
-//        try {
-//            FXMLLoader loaderTaxis = new FXMLLoader(getClass().getResource("customerAccView.fxml"));
-//            Parent customerContent = loaderTaxis.load();
-//            customerAccViewController = loaderTaxis.getController(); // Πάρε τον controller
-//            customersContainer.getChildren().setAll(customerContent);
-//            AnchorPane.setTopAnchor(customerContent, 0.0);
-//            AnchorPane.setBottomAnchor(customerContent, 0.0);
-//            AnchorPane.setLeftAnchor(customerContent, 0.0);
-//            AnchorPane.setRightAnchor(customerContent, 0.0);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            FXMLLoader loaderTaxis = new FXMLLoader(getClass().getResource("customersAccView.fxml"));
+            Parent customerContent = loaderTaxis.load();
+            customerAccViewController = loaderTaxis.getController(); // Πάρε τον controller
+            customersContainer.getChildren().setAll(customerContent);
+            AnchorPane.setTopAnchor(customerContent, 0.0);
+            AnchorPane.setBottomAnchor(customerContent, 0.0);
+            AnchorPane.setLeftAnchor(customerContent, 0.0);
+            AnchorPane.setRightAnchor(customerContent, 0.0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         tabCustomers.setDisable(true);
 
@@ -245,11 +258,11 @@ public class AddAccountantController {
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = accountant.getId();
         this.accountant = accountant;
-//        if (customerAccViewController != null) {
-//            customerAccViewController.setAccountnat(accountant);
-//        } else {
-//            System.out.println("customerAccViewController δεν είναι ακόμα έτοιμος.");
-//        }
+        if (customerAccViewController != null) {
+            customerAccViewController.setAccountnat(accountant);
+        } else {
+            System.out.println("customerAccViewController δεν είναι ακόμα έτοιμος.");
+        }
 
         tabCustomers.setDisable(false);
     }
@@ -261,6 +274,7 @@ public class AddAccountantController {
             updateAccountant();
         }
     }
+
     private void closeCurrentTab() {
         Platform.runLater(() -> {
             Tab currentTab = mainTabPane.getSelectionModel().getSelectedItem();
@@ -287,7 +301,10 @@ public class AddAccountantController {
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         int accountantId;
         accountantId = dbHelper.insertAccountant(name, phone, mobile, email);
-            // Εμφάνιση επιτυχίας
+        // Εμφάνιση επιτυχίας
+        if (accountantId > 0) {
+            Accountant newAccountant = new Accountant(accountantId, name, phone, mobile, email);
+
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Επιτυχία")
@@ -296,10 +313,16 @@ public class AddAccountantController {
                         .hideAfter(Duration.seconds(3))
                         .position(Pos.TOP_RIGHT);
                 notifications.showInformation();
-                closeCurrentTab(); // Κλείσιμο του "Νέος Πελάτης"
-                openAccountantTab(accountantId); // Άνοιγμα καρτέλας με τον νέο πελάτη
+                if (callback != null) {
+                    callback.accept(newAccountant);
+                    stage.close();
+                } else {
+                    closeCurrentTab(); // Κλείσιμο του "Νέος Πελάτης"
+                    openAccountantTab(accountantId); // Άνοιγμα καρτέλας με τον νέο πελάτη
+                }
             });
         }
+    }
 
     private void openAccountantTab(int accountantId) {
         if (accountantsController != null) {

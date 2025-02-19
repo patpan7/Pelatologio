@@ -9,12 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.Clipboard;
@@ -22,16 +18,11 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
-import org.openqa.selenium.By;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
@@ -46,7 +37,7 @@ public class AccountantsController implements Initializable {
     TableView<Accountant> accountantTable;
     @FXML
     TextField filterField;
-
+    private AddCustomerController addCustomerController;
 
     ObservableList<Accountant> observableList;
     FilteredList<Accountant> filteredData;
@@ -57,6 +48,10 @@ public class AccountantsController implements Initializable {
     // Μέθοδος για να περάσουμε το TabPane
     public void setMainTabPane(TabPane mainTabPane) {
         this.mainTabPane = mainTabPane;
+    }
+
+    public void setAddCustomerController(AddCustomerController addCustomerController) {
+        this.addCustomerController = addCustomerController;
     }
 
     @Override

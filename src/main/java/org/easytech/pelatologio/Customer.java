@@ -21,6 +21,7 @@ public class Customer {
     int accId;
     String accName1;
     String accEmail1;
+    String recommendation;
 
     public Customer() {
 
@@ -192,6 +193,14 @@ public class Customer {
 
     public void setAccEmail1(String accEmail1) {
         this.accEmail1 = accEmail1;
+    }
+
+    public String getRecommendation() {
+        return recommendation;
+    }
+
+    public void setRecommendation(String recommendation) {
+        this.recommendation = recommendation;
     }
 
     @Override

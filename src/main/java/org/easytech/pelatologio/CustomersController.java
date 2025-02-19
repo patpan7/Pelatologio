@@ -45,7 +45,7 @@ public class CustomersController implements Initializable {
     @FXML
     TextField filterField;
     @FXML
-    Button btnTaxis, btnMypos, btnSimply, btnEmblem, btnData, openFileButton;
+    Button btnTaxis, btnMypos, btnSimply, btnEmblem, btnErgani, btnData, openFileButton;
 
     ObservableList<Customer> observableList;
     FilteredList<Customer> filteredData;
@@ -65,8 +65,9 @@ public class CustomersController implements Initializable {
         setTooltip(btnMypos, "1) Διαχείριση κωδικών myPOS του πελάτη\n2) Είσοδος στο DAS της myPOS");
         setTooltip(btnSimply, "1) Διαχείριση κωδικών Simply του πελάτη\n2) Είσοδος στο DAS της Simply");
         setTooltip(btnEmblem, "1) Διαχείριση κωδικών Emblem του πελάτη\n2) Είσοδος στο DAS της Emblem");
+        setTooltip(btnErgani, "Διαχείριση κωδικών Εργάνη του πελάτη");
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
-        setTooltip(openFileButton,"1) Αντιγραφή πληροφοριών\n2) Άνοιγμα φακέλου με δεδομένα");
+        setTooltip(openFileButton, "1) Αντιγραφή πληροφοριών\n2) Άνοιγμα φακέλου με δεδομένα");
 
 
         dbHelper = new DBHelper();
@@ -86,24 +87,27 @@ public class CustomersController implements Initializable {
 
         // Διπλό κλικ για επεξεργασία πελάτη
         customerTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1){
+            if (event.getClickCount() == 1) {
                 btnTaxis.setStyle("-fx-border-color: #005599;");
                 btnMypos.setStyle("-fx-border-color: #005599;");
                 btnSimply.setStyle("-fx-border-color: #005599;");
                 btnEmblem.setStyle("-fx-border-color: #005599;");
                 // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
                 Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-                if(dbHelper.hasApp(selectedCustomer.getCode(),1)){
+                if (dbHelper.hasApp(selectedCustomer.getCode(), 1)) {
                     btnMypos.setStyle("-fx-border-color: #FF0000;");
                 }
-                if(dbHelper.hasApp(selectedCustomer.getCode(),2)){
+                if (dbHelper.hasApp(selectedCustomer.getCode(), 2)) {
                     btnSimply.setStyle("-fx-border-color: #FF0000;");
                 }
-                if(dbHelper.hasApp(selectedCustomer.getCode(),3)){
+                if (dbHelper.hasApp(selectedCustomer.getCode(), 3)) {
                     btnTaxis.setStyle("-fx-border-color: #FF0000;");
                 }
-                if(dbHelper.hasApp(selectedCustomer.getCode(),4)){
+                if (dbHelper.hasApp(selectedCustomer.getCode(), 4)) {
                     btnEmblem.setStyle("-fx-border-color: #FF0000;");
+                }
+                if (dbHelper.hasApp(selectedCustomer.getCode(), 5)) {
+                    btnErgani.setStyle("-fx-border-color: #FF0000;");
                 }
             }
             if (event.getClickCount() == 2) { // Έλεγχος για δύο κλικ
@@ -126,7 +130,7 @@ public class CustomersController implements Initializable {
 
         openFileButton.setOnAction(event -> {
             ContextMenu contextMenu = new ContextMenu();
-            File folder = new File(AppSettings.loadSetting("datafolder")+"\\Docs");
+            File folder = new File(AppSettings.loadSetting("datafolder") + "\\Docs");
 
             // Δημιουργία φακέλου αν δεν υπάρχει
             if (!folder.exists()) {
@@ -146,12 +150,12 @@ public class CustomersController implements Initializable {
 
             // Προσθήκη επιλογής για άνοιγμα του φακέλου
             MenuItem openFolderItem = new MenuItem("Άνοιγμα φακέλου");
-            openFolderItem.setOnAction(e -> openFolder(AppSettings.loadSetting("datafolder")+"\\Docs"));
+            openFolderItem.setOnAction(e -> openFolder(AppSettings.loadSetting("datafolder") + "\\Docs"));
             contextMenu.getItems().add(openFolderItem);
 
             // Εμφάνιση του ContextMenu πάνω από το κουμπί
             double buttonX = openFileButton.localToScene(openFileButton.getBoundsInLocal()).getMinX();
-            double buttonY = openFileButton.localToScene(openFileButton.getBoundsInLocal()).getMinY() - 2*openFileButton.getHeight();
+            double buttonY = openFileButton.localToScene(openFileButton.getBoundsInLocal()).getMinY() - 2 * openFileButton.getHeight();
             contextMenu.show(openFileButton, openFileButton.getScene().getWindow().getX() + buttonX,
                     openFileButton.getScene().getWindow().getY() + buttonY);
         });
@@ -273,7 +277,7 @@ public class CustomersController implements Initializable {
                 filteredData = new FilteredList<>(observableList, b -> true);
 
                 filterField.textProperty().addListener((observable, oldValue, newValue) ->
-                    applyFilters(newValue)
+                        applyFilters(newValue)
                 );
 
                 applyFilters(filterField.getText());
@@ -378,22 +382,23 @@ public class CustomersController implements Initializable {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
+
     public void openCustomerTab(int customerId) {
         System.out.println("customerId: " + customerId);
-            refreshTableData(); // Ανανεώνει τη λίστα πελατών
-            filteredData = new FilteredList<>(observableList, b -> true);
+        refreshTableData(); // Ανανεώνει τη λίστα πελατών
+        filteredData = new FilteredList<>(observableList, b -> true);
 
-            filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-                applyFilters(newValue);
-            });
+        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+            applyFilters(newValue);
+        });
 
-            applyFilters(filterField.getText());
+        applyFilters(filterField.getText());
 
-            SortedList<Customer> sortedData = new SortedList<>(filteredData);
-            sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
-            customerTable.setItems(sortedData);
-            // Έλεγχος αν υπάρχει ήδη ανοικτό tab για τον συγκεκριμένο πελάτη
-            Customer selectedCustomer = dbHelper.getSelectedCustomer(customerId);
+        SortedList<Customer> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
+        customerTable.setItems(sortedData);
+        // Έλεγχος αν υπάρχει ήδη ανοικτό tab για τον συγκεκριμένο πελάτη
+        Customer selectedCustomer = dbHelper.getSelectedCustomer(customerId);
         System.out.println("selectedCustomer: " + selectedCustomer);
         try {
             String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
@@ -482,7 +487,7 @@ public class CustomersController implements Initializable {
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Επιβεβαίωση");
-        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε τον πελάτη " + selectedCustomer.getName() + ";" );
+        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε τον πελάτη " + selectedCustomer.getName() + ";");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             dbHelper.customerDelete(selectedCustomer.getCode());
@@ -564,17 +569,17 @@ public class CustomersController implements Initializable {
     public void customerInfo(ActionEvent actionEvent) {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
         if (selectedCustomer != null) {
-            String msg ="Στοιχεία πελάτη" +
-                    "\nΕπωνυμία: "+selectedCustomer.getName()+
-                    "\nΤίτλος: " + selectedCustomer.getTitle()+
-                    "\nΕπάγγελμα: " + selectedCustomer.getJob()+
-                    "\nΔιεύθυνση: " +selectedCustomer.getAddress()+
-                    "\nΠόλη: " + selectedCustomer.getTown()+
-                    "\nΤ.Κ.: " + selectedCustomer.getPostcode()+
-                    "\nΑΦΜ: "+selectedCustomer.getAfm()+
-                    "\nEmail: "+selectedCustomer.getEmail()+
-                    "\nΤηλέφωνο: " + selectedCustomer.getPhone1()+
-                    "\nΚινητό: "+selectedCustomer.getMobile();
+            String msg = "Στοιχεία πελάτη" +
+                    "\nΕπωνυμία: " + selectedCustomer.getName() +
+                    "\nΤίτλος: " + selectedCustomer.getTitle() +
+                    "\nΕπάγγελμα: " + selectedCustomer.getJob() +
+                    "\nΔιεύθυνση: " + selectedCustomer.getAddress() +
+                    "\nΠόλη: " + selectedCustomer.getTown() +
+                    "\nΤ.Κ.: " + selectedCustomer.getPostcode() +
+                    "\nΑΦΜ: " + selectedCustomer.getAfm() +
+                    "\nEmail: " + selectedCustomer.getEmail() +
+                    "\nΤηλέφωνο: " + selectedCustomer.getPhone1() +
+                    "\nΚινητό: " + selectedCustomer.getMobile();
             copyTextToClipboard(msg);
         }
     }
@@ -927,72 +932,121 @@ public class CustomersController implements Initializable {
         }
     }
 
-    public void folderClick(ActionEvent event) {
-        CustomerFolderManager folderManager = new CustomerFolderManager();
-
-        // Όνομα και ΑΦΜ του πελάτη
+    public void erganiClick(MouseEvent event) {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-
-        // Κλήση της μεθόδου για δημιουργία ή άνοιγμα του φακέλου
-        folderManager.createOrOpenCustomerFolder(selectedCustomer.getName(), selectedCustomer.getAfm());
-    }
-
-
-    // Μέθοδος για αντιγραφή του περιεχομένου αρχείου στο πρόχειρο
-    private void copyFileContentToClipboard(File file) {
+        if (selectedCustomer == null) {
+            Notifications notifications = Notifications.create()
+                    .title("Προσοχή")
+                    .text("Δεν έχει επιλεγεί Πελάτης!")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showError();
+            return;
+        }
         try {
-            String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-            javafx.scene.input.Clipboard clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
-            javafx.scene.input.ClipboardContent clipboardContent = new javafx.scene.input.ClipboardContent();
-            clipboardContent.putString(content);
-            clipboard.setContent(clipboardContent);
+            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+            if (res.equals("unlocked")) {
+                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
+                for (Tab tab : mainTabPane.getTabs()) {
+                    if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
+                        mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                        // Πάρε τον controller και άλλαξε tab στο "Emblem"
+                        AddCustomerController controller = (AddCustomerController) tab.getUserData();
+                        Platform.runLater(() -> controller.selectErganiTab());
+                        return;
+                    }
+                }
+                // Φόρτωση του FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
+                Parent customerForm = loader.load();
+
+                // Δημιουργία νέου tab για την ενημέρωση του πελάτη
+                Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
+                customerTab.setContent(customerForm);
+
+                AddCustomerController controller = loader.getController();
+                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                controller.setCustomerData(selectedCustomer);
+
+                // Προσθήκη του tab στο TabPane
+                mainTabPane.getTabs().add(customerTab);
+                mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
+                Platform.runLater(() -> controller.selectErganiTab());
+            }
+
         } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αντιγραφή.", e.getMessage(), Alert.AlertType.ERROR));
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
-    // Μέθοδος για άνοιγμα του φακέλου
-    private void openFolder(String folderPath) {
-        try {
-            Desktop.getDesktop().open(new File(folderPath));
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα φακέλου.", e.getMessage(), Alert.AlertType.ERROR));
-        }
-    }
+public void folderClick(ActionEvent event) {
+    CustomerFolderManager folderManager = new CustomerFolderManager();
 
-    private void copyTextToClipboard(String msg) {
-        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(msg);  // Replace with the desired text
-        clipboard.setContent(content);
-        Notifications notifications = Notifications.create()
-                .title("Αντιγραγή στο πρόχειρο")
-                .text(msg)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
-        notifications.showInformation();
-    }
+    // Όνομα και ΑΦΜ του πελάτη
+    Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
 
-    private void setTooltip(Button button, String text) {
-        Tooltip tooltip = new Tooltip();
-        tooltip.setShowDelay(Duration.seconds(0.3));
-        tooltip.setText(text);
-        button.setTooltip(tooltip);
-    }
+    // Κλήση της μεθόδου για δημιουργία ή άνοιγμα του φακέλου
+    folderManager.createOrOpenCustomerFolder(selectedCustomer.getName(), selectedCustomer.getAfm());
+}
 
-    public void clean(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY) {
-            filterField.setText("");
-            customerTable.getSelectionModel().clearSelection();
-        } else if (event.getButton() == MouseButton.SECONDARY) {
-            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-            dbHelper.customerUnlock(selectedCustomer.getCode());
-        }
-    }
 
-    public void refresh(MouseEvent mouseEvent) {
-        refreshTableData();
+// Μέθοδος για αντιγραφή του περιεχομένου αρχείου στο πρόχειρο
+private void copyFileContentToClipboard(File file) {
+    try {
+        String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+        javafx.scene.input.Clipboard clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
+        javafx.scene.input.ClipboardContent clipboardContent = new javafx.scene.input.ClipboardContent();
+        clipboardContent.putString(content);
+        clipboard.setContent(clipboardContent);
+    } catch (IOException e) {
+        Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αντιγραφή.", e.getMessage(), Alert.AlertType.ERROR));
     }
+}
+
+// Μέθοδος για άνοιγμα του φακέλου
+private void openFolder(String folderPath) {
+    try {
+        Desktop.getDesktop().open(new File(folderPath));
+    } catch (IOException e) {
+        Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα φακέλου.", e.getMessage(), Alert.AlertType.ERROR));
+    }
+}
+
+private void copyTextToClipboard(String msg) {
+    // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
+    Clipboard clipboard = Clipboard.getSystemClipboard();
+    ClipboardContent content = new ClipboardContent();
+    content.putString(msg);  // Replace with the desired text
+    clipboard.setContent(content);
+    Notifications notifications = Notifications.create()
+            .title("Αντιγραγή στο πρόχειρο")
+            .text(msg)
+            .graphic(null)
+            .hideAfter(Duration.seconds(5))
+            .position(Pos.TOP_RIGHT);
+    notifications.showInformation();
+}
+
+private void setTooltip(Button button, String text) {
+    Tooltip tooltip = new Tooltip();
+    tooltip.setShowDelay(Duration.seconds(0.3));
+    tooltip.setText(text);
+    button.setTooltip(tooltip);
+}
+
+public void clean(MouseEvent event) {
+    if (event.getButton() == MouseButton.PRIMARY) {
+        filterField.setText("");
+        customerTable.getSelectionModel().clearSelection();
+    } else if (event.getButton() == MouseButton.SECONDARY) {
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        dbHelper.customerUnlock(selectedCustomer.getCode());
+    }
+}
+
+public void refresh(MouseEvent mouseEvent) {
+    refreshTableData();
+}
 }

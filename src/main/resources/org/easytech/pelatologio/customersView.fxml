@@ -153,6 +153,16 @@
                         </graphic>
                     </JFXButton>
                     <Separator layoutX="600.0" layoutY="43.0" visible="false" HBox.hgrow="ALWAYS" />
+               <JFXButton fx:id="btnErgani" buttonType="RAISED" layoutX="609.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#erganiClick" prefWidth="175.0" styleClass="click-button" text="Ergani">
+                  <graphic>
+                     <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@icons/ergani.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+               </JFXButton>
+               <Separator layoutX="682.0" layoutY="39.0" visible="false" />
                     <JFXButton fx:id="btnData" buttonType="RAISED" mnemonicParsing="false" onAction="#folderClick" prefWidth="175.0" styleClass="click-button" text="Data" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
