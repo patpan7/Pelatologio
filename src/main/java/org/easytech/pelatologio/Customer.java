@@ -18,10 +18,9 @@ public class Customer {
     String manager;
     String managerPhone;
     String notes;
-    String accName;
-    String accPhone;
-    String accMobile;
-    String accEmail;
+    int accId;
+    String accName1;
+    String accEmail1;
 
     public Customer() {
 
@@ -123,9 +122,13 @@ public class Customer {
         this.town = town;
     }
 
-    public String getPostcode() {return postcode;}
+    public String getPostcode() {
+        return postcode;
+    }
 
-    public void setPostcode(String postcode) {this.postcode = postcode;}
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
 
     public String getEmail() {
         return email;
@@ -159,40 +162,36 @@ public class Customer {
         this.managerPhone = managerPhone;
     }
 
-    public String getNotes() {return notes;}
-
-    public void setNotes(String notes) {this.notes = notes;}
-
-    public String getAccEmail() {
-        return accEmail;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setAccEmail(String accEmail) {
-        this.accEmail = accEmail;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
-    public String getAccMobile() {
-        return accMobile;
+    public int getAccId() {
+        return accId;
     }
 
-    public void setAccMobile(String accMobile) {
-        this.accMobile = accMobile;
+    public void setAccId(int accId) {
+        this.accId = accId;
     }
 
-    public String getAccPhone() {
-        return accPhone;
+    public String getAccName1() {
+        return accName1;
     }
 
-    public void setAccPhone(String accPhone) {
-        this.accPhone = accPhone;
+    public void setAccName1(String accName1) {
+        this.accName1 = accName1;
     }
 
-    public String getAccName() {
-        return accName;
+    public String getAccEmail1() {
+        return accEmail1;
     }
 
-    public void setAccName(String accName) {
-        this.accName = accName;
+    public void setAccEmail1(String accEmail1) {
+        this.accEmail1 = accEmail1;
     }
 
     @Override

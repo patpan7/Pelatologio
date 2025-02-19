@@ -64,10 +64,9 @@ public class DBHelper {
                 data.setManager(resultSet.getString("manager"));
                 data.setManagerPhone(resultSet.getString("managerPhone"));
                 data.setNotes(resultSet.getString("notes"));
-                data.setAccName(resultSet.getString("accName"));
-                data.setAccPhone(resultSet.getString("accPhone"));
-                data.setAccMobile(resultSet.getString("accMobile"));
-                data.setAccEmail(resultSet.getString("accEmail"));
+                data.setAccId(resultSet.getInt("accId"));
+                data.setAccName1(resultSet.getString("accName1"));
+                data.setAccEmail1(resultSet.getString("accEmail1"));
                 dataList.add(data);
             }
             closeConnection(conn);
@@ -96,13 +95,17 @@ public class DBHelper {
 
     public int insertCustomer(String name, String title, String job, String afm, String phone1,
                               String phone2, String mobile, String address,
-                              String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, String accName, String accPhone, String accMobile, String accEmail) {
-        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, email2, manager, managerPhone, notes, accName, accPhone, accMobile, accEmail) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                              String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1) {
+        // Prepare the SQL query for inserting a new customer
+        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int newCustomerId = -1; // Default value for error handling
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
-
+            Integer accId1 = null;
+            if (accId != 0) {
+                accId1 = accId;
+            }
             pstmt.setString(1, name);
             pstmt.setString(2, title);
             pstmt.setString(3, job);
@@ -118,10 +121,14 @@ public class DBHelper {
             pstmt.setString(13, manager);
             pstmt.setString(14, managerPhone);
             pstmt.setString(15, notes);
-            pstmt.setString(16, accName);
-            pstmt.setString(17, accPhone);
-            pstmt.setString(18, accMobile);
-            pstmt.setString(19, accEmail);
+            // Χειρισμός του accId (αν είναι null, βάζουμε SQL NULL)
+            if (accId == 0) {
+                pstmt.setNull(16, Types.INTEGER);
+            } else {
+                pstmt.setInt(16, accId);
+            }
+            pstmt.setString(17, accName1);
+            pstmt.setString(18, accEmail1);
 
 
             int rowsInserted = pstmt.executeUpdate();
@@ -143,9 +150,9 @@ public class DBHelper {
         return newCustomerId; // Επιστρέφει το CustomerID ή -1 αν υπήρξε σφάλμα
     }
 
-    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, String accName, String accPhone, String accMobile, String accEmail) {
+    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1) {
         String sql = "UPDATE customers SET name = ?, title = ?, job = ?,afm = ?, phone1 = ?, " +
-                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, email2 = ?,manager = ?, managerPhone = ?, notes = ?, accName = ?, accPhone = ?, accMobile = ?, accEmail = ? WHERE code = ?";
+                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, email2 = ?,manager = ?, managerPhone = ?, notes = ?, accId = ?, accName1 = ?, accEmail1 = ? WHERE code = ?";
 
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -164,11 +171,15 @@ public class DBHelper {
             pstmt.setString(13, manager);
             pstmt.setString(14, managerPhone);
             pstmt.setString(15, notes);
-            pstmt.setString(16, accName);
-            pstmt.setString(17, accPhone);
-            pstmt.setString(18, accMobile);
-            pstmt.setString(19, accEmail);
-            pstmt.setInt(20, code);
+            // Χειρισμός του accId (αν είναι null, βάζουμε SQL NULL)
+            if (accId == 0) {
+                pstmt.setNull(16, Types.INTEGER);
+            } else {
+                pstmt.setInt(16, accId);
+            }
+            pstmt.setString(17, accName1);
+            pstmt.setString(18, accEmail1);
+            pstmt.setInt(19, code);
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
