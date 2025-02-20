@@ -1396,7 +1396,7 @@ public class DBHelper {
     }
 
     public void updateAccountant(int code, String name, String phone, String mobile, String email) {
-        String sql = "UPDATE accountants SET name = ?,phone = ?, mobile = ? WHERE id = ?";
+        String sql = "UPDATE accountants SET name = ?, phone = ?, mobile = ?, email = ? WHERE id = ?";
 
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -1459,7 +1459,7 @@ public class DBHelper {
 
     public List<String> getRecomedations() {
         List<String> recommendations = new ArrayList<>();
-        String query = "SELECT DISTINCT(recommendation) FROM Customers WHERE recommendation IS NOT NULL";
+        String query = "SELECT DISTINCT(recommendation) FROM Customers WHERE recommendation IS NOT NULL ORDER BY recommendation ASC";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             ResultSet resultSet = stmt.executeQuery();

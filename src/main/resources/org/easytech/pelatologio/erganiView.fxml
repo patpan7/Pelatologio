@@ -3,69 +3,60 @@
 <?import com.jfoenix.controls.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.layout.*?>
-<HBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.ErganiViewController">
+
+<HBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.ErganiViewController">
     <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
         <HBox.margin>
-            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
         </HBox.margin>
         <TableView fx:id="loginTable" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="usernameColumn" text="Username"/>
-                <TableColumn fx:id="passwordColumn" text="Password"/>
-                <TableColumn fx:id="tagColumn" text="Tag"/>
-                <TableColumn fx:id="phoneColumn" text="Τηλέφωνο"/>
+                <TableColumn fx:id="usernameColumn" text="Username" />
+                <TableColumn fx:id="passwordColumn" text="Password" />
+                <TableColumn fx:id="tagColumn" text="Tag" />
+                <TableColumn fx:id="phoneColumn" text="Τηλέφωνο" />
             </columns>
             <contextMenu>
                 <ContextMenu>
                     <items>
-                        <MenuItem onAction="#handleEditLogin" styleClass="menu-item" text="Επεξεργασία"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleAddLogin" styleClass="menu-item"
-                                  text="Προσθήκη"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteLogin" styleClass="menu-item"
-                                  text="Διαγραφή"/>
-                        <SeparatorMenuItem/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleLabel" styleClass="menu-item"
-                                  text="Ετικέτα"/>
-                        <SeparatorMenuItem/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleAddTask" styleClass="menu-item"
-                                  text="Προσθήκη εργασίας"/>
+                        <MenuItem onAction="#handleEditLogin" styleClass="menu-item" text="Επεξεργασία" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddLogin" styleClass="menu-item" text="Προσθήκη" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteLogin" styleClass="menu-item" text="Διαγραφή" />
+                        <SeparatorMenuItem />
+                        <MenuItem mnemonicParsing="false" onAction="#handleLabel" styleClass="menu-item" text="Ετικέτα" />
+                        <SeparatorMenuItem />
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddTask" styleClass="menu-item" text="Προσθήκη εργασίας" />
                     </items>
                 </ContextMenu>
             </contextMenu>
             <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-        <JFXButton fx:id="addLoginButton" buttonType="RAISED" onAction="#handleAddLogin" prefWidth="277.0"
-                   styleClass="click-button" text="Προσθήκη Νέου Login">
+        <JFXButton fx:id="addLoginButton" buttonType="RAISED" onAction="#handleAddLogin" prefWidth="277.0" styleClass="click-button" text="Προσθήκη Νέου Login">
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </JFXButton>
-        <JFXButton fx:id="editButton" buttonType="RAISED" onAction="#handleEditLogin" prefWidth="277.0"
-                   styleClass="click-button" text="Επεξεργασία">
+        <JFXButton fx:id="editButton" buttonType="RAISED" onAction="#handleEditLogin" prefWidth="277.0" styleClass="click-button" text="Επεξεργασία">
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </JFXButton>
-        <JFXButton fx:id="deleteButton" buttonType="RAISED" onAction="#handleDeleteLogin" prefWidth="277.0"
-                   styleClass="click-button" text="Διαγραφή">
+        <JFXButton fx:id="deleteButton" buttonType="RAISED" onAction="#handleDeleteLogin" prefWidth="277.0" styleClass="click-button" text="Διαγραφή">
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </JFXButton>
     </VBox>
     <VBox alignment="TOP_CENTER" HBox.hgrow="NEVER">
         <HBox.margin>
-            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
         </HBox.margin>
-        <JFXButton fx:id="btnErganiRegister" buttonType="RAISED" mnemonicParsing="false"
-                   prefWidth="277.0" styleClass="click-button" text="Εγγραφή Emblem">
+        <JFXButton fx:id="btnErganiRegister" buttonType="RAISED" mnemonicParsing="false" prefWidth="277.0" styleClass="click-button" text="Εγγραφή Εργάνη">
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </JFXButton>
     </VBox>

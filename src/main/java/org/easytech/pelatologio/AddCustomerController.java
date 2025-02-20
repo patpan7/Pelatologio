@@ -284,6 +284,7 @@ public class AddCustomerController {
         DBHelper dbHelper = new DBHelper();
         accountantsList.clear();
         accountantsList.addAll(dbHelper.getAccountants());
+        accountantsList.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         tfAccName.setItems(accountantsList);
         tfAccName.setConverter(new StringConverter<Accountant>() {
             @Override
@@ -468,6 +469,9 @@ public class AddCustomerController {
         }
         if(dbHelper.hasApp(customer.getCode(),4)){
             tabEmblem.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasApp(customer.getCode(),5)){
+            tabErgani.getStyleClass().add("tabHas");
         }
         if(dbHelper.hasDevice(customer.getCode())){
             tabDevices.getStyleClass().add("tabHas");

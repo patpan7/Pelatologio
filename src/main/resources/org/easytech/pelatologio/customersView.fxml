@@ -162,7 +162,7 @@
                      </ImageView>
                   </graphic>
                </JFXButton>
-               <Separator layoutX="682.0" layoutY="39.0" visible="false" />
+               <Separator layoutX="682.0" layoutY="39.0" visible="false" HBox.hgrow="ALWAYS" />
                     <JFXButton fx:id="btnData" buttonType="RAISED" mnemonicParsing="false" onAction="#folderClick" prefWidth="175.0" styleClass="click-button" text="Data" HBox.hgrow="ALWAYS">
                         <graphic>
                             <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
