@@ -320,13 +320,6 @@ public class SimplyViewController {
 
         if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
             if (selectedLogin != null) {
-                String msg ="Νέος Πελάτης Simply Cash" +
-                        "\nΕπωνυμία: "+customer.getName()+
-                        "\nΑΦΜ: "+customer.getAfm()+
-                        "\nEmail: "+selectedLogin.getUsername()+
-                        "\nΚωδικός: "+selectedLogin.getPassword()+
-                        "\nΚινητό: "+customer.getMobile()+
-                        "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
                 // Δημιουργία παραθύρου διαλόγου για επιλογή
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Επιλογή Ενέργειας");
@@ -343,8 +336,23 @@ public class SimplyViewController {
                 // Λήψη επιλογής χρήστη
                 alert.showAndWait().ifPresent(choice -> {
                     if (choice == buttonEmail) {
+                        String msg ="<b>Νέος Πελάτης Simply Cash</b>" +
+                                "<br><b>Επωνυμία:</b> " + customer.getName() +
+                                "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
+                                "<br><b>E-mai:</b> " + selectedLogin.getUsername() +
+                                "<br><b>Κωδικός:</b> "+selectedLogin.getPassword()+
+                                "<br><b>Κινητό:</b> "+customer.getMobile()+
+                                "<br>Έχει κάνει αποδοχή σύμβασης και εξουσιοδότηση" +
+                                "<br>";
                         sendEmail("Νέος Πελάτης Simply Cash", msg);
                     } else if (choice == buttonCopy) {
+                        String msg ="Νέος Πελάτης Simply Cash" +
+                                "\nΕπωνυμία: "+customer.getName()+
+                                "\nΑΦΜ: "+customer.getAfm()+
+                                "\nE-mai: "+selectedLogin.getUsername()+
+                                "\nΚωδικός: "+selectedLogin.getPassword()+
+                                "\nΚινητό: "+customer.getMobile()+
+                                "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
                         copyTextToClipboard(msg);
                     }
                 });
@@ -391,13 +399,6 @@ public class SimplyViewController {
 
         if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
             if (selectedLogin != null) {
-                String msg ="Νέος Πελάτης Simply Rest" +
-                        "\nΕπωνυμία: "+customer.getName()+
-                        "\nΑΦΜ: "+customer.getAfm()+
-                        "\nEmail: "+selectedLogin.getUsername()+
-                        "\nΚωδικός: "+selectedLogin.getPassword()+
-                        "\nΚινητό: "+customer.getMobile()+
-                        "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
                 // Δημιουργία παραθύρου διαλόγου για επιλογή
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Επιλογή Ενέργειας");
@@ -414,8 +415,23 @@ public class SimplyViewController {
                 // Λήψη επιλογής χρήστη
                 alert.showAndWait().ifPresent(choice -> {
                     if (choice == buttonEmail) {
+                        String msg ="<b>Νέος Πελάτης Simply Rest</b>" +
+                                "<br><b>Επωνυμία:</b> " + customer.getName() +
+                                "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
+                                "<br><b>E-mai:</b> " + selectedLogin.getUsername() +
+                                "<br><b>Κωδικός:</b> "+selectedLogin.getPassword()+
+                                "<br><b>Κινητό:</b> "+customer.getMobile()+
+                                "<br>Έχει κάνει αποδοχή σύμβασης και εξουσιοδότηση" +
+                                "<br>";
                         sendEmail("Νέος Πελάτης Simply Rest", msg);
                     } else if (choice == buttonCopy) {
+                        String msg ="Νέος Πελάτης Simply Rest" +
+                                "\nΕπωνυμία: "+customer.getName()+
+                                "\nΑΦΜ: "+customer.getAfm()+
+                                "\nEmail: "+selectedLogin.getUsername()+
+                                "\nΚωδικός: "+selectedLogin.getPassword()+
+                                "\nΚινητό: "+customer.getMobile()+
+                                "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
                         copyTextToClipboard(msg);
                     }
                 });

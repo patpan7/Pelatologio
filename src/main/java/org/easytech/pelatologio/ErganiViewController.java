@@ -7,13 +7,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
+import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.controlsfx.control.Notifications;
 import org.openqa.selenium.By;
 
@@ -251,7 +256,101 @@ public class ErganiViewController {
         }
     }
 
-    public void registerEmblemOpen(ActionEvent actionEvent) {
+    public void registerErgani(ActionEvent actionEvent) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            Notifications notifications = Notifications.create()
+                    .title("Προσοχή")
+                    .text("Παρακαλώ επιλέξτε ένα login.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showError();
+        }
+        Dialog<Triple<String, String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Εγγραφή στο Εργάνη");
+
+        // Δημιουργία των στοιχείων εισαγωγής
+        ComboBox<String> comboProgram = new ComboBox<>();
+        comboProgram.getItems().addAll("1-2 Υπάλληλοι", "3-5 Υπάλληλοι", "6-20 Υπάλληλοι", "21-50 Υπάλληλοι"); // Σταθερές επιλογές
+        //comboProgram.setValue("Πρόγραμμα 1"); // Προεπιλογή
+
+        TextField yearsField = new TextField();
+        yearsField.setPromptText("Αριθμός Ετών");
+
+        TextField emailField = new TextField();
+        emailField.setPromptText("Email λογιστή");
+
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        grid.add(new Label("Επιλογή Προγράμματος:"), 0, 0);
+        grid.add(comboProgram, 1, 0);
+        grid.add(new Label("Σύνολο Ετών:"), 0, 1);
+        grid.add(yearsField, 1, 1);
+        grid.add(new Label("Email εγγραφής:"), 0, 2);
+        grid.add(emailField, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Ενεργοποίηση του κουμπιού OK μόνο αν έχουν συμπληρωθεί όλα τα πεδία
+        Node okButton = dialog.getDialogPane().lookupButton(okButtonType);
+        okButton.setDisable(true);
+
+        yearsField.textProperty().addListener((observable, oldValue, newValue) ->
+                okButton.setDisable(newValue.trim().isEmpty() || emailField.getText().trim().isEmpty()));
+
+        emailField.textProperty().addListener((observable, oldValue, newValue) ->
+                okButton.setDisable(newValue.trim().isEmpty() || yearsField.getText().trim().isEmpty()));
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == okButtonType) {
+                return new Triple<>() {
+                    @Override
+                    public String getLeft() {
+                        return comboProgram.getValue();
+                    }
+
+                    @Override
+                    public String getMiddle() {
+                        return yearsField.getText().trim();
+                    }
+
+                    @Override
+                    public String getRight() {
+                        return emailField.getText().trim();
+                    }
+                };
+            }
+            return null;
+        });
+
+        Optional<Triple<String, String, String>> result = dialog.showAndWait();
+        result.ifPresent(data -> {
+            String program = data.getLeft();
+            String years = data.getMiddle();
+            String emailAcc = data.getRight();
+            String subject = "Νέος πελάτης Εργάνη";
+            String msg = "<b>Νέος πελάτης Εργάνη</b>" +
+                    "<br><b>Επωνυμία:</b> " + customer.getName() +
+                    "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
+                    "<br><b>E-mai:</b> " + selectedLogin.getUsername() +
+                    "<br><b>Κινητό:</b> " + selectedLogin.getPhone() +
+                    "<br><b>E-mail Λογιστή:</b> " + emailAcc +
+                    "<br><b>Προγράμματα:</b> " + program +
+                    "<br><b>Σύνολο Ετών:</b> " + years;
+            sendEmail(subject, msg);
+        });
+
+
+    }
+
+    public void loginErgani (ActionEvent actionEvent) {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             Notifications notifications = Notifications.create()
@@ -264,18 +363,18 @@ public class ErganiViewController {
         }
         try {
             LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openAndFillLoginRegisterEmblem(
-                    "https://pool2.emblem.gr/resellers/",
-                    AppSettings.loadSetting("emblemUser"),
-                    AppSettings.loadSetting("emblemPass"),
-                    By.id("inputEmail"),
-                    By.id("inputPassword"),
-                    By.xpath("//button[@onclick=\"validateLogin()\"]"),
-                    customer,
-                    selectedLogin
+            loginAutomation.openAndFillLoginFormErgani(
+                    "https://myaccount.epsilonnet.gr/Identity/Account/Login?product=8fd59003-5af4-4ca7-6fbd-08dace2c8999",
+                    selectedLogin.getUsername(),
+                    selectedLogin.getPassword(),
+                    By.id("Input_Email"),
+                    By.id("Input_Password"),
+                    By.id("btnLogin")
             );
         } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα EpsilonNet.", e.getMessage(), Alert.AlertType.ERROR));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -283,7 +382,7 @@ public class ErganiViewController {
     private void sendEmail(String subject, String msg) {
         // Κώδικας για αποστολή email
         EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
-        emailSender.sendEmail(AppSettings.loadSetting("emblemRegisterMail"), subject, msg);
+        emailSender.sendEmail("patpan7@gmail.com", subject, msg);
     }
 
     // Μέθοδος αντιγραφής κειμένου στο πρόχειρο

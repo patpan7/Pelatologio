@@ -23,6 +23,7 @@ module org.easytech.pelatologio {
     requires org.seleniumhq.selenium.support;
     requires atlantafx.base;
     requires com.jfoenix;
+    requires org.apache.commons.lang3;
 
     opens org.easytech.pelatologio to javafx.fxml;
     exports org.easytech.pelatologio;

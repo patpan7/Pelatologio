@@ -27,7 +27,7 @@ public class SubsController implements Initializable {
     @FXML
     StackPane stackPane;
     @FXML
-    private TableView<Task> taskTable;
+    private TableView<Subscription> subsTable;
     @FXML
     private TableColumn idColumn, titleColumn, dueDateColumn, customerColumn, categoryColumn, priceColumn;
 
@@ -35,11 +35,11 @@ public class SubsController implements Initializable {
     private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox;
 
     @FXML
-    private ComboBox <TaskCategory> categoryFilterComboBox;
+    private ComboBox <SubsCategory> categoryFilterComboBox;
     @FXML
     private Button addCategoryButton, addTaskButton, editTaskButton, deleteTaskButton, completeTaskButton, uncompletedTaskButton;
 
-    private ObservableList<Task> allSubs = FXCollections.observableArrayList();
+    private ObservableList<Subscription> allSubs = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -61,29 +61,29 @@ public class SubsController implements Initializable {
         loadTasks();
 
         // RowFactory για διαφορετικά χρώματα
-        taskTable.setRowFactory(tv -> new TableRow<Task>() {
-            @Override
-            protected void updateItem(Task task, boolean empty) {
-                super.updateItem(task, empty);
-                if (empty || task == null) {
-                    setStyle("");
-                } else {
-                    if (task.getCompleted()) {
-                        setStyle("-fx-background-color: #d4edda; -fx-text-fill: #155724;"); // Πράσινο
-                    } else {
-                        setStyle(""); // Προεπιλογή
-                    }
-                }
-            }
-        });
+//        subsTable.setRowFactory(tv -> new TableRow<Task>() {
+//            @Override
+//            protected void updateItem(Task task, boolean empty) {
+//                super.updateItem(task, empty);
+//                if (empty || task == null) {
+//                    setStyle("");
+//                } else {
+//                    if (task.getCompleted()) {
+//                        setStyle("-fx-background-color: #d4edda; -fx-text-fill: #155724;"); // Πράσινο
+//                    } else {
+//                        setStyle(""); // Προεπιλογή
+//                    }
+//                }
+//            }
+//        });
 
-        taskTable.setOnMouseClicked(event -> {
+        subsTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) { // Έλεγχος για δύο κλικ
                 // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
-                Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
+                Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
 
                 // Έλεγχος αν υπάρχει επιλεγμένο προϊόν
-                if (selectedTask != null) {
+                if (selectedSub != null) {
                     // Ανοίξτε το dialog box για επεξεργασία
                     try {
                         handleEditTask();
@@ -104,18 +104,18 @@ public class SubsController implements Initializable {
 
 
         DBHelper dbHelper = new DBHelper();
-        List<TaskCategory> categories = dbHelper.getAllTaskCategory();
-        categoryFilterComboBox.getItems().add(new TaskCategory(0,"Όλες"));
+        List<SubsCategory> categories = dbHelper.getAllSubsCategory();
+        categoryFilterComboBox.getItems().add(new SubsCategory(0,"Όλες"));
         categoryFilterComboBox.getItems().addAll(categories);
         categoryFilterComboBox.getSelectionModel().selectFirst();
         categoryFilterComboBox.setConverter(new StringConverter<>() {
             @Override
-            public String toString(TaskCategory taskCategory) {
-                return taskCategory != null ? taskCategory.getName() : "";
+            public String toString(SubsCategory subsCategory) {
+                return subsCategory != null ? subsCategory.getName() : "";
             }
 
             @Override
-            public TaskCategory fromString(String string) {
+            public SubsCategory fromString(String string) {
                 return categoryFilterComboBox.getItems().stream()
                         .filter(taskCategory -> taskCategory.getName().equals(string))
                         .findFirst()
@@ -169,12 +169,12 @@ public class SubsController implements Initializable {
     }
 
     private void toggleComplete(boolean complete) {
-        Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
-        if (selectedTask == null) {
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
-                        .text("Δεν έχει επιλεγεί εργασία.")
+                        .text("Δεν έχει επιλεγεί Συμβόλαιο.")
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
@@ -183,7 +183,7 @@ public class SubsController implements Initializable {
         }
 
         DBHelper dbHelper = new DBHelper();
-        if (dbHelper.completeTask(selectedTask.getId(), complete)) {
+        if (dbHelper.completeTask(selectedSub.getId(), complete)) {
             System.out.println("Task completion status updated.");
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -212,32 +212,32 @@ public class SubsController implements Initializable {
     private void loadTasks() {
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
-        allSubs.setAll(dbHelper.getAllTasks());
+        allSubs.setAll(dbHelper.getAllSubs());
         updateTaskTable();
     }
 
     private void updateTaskTable() {
         // Ξεκινάμε με όλες τις εργασίες
-        ObservableList<Task> filteredTasks = FXCollections.observableArrayList(allSubs);
+        ObservableList<Subscription> filteredTasks = FXCollections.observableArrayList(allSubs);
 
         // Φιλτράρισμα βάσει ολοκλήρωσης
-        if (!showAllCheckbox.isSelected()) {
-            if (showCompletedCheckbox.isSelected()) {
-                filteredTasks.removeIf(task -> !task.getCompleted());
-            } else if (showPendingCheckbox.isSelected()) {
-                filteredTasks.removeIf(Task::getCompleted);
-            }
-        }
+//        if (!showAllCheckbox.isSelected()) {
+//            if (showCompletedCheckbox.isSelected()) {
+//                filteredTasks.removeIf(sub -> !sub.getCompleted());
+//            } else if (showPendingCheckbox.isSelected()) {
+//                filteredTasks.removeIf(Task::getCompleted);
+//            }
+//        }
 
         // Φιλτράρισμα βάσει κατηγορίας
-        TaskCategory selectedCategory = categoryFilterComboBox.getValue(); // Η επιλεγμένη κατηγορία από το ComboBox
+        SubsCategory selectedCategory = categoryFilterComboBox.getValue(); // Η επιλεγμένη κατηγορία από το ComboBox
         if (selectedCategory != null && selectedCategory.getId() != 0) { // Εξαιρείται η κατηγορία "Όλες"
-            filteredTasks.removeIf(task -> !task.getCategory().equals(selectedCategory.getName()));
+            filteredTasks.removeIf(sub -> !sub.getCategory().equals(selectedCategory.getName()));
         }
 
 
         // Ανανεώνουμε τα δεδομένα του πίνακα
-        taskTable.setItems(filteredTasks);
+        subsTable.setItems(filteredTasks);
     }
 
 
@@ -273,8 +273,8 @@ public class SubsController implements Initializable {
 
     private void handleEditTask() throws IOException {
         // Επεξεργασία επιλεγμένης εργασίας
-        Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
-        if (selectedTask == null) {
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Προσοχή");
             alert.setContentText("Δεν έχει επιλεγεί εργασία!");
@@ -286,10 +286,10 @@ public class SubsController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Επεξεργασία Εργασίας");
-            AddTaskController controller = loader.getController();
+            AddSubController controller = loader.getController();
 
             // Ορισμός δεδομένων για επεξεργασία
-            controller.setTaskForEdit(selectedTask);
+            controller.setSubForEdit(selectedSub);
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
@@ -311,7 +311,7 @@ public class SubsController implements Initializable {
 
     private void handleDeleteTask() throws SQLException {
         // Διαγραφή επιλεγμένης εργασίας
-        Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
+        Subscription selectedTask = subsTable.getSelectionModel().getSelectedItem();
         if (selectedTask == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Προσοχή");

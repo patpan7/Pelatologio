@@ -1472,4 +1472,56 @@ public class DBHelper {
         }
         return recommendations;
     }
+
+    public List<SubsCategory> getAllSubsCategory() {
+        List<SubsCategory> subsCategories = new ArrayList<>();
+        String query = "SELECT * FROM subsCategories";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                subsCategories.add(new SubsCategory(
+                        rs.getInt("id"),
+                        rs.getString("name")
+                ));
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return subsCategories;
+
+    }
+
+    public List<Subscription> getAllSubs() {
+        List<Subscription> subs = new ArrayList<>();
+        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, c.name " +
+                "FROM Tasks t " +
+                "LEFT JOIN Customers c ON t.customerId = c.code";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet resultSet = stmt.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                LocalDate dueDate = resultSet.getDate("dueDate").toLocalDate();
+                boolean isCompleted = resultSet.getBoolean("is_Completed");
+                Integer customerId = resultSet.getObject("customerId", Integer.class);
+                String category = resultSet.getString("category");
+                String customerName = resultSet.getString("name");
+
+//                Subscription sub = new Subscription(id, title, description, dueDate, isCompleted, category, customerId, customerName);
+//                subs.add(sub);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return subs;
+
+    }
 }

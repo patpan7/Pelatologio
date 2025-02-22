@@ -54,10 +54,11 @@
         <HBox.margin>
             <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
         </HBox.margin>
-        <JFXButton fx:id="btnErganiRegister" buttonType="RAISED" mnemonicParsing="false" prefWidth="277.0" styleClass="click-button" text="Εγγραφή Εργάνη">
+        <JFXButton fx:id="btnErganiRegister" buttonType="RAISED" mnemonicParsing="false" onAction="#registerErgani" prefWidth="277.0" styleClass="click-button" text="Εγγραφή Εργάνη">
             <VBox.margin>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </JFXButton>
+      <JFXButton fx:id="btnErganiRegister1" buttonType="RAISED" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onAction="#loginErgani" prefWidth="277.0" styleClass="click-button" text="Είσοδος Εργάνη" />
     </VBox>
 </HBox>
