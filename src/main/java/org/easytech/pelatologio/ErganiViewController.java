@@ -383,6 +383,7 @@ public class ErganiViewController {
         // Κώδικας για αποστολή email
         EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
         emailSender.sendEmail("info@easyit.gr", subject, msg);
+        emailSender.sendEmail("cp@easyit.gr", subject, msg);
     }
 
     // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
