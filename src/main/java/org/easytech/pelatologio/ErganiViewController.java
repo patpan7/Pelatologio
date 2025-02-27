@@ -268,7 +268,8 @@ public class ErganiViewController {
             notifications.showError();
             return;
         }
-        Dialog<Triple<String, String, String>> dialog = new Dialog<>();
+
+        Dialog<ErganiRegistration> dialog = new Dialog<>();
         dialog.setTitle("Εγγραφή στο Εργάνη");
 
         // Δημιουργία των στοιχείων εισαγωγής
@@ -281,6 +282,10 @@ public class ErganiViewController {
 
         TextField emailField = new TextField();
         emailField.setPromptText("Email Λογιστή");
+
+        TextField entranceField = new TextField();
+        entranceField.setPromptText("Είσοδος");
+        entranceField.setText("Όχι");
 
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
@@ -296,6 +301,8 @@ public class ErganiViewController {
         grid.add(yearsField, 1, 1);
         grid.add(new Label("Email Λογιστή:"), 0, 2);
         grid.add(emailField, 1, 2);
+        grid.add(new Label("Extra Είσοδος:"), 0, 3);
+        grid.add(entranceField, 1, 3);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -311,31 +318,23 @@ public class ErganiViewController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == okButtonType) {
-                return new Triple<>() {
-                    @Override
-                    public String getLeft() {
-                        return comboProgram.getValue();
-                    }
-
-                    @Override
-                    public String getMiddle() {
-                        return yearsField.getText().trim();
-                    }
-
-                    @Override
-                    public String getRight() {
-                        return emailField.getText().trim();
-                    }
-                };
+                return new ErganiRegistration(
+                        comboProgram.getValue(),
+                        yearsField.getText().trim(),
+                        emailField.getText().trim(),
+                        entranceField.getText().trim()
+                );
             }
-            return null;
+            return null; // Αν ο χρήστης πατήσει "Άκυρο"
         });
 
-        Optional<Triple<String, String, String>> result = dialog.showAndWait();
+
+        Optional<ErganiRegistration> result = dialog.showAndWait();
         result.ifPresent(data -> {
-            String program = data.getLeft();
-            String years = data.getMiddle();
-            String emailAcc = data.getRight();
+            String program = data.getProgram();
+            String years = data.getYears();
+            String emailAcc = data.getEmail();
+            String entrance = data.getEntrance();
             String subject = "Νέος πελάτης Εργάνη";
             String msg = "<b>Νέος πελάτης Εργάνη</b>" +
                     "<br><b>Επωνυμία:</b> " + customer.getName() +
@@ -344,7 +343,8 @@ public class ErganiViewController {
                     "<br><b>Κινητό:</b> " + selectedLogin.getPhone() +
                     "<br><b>E-mail Λογιστή:</b> " + emailAcc +
                     "<br><b>Προγράμματα:</b> " + program +
-                    "<br><b>Σύνολο Ετών:</b> " + years;
+                    "<br><b>Σύνολο Ετών:</b> " + years +
+                    "<br><b>Extra Είσοδος:</b> " + entrance;
             sendEmail(subject, msg);
         });
 
@@ -383,8 +383,7 @@ public class ErganiViewController {
     private void sendEmail(String subject, String msg) {
         // Κώδικας για αποστολή email
         EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
-        emailSender.sendEmail("info@easyit.gr", subject, msg);
-        emailSender.sendEmail("cp@easyit.gr", subject, msg);
+        emailSender.sendEmail(AppSettings.loadSetting("erganiRegisterMail"), subject, msg);
     }
 
     // Μέθοδος αντιγραφής κειμένου στο πρόχειρο

@@ -55,6 +55,8 @@ public class SettingsController implements Initializable {
     @FXML
     TextField tfEmblemRegisterMail;
     @FXML
+    TextField tfErganiRegisterMail;
+    @FXML
     TextField tfTaxisUser;
     @FXML
     TextField tfTaxisPass;
@@ -124,6 +126,8 @@ public class SettingsController implements Initializable {
         tfEmblemRegisterMail.setText(AppSettings.loadSetting("emblemRegisterMail") != null ? AppSettings.loadSetting("emblemRegisterMail") : "");
         taSignature.setText(AppSettings.loadSetting("signature") != null ? AppSettings.loadSetting("signature") : "");
 
+        tfErganiRegisterMail.setText(AppSettings.loadSetting("erganiRegisterMail") != null ? AppSettings.loadSetting("erganiRegisterMail") : "");
+
 
         String browser = AppSettings.loadSetting("browser") != null ? AppSettings.loadSetting("browser") : "";
         switch (browser) {
@@ -163,6 +167,7 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("emblemUser", tfEmblemUser.getText());
         AppSettings.saveSetting("emblemPass", tfEmblemPass.getText());
         AppSettings.saveSetting("emblemRegisterMail", tfEmblemRegisterMail.getText());
+        AppSettings.saveSetting("erganiRegisterMail", tfErganiRegisterMail.getText());
         if (rbChrome.isSelected()) {
             AppSettings.saveSetting("browser", "chrome");
         } else if (rbFirefox.isSelected()) {

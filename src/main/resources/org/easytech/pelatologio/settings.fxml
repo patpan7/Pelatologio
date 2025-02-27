@@ -238,6 +238,21 @@
                                                GridPane.rowIndex="2"/>
                                 </GridPane>
                             </TitledPane>
+                            <TitledPane styleClass="menu-label" text="Ρυθμίσεις Εργάνη">
+                                <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
+                                    <columnConstraints>
+                                        <ColumnConstraints/>
+                                        <ColumnConstraints/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints/>
+                                    </rowConstraints>
+                                    <Label styleClass="normal-label" text="E-mail Εργάνη" GridPane.columnIndex="0"
+                                           GridPane.rowIndex="2"/>
+                                    <TextField fx:id="tfErganiRegisterMail" text="" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="2"/>
+                                </GridPane>
+                            </TitledPane>
                             <TitledPane styleClass="menu-label" text="Ρυθμίσεις Mail">
                                 <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
                                     <columnConstraints>
