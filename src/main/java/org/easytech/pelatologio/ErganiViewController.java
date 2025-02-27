@@ -266,6 +266,7 @@ public class ErganiViewController {
                     .hideAfter(Duration.seconds(5))
                     .position(Pos.TOP_RIGHT);
             notifications.showError();
+            return;
         }
         Dialog<Triple<String, String, String>> dialog = new Dialog<>();
         dialog.setTitle("Εγγραφή στο Εργάνη");
@@ -279,7 +280,7 @@ public class ErganiViewController {
         yearsField.setPromptText("Αριθμός Ετών");
 
         TextField emailField = new TextField();
-        emailField.setPromptText("Email λογιστή");
+        emailField.setPromptText("Email Λογιστή");
 
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
@@ -293,7 +294,7 @@ public class ErganiViewController {
         grid.add(comboProgram, 1, 0);
         grid.add(new Label("Σύνολο Ετών:"), 0, 1);
         grid.add(yearsField, 1, 1);
-        grid.add(new Label("Email εγγραφής:"), 0, 2);
+        grid.add(new Label("Email Λογιστή:"), 0, 2);
         grid.add(emailField, 1, 2);
 
         dialog.getDialogPane().setContent(grid);
