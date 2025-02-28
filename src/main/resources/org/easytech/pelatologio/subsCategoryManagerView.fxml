@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.*?>
+<DialogPane prefHeight="800.0" prefWidth="1100.0" styleClass="pane" stylesheets="@external.css"
+            xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.easytech.pelatologio.SubsCategoryManagerViewController">
+    <content>
+        <VBox alignment="TOP_CENTER">
+            <TableView fx:id="subsCategoryTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="subsCategoryColumn" prefWidth="866.0" text="Κατηγορίες Εργασιών"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+            <JFXButton fx:id="addButton" onAction="#handleAdd" prefHeight="55.0" prefWidth="355.0"
+                       styleClass="click-button" text="Προσθήκη Κατηγορίας">
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="editButton" onAction="#handleEdit" prefHeight="55.0" prefWidth="355.0"
+                       styleClass="click-button" text="Επεξεργασία">
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </VBox.margin>
+            </JFXButton>
+            <JFXButton fx:id="deleteButton" onAction="#handleDelete" prefHeight="55.0" prefWidth="355.0"
+                       styleClass="click-button" text="Διαγραφή">
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </VBox.margin>
+            </JFXButton>
+        </VBox>
+    </content>
+</DialogPane>

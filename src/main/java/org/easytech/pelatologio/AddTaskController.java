@@ -92,8 +92,23 @@ public class AddTaskController {
         DBHelper dbHelper = new DBHelper();
         List<Customer> customers = dbHelper.getCustomers();
         filteredCustomers = new FilteredList<>(FXCollections.observableArrayList(customers));
-        customerComboBox.getItems().addAll(filteredCustomers); // Προσθήκη αντικειμένων Customer
+        customerComboBox.setItems(filteredCustomers);
         customerComboBox.setEditable(true);
+        // StringConverter για σωστή διαχείριση αντικειμένων
+        customerComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Customer customer) {
+                return customer != null ? customer.getName() : "";
+            }
+
+            @Override
+            public Customer fromString(String string) {
+                return customers.stream()
+                        .filter(c -> c.getName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
 
         setupComboBoxFilter(customerComboBox, filteredCustomers);
 
@@ -120,6 +135,7 @@ public class AddTaskController {
     private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
         // Ακροατής για το TextField του ComboBox
         comboBox.getEditor().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+            comboBox.show();
             String filterText = comboBox.getEditor().getText().toLowerCase();
             filteredList.setPredicate(item -> {
                 if (filterText.isEmpty()) {

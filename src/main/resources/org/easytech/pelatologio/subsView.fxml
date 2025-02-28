@@ -32,10 +32,11 @@
                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                             </HBox.margin>
                         </JFXCheckBox>
-                  <JFXCheckBox fx:id="showPendingCheckbox1" layoutX="371.0" layoutY="20.0" styleClass="normal-label" text="Ανενεργά">
-                     <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </HBox.margin></JFXCheckBox>
+                        <JFXCheckBox fx:id="showPendingCheckbox1" layoutX="371.0" layoutY="20.0" styleClass="normal-label" text="Ανενεργά">
+                            <HBox.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </HBox.margin>
+                        </JFXCheckBox>
                         <Separator orientation="VERTICAL" />
                         <Label styleClass="normal-label" text="Κατηγορία:">
                             <HBox.margin>
@@ -52,18 +53,18 @@
                         </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT">
-                  <Label styleClass="normal-label" text="Από:">
-                     <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </HBox.margin>
-                  </Label>
-                  <DatePicker fx:id="dateFrom" />
-                  <Label layoutX="20.0" layoutY="20.0" styleClass="normal-label" text="Έως:">
-                     <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </HBox.margin>
-                  </Label>
-                  <DatePicker fx:id="dateTo" layoutX="89.0" layoutY="12.0" />
+                        <Label styleClass="normal-label" text="Από:">
+                            <HBox.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </HBox.margin>
+                        </Label>
+                        <DatePicker fx:id="dateFrom" />
+                        <Label layoutX="20.0" layoutY="20.0" styleClass="normal-label" text="Έως:">
+                            <HBox.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </HBox.margin>
+                        </Label>
+                        <DatePicker fx:id="dateTo" layoutX="89.0" layoutY="12.0" />
                         <Separator visible="false" HBox.hgrow="ALWAYS" />
                         <JFXButton fx:id="addCategoryButton" buttonType="RAISED" mnemonicParsing="false" styleClass="click-button" text="Προσθήκη κατηγορίας">
                             <graphic>
@@ -76,11 +77,11 @@
                             </HBox.margin>
                         </JFXButton>
                     </HBox>
-                    <TableView fx:id="taskTable" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="subsTable" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID" />
                             <TableColumn fx:id="titleColumn" maxWidth="500.0" minWidth="250.0" prefWidth="250.0" text="Τίτλος" />
-                            <TableColumn fx:id="dueDateColumn" maxWidth="220.0" minWidth="110.0" prefWidth="110.0" text="Ημερομηνία" />
+                            <TableColumn fx:id="endDateColumn" maxWidth="220.0" minWidth="110.0" prefWidth="110.0" text="Ημερ. Λήξης" />
                             <TableColumn fx:id="customerColumn" minWidth="280.0" prefWidth="280.0" text="Πελάτης" />
                             <TableColumn fx:id="categoryColumn" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="Κατηγορία" />
                             <TableColumn fx:id="priceColumn" maxWidth="700.0" minWidth="300.0" prefWidth="300.0" text="Τιμή" />
@@ -117,7 +118,7 @@
                         </HBox.margin>
                     </JFXButton>
                     <Separator visible="false" HBox.hgrow="ALWAYS" />
-                    <JFXButton fx:id="addTaskButton" buttonType="RAISED" prefWidth="220.0" styleClass="click-button" text="Προσθήκη">
+                    <JFXButton fx:id="addSubButton" buttonType="RAISED" prefWidth="220.0" styleClass="click-button" text="Προσθήκη">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@icons/add.png" />
@@ -127,20 +128,10 @@
                             <Insets />
                         </HBox.margin>
                     </JFXButton>
-                    <JFXButton fx:id="editTaskButton" buttonType="RAISED" prefWidth="220.0" styleClass="click-button" text="Επεξεργασία">
+                    <JFXButton fx:id="editSubButton" buttonType="RAISED" prefWidth="220.0" styleClass="click-button" text="Επεξεργασία">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@icons/edit.png" />
-                            </ImageView>
-                        </graphic>
-                        <HBox.margin>
-                            <Insets />
-                        </HBox.margin>
-                    </JFXButton>
-                    <JFXButton fx:id="deleteTaskButton" buttonType="RAISED" prefWidth="220.0" styleClass="click-button" text="Διαγραφή">
-                        <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/remove.png" />
                             </ImageView>
                         </graphic>
                         <HBox.margin>

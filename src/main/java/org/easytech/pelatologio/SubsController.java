@@ -29,24 +29,27 @@ public class SubsController implements Initializable {
     @FXML
     private TableView<Subscription> subsTable;
     @FXML
-    private TableColumn idColumn, titleColumn, dueDateColumn, customerColumn, categoryColumn, priceColumn;
-
+    private TableColumn idColumn, titleColumn, endDateColumn, customerColumn, categoryColumn, priceColumn;
     @FXML
     private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox;
 
     @FXML
     private ComboBox <SubsCategory> categoryFilterComboBox;
     @FXML
-    private Button addCategoryButton, addTaskButton, editTaskButton, deleteTaskButton, completeTaskButton, uncompletedTaskButton;
+    private Button addCategoryButton, addSubButton, editSubButton, deleteTaskButton, completeTaskButton, uncompletedTaskButton;
 
     private ObservableList<Subscription> allSubs = FXCollections.observableArrayList();
 
+    private TabPane mainTabPane;
+
+    public void setMainTabPane(TabPane mainTabPane) {
+        this.mainTabPane = mainTabPane;
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> stackPane.requestFocus());
-        setTooltip(addTaskButton, "Προσθήκη νέας εργασίας");
-        setTooltip(editTaskButton, "Επεξεργασία εργασίας");
-        setTooltip(deleteTaskButton, "Διαγραφή εργασίας");
+        setTooltip(addSubButton, "Προσθήκη νέου συμβολαίου");
+        setTooltip(editSubButton, "Επεξεργασία συμβολαίου");
         setTooltip(completeTaskButton, "Σημείωση εργασίας ως ολοκληρωμένη");
         setTooltip(uncompletedTaskButton,"Σημείωση εργασίας ως σε επεξεργασία");
         setTooltip(addCategoryButton, "Προσθήκη/Επεξεργασία κατηγοριών εργασιών");
@@ -54,11 +57,11 @@ public class SubsController implements Initializable {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-        dueDateColumn.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
+        endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         // Αρχικό γέμισμα του πίνακα
-        loadTasks();
+        loadSubs();
 
         // RowFactory για διαφορετικά χρώματα
 //        subsTable.setRowFactory(tv -> new TableRow<Task>() {
@@ -86,7 +89,7 @@ public class SubsController implements Initializable {
                 if (selectedSub != null) {
                     // Ανοίξτε το dialog box για επεξεργασία
                     try {
-                        handleEditTask();
+                        handleEditSub();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -134,21 +137,21 @@ public class SubsController implements Initializable {
 
         // Κουμπιά
         addCategoryButton.setOnAction(e -> TaskCategoryManager());
-        addTaskButton.setOnAction(e -> handleAddTask());
-        editTaskButton.setOnAction(e -> {
+        addSubButton.setOnAction(e -> handleAddSub());
+        editSubButton.setOnAction(e -> {
             try {
-                handleEditTask();
+                handleEditSub();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        deleteTaskButton.setOnAction(e -> {
-            try {
-                handleDeleteTask();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+//        deleteTaskButton.setOnAction(e -> {
+//            try {
+//                handleDeleteTask();
+//            } catch (SQLException ex) {
+//                throw new RuntimeException(ex);
+//            }
+//        });
         completeTaskButton.setOnAction(e -> toggleComplete(true));
         uncompletedTaskButton.setOnAction(e -> toggleComplete(false));
     }
@@ -193,7 +196,7 @@ public class SubsController implements Initializable {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showConfirm();});
-            loadTasks(); // Φορτώνει ξανά τις εργασίες
+            loadSubs(); // Φορτώνει ξανά τις εργασίες
         } else {
             System.out.println("Failed to update task completion status.");
             Platform.runLater(() -> {
@@ -209,7 +212,7 @@ public class SubsController implements Initializable {
 
 
 
-    private void loadTasks() {
+    private void loadSubs() {
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
         allSubs.setAll(dbHelper.getAllSubs());
@@ -242,21 +245,21 @@ public class SubsController implements Initializable {
 
 
 
-    private void handleAddTask() {
+    private void handleAddSub() {
             try {
                 // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(loader.load());
                 dialog.setTitle("Προσθήκη Εργασίας");
-                AddTaskController controller = loader.getController();
+                AddSubController controller = loader.getController();
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
                 // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
                 Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.addEventFilter(ActionEvent.ACTION, event -> {
                     // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveTask();
+                    boolean success = controller.handleSaveSub();
 
                     if (!success) {
                         // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
@@ -265,24 +268,24 @@ public class SubsController implements Initializable {
                 });
 
                 dialog.showAndWait();
-                loadTasks();
+                loadSubs();
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
             }
     }
 
-    private void handleEditTask() throws IOException {
+    private void handleEditSub() throws IOException {
         // Επεξεργασία επιλεγμένης εργασίας
         Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
         if (selectedSub == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί εργασία!");
+            alert.setContentText("Δεν έχει επιλεγεί συμβόλαιο!");
             Optional<ButtonType> result = alert.showAndWait();
             return;
         }
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Επεξεργασία Εργασίας");
@@ -295,7 +298,7 @@ public class SubsController implements Initializable {
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.addEventFilter(ActionEvent.ACTION, event -> {
                 // Εκτελούμε το handleSaveAppointment
-                boolean success = controller.handleSaveTask();
+                boolean success = controller.handleSaveSub();
 
                 if (!success) {
                     // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
@@ -303,7 +306,7 @@ public class SubsController implements Initializable {
                 }
             });
             dialog.showAndWait();
-            loadTasks();
+            loadSubs();
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -326,19 +329,19 @@ public class SubsController implements Initializable {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
             dbHelper.deleteTask(selectedTask.getId());
-            loadTasks();
+            loadSubs();
         }
     }
 
     public void TaskCategoryManager() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("taskCategoryManagerView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("subsCategoryManagerView.fxml"));
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
 
             // Τώρα μπορείς να πάρεις τον controller
-            TaskCategoryManagerViewController controller = loader.getController();
-            controller.loadTaskCategories();
+            SubsCategoryManagerViewController controller = loader.getController();
+            controller.loadSubsCategories();
 
 
             dialog.setTitle("Κατηγορίες Εργασιών");

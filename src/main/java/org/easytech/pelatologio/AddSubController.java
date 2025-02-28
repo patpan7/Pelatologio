@@ -68,6 +68,7 @@ public class AddSubController {
         titleField.setText(sub.getTitle());
         noteField.setText(sub.getNote());
         dueDatePicker.setValue(sub.getEndDate());
+        priceField.setText(sub.getPrice());
         for (SubsCategory subsCategory : categoryComboBox.getItems()) {
             if (subsCategory.getName().equals(sub.getCategory())) {
                 categoryComboBox.setValue(subsCategory);
@@ -91,10 +92,24 @@ public class AddSubController {
         DBHelper dbHelper = new DBHelper();
         List<Customer> customers = dbHelper.getCustomers();
         filteredCustomers = new FilteredList<>(FXCollections.observableArrayList(customers));
-        customerComboBox.getItems().addAll(filteredCustomers); // Προσθήκη αντικειμένων Customer
+        //customerComboBox.getItems().addAll(filteredCustomers); // Προσθήκη αντικειμένων Customer
+        customerComboBox.setItems(filteredCustomers);
         customerComboBox.setEditable(true);
+        // StringConverter για σωστή διαχείριση αντικειμένων
+        customerComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Customer customer) {
+                return customer != null ? customer.getName() : "";
+            }
 
-        setupComboBoxFilter(customerComboBox, filteredCustomers);
+            @Override
+            public Customer fromString(String string) {
+                return customers.stream()
+                        .filter(c -> c.getName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
 
         List<SubsCategory> categories = dbHelper.getAllSubsCategory();
         categoryComboBox.getItems().addAll(categories);
@@ -112,13 +127,14 @@ public class AddSubController {
                         .orElse(null);
             }
         });
-
+        setupComboBoxFilter(customerComboBox, filteredCustomers);
         dueDatePicker.setValue(LocalDate.now());
     }
 
     private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
         // Ακροατής για το TextField του ComboBox
         comboBox.getEditor().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+            comboBox.show();
             String filterText = comboBox.getEditor().getText().toLowerCase();
             filteredList.setPredicate(item -> {
                 if (filterText.isEmpty()) {
@@ -146,7 +162,7 @@ public class AddSubController {
         });
     }
 
-    public boolean handleSaveTask() {
+    public boolean handleSaveSub() {
         try {
             if (dueDatePicker.getValue() == null || titleField.getText() == null) {
                 Platform.runLater(() -> {
@@ -162,25 +178,26 @@ public class AddSubController {
 
             String title = titleField.getText();
             String note = noteField.getText();
+            String price = priceField.getText();
             LocalDate date = dueDatePicker.getValue();
-            Customer selectedCustomer = customerComboBox.getValue(); // Απευθείας χρήση του ComboBox
-            String category = categoryComboBox.getValue().getName();
+            Customer selectedCustomer = customerComboBox.getValue();
+
+            Integer category = categoryComboBox.getValue().getId();
 
             DBHelper dbHelper = new DBHelper();
 
             if (sub == null) {
-                // Δημιουργία νέας εργασίας
-                //Task newTask = new Task(0, title, description, date, false, category, selectedCustomer != null ? selectedCustomer.getCode() : 0);
-                //dbHelper.saveTask(newTask);
+                 //Δημιουργία νέας εργασίας
+                Subscription newSub = new Subscription(0, title, date, selectedCustomer.getCode(),category, price, note);
+                dbHelper.saveSub(newSub);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
                 sub.setTitle(title);
                 sub.setNote(note);
                 sub.setEndDate(date);
-                sub.setCategory(category);
-                int customerId = selectedCustomer != null ? selectedCustomer.getCode() : 0;
-                sub.setCustomerId(customerId);
-                //dbHelper.updateSub(sub);
+                sub.setCategoryId(category);
+                sub.setCustomerId(selectedCustomer.getCode());
+                dbHelper.updateSub(sub);
             }
 
             Platform.runLater(() -> {

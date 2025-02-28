@@ -13,14 +13,12 @@ public class Subscription {
     private String price;
     private String note;
 
-    public Subscription(int id, String title, LocalDate endDate, Integer customerId, String customerName, Integer categoryId, String category, String price, String note) {
+    public Subscription(int id, String title, LocalDate endDate, Integer customerId, Integer categoryId, String price, String note) {
         this.id = id;
         this.title = title;
         this.endDate = endDate;
         this.customerId = customerId;
-        this.customerName = customerName;
         this.categoryId = categoryId;
-        this.category = category;
         this.price = price;
         this.note = note;
     }

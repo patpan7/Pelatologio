@@ -11,21 +11,16 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Duration;
-import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class AddDeviceController {
 
@@ -171,6 +166,7 @@ public class AddDeviceController {
     private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
         // Ακροατής για το TextField του ComboBox
         comboBox.getEditor().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+            comboBox.show();
             String filterText = comboBox.getEditor().getText().toLowerCase();
             filteredList.setPredicate(item -> {
                 if (filterText.isEmpty()) {

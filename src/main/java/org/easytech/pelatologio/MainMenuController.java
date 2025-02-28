@@ -318,27 +318,27 @@ public class MainMenuController implements Initializable {
     }
 
     public void subsClick(ActionEvent actionEvent) throws IOException {
-//        for (Tab tab : mainTabPane.getTabs()) {
-//            if (tab.getText().equals("Συμβόλαια")) {
-//                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-//                return;
-//            }
-//        }
-//        // Φόρτωση του FXML
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("subsView.fxml"));
-//        Parent subsContent = fxmlLoader.load();
-//
-//        // Περνάμε το mainTabPane στον CustomersController
-//        SubsController subsController = fxmlLoader.getController();
-//        subsController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
-//
-//
-//        // Δημιουργία νέου tab
-//        Tab newTab = new Tab("Συμβόλαια");
-//        newTab.setContent(subsContent);
-//
-//        // Προσθήκη του tab στο TabPane
-//        mainTabPane.getTabs().add(newTab);
-//        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
+        for (Tab tab : mainTabPane.getTabs()) {
+            if (tab.getText().equals("Συμβόλαια")) {
+                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                return;
+            }
+        }
+        // Φόρτωση του FXML
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("subsView.fxml"));
+        Parent subsContent = fxmlLoader.load();
+
+        // Περνάμε το mainTabPane στον CustomersController
+        SubsController subsController = fxmlLoader.getController();
+        subsController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
+
+
+        // Δημιουργία νέου tab
+        Tab newTab = new Tab("Συμβόλαια");
+        newTab.setContent(subsContent);
+
+        // Προσθήκη του tab στο TabPane
+        mainTabPane.getTabs().add(newTab);
+        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
     }
 }

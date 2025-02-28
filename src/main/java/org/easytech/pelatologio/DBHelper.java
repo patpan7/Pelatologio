@@ -527,6 +527,23 @@ public class DBHelper {
         }
     }
 
+    public boolean hasTask(int code) {
+        String query = "SELECT COUNT(*) FROM Tasks WHERE CustomerID = ? AND is_Completed = 0";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, code);
+            pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            closeConnection(conn);
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void customerDelete(int code) {
         String query = "DELETE FROM CustomerAddresses WHERE CustomerID = ?";
         String query2 = "DELETE FROM CustomerLogins WHERE CustomerID = ?";
@@ -1495,9 +1512,10 @@ public class DBHelper {
 
     public List<Subscription> getAllSubs() {
         List<Subscription> subs = new ArrayList<>();
-        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, c.name " +
-                "FROM Tasks t " +
-                "LEFT JOIN Customers c ON t.customerId = c.code";
+        String query = "SELECT s.id, s.title, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, c.name  " +
+                "FROM Subscriptions s " +
+                "LEFT JOIN Customers c ON s.customerId = c.code " +
+                "LEFT JOIN SubsCategories i ON s.subCatId = i.id";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
@@ -1506,15 +1524,18 @@ public class DBHelper {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String title = resultSet.getString("title");
-                String description = resultSet.getString("description");
-                LocalDate dueDate = resultSet.getDate("dueDate").toLocalDate();
-                boolean isCompleted = resultSet.getBoolean("is_Completed");
+                LocalDate endDate = resultSet.getDate("endDate").toLocalDate();
                 Integer customerId = resultSet.getObject("customerId", Integer.class);
-                String category = resultSet.getString("category");
+                Integer categoryId = resultSet.getObject("subCatId", Integer.class);
+                String category = resultSet.getString("catName");
+                String note = resultSet.getString("note");
+                String price = resultSet.getString("price");
                 String customerName = resultSet.getString("name");
 
-//                Subscription sub = new Subscription(id, title, description, dueDate, isCompleted, category, customerId, customerName);
-//                subs.add(sub);
+                Subscription sub = new Subscription(id, title, endDate, categoryId, customerId,price,note);
+                sub.setCustomerName(customerName);
+                sub.setCategory(category);
+                subs.add(sub);
             }
             closeConnection(conn);
         } catch (SQLException e) {
@@ -1523,5 +1544,100 @@ public class DBHelper {
 
         return subs;
 
+    }
+
+    public void deleteSubsCategory(int id) {
+        String query = "DELETE FROM SubsCategories WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateSubsCategory(SubsCategory updatedSubsCategory) {
+        String query = "UPDATE SubsCategories SET name = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, updatedSubsCategory.getName());
+            pstmt.setInt(2, updatedSubsCategory.getId());
+            pstmt.executeUpdate();
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveSubsCategory(SubsCategory newSubsCategory) {
+        String query = "INSERT INTO SubsCategories (name) VALUES (?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, newSubsCategory.getName());
+            stmt.executeUpdate();
+
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                newSubsCategory.setId(rs.getInt(1));
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean saveSub(Subscription newSub) {
+        String query = "INSERT INTO Subscriptions (title, endDate, note, subCatId, customerId, price) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, newSub.getTitle());
+            stmt.setDate(2, Date.valueOf(newSub.getEndDate()));
+            stmt.setString(3, newSub.getNote());
+            stmt.setInt(4, newSub.getCategoryId());
+            stmt.setInt(5, newSub.getCustomerId());
+            stmt.setString(6, newSub.getPrice());
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                closeConnection(conn);
+                return true; // Ενημερώθηκε επιτυχώς
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                return saveSub(newSub);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateSub(Subscription sub) {
+        String query = "UPDATE Subscriptions SET title = ?, endDate = ?, note = ?, subCatId = ?, customerId = ?, price = ? WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, sub.getTitle());
+            stmt.setDate(2, Date.valueOf(sub.getEndDate()));
+            stmt.setString(3, sub.getNote());
+            stmt.setInt(4, sub.getCategoryId());
+            stmt.setInt(5, sub.getCustomerId());
+            stmt.setString(6, sub.getPrice());
+            stmt.setInt(7, sub.getId());
+
+            if (stmt.executeUpdate() > 0) {
+                closeConnection(conn);
+                return true; // Ενημερώθηκε επιτυχώς
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

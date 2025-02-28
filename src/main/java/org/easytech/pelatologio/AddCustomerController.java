@@ -1,9 +1,9 @@
 package org.easytech.pelatologio;
 
-import com.jfoenix.controls.JFXComboBox;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,10 +18,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -31,7 +29,7 @@ import org.controlsfx.control.Notifications;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 public class AddCustomerController {
     private TabPane mainTabPane;
@@ -60,7 +58,7 @@ public class AddCustomerController {
     @FXML
     private Button btnEmail, btnEmail2, btnAccEmail, btnAccEmail1;
     @FXML
-    Button btnAddToMegasoft, btnShowToMegasoft, btnData, btnLabel, btnAppointment,btnTask;
+    Button btnAddToMegasoft, btnShowToMegasoft, btnData, btnLabel,btnCopy, btnAppointment,btnTask;
 
     private TaxisViewController taxisViewController;
     private MyposViewController myposViewController;
@@ -74,7 +72,7 @@ public class AddCustomerController {
 
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
     private Customer customer;
-    private ObservableList<Accountant> accountantsList = FXCollections.observableArrayList();
+    private FilteredList<Accountant> filteredAccountants;
     private ObservableList<String> recommendationList = FXCollections.observableArrayList();
 
     private CustomersController customersController;
@@ -176,6 +174,8 @@ public class AddCustomerController {
         btnData.setVisible(false);
         btnLabel.setDisable(true);
         btnLabel.setVisible(false);
+        btnCopy.setDisable(true);
+        btnCopy.setVisible(false);
         btnAppointment.setDisable(true);
         btnAppointment.setVisible(false);
         btnTask.setDisable(true);
@@ -282,10 +282,13 @@ public class AddCustomerController {
             }
         });
         DBHelper dbHelper = new DBHelper();
-        accountantsList.clear();
-        accountantsList.addAll(dbHelper.getAccountants());
-        accountantsList.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
-        tfAccName.setItems(accountantsList);
+        List<Accountant> accountants = dbHelper.getAccountants();
+        accountants.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
+        filteredAccountants = new FilteredList<>(FXCollections.observableArrayList(accountants));
+        //accountantsList.clear();
+        //accountantsList.addAll(dbHelper.getAccountants());
+        //filteredAccountants.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
+        tfAccName.setItems(filteredAccountants);
         tfAccName.setConverter(new StringConverter<Accountant>() {
             @Override
             public String toString(Accountant accountant) {
@@ -294,7 +297,7 @@ public class AddCustomerController {
 
             @Override
             public Accountant fromString(String string) {
-                return tfAccName.getItems().stream()
+                return accountants.stream()
                         .filter(accountant -> accountant.getName().equals(string))
                         .findFirst()
                         .orElse(null);
@@ -311,10 +314,41 @@ public class AddCustomerController {
                 tfAccEmail.clear();
             }
         });
-
+        setupComboBoxFilter(tfAccName,filteredAccountants);
         recommendationList.clear();
         recommendationList.addAll(dbHelper.getRecomedations());
         tfRecommendation.setItems(recommendationList);
+    }
+
+    private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
+        // Ακροατής για το TextField του ComboBox
+        comboBox.getEditor().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+            comboBox.show();
+            String filterText = comboBox.getEditor().getText().toLowerCase();
+            filteredList.setPredicate(item -> {
+                if (filterText.isEmpty()) {
+                    return true; // Εμφάνιση όλων των στοιχείων αν δεν υπάρχει φίλτρο
+                }
+                // Ελέγχουμε αν το όνομα του αντικειμένου ταιριάζει με το φίλτρο
+                return item.toString().toLowerCase().contains(filterText);
+            });
+        });
+
+        // Ακροατής για την επιλογή ενός στοιχείου
+        comboBox.setOnHidden(event -> {
+            T selectedItem = comboBox.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                comboBox.getEditor().setText(selectedItem.toString());
+            }
+        });
+
+        // Ακροατής για την αλλαγή της επιλογής
+        comboBox.setOnAction(event -> {
+            T selectedItem = comboBox.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                comboBox.getEditor().setText(selectedItem.toString());
+            }
+        });
     }
 
 
@@ -476,8 +510,11 @@ public class AddCustomerController {
         if(dbHelper.hasDevice(customer.getCode())){
             tabDevices.getStyleClass().add("tabHas");
         }
+        if(dbHelper.hasTask(customer.getCode())){
+            tabTasks.getStyleClass().add("tabHas");
+        }
 
-        for (Accountant accountant : accountantsList) {
+        for (Accountant accountant : filteredAccountants) {
             if (accountant.getId() == customer.getAccId()) {
                 tfAccName.getSelectionModel().select(accountant);
                 tfAccPhone.setText(accountant.getPhone());
@@ -535,6 +572,8 @@ public class AddCustomerController {
         btnData.setVisible(true);
         btnLabel.setDisable(false);
         btnLabel.setVisible(true);
+        btnCopy.setDisable(false);
+        btnCopy.setVisible(true);
         btnAppointment.setDisable(false);
         btnAppointment.setVisible(true);
         btnTask.setDisable(false);
@@ -793,6 +832,21 @@ public class AddCustomerController {
         LabelPrintHelper.printCustomerLabel(customer);
     }
 
+    public void copyClick (ActionEvent event){
+        String msg = "Στοιχεία πελάτη" +
+                "\nΕπωνυμία: " + customer.getName() +
+                "\nΤίτλος: " + customer.getTitle() +
+                "\nΕπάγγελμα: " + customer.getJob() +
+                "\nΔιεύθυνση: " + customer.getAddress() +
+                "\nΠόλη: " + customer.getTown() +
+                "\nΤ.Κ.: " + customer.getPostcode() +
+                "\nΑΦΜ: " + customer.getAfm() +
+                "\nEmail: " + customer.getEmail() +
+                "\nΤηλέφωνο: " + customer.getPhone1() +
+                "\nΚινητό: " + customer.getMobile();
+        copyTextToClipboard(msg);
+    }
+
     public void newAppointment(ActionEvent actionEvent) {
         if (customer != null) {
             try {
@@ -860,6 +914,21 @@ public class AddCustomerController {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
+    }
+
+    private void copyTextToClipboard(String msg) {
+        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(msg);  // Replace with the desired text
+        clipboard.setContent(content);
+        Notifications notifications = Notifications.create()
+                .title("Αντιγραγή στο πρόχειρο")
+                .text(msg)
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT);
+        notifications.showInformation();
     }
 
 
