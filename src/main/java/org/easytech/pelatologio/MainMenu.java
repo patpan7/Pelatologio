@@ -34,6 +34,11 @@ public class MainMenu extends Application {
         //stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+        stage.setOnCloseRequest(event -> {
+            // Save settings before closing
+            DBHelper dbHelper = new DBHelper();
+            dbHelper.customerUnlockAll(AppSettings.loadSetting("appuser"));
+        });
 
     }
 
