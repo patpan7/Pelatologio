@@ -6,6 +6,7 @@ public class Logins {
     private String password;
     private String tag;
     private String phone;
+    private int customerId;
 
     public Logins() {
     }
@@ -17,9 +18,13 @@ public class Logins {
         this.phone = phone;
     }
 
-    public int getId() { return id; }
+    public int getId() {
+        return id;
+    }
 
-    public void setId(int id) { this.id = id; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -51,5 +56,13 @@ public class Logins {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 }

@@ -282,6 +282,9 @@ public class ErganiViewController {
 
         TextField emailField = new TextField();
         emailField.setPromptText("Email Λογιστή");
+        DBHelper dbHelper = new DBHelper();
+        String erganiEmail = dbHelper.getErganiEmail(selectedLogin.getCustomerId());
+        emailField.setText(erganiEmail);
 
         TextField entranceField = new TextField();
         entranceField.setPromptText("Είσοδος");
@@ -346,6 +349,9 @@ public class ErganiViewController {
                     "<br><b>Σύνολο Ετών:</b> " + years +
                     "<br><b>Extra Είσοδος:</b> " + entrance;
             sendEmail(subject, msg);
+            if (dbHelper.hasAccountant(selectedLogin.getCustomerId())) {
+                dbHelper.updateErganiEmail(selectedLogin.getCustomerId(), emailAcc);
+            }
         });
 
 

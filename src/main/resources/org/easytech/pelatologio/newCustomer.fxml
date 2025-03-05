@@ -352,6 +352,18 @@
                             </HBox.margin>
                         </JFXButton>
                     </HBox>
+               <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="177.0">
+                  <children>
+                     <Label minWidth="200.0" styleClass="normal-label" text="Epsilon Ergani:" HBox.hgrow="NEVER">
+                        <HBox.margin>
+                           <Insets />
+                        </HBox.margin></Label>
+                     <TextField fx:id="tfAccErganiEmail" HBox.hgrow="ALWAYS" />
+                  </children>
+                  <VBox.margin>
+                     <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                  </VBox.margin>
+               </HBox>
                     <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="68.0">
                         <VBox.margin>
                             <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />

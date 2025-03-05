@@ -31,7 +31,7 @@ public class AddAccountantController {
     @FXML
     private AnchorPane customersContainer;
     @FXML
-    private TextField tfName, tfPhone, tfMobile, tfEmail;
+    private TextField tfName, tfPhone, tfMobile, tfEmail, tfErganiEmail;
     @FXML
     private Tab tabCustomers;
     @FXML
@@ -254,6 +254,7 @@ public class AddAccountantController {
         tfPhone.setText(accountant.getPhone());
         tfMobile.setText(accountant.getMobile());
         tfEmail.setText(accountant.getEmail());
+        tfErganiEmail.setText(accountant.getErganiEmail());
 
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = accountant.getId();
@@ -289,6 +290,7 @@ public class AddAccountantController {
         String phone = (tfPhone.getText() != null ? tfPhone.getText() : "");
         String mobile = (tfMobile.getText() != null ? tfMobile.getText() : "");
         String email = (tfEmail.getText() != null ? tfEmail.getText() : "");
+        String erganiEmail = (tfErganiEmail.getText() != null ? tfErganiEmail.getText() : "");
         if (mobile.startsWith("+30"))
             mobile = mobile.substring(3);
         if (phone.startsWith("+30"))
@@ -300,10 +302,10 @@ public class AddAccountantController {
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         int accountantId;
-        accountantId = dbHelper.insertAccountant(name, phone, mobile, email);
+        accountantId = dbHelper.insertAccountant(name, phone, mobile, email, erganiEmail);
         // Εμφάνιση επιτυχίας
         if (accountantId > 0) {
-            Accountant newAccountant = new Accountant(accountantId, name, phone, mobile, email);
+            Accountant newAccountant = new Accountant(accountantId, name, phone, mobile, email, erganiEmail);
 
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -338,6 +340,7 @@ public class AddAccountantController {
         String phone = (tfPhone.getText() != null ? tfPhone.getText() : "");
         String mobile = (tfMobile.getText() != null ? tfMobile.getText() : "");
         String email = (tfEmail.getText() != null ? tfEmail.getText() : "");
+        String erganiEmail = (tfErganiEmail.getText() != null ? tfErganiEmail.getText() : "");
 
         if (mobile.startsWith("+30"))
             mobile = mobile.substring(3);
@@ -346,7 +349,7 @@ public class AddAccountantController {
         mobile = mobile.replaceAll("\\s+", "");
         phone = phone.replaceAll("\\s+", "");
 
-        dbHelper.updateAccountant(code, name, phone, mobile, email);
+        dbHelper.updateAccountant(code, name, phone, mobile, email, erganiEmail);
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
         Notifications notifications = Notifications.create()
                 .title("Επιτυχία")

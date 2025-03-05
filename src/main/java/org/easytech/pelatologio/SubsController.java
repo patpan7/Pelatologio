@@ -1,6 +1,8 @@
 package org.easytech.pelatologio;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,7 +20,10 @@ import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -32,7 +37,8 @@ public class SubsController implements Initializable {
     private TableColumn idColumn, titleColumn, endDateColumn, customerColumn, categoryColumn, priceColumn;
     @FXML
     private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox;
-
+    @FXML
+    private DatePicker dateFrom, dateTo;
     @FXML
     private ComboBox <SubsCategory> categoryFilterComboBox;
     @FXML
@@ -60,8 +66,26 @@ public class SubsController implements Initializable {
         endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+
+        // Υπολογισμός της πρώτης και τελευταίας ημέρας του τρέχοντος μήνα
+        LocalDate today = LocalDate.now();
+        LocalDate firstDay = today.withDayOfMonth(1);
+        LocalDate lastDay = YearMonth.from(today).atEndOfMonth();
+
+        // Ορισμός των ημερομηνιών στα DatePicker
+        dateFrom.setValue(firstDay);
+        dateTo.setValue(lastDay);
+
+        // Προσθήκη listener ώστε να φορτώνεται ξανά η λίστα όταν αλλάζει ημερομηνία
+        ChangeListener<LocalDate> dateChangeListener = (ObservableValue<? extends LocalDate> obs, LocalDate oldValue, LocalDate newValue) -> {
+            loadSubs(dateFrom.getValue(), dateTo.getValue());
+        };
+
+        dateFrom.valueProperty().addListener(dateChangeListener);
+        dateTo.valueProperty().addListener(dateChangeListener);
+
         // Αρχικό γέμισμα του πίνακα
-        loadSubs();
+        loadSubs(dateFrom.getValue(), dateTo.getValue());
 
         // RowFactory για διαφορετικά χρώματα
 //        subsTable.setRowFactory(tv -> new TableRow<Task>() {
@@ -196,7 +220,7 @@ public class SubsController implements Initializable {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showConfirm();});
-            loadSubs(); // Φορτώνει ξανά τις εργασίες
+            loadSubs(dateFrom.getValue(), dateTo.getValue()); // Φορτώνει ξανά τις εργασίες
         } else {
             System.out.println("Failed to update task completion status.");
             Platform.runLater(() -> {
@@ -212,10 +236,10 @@ public class SubsController implements Initializable {
 
 
 
-    private void loadSubs() {
+    private void loadSubs(LocalDate  from, LocalDate  to) {
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
-        allSubs.setAll(dbHelper.getAllSubs());
+        allSubs.setAll(dbHelper.getAllSubs(from,to));
         updateTaskTable();
     }
 
@@ -268,7 +292,7 @@ public class SubsController implements Initializable {
                 });
 
                 dialog.showAndWait();
-                loadSubs();
+                loadSubs(dateFrom.getValue(), dateTo.getValue());
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
             }
@@ -306,7 +330,7 @@ public class SubsController implements Initializable {
                 }
             });
             dialog.showAndWait();
-            loadSubs();
+            loadSubs(dateFrom.getValue(), dateTo.getValue());
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -329,7 +353,7 @@ public class SubsController implements Initializable {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
             dbHelper.deleteTask(selectedTask.getId());
-            loadSubs();
+            loadSubs(dateFrom.getValue(), dateTo.getValue());
         }
     }
 

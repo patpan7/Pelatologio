@@ -44,7 +44,7 @@ public class AddCustomerController {
     @FXML
     private ComboBox<String> tfRecommendation;
     @FXML
-    private TextField tfAccPhone, tfAccMobile, tfAccEmail, tfAccName1, tfAccEmail1;
+    private TextField tfAccPhone, tfAccMobile, tfAccEmail, tfAccName1, tfAccEmail1, tfAccErganiEmail;
     @FXML
     private ComboBox<Accountant> tfAccName;
     @FXML
@@ -237,6 +237,8 @@ public class AddCustomerController {
         tfAccEmail.setOnContextMenuRequested(e -> currentTextField = tfAccEmail);
         tfAccEmail1.setContextMenu(emailContextMenu);
         tfAccEmail1.setOnContextMenuRequested(e -> currentTextField = tfAccEmail1);
+        tfAccErganiEmail.setContextMenu(emailContextMenu);
+        tfAccErganiEmail.setOnContextMenuRequested(e -> currentTextField = tfAccErganiEmail);
 
         btnEmail.setUserData(tfEmail);
         btnEmail2.setUserData(tfEmail2);
@@ -308,10 +310,12 @@ public class AddCustomerController {
                 tfAccPhone.setText(newValue.getPhone());
                 tfAccMobile.setText(newValue.getMobile());
                 tfAccEmail.setText(newValue.getEmail());
+                tfAccErganiEmail.setText(newValue.getErganiEmail());
             } else {
                 tfAccPhone.clear();
                 tfAccMobile.clear();
                 tfAccEmail.clear();
+                tfAccErganiEmail.clear();
             }
         });
         setupComboBoxFilter(tfAccName,filteredAccountants);
@@ -520,6 +524,7 @@ public class AddCustomerController {
                 tfAccPhone.setText(accountant.getPhone());
                 tfAccMobile.setText(accountant.getMobile());
                 tfAccEmail.setText(accountant.getEmail());
+                tfAccErganiEmail.setText(accountant.getErganiEmail());
                 break;
             }
         }

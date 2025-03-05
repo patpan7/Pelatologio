@@ -76,7 +76,7 @@
                     <TableView fx:id="accountantTable" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="nameColumn" minWidth="120.0" prefWidth="120.0" resizable="true" sortable="false" text="Όνομα" />
-                            <TableColumn fx:id="phoneColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="Τηλέφωνο 1" />
+                            <TableColumn fx:id="phoneColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="Τηλέφωνο" />
                             <TableColumn fx:id="mobileColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="Κινητό" />
                             <TableColumn fx:id="emailColumn" resizable="true" sortable="false" text="E-mail" />
                         </columns>

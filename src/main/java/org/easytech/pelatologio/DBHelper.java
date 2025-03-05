@@ -278,6 +278,7 @@ public class DBHelper {
                 data.setPassword(resultSet.getString("Password"));
                 data.setTag(resultSet.getString("Tag"));
                 data.setPhone(resultSet.getString("Phone"));
+                data.setCustomerId(resultSet.getInt("CustomerID"));
                 dataList.add(data);
             }
             closeConnection(conn);
@@ -1348,7 +1349,8 @@ public class DBHelper {
                 String phone = rs.getString("phone");
                 String mobile = rs.getString("mobile");
                 String email = rs.getString("email");
-                Accountant accountant = new Accountant(id, name, phone, mobile, email);
+                String erganiEmail = rs.getString("erganiEmail");
+                Accountant accountant = new Accountant(id, name, phone, mobile, email, erganiEmail);
                 accountants.add(accountant);
             }
             closeConnection(conn);
@@ -1381,9 +1383,9 @@ public class DBHelper {
         return null;
     }
 
-    public int insertAccountant(String name, String phone, String mobile, String email) {
-        String insertQuery = "INSERT INTO Accountants (name, phone, mobile, email) "
-                + "VALUES (?, ?, ?, ?)";
+    public int insertAccountant(String name, String phone, String mobile, String email, String erganiEmail) {
+        String insertQuery = "INSERT INTO Accountants (name, phone, mobile, email, erganiEmail) "
+                + "VALUES (?, ?, ?, ?, ?)";
         int newCustomerId = -1; // Default value for error handling
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -1392,6 +1394,7 @@ public class DBHelper {
             pstmt.setString(2, phone);
             pstmt.setString(3, mobile);
             pstmt.setString(4, email);
+            pstmt.setString(5, erganiEmail);
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -1412,8 +1415,8 @@ public class DBHelper {
         return newCustomerId; // Επιστρέφει το CustomerID ή -1 αν υπήρξε σφάλμα
     }
 
-    public void updateAccountant(int code, String name, String phone, String mobile, String email) {
-        String sql = "UPDATE accountants SET name = ?, phone = ?, mobile = ?, email = ? WHERE id = ?";
+    public void updateAccountant(int code, String name, String phone, String mobile, String email, String erganiEmail) {
+        String sql = "UPDATE accountants SET name = ?, phone = ?, mobile = ?, email = ?, erganiEmail = ? WHERE id = ?";
 
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -1421,7 +1424,8 @@ public class DBHelper {
             pstmt.setString(2, phone);
             pstmt.setString(3, mobile);
             pstmt.setString(4, email);
-            pstmt.setInt(5, code);
+            pstmt.setString(5, erganiEmail);
+            pstmt.setInt(6, code);
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -1468,7 +1472,7 @@ public class DBHelper {
                 customers.add(data);
             }
             closeConnection(conn);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return customers;
@@ -1510,16 +1514,19 @@ public class DBHelper {
 
     }
 
-    public List<Subscription> getAllSubs() {
+    public List<Subscription> getAllSubs(LocalDate fromDate, LocalDate toDate) {
         List<Subscription> subs = new ArrayList<>();
         String query = "SELECT s.id, s.title, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, c.name  " +
                 "FROM Subscriptions s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code " +
-                "LEFT JOIN SubsCategories i ON s.subCatId = i.id";
+                "LEFT JOIN SubsCategories i ON s.subCatId = i.id " +
+                "WHERE s.endDate BETWEEN ? AND ?";
 
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet resultSet = stmt.executeQuery()) {
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setDate(1, Date.valueOf(fromDate));
+            stmt.setDate(2, Date.valueOf(toDate));
+            ResultSet resultSet = stmt.executeQuery();
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
@@ -1532,7 +1539,7 @@ public class DBHelper {
                 String price = resultSet.getString("price");
                 String customerName = resultSet.getString("name");
 
-                Subscription sub = new Subscription(id, title, endDate, categoryId, customerId,price,note);
+                Subscription sub = new Subscription(id, title, endDate, categoryId, customerId, price, note);
                 sub.setCustomerName(customerName);
                 sub.setCategory(category);
                 subs.add(sub);
@@ -1638,6 +1645,67 @@ public class DBHelper {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public String getErganiEmail(int customerId) {
+        String query = "SELECT a.erganiEmail " +
+                "FROM customers c " +
+                "JOIN accountants a ON c.accid = a.id " +
+                "WHERE c.code = ?";
+        String title = "";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, customerId);
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                title = resultSet.getString("erganiEmail");
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return title;
+    }
+
+    public boolean updateErganiEmail(int customerId, String emailAcc) {
+        String query = "UPDATE ac " +
+                "SET ac.erganiEmail = ? " +
+                "FROM accountants ac " +
+                "INNER JOIN customers c ON c.accid = ac.id " +
+                "WHERE c.code = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, emailAcc);
+            stmt.setInt(2, customerId);
+
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0; // Επιστρέφει true αν ενημερώθηκε τουλάχιστον 1 γραμμή
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Σε περίπτωση σφάλματος
+    }
+
+    public boolean hasAccountant(int customerId) {
+        String query = "SELECT accid FROM Customers WHERE code = ? ";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, customerId);
+            pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            closeConnection(conn);
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
