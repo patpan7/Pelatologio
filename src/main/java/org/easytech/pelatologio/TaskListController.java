@@ -34,7 +34,7 @@ public class TaskListController implements Initializable {
     private TableColumn idColumn, titleColumn, descriptionColumn, dueDateColumn, customerColumn, categoryColumn;
 
     @FXML
-    private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox;
+    private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox, showErgentCheckBox, showWaitCheckBox;
 
     @FXML
     private ComboBox <TaskCategory> categoryFilterComboBox;
@@ -110,6 +110,12 @@ public class TaskListController implements Initializable {
         };
         configureSingleSelectionCheckBoxes(checkBoxes2);
 
+        CheckBox[] checkBoxes3 = {
+                showErgentCheckBox,
+                showWaitCheckBox
+        };
+        configureSingleSelectionCheckBoxes(checkBoxes3);
+
         DBHelper dbHelper = new DBHelper();
         List<TaskCategory> categories = dbHelper.getAllTaskCategory();
         categoryFilterComboBox.getItems().add(new TaskCategory(0,"Όλες"));
@@ -139,6 +145,8 @@ public class TaskListController implements Initializable {
         showPendingCheckbox.setOnAction(e -> updateTaskTable());
         showWithCustomerCheckbox.setOnAction(e -> updateTaskTable());
         showWithoutCustomerCheckbox.setOnAction(e -> updateTaskTable());
+        showErgentCheckBox.setOnAction(e -> updateTaskTable());
+        showWaitCheckBox.setOnAction(e -> updateTaskTable());
 
         // Κουμπιά
         addCategoryButton.setOnAction(e -> TaskCategoryManager());
@@ -243,6 +251,13 @@ public class TaskListController implements Initializable {
         }
         if (showWithoutCustomerCheckbox.isSelected()) {
             filteredTasks.removeIf(task -> task.getCustomerId() != 0);
+        }
+
+        if (showErgentCheckBox.isSelected()) {
+            filteredTasks.removeIf(task -> !task.getErgent());
+        }
+        if (showWaitCheckBox.isSelected()) {
+            filteredTasks.removeIf(task -> !task.getWait());
         }
 
         // Φιλτράρισμα βάσει κατηγορίας
@@ -367,10 +382,6 @@ public class TaskListController implements Initializable {
         }
     }
 
-    public void mainMenuClick(ActionEvent event) throws IOException {
-        MainMenuController mainMenuController = new MainMenuController();
-        mainMenuController.mainMenuClick(stackPane);
-    }
 
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();

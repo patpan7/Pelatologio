@@ -1,6 +1,7 @@
 package org.easytech.pelatologio;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -40,6 +41,8 @@ public class AddTaskController {
     private ComboBox<TaskCategory> categoryComboBox;
     @FXML
     private JFXButton btnCustomer;
+    @FXML
+    private JFXCheckBox is_ergent, is_wait;
 
     private Task task;
     private int customerId;
@@ -84,6 +87,9 @@ public class AddTaskController {
                 }
             }
         }
+
+        is_ergent.setSelected(task.getErgent());
+        is_wait.setSelected(task.getWait());
     }
 
 
@@ -182,12 +188,14 @@ public class AddTaskController {
             LocalDate date = dueDatePicker.getValue();
             Customer selectedCustomer = customerComboBox.getValue(); // Απευθείας χρήση του ComboBox
             String category = categoryComboBox.getValue().getName();
+            Boolean isErgent = is_ergent.isSelected();
+            Boolean isWait = is_wait.isSelected();
 
             DBHelper dbHelper = new DBHelper();
 
             if (task == null) {
                 // Δημιουργία νέας εργασίας
-                Task newTask = new Task(0, title, description, date, false, category, selectedCustomer != null ? selectedCustomer.getCode() : 0);
+                Task newTask = new Task(0, title, description, date, false, category, selectedCustomer != null ? selectedCustomer.getCode() : 0, isErgent, isWait);
                 dbHelper.saveTask(newTask);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
@@ -197,6 +205,8 @@ public class AddTaskController {
                 task.setCategory(category);
                 int customerId = selectedCustomer != null ? selectedCustomer.getCode() : 0;
                 task.setCustomerId(customerId);
+                task.setErgent(isErgent);
+                task.setWait(isWait);
                 dbHelper.updateTask(task);
             }
 

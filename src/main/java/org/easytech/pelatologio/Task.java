@@ -11,8 +11,10 @@ public class Task {
     private Integer customerId;
     private String category;
     private String customerName;
+    private Boolean isErgent;
+    private Boolean isWait;
 
-    public Task(Integer id, String title, String description, LocalDate dueDate, Boolean isCompleted,String category, Integer customerId) {
+    public Task(Integer id, String title, String description, LocalDate dueDate, Boolean isCompleted, String category, Integer customerId, Boolean isErgent, Boolean isWait) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -20,9 +22,11 @@ public class Task {
         this.isCompleted = isCompleted;
         this.category = category;
         this.customerId = customerId;
+        this.isErgent = isErgent;
+        this.isWait = isWait;
     }
 
-    public Task(int id, String title, String description, LocalDate dueDate, Boolean isCompleted, String category, Integer customerId, String customerName) {
+    public Task(int id, String title, String description, LocalDate dueDate, Boolean isCompleted, String category, Integer customerId, String customerName, Boolean isErgent, Boolean isWait) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -31,6 +35,8 @@ public class Task {
         this.category = category;
         this.customerId = customerId;
         this.customerName = customerName;
+        this.isErgent = isErgent;
+        this.isWait = isWait;
     }
 
     public Integer getId() {
@@ -95,6 +101,22 @@ public class Task {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public Boolean getErgent() {
+        return isErgent;
+    }
+
+    public void setErgent(Boolean ergent) {
+        isErgent = ergent;
+    }
+
+    public Boolean getWait() {
+        return isWait;
+    }
+
+    public void setWait(Boolean wait) {
+        isWait = wait;
     }
 }
 

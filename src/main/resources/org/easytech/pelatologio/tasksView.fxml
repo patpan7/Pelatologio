@@ -15,33 +15,34 @@
                     <HBox alignment="CENTER_LEFT">
                         <Label styleClass="normal-label" text="Φίλτρα:">
                             <HBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </HBox.margin>
                         </Label>
                         <JFXCheckBox fx:id="showAllCheckbox" selected="true" styleClass="normal-label" text="Όλες">
                             <HBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </HBox.margin>
                         </JFXCheckBox>
                         <JFXCheckBox fx:id="showCompletedCheckbox" styleClass="normal-label" text="Ολοκληρωμένες">
                             <HBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </HBox.margin>
                         </JFXCheckBox>
                         <JFXCheckBox fx:id="showPendingCheckbox" styleClass="normal-label" text="Εκκρεμείς">
                             <HBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </HBox.margin>
                         </JFXCheckBox>
-                        <Separator orientation="VERTICAL"/>
-                        <JFXCheckBox fx:id="showWithCustomerCheckbox" styleClass="normal-label" text="Με πελάτη">
+                        <Separator layoutX="778.0" layoutY="10.0" orientation="VERTICAL"/>
+                        <JFXCheckBox fx:id="showErgentCheckBox" styleClass="normal-label" text="Επείγων">
                             <HBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </HBox.margin>
                         </JFXCheckBox>
-                        <JFXCheckBox fx:id="showWithoutCustomerCheckbox" styleClass="normal-label" text="Χωρίς πελάτη">
+                        <JFXCheckBox fx:id="showWaitCheckBox" layoutX="644.0" layoutY="20.0" styleClass="normal-label"
+                                     text="Αναμονή">
                             <HBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </HBox.margin>
                         </JFXCheckBox>
                         <VBox.margin>
@@ -49,28 +50,46 @@
                         </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT">
-                        <Label styleClass="normal-label" text="Φίλτρο Κατηγορίας:">
-                            <HBox.margin>
-                                <Insets left="10.0" right="10.0"/>
-                            </HBox.margin>
-                        </Label>
-                        <ComboBox fx:id="categoryFilterComboBox" editable="true" prefHeight="51.0" prefWidth="344.0">
-                            <HBox.margin>
-                                <Insets left="10.0" right="10.0"/>
-                            </HBox.margin>
-                        </ComboBox>
-                        <Separator visible="false" HBox.hgrow="ALWAYS"/>
-                        <JFXButton fx:id="addCategoryButton" buttonType="RAISED" mnemonicParsing="false"
-                                   styleClass="click-button" text="Προσθήκη κατηγορίας">
-                            <graphic>
-                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/add.png"/>
-                                </ImageView>
-                            </graphic>
-                            <HBox.margin>
-                                <Insets left="10.0" right="10.0"/>
-                            </HBox.margin>
-                        </JFXButton>
+                        <children>
+                            <JFXCheckBox fx:id="showWithCustomerCheckbox" styleClass="normal-label" text="Με πελάτη">
+                                <HBox.margin>
+                                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                </HBox.margin>
+                            </JFXCheckBox>
+                            <JFXCheckBox fx:id="showWithoutCustomerCheckbox" styleClass="normal-label"
+                                         text="Χωρίς πελάτη">
+                                <HBox.margin>
+                                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                </HBox.margin>
+                            </JFXCheckBox>
+                            <Separator orientation="VERTICAL"/>
+                            <Label styleClass="normal-label" text="Κατηγορία:">
+                                <HBox.margin>
+                                    <Insets left="10.0" right="10.0"/>
+                                </HBox.margin>
+                            </Label>
+                            <ComboBox fx:id="categoryFilterComboBox" editable="true" prefHeight="51.0"
+                                      prefWidth="344.0">
+                                <HBox.margin>
+                                    <Insets left="10.0" right="10.0"/>
+                                </HBox.margin>
+                            </ComboBox>
+                            <JFXButton fx:id="addCategoryButton" buttonType="RAISED" mnemonicParsing="false"
+                                       styleClass="click-button" text="Προσθήκη κατηγορίας">
+                                <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <Image url="@icons/add.png"/>
+                                    </ImageView>
+                                </graphic>
+                                <HBox.margin>
+                                    <Insets left="10.0" right="10.0"/>
+                                </HBox.margin>
+                            </JFXButton>
+                        </children>
+                        <VBox.margin>
+                            <Insets/>
+                        </VBox.margin>
                     </HBox>
                     <TableView fx:id="taskTable" VBox.vgrow="ALWAYS">
                         <columns>

@@ -38,7 +38,7 @@ public class AddCustomerController {
     @FXML
     private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, devicesContainer, tasksContainer;
     @FXML
-    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabDevices, tabTasks, tabAccountant;
+    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabDevices, tabTasks, tabAccountant, tabSubs;
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone;
     @FXML

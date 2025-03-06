@@ -61,6 +61,22 @@
                     <Label prefWidth="235.0" styleClass="normal-label" text="Κατηγορία:" />
                     <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="325.0" />
                 </HBox>
+                <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="329.0">
+                    <VBox.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                    </VBox.margin>
+                    <Label prefWidth="235.0" styleClass="normal-label" text="Επείγον:" />
+                    <JFXCheckBox fx:id="is_ergent" mnemonicParsing="false" text="" />
+                </HBox>
+            <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="382.0">
+               <children>
+                  <Label prefWidth="235.0" styleClass="normal-label" text="Αναμονή:" />
+                  <JFXCheckBox fx:id="is_wait" mnemonicParsing="false" text="" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+               </VBox.margin>
+            </HBox>
             </VBox>
         </ScrollPane>
     </content>

@@ -759,7 +759,7 @@ public class DBHelper {
 
     public List<Task> getAllTasks() {
         List<Task> tasks = new ArrayList<>();
-        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, c.name " +
+        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, t.is_ergent, t.is_wait, c.name " +
                 "FROM Tasks t " +
                 "LEFT JOIN Customers c ON t.customerId = c.code";
 
@@ -776,8 +776,10 @@ public class DBHelper {
                 Integer customerId = resultSet.getObject("customerId", Integer.class);
                 String category = resultSet.getString("category");
                 String customerName = resultSet.getString("name");
+                Boolean isErgent = resultSet.getBoolean("is_ergent");
+                Boolean isWait = resultSet.getBoolean("is_wait");
 
-                Task task = new Task(id, title, description, dueDate, isCompleted, category, customerId, customerName);
+                Task task = new Task(id, title, description, dueDate, isCompleted, category, customerId, customerName, isErgent, isWait);
                 tasks.add(task);
             }
             closeConnection(conn);
@@ -810,7 +812,7 @@ public class DBHelper {
 
 
     public boolean saveTask(Task task) {
-        String query = "INSERT INTO Tasks (title, description, dueDate, is_completed, customerId, category) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Tasks (title, description, dueDate, is_completed, customerId, category, is_ergent, is_wait) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, task.getTitle());
@@ -823,6 +825,8 @@ public class DBHelper {
                 stmt.setNull(5, java.sql.Types.INTEGER);
             }
             stmt.setString(6, task.getCategory());
+            stmt.setBoolean(7, task.getErgent());
+            stmt.setBoolean(8, task.getWait());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 closeConnection(conn);
@@ -838,7 +842,7 @@ public class DBHelper {
     }
 
     public boolean updateTask(Task task) {
-        String query = "UPDATE Tasks SET title = ?, description = ?, dueDate = ?, is_Completed = ?, category = ?, customerId = ? WHERE id = ?";
+        String query = "UPDATE Tasks SET title = ?, description = ?, dueDate = ?, is_Completed = ?, category = ?, customerId = ?, is_ergent = ?, is_wait = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -853,7 +857,9 @@ public class DBHelper {
             } else {
                 stmt.setNull(6, java.sql.Types.INTEGER);
             }
-            stmt.setInt(7, task.getId());
+            stmt.setBoolean(7, task.getErgent());
+            stmt.setBoolean(8, task.getWait());
+            stmt.setInt(9, task.getId());
 
             if (stmt.executeUpdate() > 0) {
                 closeConnection(conn);
@@ -1307,7 +1313,7 @@ public class DBHelper {
 
     public List<Task> getAllCustomerTasks(int customerCode) {
         List<Task> tasks = new ArrayList<>();
-        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, c.name " +
+        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, t.is_ergent, t.is_wait, c.name " +
                 "FROM Tasks t " +
                 "LEFT JOIN Customers c ON t.customerId = c.code " +
                 "WHERE t.customerId = ?";
@@ -1324,9 +1330,11 @@ public class DBHelper {
                 boolean isCompleted = resultSet.getBoolean("is_Completed");
                 Integer customerId = resultSet.getObject("customerId", Integer.class);
                 String category = resultSet.getString("category");
+                boolean isErgent = resultSet.getBoolean("is_ergent");
+                boolean isWait = resultSet.getBoolean("is_wait");
                 String customerName = resultSet.getString("name");
 
-                Task task = new Task(id, title, description, dueDate, isCompleted, category, customerId, customerName);
+                Task task = new Task(id, title, description, dueDate, isCompleted, category, customerId, customerName, isErgent, isWait);
                 tasks.add(task);
             }
             closeConnection(conn);
@@ -1520,7 +1528,8 @@ public class DBHelper {
                 "FROM Subscriptions s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code " +
                 "LEFT JOIN SubsCategories i ON s.subCatId = i.id " +
-                "WHERE s.endDate BETWEEN ? AND ?";
+                "WHERE s.endDate BETWEEN ? AND ? " +
+                "ORDER BY s.endDate ASC";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -1539,7 +1548,7 @@ public class DBHelper {
                 String price = resultSet.getString("price");
                 String customerName = resultSet.getString("name");
 
-                Subscription sub = new Subscription(id, title, endDate, categoryId, customerId, price, note);
+                Subscription sub = new Subscription(id, title, endDate,customerId, categoryId, price, note);
                 sub.setCustomerName(customerName);
                 sub.setCategory(category);
                 subs.add(sub);
@@ -1707,5 +1716,43 @@ public class DBHelper {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Subscription> getAllCustomerSubs(int customerCode) {
+        List<Subscription> subs = new ArrayList<>();
+        String query = "SELECT s.id, s.title, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, c.name  " +
+                "FROM Subscriptions s " +
+                "LEFT JOIN Customers c ON s.customerId = c.code " +
+                "LEFT JOIN SubsCategories i ON s.subCatId = i.id " +
+                "WHERE s.customerId = ? " +
+                "ORDER BY s.endDate ASC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, customerCode);
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                LocalDate endDate = resultSet.getDate("endDate").toLocalDate();
+                Integer customerId = resultSet.getObject("customerId", Integer.class);
+                Integer categoryId = resultSet.getObject("subCatId", Integer.class);
+                String category = resultSet.getString("catName");
+                String note = resultSet.getString("note");
+                String price = resultSet.getString("price");
+                String customerName = resultSet.getString("name");
+
+                Subscription sub = new Subscription(id, title, endDate,customerId, categoryId, price, note);
+                sub.setCustomerName(customerName);
+                sub.setCategory(category);
+                subs.add(sub);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return subs;
     }
 }
