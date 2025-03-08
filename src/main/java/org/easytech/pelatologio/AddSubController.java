@@ -195,6 +195,7 @@ public class AddSubController {
                 sub.setTitle(title);
                 sub.setNote(note);
                 sub.setEndDate(date);
+                sub.setPrice(price);
                 sub.setCategoryId(category);
                 sub.setCustomerId(selectedCustomer.getCode());
                 dbHelper.updateSub(sub);
