@@ -2,8 +2,8 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>F:\Programing\Pelatologio\target\Pelatologio-2-jar-with-dependencies.jar</jar>
-  <outfile>F:\Programing\Pelatologio\Pelatologio.exe</outfile>
+  <jar>D:\Applications\Pelatologio\target\Pelatologio-2-jar-with-dependencies.jar</jar>
+  <outfile>D:\Applications\Pelatologio\Pelatologio.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -13,7 +13,7 @@
   <stayAlive>false</stayAlive>
   <restartOnCrash>false</restartOnCrash>
   <manifest></manifest>
-  <icon>F:\Programing\Pelatologio\src\main\resources\org\easytech\pelatologio\icons\team.ico</icon>
+  <icon>D:\Applications\Pelatologio\src\main\resources\org\easytech\pelatologio\icons\team.ico</icon>
   <jre>
     <path>%JAVA_HOME%;%PATH%</path>
     <requiresJdk>false</requiresJdk>

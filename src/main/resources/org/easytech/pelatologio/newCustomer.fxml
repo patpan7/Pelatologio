@@ -252,7 +252,7 @@
                             </VBox.margin>
                         </JFXButton>
                         <JFXButton fx:id="btnTask" alignment="TOP_LEFT" buttonType="RAISED" mnemonicParsing="false"
-                                   onAction="#newTasks" prefWidth="180.0" styleClass="click-button" text="Νέα Εργασία"
+                                   onAction="#newTask" prefWidth="180.0" styleClass="click-button" text="Νέα Εργασία"
                                    wrapText="true" HBox.hgrow="ALWAYS">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">

@@ -6,9 +6,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -23,7 +27,7 @@ public class CustomerOffersController {
     @FXML
     private TableColumn idColumn, descriptionColumn, offerDateColumn, statusColumn, response_dateColumn;
     @FXML
-    private Button addOfferButton, editOfferButton, deleteOfferButton, renewButton;
+    private Button addOfferButton, editOfferButton, deleteOfferButton;
 
     private ObservableList<Offer> allOffers;
 
@@ -34,7 +38,6 @@ public class CustomerOffersController {
         setTooltip(addOfferButton, "Προσθήκη νέου συμβολαίου");
         setTooltip(editOfferButton, "Επεξεργασία συμβολαίου");
         setTooltip(deleteOfferButton, "Διαγραφή συμβολαίου");
-        setTooltip(renewButton, "Ανανέωση συμβολαίου");
 
         // Σύνδεση στηλών πίνακα με πεδία του Task
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -193,10 +196,94 @@ public class CustomerOffersController {
     }
 
 
+
+    public void handleAddTask(ActionEvent evt) {
+        Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
+        if (selectedOffer == null) {
+            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα προσφορά.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
+            return;
+        }
+        try {
+            // Φόρτωση του FXML για προσθήκη ραντεβού
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Προσθήκη Εργασίας");
+            AddTaskController controller = loader.getController();
+            controller.setTaskTitle("Προσφορά "+ selectedOffer.getId() +": "+ selectedOffer.getCustomerName());
+            controller.setCustomerName(selectedOffer.getCustomerName());
+            controller.setCustomerId(selectedOffer.getCustomerId());
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                // Εκτελούμε το handleSaveAppointment
+                boolean success = controller.handleSaveTask();
+
+                if (!success) {
+                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                    event.consume();
+                }
+            });
+
+            dialog.showAndWait();
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+
+    public void handleShareOffer(ActionEvent evt) {
+        Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
+        if (selectedOffer == null) {
+            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα προσφορά.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
+            return;
+        }
+        String msg ="Επωνυμία: "+selectedOffer.getCustomerName() +
+                "\nΣτον παρακάτω σύνδεσμο θα βρείτε την προσφορά σας." +
+                "\nhttp://dgou.dynns.com:8090/offers/offer.php?id="+selectedOffer.getId()+
+                "\n\nΕυχαριστώ πολύ";
+        copyTextToClipboard(msg);
+    }
+
+
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();
         tooltip.setShowDelay(Duration.seconds(0.3));
         tooltip.setText(text);
         button.setTooltip(tooltip);
+    }
+
+    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
+    private void copyTextToClipboard(String msg) {
+        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(msg);  // Replace with the desired text
+        clipboard.setContent(content);
+        //showAlert("Copied to Clipboard", msg);
+        Notifications notifications = Notifications.create()
+                .title("Αντιγραφή στο πρόχειρο")
+                .text(msg)
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT);
+        notifications.showInformation();
     }
 }

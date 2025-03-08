@@ -350,7 +350,7 @@ public class MainMenuController implements Initializable {
             }
         }
         // Φόρτωση του FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("OffersView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("offersView.fxml"));
         Parent offerContent = fxmlLoader.load();
 
         // Περνάμε το mainTabPane στον CustomersController

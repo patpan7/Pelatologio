@@ -42,7 +42,7 @@ public class MainMenu extends Application {
         stage.setScene(scene);
         stage.show();
 
-        // ✅ Ξεκινά το polling αφού φορτωθεί η εφαρμογή
+        // Ξεκινά το polling αφού φορτωθεί η εφαρμογή
         startPolling();
 
         stage.setOnCloseRequest(event -> {
