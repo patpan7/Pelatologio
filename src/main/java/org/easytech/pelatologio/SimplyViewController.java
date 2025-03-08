@@ -258,6 +258,52 @@ public class SimplyViewController {
         }
     }
 
+    public void handleAddSub(ActionEvent evt) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
+            return;
+        }
+        try {
+            // Φόρτωση του FXML για προσθήκη ραντεβού
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Προσθήκη Εργασίας");
+            AddSubController controller = loader.getController();
+            controller.setSubTitle("Simply "+ selectedLogin.getTag());
+            controller.setCustomerName(customer.getName());
+            controller.setCustomerId(customer.getCode());
+            controller.setNote(selectedLogin.getUsername());
+            controller.lock();
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                // Εκτελούμε το handleSaveAppointment
+                boolean success = controller.handleSaveSub();
+
+                if (!success) {
+                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                    event.consume();
+                }
+            });
+
+            dialog.showAndWait();
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+
     public void simplyposOpen(MouseEvent event) {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard

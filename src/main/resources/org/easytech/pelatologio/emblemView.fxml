@@ -31,6 +31,8 @@
                         <SeparatorMenuItem/>
                         <MenuItem mnemonicParsing="false" onAction="#handleAddTask" styleClass="menu-item"
                                   text="Προσθήκη εργασίας"/>
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddSub" styleClass="menu-item"
+                                  text="Προσθήκη Συμβολαίου"/>
                     </items>
                 </ContextMenu>
             </contextMenu>

@@ -107,27 +107,27 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-api</artifactId>
-            <version>4.27.0</version>
+            <version>4.21.0</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.27.0</version> <!-- Χρησιμοποίησε την πιο πρόσφατη έκδοση -->
+            <version>4.21.0</version> <!-- Χρησιμοποίησε την πιο πρόσφατη έκδοση -->
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
-            <version>4.27.0</version>
+            <version>4.21.0</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-firefox-driver</artifactId>
-            <version>4.27.0</version>
+            <version>4.21.0</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-edge-driver</artifactId>
-            <version>4.27.0</version>
+            <version>4.21.0</version>
         </dependency>
         <dependency>
             <groupId>dev.failsafe</groupId>

@@ -2,7 +2,7 @@ package org.easytech.pelatologio;
 
 import java.time.LocalDate;
 
-public class Task {
+public class Tasks {
     private Integer id;
     private String title;
     private String description;
@@ -14,7 +14,7 @@ public class Task {
     private Boolean isErgent;
     private Boolean isWait;
 
-    public Task(Integer id, String title, String description, LocalDate dueDate, Boolean isCompleted, String category, Integer customerId, Boolean isErgent, Boolean isWait) {
+    public Tasks(Integer id, String title, String description, LocalDate dueDate, Boolean isCompleted, String category, Integer customerId, Boolean isErgent, Boolean isWait) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -26,7 +26,7 @@ public class Task {
         this.isWait = isWait;
     }
 
-    public Task(int id, String title, String description, LocalDate dueDate, Boolean isCompleted, String category, Integer customerId, String customerName, Boolean isErgent, Boolean isWait) {
+    public Tasks(int id, String title, String description, LocalDate dueDate, Boolean isCompleted, String category, Integer customerId, String customerName, Boolean isErgent, Boolean isWait) {
         this.id = id;
         this.title = title;
         this.description = description;

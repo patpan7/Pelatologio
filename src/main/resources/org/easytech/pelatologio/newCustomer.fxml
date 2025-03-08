@@ -252,7 +252,7 @@
                             </VBox.margin>
                         </JFXButton>
                         <JFXButton fx:id="btnTask" alignment="TOP_LEFT" buttonType="RAISED" mnemonicParsing="false"
-                                   onAction="#newTask" prefWidth="180.0" styleClass="click-button" text="Νέα Εργασία"
+                                   onAction="#newTasks" prefWidth="180.0" styleClass="click-button" text="Νέα Εργασία"
                                    wrapText="true" HBox.hgrow="ALWAYS">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -310,6 +310,11 @@
         <Tab fx:id="tabSubs" closable="false" text="Συνδρομές">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
                 <AnchorPane fx:id="subsContainer" styleClass="pane"/>
+            </ScrollPane>
+        </Tab>
+        <Tab fx:id="tabOffers" closable="false" text="Προσφορές">
+            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
+                <AnchorPane fx:id="offersContainer" styleClass="pane"/>
             </ScrollPane>
         </Tab>
         <Tab closable="false" text="Σημειώσεις">
@@ -434,6 +439,20 @@
         </VBox.margin>
     </TabPane>
     <HBox alignment="BOTTOM_RIGHT" fillHeight="false" styleClass="pane" VBox.vgrow="ALWAYS">
+        <JFXButton buttonType="RAISED" layoutX="1050.0" layoutY="15.0" mnemonicParsing="false"
+                   onAction="#handleRefreshButton" styleClass="click-button" text="Ανανέωση">
+            <graphic>
+                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@icons/refresh.png"/>
+                    </image>
+                </ImageView>
+            </graphic>
+            <HBox.margin>
+                <Insets bottom="5.0" left="20.0" right="5.0" top="5.0"/>
+            </HBox.margin>
+        </JFXButton>
+        <Separator HBox.hgrow="ALWAYS"/>
         <JFXButton buttonType="RAISED" mnemonicParsing="false" onAction="#handleOkButton" styleClass="click-button"
                    text="Αποθήκευση">
             <graphic>

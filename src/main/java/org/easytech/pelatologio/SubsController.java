@@ -24,6 +24,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -36,13 +37,11 @@ public class SubsController implements Initializable {
     @FXML
     private TableColumn idColumn, titleColumn, endDateColumn, customerColumn, categoryColumn, priceColumn;
     @FXML
-    private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox;
-    @FXML
     private DatePicker dateFrom, dateTo;
     @FXML
     private ComboBox <SubsCategory> categoryFilterComboBox;
     @FXML
-    private Button addCategoryButton, addSubButton, editSubButton, deleteTaskButton, completeTaskButton, uncompletedTaskButton;
+    private Button addCategoryButton, addSubButton, editSubButton, deleteSubButton, renewButton;
 
     private ObservableList<Subscription> allSubs = FXCollections.observableArrayList();
 
@@ -56,8 +55,8 @@ public class SubsController implements Initializable {
         Platform.runLater(() -> stackPane.requestFocus());
         setTooltip(addSubButton, "Προσθήκη νέου συμβολαίου");
         setTooltip(editSubButton, "Επεξεργασία συμβολαίου");
-        setTooltip(completeTaskButton, "Σημείωση εργασίας ως ολοκληρωμένη");
-        setTooltip(uncompletedTaskButton,"Σημείωση εργασίας ως σε επεξεργασία");
+        setTooltip(deleteSubButton, "Διαγραφή συμβολαίου");
+        setTooltip(renewButton, "Aνανέωση συμβολαίου");
         setTooltip(addCategoryButton, "Προσθήκη/Επεξεργασία κατηγοριών εργασιών");
         // Σύνδεση στηλών πίνακα με πεδία του Task
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -88,21 +87,42 @@ public class SubsController implements Initializable {
         loadSubs(dateFrom.getValue(), dateTo.getValue());
 
         // RowFactory για διαφορετικά χρώματα
-//        subsTable.setRowFactory(tv -> new TableRow<Task>() {
-//            @Override
-//            protected void updateItem(Task task, boolean empty) {
-//                super.updateItem(task, empty);
-//                if (empty || task == null) {
-//                    setStyle("");
-//                } else {
-//                    if (task.getCompleted()) {
-//                        setStyle("-fx-background-color: #d4edda; -fx-text-fill: #155724;"); // Πράσινο
-//                    } else {
-//                        setStyle(""); // Προεπιλογή
-//                    }
-//                }
-//            }
-//        });
+        subsTable.setRowFactory(tv -> new TableRow<Subscription>() {
+            @Override
+            protected void updateItem(Subscription sub, boolean empty) {
+                super.updateItem(sub, empty);
+                if (empty || sub == null) {
+                    setStyle("");
+                } else {
+                    if (sub.getEndDate().isBefore(LocalDate.now())) {
+                        setStyle("-fx-background-color: #edd4d4; -fx-text-fill: #155724;"); // Πράσινο
+                    } else {
+                        setStyle(""); // Προεπιλογή
+                    }
+                }
+            }
+        });
+
+        subsTable.setRowFactory(tv -> new TableRow<Subscription>() {
+            @Override
+            protected void updateItem(Subscription sub, boolean empty) {
+                super.updateItem(sub, empty);
+                if (empty || sub == null) {
+                    setStyle("");
+                } else {
+                    LocalDate today = LocalDate.now();
+                    LocalDate tenDaysLater = today.plusDays(10);
+
+                    if (sub.getEndDate().isBefore(today)) {
+                        setStyle("-fx-background-color: #edd4d4; -fx-text-fill: #155724;"); // Κόκκινο για ληγμένες συνδρομές
+                    } else if (!sub.getEndDate().isBefore(today) && !sub.getEndDate().isAfter(tenDaysLater)) {
+                        setStyle("-fx-background-color: #fff3cd; -fx-text-fill: #856404;"); // Κίτρινο για συνδρομές που λήγουν σύντομα
+                    } else {
+                        setStyle(""); // Κανονικό χρώμα
+                    }
+                }
+            }
+        });
 
         subsTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) { // Έλεγχος για δύο κλικ
@@ -120,15 +140,6 @@ public class SubsController implements Initializable {
                 }
             }
         });
-
-        // Φίλτρα
-        CheckBox[] checkBoxes1 = {
-                showAllCheckbox,
-                showCompletedCheckbox,
-                showPendingCheckbox
-        };
-        configureSingleSelectionCheckBoxes(checkBoxes1);
-
 
         DBHelper dbHelper = new DBHelper();
         List<SubsCategory> categories = dbHelper.getAllSubsCategory();
@@ -154,11 +165,6 @@ public class SubsController implements Initializable {
         categoryFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateTaskTable());
 
 
-        showAllCheckbox.setOnAction(e -> updateTaskTable());
-        showCompletedCheckbox.setOnAction(e -> updateTaskTable());
-        showPendingCheckbox.setOnAction(e -> updateTaskTable());
-
-
         // Κουμπιά
         addCategoryButton.setOnAction(e -> TaskCategoryManager());
         addSubButton.setOnAction(e -> handleAddSub());
@@ -169,72 +175,18 @@ public class SubsController implements Initializable {
                 throw new RuntimeException(ex);
             }
         });
-//        deleteTaskButton.setOnAction(e -> {
-//            try {
-//                handleDeleteTask();
-//            } catch (SQLException ex) {
-//                throw new RuntimeException(ex);
-//            }
-//        });
-        completeTaskButton.setOnAction(e -> toggleComplete(true));
-        uncompletedTaskButton.setOnAction(e -> toggleComplete(false));
+        deleteSubButton.setOnAction(e -> {
+            try {
+                handleDeleteSub();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        renewButton.setOnAction(e -> {
+            handleRenewSub();
+        });
+
     }
-
-
-    private void configureSingleSelectionCheckBoxes(CheckBox[] checkBoxes) {
-        for (CheckBox checkBox : checkBoxes) {
-            checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue) {
-                    for (CheckBox otherCheckBox : checkBoxes) {
-                        if (otherCheckBox != checkBox) {
-                            otherCheckBox.setSelected(false);
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    private void toggleComplete(boolean complete) {
-        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
-        if (selectedSub == null) {
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Δεν έχει επιλεγεί Συμβόλαιο.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
-
-        DBHelper dbHelper = new DBHelper();
-        if (dbHelper.completeTask(selectedSub.getId(), complete)) {
-            System.out.println("Task completion status updated.");
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Ενημέρωση")
-                        .text("Ενημέρωση εργασίας επιτυχής.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();});
-            loadSubs(dateFrom.getValue(), dateTo.getValue()); // Φορτώνει ξανά τις εργασίες
-        } else {
-            System.out.println("Failed to update task completion status.");
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Ενημέρωση")
-                        .text("Αποτυχία ενημέρωση εργασίας.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-        }
-    }
-
-
 
     private void loadSubs(LocalDate  from, LocalDate  to) {
         // Φόρτωση όλων των εργασιών από τη βάση
@@ -246,28 +198,14 @@ public class SubsController implements Initializable {
     private void updateTaskTable() {
         // Ξεκινάμε με όλες τις εργασίες
         ObservableList<Subscription> filteredTasks = FXCollections.observableArrayList(allSubs);
-
-        // Φιλτράρισμα βάσει ολοκλήρωσης
-//        if (!showAllCheckbox.isSelected()) {
-//            if (showCompletedCheckbox.isSelected()) {
-//                filteredTasks.removeIf(sub -> !sub.getCompleted());
-//            } else if (showPendingCheckbox.isSelected()) {
-//                filteredTasks.removeIf(Task::getCompleted);
-//            }
-//        }
-
         // Φιλτράρισμα βάσει κατηγορίας
         SubsCategory selectedCategory = categoryFilterComboBox.getValue(); // Η επιλεγμένη κατηγορία από το ComboBox
         if (selectedCategory != null && selectedCategory.getId() != 0) { // Εξαιρείται η κατηγορία "Όλες"
             filteredTasks.removeIf(sub -> !sub.getCategory().equals(selectedCategory.getName()));
         }
-
-
         // Ανανεώνουμε τα δεδομένα του πίνακα
         subsTable.setItems(filteredTasks);
     }
-
-
 
     private void handleAddSub() {
             try {
@@ -336,25 +274,52 @@ public class SubsController implements Initializable {
         }
     }
 
-    private void handleDeleteTask() throws SQLException {
+    private void handleDeleteSub() throws SQLException {
         // Διαγραφή επιλεγμένης εργασίας
-        Subscription selectedTask = subsTable.getSelectionModel().getSelectedItem();
-        if (selectedTask == null) {
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί εργασία!");
+            alert.setContentText("Δεν έχει επιλεγεί συμβόλαιο!");
             Optional<ButtonType> result = alert.showAndWait();
             return;
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Επιβεβαίωση");
-        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedTask.getTitle() + ";" );
+        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε το συμβόλαιο " + selectedSub.getTitle() + ";" );
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteTask(selectedTask.getId());
+            dbHelper.deleteSub(selectedSub.getId());
             loadSubs(dateFrom.getValue(), dateTo.getValue());
         }
+    }
+
+    private void handleRenewSub () {
+        // Επεξεργασία επιλεγμένης εργασίας
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Προσοχή");
+            alert.setContentText("Δεν έχει επιλεγεί συμβόλαιο!");
+            Optional<ButtonType> result = alert.showAndWait();
+            return;
+        }
+        // Δημιουργία διαλόγου με επιλογές
+        List<String> choices = Arrays.asList("+1 χρόνο", "+2 χρόνια", "+3 χρόνια");
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("+1 χρόνο", choices);
+        dialog.setTitle("Ανανέωση Συμβολαίου");
+        dialog.setHeaderText("Επιλέξτε διάρκεια ανανέωσης");
+        dialog.setContentText("Διάρκεια:");
+
+        // Αν ο χρήστης επιλέξει κάτι
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(selected -> {
+            int yearsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", ""));
+            DBHelper dbHelper = new DBHelper();
+            dbHelper.renewSub(selectedSub.getId(), yearsToAdd);
+            loadSubs(dateFrom.getValue(), dateTo.getValue());
+        });
     }
 
     public void TaskCategoryManager() {

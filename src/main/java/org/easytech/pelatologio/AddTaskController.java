@@ -12,7 +12,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -44,7 +43,7 @@ public class AddTaskController {
     @FXML
     private JFXCheckBox is_ergent, is_wait;
 
-    private Task task;
+    private Tasks tasks;
     private int customerId;
     private String customerName;
     private Customer selectedCustomer;
@@ -67,29 +66,29 @@ public class AddTaskController {
         titleField.setText(title);
     }
 
-    public void setTaskForEdit(Task task) {
-        this.task = task;
-        titleField.setText(task.getTitle());
-        descriptionField.setText(task.getDescription());
-        dueDatePicker.setValue(task.getDueDate());
+    public void setTaskForEdit(Tasks tasks) {
+        this.tasks = tasks;
+        titleField.setText(tasks.getTitle());
+        descriptionField.setText(tasks.getDescription());
+        dueDatePicker.setValue(tasks.getDueDate());
         for (TaskCategory taskCategory : categoryComboBox.getItems()) {
-            if (taskCategory.getName().equals(task.getCategory())) {
+            if (taskCategory.getName().equals(tasks.getCategory())) {
                 categoryComboBox.setValue(taskCategory);
                 break;
             }
         }
         // Αν υπάρχει πελάτης, προ-συμπλήρωσε την επιλογή
-        if (task.getCustomerId() != null) {
+        if (tasks.getCustomerId() != null) {
             for (Customer customer : customerComboBox.getItems()) {
-                if (customer.getCode() == task.getCustomerId()) {
+                if (customer.getCode() == tasks.getCustomerId()) {
                     customerComboBox.setValue(customer);
                     break;
                 }
             }
         }
 
-        is_ergent.setSelected(task.getErgent());
-        is_wait.setSelected(task.getWait());
+        is_ergent.setSelected(tasks.getErgent());
+        is_wait.setSelected(tasks.getWait());
     }
 
 
@@ -193,21 +192,21 @@ public class AddTaskController {
 
             DBHelper dbHelper = new DBHelper();
 
-            if (task == null) {
+            if (tasks == null) {
                 // Δημιουργία νέας εργασίας
-                Task newTask = new Task(0, title, description, date, false, category, selectedCustomer != null ? selectedCustomer.getCode() : 0, isErgent, isWait);
-                dbHelper.saveTask(newTask);
+                Tasks newTasks = new Tasks(0, title, description, date, false, category, selectedCustomer != null ? selectedCustomer.getCode() : 0, isErgent, isWait);
+                dbHelper.saveTask(newTasks);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
-                task.setTitle(title);
-                task.setDescription(description);
-                task.setDueDate(date);
-                task.setCategory(category);
+                tasks.setTitle(title);
+                tasks.setDescription(description);
+                tasks.setDueDate(date);
+                tasks.setCategory(category);
                 int customerId = selectedCustomer != null ? selectedCustomer.getCode() : 0;
-                task.setCustomerId(customerId);
-                task.setErgent(isErgent);
-                task.setWait(isWait);
-                dbHelper.updateTask(task);
+                tasks.setCustomerId(customerId);
+                tasks.setErgent(isErgent);
+                tasks.setWait(isWait);
+                dbHelper.updateTask(tasks);
             }
 
             Platform.runLater(() -> {
@@ -271,7 +270,7 @@ public class AddTaskController {
     public void showCustomer(ActionEvent evt) {
         DBHelper dbHelper = new DBHelper();
 
-        Customer selectedCustomer = dbHelper.getSelectedCustomer(task.getCustomerId());
+        Customer selectedCustomer = dbHelper.getSelectedCustomer(tasks.getCustomerId());
         if (selectedCustomer.getCode() == 0) {
             return;
         }

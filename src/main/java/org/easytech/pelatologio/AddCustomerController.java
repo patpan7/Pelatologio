@@ -36,9 +36,9 @@ public class AddCustomerController {
     @FXML
     private TabPane tabPane;
     @FXML
-    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, devicesContainer, tasksContainer;
+    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, devicesContainer, tasksContainer, subsContainer, offersContainer;
     @FXML
-    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabDevices, tabTasks, tabAccountant, tabSubs;
+    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabDevices, tabTasks, tabAccountant, tabSubs, tabOffers;
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone;
     @FXML
@@ -67,6 +67,8 @@ public class AddCustomerController {
     private ErganiViewController erganiViewController;
     private CustomerDevicesController customerDevicesController;
     private CustomerTasksController customerTasksController;
+    private CustomerSubsController customerSubsController;
+    private CustomerOffersController customerOffersController;
 
     int code = 0;
 
@@ -153,6 +155,24 @@ public class AddCustomerController {
             AnchorPane.setLeftAnchor(tasksContent, 0.0);
             AnchorPane.setRightAnchor(tasksContent, 0.0);
 
+            FXMLLoader loaderSubs = new FXMLLoader(getClass().getResource("customerSubsView.fxml"));
+            Parent subsContent = loaderSubs.load();
+            customerSubsController = loaderSubs.getController();// Πάρε τον controller
+            subsContainer.getChildren().setAll(subsContent);
+            AnchorPane.setTopAnchor(subsContent, 0.0);
+            AnchorPane.setBottomAnchor(subsContent, 0.0);
+            AnchorPane.setLeftAnchor(subsContent, 0.0);
+            AnchorPane.setRightAnchor(subsContent, 0.0);
+
+            FXMLLoader loaderOffers = new FXMLLoader(getClass().getResource("customerOffersView.fxml"));
+            Parent offersContent = loaderOffers.load();
+            customerOffersController = loaderOffers.getController();// Πάρε τον controller
+            offersContainer.getChildren().setAll(offersContent);
+            AnchorPane.setTopAnchor(offersContent, 0.0);
+            AnchorPane.setBottomAnchor(offersContent, 0.0);
+            AnchorPane.setLeftAnchor(offersContent, 0.0);
+            AnchorPane.setRightAnchor(offersContent, 0.0);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -187,6 +207,8 @@ public class AddCustomerController {
         tabErgani.setDisable(true);
         tabDevices.setDisable(true);
         tabTasks.setDisable(true);
+        tabSubs.setDisable(true);
+        tabOffers.setDisable(true);
 
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
@@ -483,52 +505,7 @@ public class AddCustomerController {
         tfAccName1.setText(customer.getAccName1());
         tfAccEmail1.setText(customer.getAccEmail1());
 
-        for (String rec : recommendationList) {
-            if (rec.equals(customer.getRecommendation())) {
-                tfRecommendation.getSelectionModel().select(rec);
-                break;
-            }
-        }
-
         btnAddressAdd.setDisable(false);
-        DBHelper dbHelper = new DBHelper();
-        if (dbHelper.hasSubAddress(customer.getCode())) {
-            System.out.println("Έχει υποδιεύθυνση");
-            btnAddressAdd.setStyle("-fx-border-color: #FF0000;");
-        }
-        if(dbHelper.hasApp(customer.getCode(),1)){
-            tabMypos.getStyleClass().add("tabHas");
-        }
-        if(dbHelper.hasApp(customer.getCode(),2)){
-            tabSimply.getStyleClass().add("tabHas");
-        }
-        if(dbHelper.hasApp(customer.getCode(),3)){
-            tabTaxis.getStyleClass().add("tabHas");
-        }
-        if(dbHelper.hasApp(customer.getCode(),4)){
-            tabEmblem.getStyleClass().add("tabHas");
-        }
-        if(dbHelper.hasApp(customer.getCode(),5)){
-            tabErgani.getStyleClass().add("tabHas");
-        }
-        if(dbHelper.hasDevice(customer.getCode())){
-            tabDevices.getStyleClass().add("tabHas");
-        }
-        if(dbHelper.hasTask(customer.getCode())){
-            tabTasks.getStyleClass().add("tabHas");
-        }
-
-        for (Accountant accountant : filteredAccountants) {
-            if (accountant.getId() == customer.getAccId()) {
-                tfAccName.getSelectionModel().select(accountant);
-                tfAccPhone.setText(accountant.getPhone());
-                tfAccMobile.setText(accountant.getMobile());
-                tfAccEmail.setText(accountant.getEmail());
-                tfAccErganiEmail.setText(accountant.getErganiEmail());
-                break;
-            }
-        }
-
 
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = customer.getCode();
@@ -568,6 +545,16 @@ public class AddCustomerController {
         } else {
             System.out.println("customerTasksController δεν είναι ακόμα έτοιμος.");
         }
+        if (customerSubsController != null) {
+            customerSubsController.setCustomer(customer);
+        } else {
+            System.out.println("customerSubsController δεν είναι ακόμα έτοιμος.");
+        }
+        if (customerOffersController != null) {
+            customerOffersController.setCustomer(customer);
+        } else {
+            System.out.println("customerOffersController δεν είναι ακόμα έτοιμος.");
+        }
 
         btnAddToMegasoft.setDisable(false);
         btnAddToMegasoft.setVisible(true);
@@ -590,6 +577,12 @@ public class AddCustomerController {
         tabErgani.setDisable(false);
         tabDevices.setDisable(false);
         tabTasks.setDisable(false);
+        tabSubs.setDisable(false);
+        tabOffers.setDisable(false);
+
+        hasTabs();
+        setAccountant();
+        setRecommendation();
     }
 
 
@@ -659,6 +652,109 @@ public class AddCustomerController {
             updateCustomer();
         }
     }
+
+    public void handleRefreshButton() {
+        hasTabs();
+        setAccountant();
+        setRecommendation();
+    }
+
+    private void setRecommendation() {
+        DBHelper dbHelper = new DBHelper();
+        recommendationList.clear();
+        recommendationList.addAll(dbHelper.getRecomedations());
+        tfRecommendation.setItems(recommendationList);
+
+        for (String rec : recommendationList) {
+            if (rec.equals(customer.getRecommendation())) {
+                tfRecommendation.getSelectionModel().select(rec);
+                break;
+            }
+        }
+    }
+
+    private void setAccountant() {
+        DBHelper dbHelper = new DBHelper();
+        List<Accountant> accountants = dbHelper.getAccountants();
+        accountants.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
+        filteredAccountants = new FilteredList<>(FXCollections.observableArrayList(accountants));
+        tfAccName.setItems(filteredAccountants);
+        tfAccName.setConverter(new StringConverter<Accountant>() {
+            @Override
+            public String toString(Accountant accountant) {
+                return accountant != null ? accountant.getName() : "";
+            }
+
+            @Override
+            public Accountant fromString(String string) {
+                return accountants.stream()
+                        .filter(accountant -> accountant.getName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+        tfAccName.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                tfAccPhone.setText(newValue.getPhone());
+                tfAccMobile.setText(newValue.getMobile());
+                tfAccEmail.setText(newValue.getEmail());
+                tfAccErganiEmail.setText(newValue.getErganiEmail());
+            } else {
+                tfAccPhone.clear();
+                tfAccMobile.clear();
+                tfAccEmail.clear();
+                tfAccErganiEmail.clear();
+            }
+        });
+
+        for (Accountant accountant : filteredAccountants) {
+            if (accountant.getId() == customer.getAccId()) {
+                tfAccName.getSelectionModel().select(accountant);
+                tfAccPhone.setText(accountant.getPhone());
+                tfAccMobile.setText(accountant.getMobile());
+                tfAccEmail.setText(accountant.getEmail());
+                tfAccErganiEmail.setText(accountant.getErganiEmail());
+                break;
+            }
+        }
+        setupComboBoxFilter(tfAccName,filteredAccountants);
+    }
+
+    private void hasTabs() {
+        DBHelper dbHelper = new DBHelper();
+        if (dbHelper.hasSubAddress(customer.getCode())) {
+            System.out.println("Έχει υποδιεύθυνση");
+            btnAddressAdd.setStyle("-fx-border-color: #FF0000;");
+        }
+        if(dbHelper.hasApp(customer.getCode(),1)){
+            tabMypos.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasApp(customer.getCode(),2)){
+            tabSimply.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasApp(customer.getCode(),3)){
+            tabTaxis.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasApp(customer.getCode(),4)){
+            tabEmblem.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasApp(customer.getCode(),5)){
+            tabErgani.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasDevice(customer.getCode())){
+            tabDevices.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasTask(customer.getCode())){
+            tabTasks.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasSub(customer.getCode())){
+            tabSubs.getStyleClass().add("tabHas");
+        }
+        if(dbHelper.hasOffer(customer.getCode())){
+            tabOffers.getStyleClass().add("tabHas");
+        }
+    }
+
     private void closeCurrentTab() {
         Platform.runLater(() -> {
             Tab currentTab = mainTabPane.getSelectionModel().getSelectedItem();
@@ -748,27 +844,41 @@ public class AddCustomerController {
         DBHelper dbHelper = new DBHelper();
 
         String name = tfName.getText();
+        customer.setName(name);
         String title = tfTitle.getText();
+        customer.setTitle(title);
         String job = tfJob.getText().substring(0, Math.min(tfJob.getText().length(), 255));
+        customer.setJob(job);
         String afm = tfAfm.getText();
+        customer.setAfm(afm);
         String phone1 = (tfPhone1.getText() != null ? tfPhone1.getText() : "");
         String phone2 = (tfPhone2.getText() != null ? tfPhone2.getText() : "");
         String mobile = (tfMobile.getText() != null ? tfMobile.getText() : "");
         String address = tfAddress.getText();
+        customer.setAddress(address);
         String town = tfTown.getText();
+        customer.setTown(town);
         String posCode = tfPostCode.getText();
+        customer.setPostcode(posCode);
         String email = (tfEmail.getText() != null ? tfEmail.getText() : "");
+        customer.setEmail(email);
         String email2 = (tfEmail2.getText() != null ? tfEmail2.getText() : "");
+        customer.setEmail2(email2);
         String manager = (tfManager.getText() != null ? tfManager.getText() : "");
+        customer.setManager(manager);
         String managerPhone = (tfManagerPhone.getText() != null ? tfManagerPhone.getText() : "");
         String notes = taNotes.getText();
+        customer.setNotes(notes);
         String accName1 = (tfAccName1.getText() != null ? tfAccName1.getText() : "");
+        customer.setAccName1(accName1);
         String accEmail1 = (tfAccEmail1.getText() != null ? tfAccEmail1.getText() : "");
+        customer.setAccEmail1(accEmail1);
         String selectedRecommendation = tfRecommendation.getEditor().getText().trim();
+        customer.setRecommendation(selectedRecommendation);
 
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
         int accId = (selectedAccountant != null) ? selectedAccountant.getId() : 0;
-
+        customer.setAccId(accId);
         if (mobile.startsWith("+30"))
             mobile = mobile.substring(3);
         if (phone1.startsWith("+30"))
@@ -781,8 +891,26 @@ public class AddCustomerController {
         phone1 = phone1.replaceAll("\\s+", "");
         phone2 = phone2.replaceAll("\\s+", "");
         managerPhone = managerPhone.replaceAll("\\s+", "");
+        customer.setMobile(mobile);
+        customer.setPhone1(phone1);
+        customer.setPhone2(phone2);
+        customer.setManagerPhone(managerPhone);
+
 
         dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation);
+
+        String accName = tfAccName.getValue().toString();
+        String accPhone = tfAccPhone.getText();
+        if (accPhone.startsWith("+30"))
+            accPhone = accPhone.substring(3);
+        String accMobile = tfAccMobile.getText();
+        if (accMobile.startsWith("+30"))
+            accMobile = accMobile.substring(3);
+        String accEmail = tfAccEmail.getText();
+        String accErganiEmail = tfAccErganiEmail.getText();
+
+        dbHelper.updateAccountant(accId, accName, accPhone, accMobile, accEmail, accErganiEmail);
+
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
         Notifications notifications = Notifications.create()
                 .title("Επιτυχία")
@@ -828,7 +956,6 @@ public class AddCustomerController {
 
     public void folderClick(ActionEvent event) {
         CustomerFolderManager folderManager = new CustomerFolderManager();
-
         // Κλήση της μεθόδου για δημιουργία ή άνοιγμα του φακέλου
         folderManager.createOrOpenCustomerFolder(customer.getName(), customer.getAfm());
     }

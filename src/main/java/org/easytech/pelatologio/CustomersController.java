@@ -17,9 +17,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.openqa.selenium.By;
@@ -338,40 +340,6 @@ public class CustomersController implements Initializable {
                     sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
                     customerTable.setItems(sortedData);
                 });
-
-//                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-//
-//                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-//                okButton.setOnAction(event -> {
-//                    controller.handleOkButton();
-//                    // Reinitialize the table and apply the search filter when OK is pressed
-//                    refreshTableData();
-//                    filteredData = new FilteredList<>(observableList, b -> true);
-//
-//                    filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-//                        applyFilters(newValue);
-//                    });
-//
-//                    applyFilters(filterField.getText());
-//
-//                    SortedList<Customer> sortedData = new SortedList<>(filteredData);
-//                    sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
-//                    customerTable.setItems(sortedData);
-//                });
-//
-//                // Προσθήκη listener για το κλείσιμο του παραθύρου
-//                dialog.setOnHidden(event -> {
-//                    dbHelper.customerUnlock(selectedCustomer.getCode());
-//                });
-//
-//                // Add a key listener to save when Enter is pressed
-//                dialog.getDialogPane().setOnKeyPressed(event -> {
-//                    if (event.getCode() == KeyCode.ENTER) {
-//                        okButton.fire();  // Triggers the OK button action
-//                    }
-//                });
-//                dialog.show();
-
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Προσοχή");
@@ -379,6 +347,7 @@ public class CustomersController implements Initializable {
                 alert.showAndWait();
             }
         } catch (IOException e) {
+            e.printStackTrace();
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
@@ -737,6 +706,11 @@ public class CustomersController implements Initializable {
                     mainTabPane.getTabs().add(customerTab);
                     mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
                     Platform.runLater(() -> controller.selectTaxisTab());
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Προσοχή");
+                    alert.setContentText(res);
+                    alert.showAndWait();
                 }
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
@@ -799,6 +773,11 @@ public class CustomersController implements Initializable {
                     mainTabPane.getTabs().add(customerTab);
                     mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
                     Platform.runLater(() -> controller.selectMyPOSTab());
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Προσοχή");
+                    alert.setContentText(res);
+                    alert.showAndWait();
                 }
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
@@ -862,6 +841,11 @@ public class CustomersController implements Initializable {
                     mainTabPane.getTabs().add(customerTab);
                     mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
                     Platform.runLater(() -> controller.selectSimplyTab());
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Προσοχή");
+                    alert.setContentText(res);
+                    alert.showAndWait();
                 }
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
@@ -924,6 +908,11 @@ public class CustomersController implements Initializable {
                     mainTabPane.getTabs().add(customerTab);
                     mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
                     Platform.runLater(() -> controller.selectEmbelmTab());
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Προσοχή");
+                    alert.setContentText(res);
+                    alert.showAndWait();
                 }
 
             } catch (IOException e) {
@@ -974,79 +963,83 @@ public class CustomersController implements Initializable {
                 mainTabPane.getTabs().add(customerTab);
                 mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
                 Platform.runLater(() -> controller.selectErganiTab());
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText(res);
+                alert.showAndWait();
             }
-
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
-public void folderClick(ActionEvent event) {
-    CustomerFolderManager folderManager = new CustomerFolderManager();
+    public void folderClick(ActionEvent event) {
+        CustomerFolderManager folderManager = new CustomerFolderManager();
 
-    // Όνομα και ΑΦΜ του πελάτη
-    Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-
-    // Κλήση της μεθόδου για δημιουργία ή άνοιγμα του φακέλου
-    folderManager.createOrOpenCustomerFolder(selectedCustomer.getName(), selectedCustomer.getAfm());
-}
-
-
-// Μέθοδος για αντιγραφή του περιεχομένου αρχείου στο πρόχειρο
-private void copyFileContentToClipboard(File file) {
-    try {
-        String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-        javafx.scene.input.Clipboard clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
-        javafx.scene.input.ClipboardContent clipboardContent = new javafx.scene.input.ClipboardContent();
-        clipboardContent.putString(content);
-        clipboard.setContent(clipboardContent);
-    } catch (IOException e) {
-        Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αντιγραφή.", e.getMessage(), Alert.AlertType.ERROR));
-    }
-}
-
-// Μέθοδος για άνοιγμα του φακέλου
-private void openFolder(String folderPath) {
-    try {
-        Desktop.getDesktop().open(new File(folderPath));
-    } catch (IOException e) {
-        Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα φακέλου.", e.getMessage(), Alert.AlertType.ERROR));
-    }
-}
-
-private void copyTextToClipboard(String msg) {
-    // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
-    Clipboard clipboard = Clipboard.getSystemClipboard();
-    ClipboardContent content = new ClipboardContent();
-    content.putString(msg);  // Replace with the desired text
-    clipboard.setContent(content);
-    Notifications notifications = Notifications.create()
-            .title("Αντιγραγή στο πρόχειρο")
-            .text(msg)
-            .graphic(null)
-            .hideAfter(Duration.seconds(5))
-            .position(Pos.TOP_RIGHT);
-    notifications.showInformation();
-}
-
-private void setTooltip(Button button, String text) {
-    Tooltip tooltip = new Tooltip();
-    tooltip.setShowDelay(Duration.seconds(0.3));
-    tooltip.setText(text);
-    button.setTooltip(tooltip);
-}
-
-public void clean(MouseEvent event) {
-    if (event.getButton() == MouseButton.PRIMARY) {
-        filterField.setText("");
-        customerTable.getSelectionModel().clearSelection();
-    } else if (event.getButton() == MouseButton.SECONDARY) {
+        // Όνομα και ΑΦΜ του πελάτη
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-        dbHelper.customerUnlock(selectedCustomer.getCode());
-    }
-}
 
-public void refresh(MouseEvent mouseEvent) {
-    refreshTableData();
-}
+        // Κλήση της μεθόδου για δημιουργία ή άνοιγμα του φακέλου
+        folderManager.createOrOpenCustomerFolder(selectedCustomer.getName(), selectedCustomer.getAfm());
+    }
+
+
+    // Μέθοδος για αντιγραφή του περιεχομένου αρχείου στο πρόχειρο
+    private void copyFileContentToClipboard(File file) {
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+            javafx.scene.input.Clipboard clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
+            javafx.scene.input.ClipboardContent clipboardContent = new javafx.scene.input.ClipboardContent();
+            clipboardContent.putString(content);
+            clipboard.setContent(clipboardContent);
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αντιγραφή.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+
+    // Μέθοδος για άνοιγμα του φακέλου
+    private void openFolder(String folderPath) {
+        try {
+            Desktop.getDesktop().open(new File(folderPath));
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα φακέλου.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+
+    private void copyTextToClipboard(String msg) {
+        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(msg);  // Replace with the desired text
+        clipboard.setContent(content);
+        Notifications notifications = Notifications.create()
+                .title("Αντιγραγή στο πρόχειρο")
+                .text(msg)
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT);
+        notifications.showInformation();
+    }
+
+    private void setTooltip(Button button, String text) {
+        Tooltip tooltip = new Tooltip();
+        tooltip.setShowDelay(Duration.seconds(0.3));
+        tooltip.setText(text);
+        button.setTooltip(tooltip);
+    }
+
+    public void clean(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            filterField.setText("");
+            customerTable.getSelectionModel().clearSelection();
+        } else if (event.getButton() == MouseButton.SECONDARY) {
+            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+            dbHelper.customerUnlock(selectedCustomer.getCode());
+        }
+    }
+
+    public void refresh(MouseEvent mouseEvent) {
+        refreshTableData();
+    }
 }

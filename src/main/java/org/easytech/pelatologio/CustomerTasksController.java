@@ -18,13 +18,13 @@ import java.util.Optional;
 
 public class CustomerTasksController {
     @FXML
-    private TableView<Task> tasksTable;
+    private TableView<Tasks> tasksTable;
     @FXML
     private TableColumn titleColumn, descriptionColumn, dueDateColumn, categoryColumn;
     @FXML
     private Button addTaskButton, editTaskButton, deleteTaskButton, completeTaskButton, uncompletedTaskButton;
 
-    private ObservableList<Task> allTasks;
+    private ObservableList<Tasks> allTasks;
 
     Customer customer;
 
@@ -44,14 +44,14 @@ public class CustomerTasksController {
         allTasks = FXCollections.observableArrayList();
         tasksTable.setItems(allTasks);
         // RowFactory για διαφορετικά χρώματα
-        tasksTable.setRowFactory(tv -> new TableRow<Task>() {
+        tasksTable.setRowFactory(tv -> new TableRow<Tasks>() {
             @Override
-            protected void updateItem(Task task, boolean empty) {
-                super.updateItem(task, empty);
-                if (empty || task == null) {
+            protected void updateItem(Tasks tasks, boolean empty) {
+                super.updateItem(tasks, empty);
+                if (empty || tasks == null) {
                     setStyle("");
                 } else {
-                    if (task.getCompleted()) {
+                    if (tasks.getCompleted()) {
                         setStyle("-fx-background-color: #d4edda; -fx-text-fill: #155724;"); // Πράσινο
                     } else {
                         setStyle(""); // Προεπιλογή
@@ -63,10 +63,10 @@ public class CustomerTasksController {
         tasksTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) { // Έλεγχος για δύο κλικ
                 // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
-                Task selectedTask = tasksTable.getSelectionModel().getSelectedItem();
+                Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
 
                 // Έλεγχος αν υπάρχει επιλεγμένο προϊόν
-                if (selectedTask != null) {
+                if (selectedTasks != null) {
                     // Ανοίξτε το dialog box για επεξεργασία
                     try {
                         handleEditTask();
@@ -101,8 +101,8 @@ public class CustomerTasksController {
 
 
     private void toggleComplete(boolean complete) {
-        Task selectedTask = tasksTable.getSelectionModel().getSelectedItem();
-        if (selectedTask == null) {
+        Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
+        if (selectedTasks == null) {
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -115,7 +115,7 @@ public class CustomerTasksController {
         }
 
         DBHelper dbHelper = new DBHelper();
-        if (dbHelper.completeTask(selectedTask.getId(), complete)) {
+        if (dbHelper.completeTask(selectedTasks.getId(), complete)) {
             System.out.println("Task completion status updated.");
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -185,8 +185,8 @@ public class CustomerTasksController {
     @FXML
     private void handleEditTask() throws IOException {
         // Επεξεργασία επιλεγμένης εργασίας
-        Task selectedTask = tasksTable.getSelectionModel().getSelectedItem();
-        if (selectedTask == null) {
+        Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
+        if (selectedTasks == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Προσοχή");
             alert.setContentText("Δεν έχει επιλεγεί εργασία!");
@@ -201,7 +201,7 @@ public class CustomerTasksController {
             AddTaskController controller = loader.getController();
 
             // Ορισμός δεδομένων για επεξεργασία
-            controller.setTaskForEdit(selectedTask);
+            controller.setTaskForEdit(selectedTasks);
             controller.lock();
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
@@ -225,8 +225,8 @@ public class CustomerTasksController {
     @FXML
     private void handleDeleteTask() throws SQLException {
         // Διαγραφή επιλεγμένης εργασίας
-        Task selectedTask = tasksTable.getSelectionModel().getSelectedItem();
-        if (selectedTask == null) {
+        Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
+        if (selectedTasks == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Προσοχή");
             alert.setContentText("Δεν έχει επιλεγεί εργασία!");
@@ -235,11 +235,11 @@ public class CustomerTasksController {
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Επιβεβαίωση");
-        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedTask.getTitle() + ";" );
+        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedTasks.getTitle() + ";" );
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteTask(selectedTask.getId());
+            dbHelper.deleteTask(selectedTasks.getId());
             loadTasks(customer.getCode());
         }
     }

@@ -341,4 +341,29 @@ public class MainMenuController implements Initializable {
         mainTabPane.getTabs().add(newTab);
         mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
     }
+
+    public void offersClick(ActionEvent actionEvent) throws IOException {
+        for (Tab tab : mainTabPane.getTabs()) {
+            if (tab.getText().equals("Προσφορές")) {
+                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                return;
+            }
+        }
+        // Φόρτωση του FXML
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("OffersView.fxml"));
+        Parent offerContent = fxmlLoader.load();
+
+        // Περνάμε το mainTabPane στον CustomersController
+        OffersController offerController = fxmlLoader.getController();
+        offerController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
+
+
+        // Δημιουργία νέου tab
+        Tab newTab = new Tab("Προσφορές");
+        newTab.setContent(offerContent);
+
+        // Προσθήκη του tab στο TabPane
+        mainTabPane.getTabs().add(newTab);
+        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
+    }
 }

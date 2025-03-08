@@ -258,3 +258,29 @@ USE [master]
 GO
 ALTER DATABASE [Pelatologio] SET  READ_WRITE
 GO
+
+
+CREATE TABLE [dbo].[Offers](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[offerDate] [datetime] NOT NULL,
+	[description] [nvarchar](max) NULL,
+	[hours] [nchar](10) NULL,
+	[status] [nchar](20) NULL,
+	[customerId] [int] NULL,
+	[response_date] [datetime] NULL,
+	[last_updated] [datetime] NULL,
+PRIMARY KEY CLUSTERED
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Offers] ADD  DEFAULT (getdate()) FOR [last_updated]
+GO
+
+ALTER TABLE [dbo].[Offers]  WITH CHECK ADD FOREIGN KEY([customerId])
+REFERENCES [dbo].[Customers] ([code])
+ON DELETE SET NULL
+GO
+

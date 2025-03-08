@@ -545,6 +545,40 @@ public class DBHelper {
         }
     }
 
+    public boolean hasSub(int code) {
+        String query = "SELECT COUNT(*) FROM Subscriptions WHERE CustomerID = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, code);
+            pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            closeConnection(conn);
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean hasOffer(int code) {
+        String query = "SELECT COUNT(*) FROM Offers WHERE CustomerID = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, code);
+            pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            closeConnection(conn);
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void customerDelete(int code) {
         String query = "DELETE FROM CustomerAddresses WHERE CustomerID = ?";
         String query2 = "DELETE FROM CustomerLogins WHERE CustomerID = ?";
@@ -757,8 +791,8 @@ public class DBHelper {
     }
 
 
-    public List<Task> getAllTasks() {
-        List<Task> tasks = new ArrayList<>();
+    public List<Tasks> getAllTasks() {
+        List<Tasks> tasks = new ArrayList<>();
         String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, t.is_ergent, t.is_wait, c.name " +
                 "FROM Tasks t " +
                 "LEFT JOIN Customers c ON t.customerId = c.code";
@@ -779,7 +813,7 @@ public class DBHelper {
                 Boolean isErgent = resultSet.getBoolean("is_ergent");
                 Boolean isWait = resultSet.getBoolean("is_wait");
 
-                Task task = new Task(id, title, description, dueDate, isCompleted, category, customerId, customerName, isErgent, isWait);
+                Tasks task = new Tasks(id, title, description, dueDate, isCompleted, category, customerId, customerName, isErgent, isWait);
                 tasks.add(task);
             }
             closeConnection(conn);
@@ -811,29 +845,29 @@ public class DBHelper {
     }
 
 
-    public boolean saveTask(Task task) {
+    public boolean saveTask(Tasks tasks) {
         String query = "INSERT INTO Tasks (title, description, dueDate, is_completed, customerId, category, is_ergent, is_wait) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, task.getTitle());
-            stmt.setString(2, task.getDescription());
-            stmt.setDate(3, Date.valueOf(task.getDueDate()));
-            stmt.setBoolean(4, task.getCompleted());
-            if (task.getCustomerId() != null) {
-                stmt.setInt(5, task.getCustomerId());
+            stmt.setString(1, tasks.getTitle());
+            stmt.setString(2, tasks.getDescription());
+            stmt.setDate(3, Date.valueOf(tasks.getDueDate()));
+            stmt.setBoolean(4, tasks.getCompleted());
+            if (tasks.getCustomerId() != null) {
+                stmt.setInt(5, tasks.getCustomerId());
             } else {
                 stmt.setNull(5, java.sql.Types.INTEGER);
             }
-            stmt.setString(6, task.getCategory());
-            stmt.setBoolean(7, task.getErgent());
-            stmt.setBoolean(8, task.getWait());
+            stmt.setString(6, tasks.getCategory());
+            stmt.setBoolean(7, tasks.getErgent());
+            stmt.setBoolean(8, tasks.getWait());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 closeConnection(conn);
                 return true; // Ενημερώθηκε επιτυχώς
             } else {
                 // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
-                return saveTask(task);
+                return saveTask(tasks);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -841,25 +875,25 @@ public class DBHelper {
         return false;
     }
 
-    public boolean updateTask(Task task) {
+    public boolean updateTask(Tasks tasks) {
         String query = "UPDATE Tasks SET title = ?, description = ?, dueDate = ?, is_Completed = ?, category = ?, customerId = ?, is_ergent = ?, is_wait = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            stmt.setString(1, task.getTitle());
-            stmt.setString(2, task.getDescription());
-            stmt.setDate(3, java.sql.Date.valueOf(task.getDueDate()));
-            stmt.setBoolean(4, task.getCompleted());
-            stmt.setString(5, task.getCategory());
-            if (task.getCustomerId() != null) {
-                stmt.setInt(6, task.getCustomerId());
+            stmt.setString(1, tasks.getTitle());
+            stmt.setString(2, tasks.getDescription());
+            stmt.setDate(3, java.sql.Date.valueOf(tasks.getDueDate()));
+            stmt.setBoolean(4, tasks.getCompleted());
+            stmt.setString(5, tasks.getCategory());
+            if (tasks.getCustomerId() != null) {
+                stmt.setInt(6, tasks.getCustomerId());
             } else {
                 stmt.setNull(6, java.sql.Types.INTEGER);
             }
-            stmt.setBoolean(7, task.getErgent());
-            stmt.setBoolean(8, task.getWait());
-            stmt.setInt(9, task.getId());
+            stmt.setBoolean(7, tasks.getErgent());
+            stmt.setBoolean(8, tasks.getWait());
+            stmt.setInt(9, tasks.getId());
 
             if (stmt.executeUpdate() > 0) {
                 closeConnection(conn);
@@ -1311,8 +1345,8 @@ public class DBHelper {
         return 0;
     }
 
-    public List<Task> getAllCustomerTasks(int customerCode) {
-        List<Task> tasks = new ArrayList<>();
+    public List<Tasks> getAllCustomerTasks(int customerCode) {
+        List<Tasks> tasks = new ArrayList<>();
         String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, t.is_ergent, t.is_wait, c.name " +
                 "FROM Tasks t " +
                 "LEFT JOIN Customers c ON t.customerId = c.code " +
@@ -1334,7 +1368,7 @@ public class DBHelper {
                 boolean isWait = resultSet.getBoolean("is_wait");
                 String customerName = resultSet.getString("name");
 
-                Task task = new Task(id, title, description, dueDate, isCompleted, category, customerId, customerName, isErgent, isWait);
+                Tasks task = new Tasks(id, title, description, dueDate, isCompleted, category, customerId, customerName, isErgent, isWait);
                 tasks.add(task);
             }
             closeConnection(conn);
@@ -1754,5 +1788,215 @@ public class DBHelper {
         }
 
         return subs;
+    }
+
+    public void deleteSub(int id) {
+        String query = "DELETE FROM Subscriptions WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void renewSub(int id, int yearsToAdd) {
+        String updateQuery = "UPDATE Subscriptions SET endDate = DATEADD(YEAR, ?, endDate) WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(updateQuery)) {
+
+            stmt.setInt(1, yearsToAdd);
+            stmt.setInt(2, id); // Το ID του συμβολαίου που ανανεώνεται
+
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Ημερομηνία λήξης ενημερώθηκε επιτυχώς!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Offer> getAllOffers() {
+        List<Offer> offers = new ArrayList<>();
+        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, c.name " +
+                "FROM Offers s " +
+                "LEFT JOIN Customers c ON s.customerId = c.code";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                LocalDate offerDate = resultSet.getDate("offerDate").toLocalDate();
+                String description = resultSet.getString("description").trim();
+                String hours = resultSet.getString("hours").trim();
+                String status = resultSet.getString("status").trim();
+                Integer customerId = resultSet.getObject("customerId", Integer.class);
+                Date responseSqlDate = resultSet.getDate("response_date");
+                LocalDate responseDate = (responseSqlDate != null) ? responseSqlDate.toLocalDate() : null;
+                String customerName = resultSet.getString("name");
+
+                Offer offer = new Offer(id, offerDate, description, hours, status, customerId, responseDate, customerName);
+                offers.add(offer);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return offers;
+    }
+
+
+    public void deleteOffer(int id) {
+        String query = "DELETE FROM Offers WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Boolean saveOffer(Offer newOffer) {
+        String query = "INSERT INTO Offers (offerDate, description, hours, status, customerId) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setDate(1, Date.valueOf(newOffer.getOfferDate()));
+            stmt.setString(2,newOffer.getDescription().trim());
+            stmt.setString(3, newOffer.getHours().trim());
+            stmt.setString(4, newOffer.getStatus().trim());
+            stmt.setInt(5, newOffer.getCustomerId());
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                closeConnection(conn);
+                return true; // Ενημερώθηκε επιτυχώς
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                return saveOffer(newOffer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Boolean updateOffer(Offer offer) {
+        String query = "UPDATE Offers SET offerDate = ?, description = ?, hours = ?, status = ?, customerId = ? WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setDate(1, Date.valueOf(offer.getOfferDate()));
+            stmt.setString(2, offer.getDescription().trim());
+            stmt.setString(3, offer.getHours().trim());
+            stmt.setString(4, offer.getStatus().trim());
+            stmt.setInt(5, offer.getCustomerId());
+            stmt.setInt(6, offer.getId());
+
+            if (stmt.executeUpdate() > 0) {
+                closeConnection(conn);
+                return true; // Ενημερώθηκε επιτυχώς
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Offer> getAllCustomerOffers(int customerCode) {
+        List<Offer> offers = new ArrayList<>();
+        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, c.name " +
+                "FROM Offers s " +
+                "LEFT JOIN Customers c ON s.customerId = c.code " +
+                "WHERE s.customerId = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, customerCode);
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                LocalDate offerDate = resultSet.getDate("offerDate").toLocalDate();
+                String description = resultSet.getString("description").trim();
+                String hours = resultSet.getString("hours").trim();
+                String status = resultSet.getString("status").trim();
+                Integer customerId = resultSet.getObject("customerId", Integer.class);
+                Date responseSqlDate = resultSet.getDate("response_date");
+                LocalDate responseDate = (responseSqlDate != null) ? responseSqlDate.toLocalDate() : null;
+                String customerName = resultSet.getString("name").trim();
+
+                Offer offer = new Offer(id, offerDate, description, hours, status, customerId, responseDate, customerName);
+                offers.add(offer);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return offers;
+    }
+
+    public List<Offer> getUpdatedOffers(LocalDateTime lastCheck) {
+        List<Offer> updatedOffers = new ArrayList<>();
+        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, c.name " +
+                "FROM Offers s " +
+                "LEFT JOIN Customers c ON s.customerId = c.code WHERE last_updated > ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setTimestamp(1, Timestamp.valueOf(lastCheck)); // Ορίζουμε το timestamp
+            ResultSet resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                LocalDate offerDate = resultSet.getDate("offerDate").toLocalDate();
+                String description = resultSet.getString("description");
+                String hours = resultSet.getString("hours");
+                String status = resultSet.getString("status");
+                Integer customerId = resultSet.getObject("customerId", Integer.class);
+                LocalDate response_date = resultSet.getDate("response_date") != null ?
+                        resultSet.getDate("response_date").toLocalDate() : null;
+                String customerName = resultSet.getString("name");
+
+                updatedOffers.add(new Offer(id, offerDate, description, hours, status, customerId, response_date, customerName));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return updatedOffers;
+    }
+
+    public void updateOfferStatus(int offerId, String newStatus) {
+        String query = "UPDATE Offers SET status = ?, last_updated = GETDATE() WHERE id = ? AND status <> ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, newStatus);
+            stmt.setInt(2, offerId);
+            stmt.setString(3, newStatus); // Δεν αλλάζουμε αν το status είναι ίδιο
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Η προσφορά #" + offerId + " ενημερώθηκε σε " + newStatus);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -14,6 +14,9 @@ import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class CustomerSubsController {
@@ -22,7 +25,7 @@ public class CustomerSubsController {
     @FXML
     private TableColumn idColumn, titleColumn, endDateColumn, categoryColumn, priceColumn;
     @FXML
-    private Button addTaskButton, editTaskButton, deleteTaskButton, completeTaskButton, uncompletedTaskButton;
+    private Button addTaskButton, editTaskButton, deleteTaskButton, renewButton;
 
     private ObservableList<Subscription> allSubs;
 
@@ -30,11 +33,10 @@ public class CustomerSubsController {
 
     @FXML
     public void initialize() {
-        setTooltip(addTaskButton, "Προσθήκη νέας εργασίας");
-        setTooltip(editTaskButton, "Επεξεργασία εργασίας");
-        setTooltip(deleteTaskButton, "Διαγραφή εργασίας");
-        setTooltip(completeTaskButton, "Σημείωση εργασίας ως ολοκληρωμένη");
-        setTooltip(uncompletedTaskButton,"Σημείωση εργασίας ως σε επεξεργασία");
+        setTooltip(addTaskButton, "Προσθήκη νέου συμβολαίου");
+        setTooltip(editTaskButton, "Επεξεργασία συμβολαίου");
+        setTooltip(deleteTaskButton, "Διαγραφή συμβολαίου");
+        setTooltip(renewButton, "Ανανέωση συμβολαίου");
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -55,7 +57,7 @@ public class CustomerSubsController {
                 if (selectedSub != null) {
                     // Ανοίξτε το dialog box για επεξεργασία
                     try {
-                        handleEditSub(selectedSub);
+                        handleEditSub();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -63,29 +65,50 @@ public class CustomerSubsController {
             }
         });
 
+        subsTable.setRowFactory(tv -> new TableRow<Subscription>() {
+            @Override
+            protected void updateItem(Subscription sub, boolean empty) {
+                super.updateItem(sub, empty);
+                if (empty || sub == null) {
+                    setStyle("");
+                } else {
+                    LocalDate today = LocalDate.now();
+                    LocalDate tenDaysLater = today.plusDays(10);
+
+                    if (sub.getEndDate().isBefore(today)) {
+                        setStyle("-fx-background-color: #edd4d4; -fx-text-fill: #155724;"); // Κόκκινο για ληγμένες συνδρομές
+                    } else if (!sub.getEndDate().isBefore(today) && !sub.getEndDate().isAfter(tenDaysLater)) {
+                        setStyle("-fx-background-color: #fff3cd; -fx-text-fill: #856404;"); // Κίτρινο για συνδρομές που λήγουν σύντομα
+                    } else {
+                        setStyle(""); // Κανονικό χρώμα
+                    }
+                }
+            }
+        });
+
         // Κουμπιά
-        addTaskButton.setOnAction(e -> handleAddTask());
+        addTaskButton.setOnAction(e -> handleAddSub());
         editTaskButton.setOnAction(e -> {
             try {
-                handleEditTask();
+                handleEditSub();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
         deleteTaskButton.setOnAction(e -> {
             try {
-                handleDeleteTask();
+                handleDeleteSub();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        completeTaskButton.setOnAction(e -> toggleComplete(true));
-        uncompletedTaskButton.setOnAction(e -> toggleComplete(false));
-
+        renewButton.setOnAction(e -> {
+            handleRenewSub();
+        });
     }
 
 
-    private void loadTasks(int customerCode) {
+    private void loadSubs(int customerCode) {
         allSubs.clear();
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
@@ -94,14 +117,14 @@ public class CustomerSubsController {
 
 
     @FXML
-    private void handleAddTask() {
+    private void handleAddSub() {
         try {
             // Φόρτωση του FXML για προσθήκη ραντεβού
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(loader.load());
-            dialog.setTitle("Προσθήκη Εργασίας");
-            AddTaskController controller = loader.getController();
+            dialog.setTitle("Προσθήκη Συμβολαίου");
+            AddSubController controller = loader.getController();
             controller.setCustomerId(customer.getCode());
             controller.setCustomerName(customer.getName());
             controller.lock();
@@ -111,7 +134,7 @@ public class CustomerSubsController {
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.addEventFilter(ActionEvent.ACTION, event -> {
                 // Εκτελούμε το handleSaveAppointment
-                boolean success = controller.handleSaveTask();
+                boolean success = controller.handleSaveSub();
 
                 if (!success) {
                     // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
@@ -120,39 +143,39 @@ public class CustomerSubsController {
             });
 
             dialog.showAndWait();
-            loadTasks(customer.getCode());
+            loadSubs(customer.getCode());
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
     @FXML
-    private void handleEditTask() throws IOException {
+    private void handleEditSub() throws IOException {
         // Επεξεργασία επιλεγμένης εργασίας
-        Task selectedTask = tasksTable.getSelectionModel().getSelectedItem();
-        if (selectedTask == null) {
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί εργασία!");
+            alert.setContentText("Δεν έχει επιλεγεί συμβόλαιο!");
             Optional<ButtonType> result = alert.showAndWait();
             return;
         }
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(loader.load());
-            dialog.setTitle("Επεξεργασία Εργασίας");
-            AddTaskController controller = loader.getController();
+            dialog.setTitle("Επεξεργασία Συμβολαίου");
+            AddSubController controller = loader.getController();
 
             // Ορισμός δεδομένων για επεξεργασία
-            controller.setTaskForEdit(selectedTask);
+            controller.setSubForEdit(selectedSub);
             controller.lock();
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.addEventFilter(ActionEvent.ACTION, event -> {
                 // Εκτελούμε το handleSaveAppointment
-                boolean success = controller.handleSaveTask();
+                boolean success = controller.handleSaveSub();
 
                 if (!success) {
                     // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
@@ -160,38 +183,65 @@ public class CustomerSubsController {
                 }
             });
             dialog.showAndWait();
-            loadTasks(customer.getCode());
+            loadSubs(customer.getCode());
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
     @FXML
-    private void handleDeleteTask() throws SQLException {
+    private void handleDeleteSub() throws SQLException {
         // Διαγραφή επιλεγμένης εργασίας
-        Task selectedTask = tasksTable.getSelectionModel().getSelectedItem();
-        if (selectedTask == null) {
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί εργασία!");
+            alert.setContentText("Δεν έχει επιλεγεί συμβόλαιο!");
             Optional<ButtonType> result = alert.showAndWait();
             return;
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Επιβεβαίωση");
-        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedTask.getTitle() + ";" );
+        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedSub.getTitle() + ";" );
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteTask(selectedTask.getId());
-            loadTasks(customer.getCode());
+            dbHelper.deleteSub(selectedSub.getId());
+            loadSubs(customer.getCode());
         }
+    }
+
+    private void handleRenewSub () {
+        // Επεξεργασία επιλεγμένης εργασίας
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Προσοχή");
+            alert.setContentText("Δεν έχει επιλεγεί συμβόλαιο!");
+            Optional<ButtonType> result = alert.showAndWait();
+            return;
+        }
+        // Δημιουργία διαλόγου με επιλογές
+        List<String> choices = Arrays.asList("+1 χρόνο", "+2 χρόνια", "+3 χρόνια");
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("+1 χρόνο", choices);
+        dialog.setTitle("Ανανέωση Συμβολαίου");
+        dialog.setHeaderText("Επιλέξτε διάρκεια ανανέωσης");
+        dialog.setContentText("Διάρκεια:");
+
+        // Αν ο χρήστης επιλέξει κάτι
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(selected -> {
+            int yearsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", ""));
+            DBHelper dbHelper = new DBHelper();
+            dbHelper.renewSub(selectedSub.getId(), yearsToAdd);
+            loadSubs(customer.getCode());
+        });
     }
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
         //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
-        loadTasks(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
+        loadSubs(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
     }
 
 
@@ -200,13 +250,5 @@ public class CustomerSubsController {
         tooltip.setShowDelay(Duration.seconds(0.3));
         tooltip.setText(text);
         button.setTooltip(tooltip);
-    }
-
-    public void toggleComplete(ActionEvent event) {
-        toggleComplete(true);
-    }
-
-    public void toggleRecall(ActionEvent event) {
-        toggleComplete(false);
     }
 }

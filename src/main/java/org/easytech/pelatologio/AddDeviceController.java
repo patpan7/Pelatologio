@@ -284,7 +284,7 @@ public class AddDeviceController {
                 }
             }
 
-            String description = descriptionField.getText();
+            String description = "TID: " + descriptionField.getText();
             String rate = rateField.getText();
             // Επιλογή πελάτη
             Object value = customerComboBox.getValue();

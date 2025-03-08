@@ -25,22 +25,20 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-public class AddSubController {
+public class AddOfferController {
 
     @FXML
-    private TextField titleField, priceField;
+    private TextField hoursField, statusField;
     @FXML
-    private TextArea noteField;
+    private TextArea descriptionField;
     @FXML
     private DatePicker dueDatePicker;
     @FXML
     private ComboBox<Customer> customerComboBox;
     @FXML
-    private ComboBox<SubsCategory> categoryComboBox;
-    @FXML
     private JFXButton btnCustomer;
 
-    private Subscription sub;
+    private Offer offer;
     private int customerId;
     private String customerName;
     private Customer selectedCustomer;
@@ -59,26 +57,16 @@ public class AddSubController {
         }
     }
 
-    public void setSubTitle(String title) {
-        titleField.setText(title);
-    }
-
-    public void setSubForEdit(Subscription sub) {
-        this.sub = sub;
-        titleField.setText(sub.getTitle());
-        noteField.setText(sub.getNote());
-        dueDatePicker.setValue(sub.getEndDate());
-        priceField.setText(sub.getPrice());
-        for (SubsCategory subsCategory : categoryComboBox.getItems()) {
-            if (subsCategory.getName().equals(sub.getCategory())) {
-                categoryComboBox.setValue(subsCategory);
-                break;
-            }
-        }
+    public void setOfferForEdit(Offer offer) {
+        this.offer = offer;
+        dueDatePicker.setValue(offer.getOfferDate());
+        descriptionField.setText(offer.getDescription().trim());
+        hoursField.setText(offer.getHours().trim());
+        statusField.setText(offer.getStatus().trim());
         // Αν υπάρχει πελάτης, προ-συμπλήρωσε την επιλογή
-        if (sub.getCustomerId() != null) {
+        if (offer.getCustomerId() != null) {
             for (Customer customer : customerComboBox.getItems()) {
-                if (customer.getCode() == sub.getCustomerId()) {
+                if (customer.getCode() == offer.getCustomerId()) {
                     customerComboBox.setValue(customer);
                     break;
                 }
@@ -111,24 +99,9 @@ public class AddSubController {
             }
         });
 
-        List<SubsCategory> categories = dbHelper.getAllSubsCategory();
-        categoryComboBox.getItems().addAll(categories);
-        categoryComboBox.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(SubsCategory subsCategory) {
-                return subsCategory != null ? subsCategory.getName() : "";
-            }
-
-            @Override
-            public SubsCategory fromString(String string) {
-                return categoryComboBox.getItems().stream()
-                        .filter(subsCategory -> subsCategory.getName().equals(string))
-                        .findFirst()
-                        .orElse(null);
-            }
-        });
         setupComboBoxFilter(customerComboBox, filteredCustomers);
         dueDatePicker.setValue(LocalDate.now());
+        statusField.setText("Αναμονή");
     }
 
     private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
@@ -162,9 +135,9 @@ public class AddSubController {
         });
     }
 
-    public boolean handleSaveSub() {
+    public boolean handleSaveOffer() {
         try {
-            if (dueDatePicker.getValue() == null || titleField.getText() == null) {
+            if (dueDatePicker.getValue() == null || descriptionField.getText() == null) {
                 Platform.runLater(() -> {
                     Notifications notifications = Notifications.create()
                             .title("Προσοχή")
@@ -176,28 +149,27 @@ public class AddSubController {
                 return false;
             }
 
-            String title = titleField.getText();
-            String note = noteField.getText();
-            String price = priceField.getText();
-            LocalDate date = dueDatePicker.getValue();
-            Customer selectedCustomer = customerComboBox.getValue();
+            LocalDate offerDate = dueDatePicker.getValue();
+            String description = descriptionField.getText();
+            String hours = hoursField.getText();
+            String status = statusField.getText();
 
-            Integer category = categoryComboBox.getValue().getId();
+            Customer selectedCustomer = customerComboBox.getValue();
 
             DBHelper dbHelper = new DBHelper();
 
-            if (sub == null) {
+            if (offer == null) {
                  //Δημιουργία νέας εργασίας
-                Subscription newSub = new Subscription(0, title, date, selectedCustomer.getCode(),category, price, note);
-                dbHelper.saveSub(newSub);
+                Offer newOffer = new Offer(0, offerDate, description,hours,status, selectedCustomer.getCode(), null, null);
+                dbHelper.saveOffer(newOffer);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
-                sub.setTitle(title);
-                sub.setNote(note);
-                sub.setEndDate(date);
-                sub.setCategoryId(category);
-                sub.setCustomerId(selectedCustomer.getCode());
-                dbHelper.updateSub(sub);
+                offer.setOfferDate(offerDate);
+                offer.setDescription(description);
+                offer.setHours(hours);
+                offer.setStatus(status);
+                offer.setCustomerId(selectedCustomer.getCode());
+                dbHelper.updateOffer(offer);
             }
 
             Platform.runLater(() -> {
@@ -221,7 +193,7 @@ public class AddSubController {
     private void handleMouseClick(MouseEvent event) {
         // Έλεγχος για διπλό κλικ
         if (event.getClickCount() == 2) {
-            openNotesDialog(noteField.getText());
+            openNotesDialog(descriptionField.getText());
         }
     }
 
@@ -246,7 +218,7 @@ public class AddSubController {
         Button btnOk = new Button("OK");
         btnOk.setPrefWidth(100);
         btnOk.setOnAction(event -> {
-            noteField.setText(expandedTextArea.getText()); // Ενημέρωση του αρχικού TextArea
+            descriptionField.setText(expandedTextArea.getText()); // Ενημέρωση του αρχικού TextArea
             dialogStage.close();
         });
 
@@ -261,7 +233,7 @@ public class AddSubController {
     public void showCustomer(ActionEvent evt) {
         DBHelper dbHelper = new DBHelper();
 
-        Customer selectedCustomer = dbHelper.getSelectedCustomer(sub.getCustomerId());
+        Customer selectedCustomer = dbHelper.getSelectedCustomer(offer.getCustomerId());
         if (selectedCustomer.getCode() == 0) {
             return;
         }
@@ -301,9 +273,5 @@ public class AddSubController {
     public void lock() {
         customerComboBox.setDisable(true);
         btnCustomer.setDisable(true);
-    }
-
-    public void setNote(String username) {
-        noteField.setText(username);
     }
 }

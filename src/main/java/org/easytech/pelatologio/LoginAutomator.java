@@ -67,7 +67,10 @@ public class LoginAutomator {
 
     public void openAndFillLoginFormErgani(String url, String username, String password, By usernameLocator, By passwordLocator, By submitButtonLocator) throws InterruptedException {
         driver.get(url);
-
+        // Περιμένουμε να φορτώσει πλήρως η σελίδα πριν την ανανεώσουμε
+        Thread.sleep(2000); // Δώσε λίγο χρόνο για το αρχικό load
+        driver.navigate().refresh(); // Ανανέωση της σελίδας
+        Thread.sleep(5000); // Δώσε λίγο χρόνο μετά την ανανέωση
         // Εντοπισμός πεδίων username και password και εισαγωγή τιμών
         WebElement usernameField = driver.findElement(usernameLocator);
         WebElement passwordField = driver.findElement(passwordLocator);
