@@ -12,6 +12,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
@@ -351,4 +353,115 @@ public class SubsController implements Initializable {
         button.setTooltip(tooltip);
     }
 
+    public void handleSendMail(ActionEvent event) {
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
+            Notifications notifications = Notifications.create()
+                    .title("Προσοχή")
+                    .text("Παρακαλώ επιλέξτε ένα συμβόλαιο για να στείλετε το e-mail.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showError();
+            return;
+        }
+        DBHelper dbHelper = new DBHelper();
+        Customer customer = dbHelper.getSelectedCustomer(selectedSub.getCustomerId());
+        String msg = "Αγαπητέ/ή "+selectedSub.getCustomerName()+",\n" +
+                "<br>Σας υπενθυμίζουμε ότι η συνδρομή σας στο "+selectedSub.getTitle().trim()+" λήγει στις "+selectedSub.getEndDate()+"." +
+                "<br>Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν." +
+                "<br>Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού ["+selectedSub.getPrice().trim()+" +€ φπα] στους παρακάτω τραπεζικούς λογαριασμούς." +
+                "<br>Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας." +
+                "<br>Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας." +
+                "<br>" +
+                "<br><b>Τραπεζικοί Λογαριασμοί:</b>" +
+                "<br>" +
+                "<br><b>ΕΘΝΙΚΗ ΤΡΑΠΕΖΑ</b>" +
+                "<br><b>Λογαριασμός:</b> 29700119679" +
+                "<br><b>Λογαριασμός (IBAN):</b> GR6201102970000029700119679" +
+                "<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ" +
+                "<br><b>EUROBANK</b>" +
+                "<br><b>Λογαριασμός:</b> 0026.0451.27.0200083481" +
+                "<br><b>Λογαριασμός (IBAN):</b> GR7902604510000270200083481" +
+                "<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ" +
+                "<br><b>myPOS</b>" +
+                "<br><b>ΑΡ.ΠΟΡΤΟΦΟΛΙΟΥ:</b> 40005794314" +
+                "<br><b>Όνομα δικαιούχου:</b> GKOUMAS DIMITRIOS " +
+                "<br><b>IBAN:</b> IE27MPOS99039012868261 " +
+                "<br><b>ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ:</b> 12868261" +
+                "<br><b>myPOS Ltd</b>" +
+                "<br><b>BIC: MPOSIE2D</b>";
+        sendEmail("Υπενθύμιση λήξης συνδρομής "+selectedSub.getTitle(),msg,customer.getEmail());
+    }
+
+    public void handleCopy(ActionEvent event) {
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
+            Notifications notifications = Notifications.create()
+                    .title("Προσοχή")
+                    .text("Παρακαλώ επιλέξτε ένα συμβόλαιο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showError();
+            return;
+        }
+        String msg = "Αγαπητέ/ή "+selectedSub.getCustomerName()+",\n" +
+                "Σας υπενθυμίζουμε ότι η συνδρομή σας στο "+selectedSub.getTitle().trim()+" λήγει στις "+selectedSub.getEndDate()+".\n" +
+                "Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν.\n" +
+                "Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού ["+selectedSub.getPrice().trim()+" +€ φπα] στους παρακάτω τραπεζικούς λογαριασμούς.\n" +
+                "Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας.\n" +
+                "Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας.\n" +
+                "Με εκτίμηση,\n" +
+                "\n" +
+                "EasyTech\n" +
+                "Γκούμας Δημήτρης \n" +
+                "Δενδρινού & Γρηγορίου Ε’ 10\n" +
+                "85100 Ρόδος\n" +
+                "Τηλ. 22410 36750 \n" +
+                "Κιν.6944570089\n" +
+                "\n" +
+                "Τραπεζικοί Λογαριασμοί:\n" +
+                "\n" +
+                "ΕΘΝΙΚΗ ΤΡΑΠΕΖΑ\n" +
+                "Λογαριασμός: 29700119679\n" +
+                "Λογαριασμός (IBAN): GR6201102970000029700119679\n" +
+                "Με Δικαιούχους: ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ\n" +
+                "EUROBANK\n" +
+                "Λογαριασμός: 0026.0451.27.0200083481\n" +
+                "Λογαριασμός (IBAN): GR7902604510000270200083481\n" +
+                "Με Δικαιούχους: ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ\n" +
+                "myPOS\n" +
+                "ΑΡ.ΠΟΡΤΟΦΟΛΙΟΥ: 40005794314\n" +
+                "Όνομα δικαιούχου: GKOUMAS DIMITRIOS \n" +
+                "IBAN: IE27MPOS99039012868261 \n" +
+                "ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ: 12868261\n" +
+                "myPOS Ltd \n" +
+                "BIC: MPOSIE2D\n";
+        copyTextToClipboard(msg);
+    }
+
+    // Μέθοδος αποστολής email
+    private void sendEmail(String subject, String msg, String to) {
+        // Κώδικας για αποστολή email
+        EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
+        emailSender.sendEmail(to, subject, msg);
+    }
+
+    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
+    private void copyTextToClipboard(String msg) {
+        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(msg);  // Replace with the desired text
+        clipboard.setContent(content);
+        //showAlert("Copied to Clipboard", msg);
+        Notifications notifications = Notifications.create()
+                .title("Αντιγραφή στο πρόχειρο")
+                .text(msg)
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT);
+        notifications.showInformation();
+    }
 }

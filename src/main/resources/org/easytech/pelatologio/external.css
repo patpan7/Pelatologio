@@ -7,7 +7,7 @@
     -fx-text: #333333; /* Σκούρο γκρι για κείμενο */
     -fx-hover: #3399ff; /* Χρώμα hover */
     -fx-border: #005599; /* Χρώμα περιγράμματος */
-    -fx-selected: #0077cc; /* Χρώμα επιλογής */
+    -fx-selected: #2899eb; /* Χρώμα επιλογής 0077cc*/
 
      -fx-font-family: Arial;
 }
@@ -46,7 +46,7 @@
 }
 
 .table-row-cell:selected .text{
-    -fx-fill: white;
+    -fx-fill: black;
     -fx-font-weight: bold;
 }
 

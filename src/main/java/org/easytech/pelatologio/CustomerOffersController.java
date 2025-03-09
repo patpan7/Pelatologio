@@ -257,7 +257,7 @@ public class CustomerOffersController {
         }
         String msg ="Επωνυμία: "+selectedOffer.getCustomerName() +
                 "\nΣτον παρακάτω σύνδεσμο θα βρείτε την προσφορά σας." +
-                "\nhttp://dgou.dynns.com:8090/offers/offer.php?id="+selectedOffer.getId()+
+                "\nhttp://dgou.dynns.com:8090/portal/offer.php?id="+selectedOffer.getId()+
                 "\n\nΕυχαριστώ πολύ";
         copyTextToClipboard(msg);
     }

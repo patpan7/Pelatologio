@@ -40,77 +40,61 @@ if ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Προσφορά #<?php echo $offerId; ?></title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
-        h2 { text-align: center; }
-        .info { margin-bottom: 10px; }
-        .buttons { text-align: center; margin-top: 20px; }
-        button { padding: 10px 20px; font-size: 16px; margin: 5px; cursor: pointer; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
-    </style>
+
+    <title>Προσφορά</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <h2>Προσφορά #<?php echo $offerId; ?></h2>
-        <div class="info"><strong>Ημερομηνία:</strong> <?php echo $offerDate; ?></div>
-        <div class="info"><strong>Περιγραφή:</strong> <?php echo $description; ?></div>
-        <div class="info"><strong>Χρεώσιμες Ώρες:</strong> <?php echo $hours; ?></div>
-        <div class="info"><strong>Κατάσταση:</strong> <?php echo $status; ?></div>
-        <div class="info"><strong>Απάντηση Πελάτη:</strong> <?php echo $responseDate; ?></div>
 
-        <h3>Στοιχεία Πελάτη</h3>
-        <div class="info"><strong>Όνομα:</strong> <?php echo $customerName; ?></div>
-        <div class="info"><strong>Τηλέφωνο:</strong> <?php echo $customerPhone; ?></div>
-        <div class="info"><strong>Email:</strong> <?php echo $customerEmail; ?></div>
-        <div class="info"><strong>Διεύθυνση:</strong> <?php echo $customerAddress; ?></div>
-
+        <!-- Κάρτα Προσφοράς -->
+        <div class="card">
+            <div class="card-header">Στοιχεία Προσφοράς</div>
+            <div class="card-body">
+				<p><strong>Ημερομηνία:</strong> <?php echo $offerDate; ?></p>
+           <p><strong>Περιγραφή:</strong> <?php echo $description; ?></p>
+            <p><strong>Χρεώσιμες Ώρες:</strong> <?php echo $hours; ?></p>
+            <p><strong>Κατάσταση:</strong> <?php echo $status; ?></p>
+            <p><strong>Απάντηση Πελάτη:</strong> <?php echo $responseDate; ?></p>
+        </div>
+</div>
+        <!-- Κάρτα Στοιχείων Πελάτη -->
+        <div class="card">
+            <div class="card-header">Στοιχεία Πελάτη</div>
+			<div class="card-body">
+            <p><strong>Όνομα:</strong> <?php echo $customerName; ?></p>
+            <p><strong>Τηλέφωνο:</strong> <?php echo $customerPhone; ?></p>
+            <p><strong>Email:</strong> <?php echo $customerEmail; ?></p>
+            <p><strong>Διεύθυνση:</strong> <?php echo $customerAddress; ?></p>
+        </div>
+</div>
         <div class="buttons">
             <!-- Εμφάνιση κουμπιών μόνο αν η κατάσταση είναι "Αναμονή" -->
             <?php if ($status == 'Αναμονή'): ?>
                 <form action="update_offer.php" method="post">
                     <input type="hidden" name="offerId" value="<?php echo $offerId; ?>">
-                    <button type="submit" name="action" value="accept" style="background-color: green; color: white;">Αποδοχή</button>
-                    <button type="submit" name="action" value="reject" style="background-color: red; color: white;">Απόρριψη</button>
+                    <button type="submit" name="action" value="accept">Αποδοχή</button>
+                    <button type="submit" name="action" value="reject">Απόρριψη</button>
                 </form>
             <?php else: ?>
-                <button disabled style="background-color: #ccc; cursor: not-allowed;">Η προσφορά δεν μπορεί να τροποποιηθεί</button>
+                <button disabled>Η προσφορά δεν μπορεί να τροποποιηθεί</button>
             <?php endif; ?>
         </div>
-		
+
         <!-- Τιμοκατάλογος Υπηρεσιών -->
         <div class="pricing">
             <h3>ΒΑΣΙΚΟΣ ΤΙΜΟΚΑΤΑΛΟΓΟΣ ΥΠΗΡΕΣΙΩΝ</h3>
             <ul>
-                <strong>Τηλεφωνική υποστήριξη:</strong> 
-				<li>Επιπλέων τηλεφωνική υποστήριξη με χρέωση 50€/ώρα.</li>
-				<li>Ελάχιστη χρέωση 30 λεπτά.</li>
-                <strong>Online υποστήριξη:</strong> 
-				<li>Χρέωση 50€/ώρα.</li>
-				<li>Ελάχιστη χρέωση 30 λεπτά.</li>
-				<li>Μετέπειτα χρέωση ανά 30 λεπτά.</li>
-                <strong>Επίσκεψη τεχνικού:</strong>
-				<li>Χρέωση 65€/ώρα.</li>
-				<li>Ελάχιστη χρέωση 1 ώρα.</li>
-				<li>Μετέπειτα χρέωση ανά 30 λεπτά.</li>
-				<li>Η χρεώσιμη ώρα νοείται από την ώρα εκκίνησης του τεχνικού από την έδρα μας και επιστροφή του στην έδρα μας.</li>
-                <strong>Αλλαγές Τιμοκαταλόγου:</strong>
-				<li>Κατόπιν ραντεβού σε εργάσιμες μέρες και ώρες.</li>
-				<li>Χρέωση 50€/ώρα για online ραντεβού ή 65€/ώρα για επίσκεψη τεχνικού (ισχύουν οι όροι επίσκεψης τεχνικού).</li>
-				<li>Ελάχιστη χρέωση 1 ώρα.</li>
-				<li>Μετέπειτα χρέωση ανά 30 λεπτά.</li>
-                <strong>Χρεώσεις υπηρεσιών εκτός ωραρίου:</strong>
-				<li>Καθημερινά από τις 17:00 έως 00:00</li>
-				<li>Σάββατο από τις 14:00 έως 00:00</li>
-				<li>Κυριακή από τις 10:00 έως 00:00</li>
-				<li>Οι υφιστάμενες χρεώσεις ώρας παραμένουν ίδιες.</li>
-				<li>Ελάχιστη χρέωση 1 ώρα για Online υποστήριξη ή Επίσκεψη τεχνικού.</li>
-				<li>Μετέπειτα χρέωση ανά 1 ώρα.</li>
+                <li><strong>Τηλεφωνική υποστήριξη:</strong> Επιπλέον τηλεφωνική υποστήριξη με χρέωση 50€/ώρα. Ελάχιστη χρέωση 30 λεπτά.</li>
+                <li><strong>Online υποστήριξη:</strong> Χρέωση 50€/ώρα. Ελάχιστη χρέωση 30 λεπτά. Μετέπειτα χρέωση ανά 30 λεπτά.</li>
+                <li><strong>Επίσκεψη τεχνικού:</strong> Χρέωση 65€/ώρα. Ελάχιστη χρέωση 1 ώρα. Μετέπειτα χρέωση ανά 30 λεπτά.</li>
+                <li><strong>Αλλαγές Τιμοκαταλόγου:</strong> Κατόπιν ραντεβού σε εργάσιμες μέρες και ώρες. Χρέωση 50€/ώρα για online ραντεβού ή 65€/ώρα για επίσκεψη τεχνικού.</li>
+                <li><strong>Χρεώσεις εκτός ωραρίου:</strong> Καθημερινά από τις 17:00 έως 00:00. Σάββατο από τις 14:00 έως 00:00. Κυριακή από τις 10:00 έως 00:00.</li>
             </ul>
         </div>
-    </div>
-</body>
-</html>
     </div>
 </body>
 </html>
