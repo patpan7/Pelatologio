@@ -1,10 +1,10 @@
 <?php
-$serverName = "localhost"; // Π.χ. "localhost\SQLEXPRESS"
+$serverName = "localhost\sql2017"; // Π.χ. "localhost\SQLEXPRESS"
 $connectionOptions = array(
     "Database" => "Pelatologio",
     "Uid" => "sa",
     "PWD" => "admin",
-	"CharacterSet" => "UTF-8"
+    "CharacterSet" => "UTF-8"
 );
 
 // Σύνδεση με MSSQL

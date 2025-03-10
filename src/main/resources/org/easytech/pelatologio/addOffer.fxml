@@ -9,7 +9,7 @@
 <DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddOfferController">
     <content>
         <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-            <VBox alignment="TOP_CENTER">
+        <VBox alignment="TOP_CENTER">
                 <Label styleClass="header-label" text="Διαχείριση Προσφοράς" />
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
@@ -61,6 +61,15 @@
                         </HBox.margin>
                     </JFXButton>
                 </HBox>
+            <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="110.0">
+               <children>
+                  <Label prefWidth="290.0" styleClass="normal-label" text="Αρχείο:" />
+                  <Pane fx:id="attachmentField" onDragDropped="#onDragDrop" onMouseDragOver="#onDragOver" prefHeight="100" prefWidth="325.0" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+               </VBox.margin>
+            </HBox>
             </VBox>
         </ScrollPane>
     </content>

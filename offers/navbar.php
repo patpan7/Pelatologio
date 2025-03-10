@@ -7,16 +7,20 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : '' ?>" href="dashboard.php">Αρχική</a>
+                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : '' ?>"
+                        href="dashboard.php">Αρχική</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'offers.php' ? 'active' : '' ?>" href="offers.php">Προσφορές</a>
+                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'offers.php' ? 'active' : '' ?>"
+                        href="offers.php">Προσφορές</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'contracts.php' ? 'active' : '' ?>" href="contracts.php">Συμβόλαια</a>
+                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'contracts.php' ? 'active' : '' ?>"
+                        href="contracts.php">Συμβόλαια</a>
                 </li>
-				<li class="nav-item">
-                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'bank_accounts.php' ? 'active' : '' ?>" href="bank_accounts.php">Τραπεζικοί Λογαριασμοί</a>
+                <li class="nav-item">
+                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'bank_accounts.php' ? 'active' : '' ?>"
+                        href="bank_accounts.php">Τραπεζικοί Λογαριασμοί</a>
                 </li>
             </ul>
             <a href="logout.php" class="btn btn-light ms-auto">Αποσύνδεση</a>

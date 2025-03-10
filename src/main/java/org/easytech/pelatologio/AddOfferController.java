@@ -11,8 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -20,7 +19,9 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -273,5 +274,13 @@ public class AddOfferController {
     public void lock() {
         customerComboBox.setDisable(true);
         btnCustomer.setDisable(true);
+    }
+
+    public void onDragDrop(DragEvent event) {
+        System.out.println("drop");
+    }
+
+    public void onDragOver(DragEvent event) {
+        System.out.println("over");
     }
 }

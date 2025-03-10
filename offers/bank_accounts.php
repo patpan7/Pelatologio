@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="el">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Τραπεζικοί Λογαριασμοί</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 
 </head>
+
 <body>
     <?php include 'navbar.php'; ?>
 
     <div class="container mt-5">
         <h2 class="text-center mb-4"><i class="fas fa-university"></i> Τραπεζικοί Λογαριασμοί</h2>
 
-        <div class="row">
+        <div class="row mt-4">
             <!-- Εθνική Τράπεζα -->
-        <div class="col-md-4 d-flex mb-4">
-            <div class="card bank-card shadow-lg h-100 w-100">
-                <div class="card-header bg-success text-white bank-header">
+            <div class="col-md-4 d-flex mb-4">
+                <div class="card bank-card shadow-lg h-100 w-100">
+                    <div class="card-header text-white bank-header" style="background-color: #007180;">
                         <img src="images/ethniki.png" alt="Εθνική Τράπεζα">
                         <h5 class="mb-0">Εθνική Τράπεζα</h5>
                     </div>
@@ -32,9 +35,10 @@
             </div>
 
             <!-- Eurobank -->
-        <div class="col-md-4 d-flex mb-4">
-            <div class="card bank-card shadow-lg h-100 w-100">
-                    <div class="card-header text-white bank-header" style="background: linear-gradient(to right, blue, red);">
+            <div class="col-md-4 d-flex mb-4">
+                <div class="card bank-card shadow-lg h-100 w-100">
+                    <div class="card-header text-white bank-header"
+                        style="background: linear-gradient(to right, blue, red);">
                         <img src="images/eurobank.png" alt="Eurobank">
                         <h5 class="mb-0">Eurobank</h5>
                     </div>
@@ -48,8 +52,8 @@
             </div>
 
             <!-- myPOS -->
-        <div class="col-md-4 d-flex mb-4">
-            <div class="card bank-card shadow-lg h-100 w-100">
+            <div class="col-md-4 d-flex mb-4">
+                <div class="card bank-card shadow-lg h-100 w-100">
                     <div class="card-header bg-primary text-white bank-header">
                         <img src="images/mypos.png" alt="myPOS">
                         <h5 class="mb-0">myPOS</h5>
@@ -70,4 +74,5 @@
         </div>
     </div>
 </body>
+
 </html>
