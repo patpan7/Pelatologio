@@ -256,9 +256,11 @@ public class CustomerOffersController {
             return;
         }
         String msg ="Επωνυμία: "+selectedOffer.getCustomerName() +
-                "\nΣτον παρακάτω σύνδεσμο θα βρείτε την προσφορά σας." +
+                "\nΣας αποστείλαμε μια νέα προσφορά"+
+                "\nΜπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου:" +
                 "\nhttp://dgou.dynns.com:8090/portal/offer.php?id="+selectedOffer.getId()+
-                "\n\nΕυχαριστώ πολύ";
+                "\n\nΓια οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας." +
+                "\nΕυχαριστώ πολύ";
         copyTextToClipboard(msg);
     }
 

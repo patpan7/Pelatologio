@@ -135,6 +135,11 @@ public class AddTaskController {
         });
 
         dueDatePicker.setValue(LocalDate.now());
+        CheckBox[] checkBoxes = {
+                is_ergent,
+                is_wait
+        };
+        configureSingleSelectionCheckBoxes(checkBoxes);
     }
 
     private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
@@ -310,5 +315,19 @@ public class AddTaskController {
     public void lock() {
         customerComboBox.setDisable(true);
         btnCustomer.setDisable(true);
+    }
+
+    private void configureSingleSelectionCheckBoxes(CheckBox[] checkBoxes) {
+        for (CheckBox checkBox : checkBoxes) {
+            checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    for (CheckBox otherCheckBox : checkBoxes) {
+                        if (otherCheckBox != checkBox) {
+                            otherCheckBox.setSelected(false);
+                        }
+                    }
+                }
+            });
+        }
     }
 }

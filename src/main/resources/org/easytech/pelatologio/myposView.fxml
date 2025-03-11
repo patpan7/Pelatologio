@@ -30,6 +30,8 @@
                         <SeparatorMenuItem/>
                         <MenuItem mnemonicParsing="false" onAction="#handleLabel" styleClass="menu-item"
                                   text="Ετικέτα"/>
+                        <MenuItem mnemonicParsing="false" onAction="#handleCopy" styleClass="menu-item"
+                                  text="Αντιγραφή Login"/>
                         <SeparatorMenuItem/>
                         <MenuItem mnemonicParsing="false" onAction="#handleAddTask"
                                   styleClass="menu-item" text="Προσθήκη εργασίας"/>

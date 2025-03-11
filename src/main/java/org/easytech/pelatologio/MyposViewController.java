@@ -207,6 +207,31 @@ public class MyposViewController {
         LabelPrintHelper.printLoginLabel(selectedLogin,customer,"Στοιχεία myPOS");
     }
 
+
+    public void handleCopy(ActionEvent event) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
+            return;
+        }
+        String msg ="Στοιχεία εισόδου" + selectedLogin.getTag() +
+                "\nΕπωνυμία: "+customer.getName()+
+                "\nΑΦΜ: "+customer.getAfm()+
+                "\nEmail: "+selectedLogin.getUsername()+
+                "\nΚωδικός: "+selectedLogin.getPassword()+
+                "\nΚινητό: "+customer.getMobile()+
+                "\n";
+        copyTextToClipboard(msg);
+    }
+
     public void handleAddTask(ActionEvent evt) {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
@@ -342,6 +367,23 @@ public class MyposViewController {
                 return;
             }
         }
+    }
+
+    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
+    private void copyTextToClipboard(String msg) {
+        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(msg);  // Replace with the desired text
+        clipboard.setContent(content);
+        //showAlert("Copied to Clipboard", msg);
+        Notifications notifications = Notifications.create()
+                .title("Αντιγραφή στο πρόχειρο")
+                .text(msg)
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT);
+        notifications.showInformation();
     }
 
     private void setTooltip(Button button, String text) {

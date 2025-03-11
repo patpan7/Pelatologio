@@ -209,6 +209,30 @@ public class EmblemViewController {
         LabelPrintHelper.printLoginLabel(selectedLogin,customer,"Στοιχεία "+selectedLogin.getTag());
     }
 
+    public void handleCopy(ActionEvent event) {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
+            return;
+        }
+        String msg ="Στοιχεία εισόδου" + selectedLogin.getTag() +
+                "\nΕπωνυμία: "+customer.getName()+
+                "\nΑΦΜ: "+customer.getAfm()+
+                "\nEmail: "+selectedLogin.getUsername()+
+                "\nΚωδικός: "+selectedLogin.getPassword()+
+                "\nΚινητό: "+customer.getMobile()+
+                "\n";
+        copyTextToClipboard(msg);
+    }
+
     public void handleAddTask(ActionEvent evt) {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {

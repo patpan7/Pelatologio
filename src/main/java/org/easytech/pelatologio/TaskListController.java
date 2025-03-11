@@ -58,6 +58,9 @@ public class TaskListController implements Initializable {
         dueDateColumn.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+
+        showAllCheckbox.setSelected(false);
+        showPendingCheckbox.setSelected(true);
         // Αρχικό γέμισμα του πίνακα
         loadTasks();
 
@@ -257,6 +260,8 @@ public class TaskListController implements Initializable {
         }
         if (showWaitCheckBox.isSelected()) {
             filteredTasks.removeIf(task -> !task.getWait());
+        } else {
+            filteredTasks.removeIf(tasks -> tasks.getWait());
         }
 
         // Φιλτράρισμα βάσει κατηγορίας

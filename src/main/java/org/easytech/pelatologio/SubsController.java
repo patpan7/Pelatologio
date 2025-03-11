@@ -22,7 +22,6 @@ import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -41,7 +40,7 @@ public class SubsController implements Initializable {
     @FXML
     private DatePicker dateFrom, dateTo;
     @FXML
-    private ComboBox <SubsCategory> categoryFilterComboBox;
+    private ComboBox<SubsCategory> categoryFilterComboBox;
     @FXML
     private Button addCategoryButton, addSubButton, editSubButton, deleteSubButton, renewButton;
 
@@ -52,6 +51,7 @@ public class SubsController implements Initializable {
     public void setMainTabPane(TabPane mainTabPane) {
         this.mainTabPane = mainTabPane;
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> stackPane.requestFocus());
@@ -145,7 +145,7 @@ public class SubsController implements Initializable {
 
         DBHelper dbHelper = new DBHelper();
         List<SubsCategory> categories = dbHelper.getAllSubsCategory();
-        categoryFilterComboBox.getItems().add(new SubsCategory(0,"Όλες"));
+        categoryFilterComboBox.getItems().add(new SubsCategory(0, "Όλες"));
         categoryFilterComboBox.getItems().addAll(categories);
         categoryFilterComboBox.getSelectionModel().selectFirst();
         categoryFilterComboBox.setConverter(new StringConverter<>() {
@@ -190,10 +190,10 @@ public class SubsController implements Initializable {
 
     }
 
-    private void loadSubs(LocalDate  from, LocalDate  to) {
+    private void loadSubs(LocalDate from, LocalDate to) {
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
-        allSubs.setAll(dbHelper.getAllSubs(from,to));
+        allSubs.setAll(dbHelper.getAllSubs(from, to));
         updateTaskTable();
     }
 
@@ -210,32 +210,32 @@ public class SubsController implements Initializable {
     }
 
     private void handleAddSub() {
-            try {
-                // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Προσθήκη Εργασίας");
-                AddSubController controller = loader.getController();
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        try {
+            // Φόρτωση του FXML για προσθήκη ραντεβού
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Προσθήκη Εργασίας");
+            AddSubController controller = loader.getController();
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
-                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                    // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveSub();
+            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                // Εκτελούμε το handleSaveAppointment
+                boolean success = controller.handleSaveSub();
 
-                    if (!success) {
-                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                        event.consume();
-                    }
-                });
+                if (!success) {
+                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                    event.consume();
+                }
+            });
 
-                dialog.showAndWait();
-                loadSubs(dateFrom.getValue(), dateTo.getValue());
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
-            }
+            dialog.showAndWait();
+            loadSubs(dateFrom.getValue(), dateTo.getValue());
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+        }
     }
 
     private void handleEditSub() throws IOException {
@@ -288,7 +288,7 @@ public class SubsController implements Initializable {
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Επιβεβαίωση");
-        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε το συμβόλαιο " + selectedSub.getTitle() + ";" );
+        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε το συμβόλαιο " + selectedSub.getTitle() + ";");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
@@ -297,7 +297,7 @@ public class SubsController implements Initializable {
         }
     }
 
-    private void handleRenewSub () {
+    private void handleRenewSub() {
         // Επεξεργασία επιλεγμένης εργασίας
         Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
         if (selectedSub == null) {
@@ -367,10 +367,10 @@ public class SubsController implements Initializable {
         }
         DBHelper dbHelper = new DBHelper();
         Customer customer = dbHelper.getSelectedCustomer(selectedSub.getCustomerId());
-        String msg = "Αγαπητέ/ή "+selectedSub.getCustomerName()+",\n" +
-                "<br>Σας υπενθυμίζουμε ότι η συνδρομή σας στο "+selectedSub.getTitle().trim()+" λήγει στις "+selectedSub.getEndDate()+"." +
+        String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" +
+                "<br>Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate() + "." +
                 "<br>Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν." +
-                "<br>Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού ["+selectedSub.getPrice().trim()+" +€ φπα] στους παρακάτω τραπεζικούς λογαριασμούς." +
+                "<br>Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f",Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς." +
                 "<br>Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας." +
                 "<br>Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας." +
                 "<br>" +
@@ -391,7 +391,7 @@ public class SubsController implements Initializable {
                 "<br><b>ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ:</b> 12868261" +
                 "<br><b>myPOS Ltd</b>" +
                 "<br><b>BIC: MPOSIE2D</b>";
-        sendEmail("Υπενθύμιση λήξης συνδρομής "+selectedSub.getTitle(),msg,customer.getEmail());
+        sendEmail("Υπενθύμιση λήξης συνδρομής " + selectedSub.getTitle(), msg, customer.getEmail());
     }
 
     public void handleCopy(ActionEvent event) {
@@ -406,10 +406,10 @@ public class SubsController implements Initializable {
             notifications.showError();
             return;
         }
-        String msg = "Αγαπητέ/ή "+selectedSub.getCustomerName()+",\n" +
-                "Σας υπενθυμίζουμε ότι η συνδρομή σας στο "+selectedSub.getTitle().trim()+" λήγει στις "+selectedSub.getEndDate()+".\n" +
+        String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" +
+                "Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate() + ".\n" +
                 "Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν.\n" +
-                "Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού ["+selectedSub.getPrice().trim()+" +€ φπα] στους παρακάτω τραπεζικούς λογαριασμούς.\n" +
+                "Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f",Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς.\n" +
                 "Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας.\n" +
                 "Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας.\n" +
                 "Με εκτίμηση,\n" +

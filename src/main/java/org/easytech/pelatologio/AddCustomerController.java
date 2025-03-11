@@ -38,7 +38,7 @@ public class AddCustomerController {
     @FXML
     private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, devicesContainer, tasksContainer, subsContainer, offersContainer;
     @FXML
-    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabDevices, tabTasks, tabAccountant, tabSubs, tabOffers;
+    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabDevices, tabTasks, tabAccountant, tabSubs, tabOffers, tabNotes;
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone;
     @FXML
@@ -752,6 +752,9 @@ public class AddCustomerController {
         }
         if(dbHelper.hasOffer(customer.getCode())){
             tabOffers.getStyleClass().add("tabHas");
+        }
+        if (customer.getAccId() != 0){
+            tabAccountant.getStyleClass().add("tabHas");
         }
     }
 

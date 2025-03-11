@@ -317,7 +317,7 @@
                 <AnchorPane fx:id="offersContainer" styleClass="pane"/>
             </ScrollPane>
         </Tab>
-        <Tab closable="false" text="Σημειώσεις">
+        <Tab fx:id="tabNotes" closable="false" text="Σημειώσεις">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
                 <VBox VBox.vgrow="ALWAYS">
                     <VBox.margin>
