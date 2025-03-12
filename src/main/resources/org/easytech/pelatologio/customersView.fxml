@@ -59,11 +59,25 @@
                                 <Insets left="5.0" />
                             </HBox.margin>
                         </JFXButton>
-                  <Separator prefWidth="200.0" HBox.hgrow="ALWAYS">
+                  <Separator HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </HBox.margin>
                   </Separator>
+                  <JFXButton fx:id="btnBalance" buttonType="RAISED" layoutX="759.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#showBalance" styleClass="click-button" text="">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@icons/euro.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+                        <Separator HBox.hgrow="ALWAYS">
+                            <HBox.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </HBox.margin>
+                        </Separator>
                         <JFXButton fx:id="btnRefresh" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#refresh" styleClass="click-button" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">

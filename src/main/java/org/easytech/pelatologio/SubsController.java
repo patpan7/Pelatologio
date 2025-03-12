@@ -20,15 +20,16 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class SubsController implements Initializable {
     @FXML
@@ -36,7 +37,7 @@ public class SubsController implements Initializable {
     @FXML
     private TableView<Subscription> subsTable;
     @FXML
-    private TableColumn idColumn, titleColumn, endDateColumn, customerColumn, categoryColumn, priceColumn;
+    private TableColumn idColumn, titleColumn, endDateColumn, customerColumn, categoryColumn, priceColumn, sendedColumn;
     @FXML
     private DatePicker dateFrom, dateTo;
     @FXML
@@ -67,6 +68,7 @@ public class SubsController implements Initializable {
         endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+        sendedColumn.setCellValueFactory(new PropertyValueFactory<>("sended"));
 
         // Υπολογισμός της πρώτης και τελευταίας ημέρας του τρέχοντος μήνα
         LocalDate today = LocalDate.now();
@@ -368,7 +370,7 @@ public class SubsController implements Initializable {
         DBHelper dbHelper = new DBHelper();
         Customer customer = dbHelper.getSelectedCustomer(selectedSub.getCustomerId());
         String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" +
-                "<br>Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate() + "." +
+                "<br>Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "." +
                 "<br>Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν." +
                 "<br>Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f",Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς." +
                 "<br>Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας." +
@@ -391,7 +393,30 @@ public class SubsController implements Initializable {
                 "<br><b>ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ:</b> 12868261" +
                 "<br><b>myPOS Ltd</b>" +
                 "<br><b>BIC: MPOSIE2D</b>";
-        sendEmail("Υπενθύμιση λήξης συνδρομής " + selectedSub.getTitle(), msg, customer.getEmail());
+        try {
+            String email = customer.getEmail();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Αποστολή Email");
+            EmailDialogController controller = loader.getController();
+            controller.setCustomer(customer);
+            controller.setEmail(email);
+            controller.setSubject("Υπενθύμιση λήξης συνδρομής " + selectedSub.getTitle());
+            controller.setBody(msg);
+            controller.setCopy(false);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.show();
+            dialog.setOnCloseRequest(evt -> {
+                if (controller.isSended) {
+                    // Εκτελούμε το handleSendEmail
+                    dbHelper.updateSubSent(selectedSub.getId());
+                    loadSubs(dateFrom.getValue(), dateTo.getValue());
+                }
+            });
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+        }
     }
 
     public void handleCopy(ActionEvent event) {
@@ -439,13 +464,6 @@ public class SubsController implements Initializable {
                 "myPOS Ltd \n" +
                 "BIC: MPOSIE2D\n";
         copyTextToClipboard(msg);
-    }
-
-    // Μέθοδος αποστολής email
-    private void sendEmail(String subject, String msg, String to) {
-        // Κώδικας για αποστολή email
-        EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
-        emailSender.sendEmail(to, subject, msg);
     }
 
     // Μέθοδος αντιγραφής κειμένου στο πρόχειρο

@@ -10,24 +10,34 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AddOfferController {
 
+    @FXML
+    private ListView<File> attachmentList;
     @FXML
     private TextField hoursField, statusField;
     @FXML
@@ -37,17 +47,18 @@ public class AddOfferController {
     @FXML
     private ComboBox<Customer> customerComboBox;
     @FXML
-    private JFXButton btnCustomer;
+    private JFXButton btnCustomer, btnSelectFile;
 
     private Offer offer;
-    private int customerId;
-    private String customerName;
     private Customer selectedCustomer;
     private FilteredList<Customer> filteredCustomers;
+    private final List<File> attachments = new ArrayList<>();
+    private Stage dialogStage;
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+    public void setCustomer(Customer customer) {
+        this.selectedCustomer = customer;
     }
+
 
     public void setCustomerName(String custName) {
         for (Customer customer : customerComboBox.getItems()) {
@@ -69,9 +80,16 @@ public class AddOfferController {
             for (Customer customer : customerComboBox.getItems()) {
                 if (customer.getCode() == offer.getCustomerId()) {
                     customerComboBox.setValue(customer);
+                    this.selectedCustomer = customer;
                     break;
                 }
             }
+        }
+        String[] offerPaths = offer.getPaths().split(";");
+        for (String path : offerPaths) {
+            File file = new File(path);
+            attachmentList.getItems().add(file);
+            attachments.add(file);
         }
     }
 
@@ -103,6 +121,59 @@ public class AddOfferController {
         setupComboBoxFilter(customerComboBox, filteredCustomers);
         dueDatePicker.setValue(LocalDate.now());
         statusField.setText("Αναμονή");
+
+        // Δημιουργία του context menu για διαγραφή
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem deleteItem = new MenuItem("Διαγραφή");
+        MenuItem openItem = new MenuItem("Άνοιγμα");
+        contextMenu.getItems().add(deleteItem);
+        contextMenu.getItems().add(openItem);
+
+        // Λειτουργία διαγραφής από το context menu
+        deleteItem.setOnAction(event -> {
+            File selectedFile = attachmentList.getSelectionModel().getSelectedItem();
+            if (selectedFile != null) {
+                attachments.remove(selectedFile);
+                attachmentList.getItems().remove(selectedFile);
+                if (selectedFile.exists()) {
+                    selectedFile.delete(); // Διαγραφή του αρχείου
+                }
+            }
+        });
+
+        // Λειτουργία διαγραφής από το context menu
+        openItem.setOnAction(event -> {
+            File selectedFile = attachmentList.getSelectionModel().getSelectedItem();
+            if (selectedFile != null) {
+                if (selectedFile.exists()) {
+                    try {
+                        Desktop.getDesktop().open(selectedFile);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
+
+        // Εφαρμογή του context menu στην λίστα
+        attachmentList.setContextMenu(contextMenu);
+        attachmentList.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) { // Διπλό κλικ
+                File selectedFile = attachmentList.getSelectionModel().getSelectedItem();
+                if (selectedFile != null) {
+                    System.out.println(selectedFile.getAbsolutePath());
+                    if (selectedFile.exists()) {
+                        try {
+
+                            Desktop.getDesktop().open(selectedFile);
+                        } catch (IOException e) {
+                            System.out.println(e.getMessage());
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
@@ -146,7 +217,8 @@ public class AddOfferController {
                             .graphic(null)
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT);
-                    notifications.showError();});
+                    notifications.showError();
+                });
                 return false;
             }
 
@@ -156,12 +228,14 @@ public class AddOfferController {
             String status = statusField.getText();
 
             Customer selectedCustomer = customerComboBox.getValue();
-
+            String paths = attachments.stream()
+                    .map(File::getAbsolutePath) // Παίρνουμε τα paths
+                    .collect(Collectors.joining(";")); // Ενώνουμε με ";"
             DBHelper dbHelper = new DBHelper();
 
             if (offer == null) {
-                 //Δημιουργία νέας εργασίας
-                Offer newOffer = new Offer(0, offerDate, description,hours,status, selectedCustomer.getCode(), null, null);
+                //Δημιουργία νέας εργασίας
+                Offer newOffer = new Offer(0, offerDate, description, hours, status, selectedCustomer.getCode(), null, null, paths, "Όχι");
                 dbHelper.saveOffer(newOffer);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
@@ -170,6 +244,7 @@ public class AddOfferController {
                 offer.setHours(hours);
                 offer.setStatus(status);
                 offer.setCustomerId(selectedCustomer.getCode());
+                offer.setPaths(paths);
                 dbHelper.updateOffer(offer);
             }
 
@@ -180,7 +255,8 @@ public class AddOfferController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();});
+                notifications.showConfirm();
+            });
             return true;
 
         } catch (Exception e) {
@@ -271,16 +347,25 @@ public class AddOfferController {
         }
     }
 
+
+    public void selectFile(ActionEvent event) {
+        CustomerFolderManager folderManager = new CustomerFolderManager();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Επιλογή αρχείων");
+        fileChooser.setInitialDirectory(folderManager.createCustomerOfferFolder(selectedCustomer.getName(), selectedCustomer.getAfm()));
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(dialogStage);
+        if (selectedFiles != null) {
+            attachments.addAll(selectedFiles);
+            attachmentList.getItems().addAll(selectedFiles);
+        }
+    }
+
     public void lock() {
         customerComboBox.setDisable(true);
         btnCustomer.setDisable(true);
     }
 
-    public void onDragDrop(DragEvent event) {
-        System.out.println("drop");
-    }
-
-    public void onDragOver(DragEvent event) {
-        System.out.println("over");
+    public void lockFile() {
+        btnSelectFile.setDisable(true);
     }
 }

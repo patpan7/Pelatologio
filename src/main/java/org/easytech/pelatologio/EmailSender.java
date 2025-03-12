@@ -129,15 +129,38 @@ public class EmailSender {
         imagePart.setDisposition(MimeBodyPart.INLINE);
 
         // 3. Σύνθεση του email
-        Multipart multipart = new MimeMultipart();
+        //Multipart multipart = new MimeMultipart();
+        Multipart multipart = new MimeMultipart("mixed"); // mixed -> Για attachments
+
         multipart.addBodyPart(messageBodyPart);
         multipart.addBodyPart(imagePart);
 
-        // Προσθήκη συνημμένων
-        if (attachments != null) {
+        // 4. Προσθήκη όλων των συνημμένων αρχείων
+        if (attachments != null && !attachments.isEmpty()) {
             for (File file : attachments) {
                 MimeBodyPart attachmentPart = new MimeBodyPart();
                 attachmentPart.attachFile(file);
+
+                // Ορισμός του σωστού τύπου MIME ανάλογα με την κατάληξη του αρχείου
+                if (file.getName().endsWith(".txt")) {
+                    attachmentPart.setHeader("Content-Type", "text/plain; charset=UTF-8");
+                } else if (file.getName().endsWith(".pdf")) {
+                    attachmentPart.setHeader("Content-Type", "application/pdf");
+                } else if (file.getName().endsWith(".docx")) {
+                    attachmentPart.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+                } else if (file.getName().endsWith(".doc")) {
+                    attachmentPart.setHeader("Content-Type", "application/msword");
+                } else if (file.getName().endsWith(".xlsx")) {
+                    attachmentPart.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                } else if (file.getName().endsWith(".xls")) {
+                    attachmentPart.setHeader("Content-Type", "application/vnd.ms-excel");
+                } else if (file.getName().endsWith(".pptx")) {
+                    attachmentPart.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
+                } else if (file.getName().endsWith(".ppt")) {
+                    attachmentPart.setHeader("Content-Type", "application/vnd.ms-powerpoint");
+                }
+
+                attachmentPart.setDisposition(MimeBodyPart.ATTACHMENT); // <-- Εξασφαλίζει ότι είναι attachment
                 multipart.addBodyPart(attachmentPart);
             }
         }

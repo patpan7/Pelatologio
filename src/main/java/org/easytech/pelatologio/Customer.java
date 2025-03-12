@@ -22,6 +22,8 @@ public class Customer {
     String accName1;
     String accEmail1;
     String recommendation;
+    String balance;
+    String balanceReason;
 
     public Customer() {
 
@@ -201,6 +203,22 @@ public class Customer {
 
     public void setRecommendation(String recommendation) {
         this.recommendation = recommendation;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
+
+    public void setBalance(String balance) {
+        this.balance = balance;
+    }
+
+    public String getBalanceReason() {
+        return balanceReason;
+    }
+
+    public void setBalanceReason(String balanceReason) {
+        this.balanceReason = balanceReason;
     }
 
     @Override

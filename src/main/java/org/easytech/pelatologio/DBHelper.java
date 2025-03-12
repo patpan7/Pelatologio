@@ -3,6 +3,7 @@ package org.easytech.pelatologio;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +69,9 @@ public class DBHelper {
                 data.setAccName1(resultSet.getString("accName1"));
                 data.setAccEmail1(resultSet.getString("accEmail1"));
                 data.setRecommendation(resultSet.getString("recommendation"));
+                data.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance") : "");
+                data.setBalanceReason(resultSet.getString("balanceReason"));
+
                 dataList.add(data);
             }
             closeConnection(conn);
@@ -96,10 +100,10 @@ public class DBHelper {
 
     public int insertCustomer(String name, String title, String job, String afm, String phone1,
                               String phone2, String mobile, String address,
-                              String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, String recommendation) {
+                              String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, String recommendation, String balance, String balanceReason) {
         // Prepare the SQL query for inserting a new customer
-        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation, balance, balanceReason) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int newCustomerId = -1; // Default value for error handling
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -131,6 +135,8 @@ public class DBHelper {
             pstmt.setString(17, accName1);
             pstmt.setString(18, accEmail1);
             pstmt.setString(19, recommendation);
+            pstmt.setString(20, balance);
+            pstmt.setString(21, balanceReason);
 
 
             int rowsInserted = pstmt.executeUpdate();
@@ -152,9 +158,9 @@ public class DBHelper {
         return newCustomerId; // Επιστρέφει το CustomerID ή -1 αν υπήρξε σφάλμα
     }
 
-    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, String recommendation) {
+    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, String recommendation, String balance, String balanceReason) {
         String sql = "UPDATE customers SET name = ?, title = ?, job = ?,afm = ?, phone1 = ?, " +
-                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, email2 = ?,manager = ?, managerPhone = ?, notes = ?, accId = ?, accName1 = ?, accEmail1 = ?, recommendation = ? WHERE code = ?";
+                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, email2 = ?,manager = ?, managerPhone = ?, notes = ?, accId = ?, accName1 = ?, accEmail1 = ?, recommendation = ?, balance = ?, balanceReason = ? WHERE code = ?";
 
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -182,7 +188,9 @@ public class DBHelper {
             pstmt.setString(17, accName1);
             pstmt.setString(18, accEmail1);
             pstmt.setString(19, recommendation);
-            pstmt.setInt(20, code);
+            pstmt.setString(20, balance);
+            pstmt.setString(21, balanceReason);
+            pstmt.setInt(22, code);
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -781,6 +789,8 @@ public class DBHelper {
                 data.setManager(resultSet.getString("manager"));
                 data.setManagerPhone(resultSet.getString("managerPhone"));
                 data.setNotes(resultSet.getString("notes"));
+                data.setBalance(resultSet.getString("balance"));
+                data.setBalanceReason(resultSet.getString("balanceReason"));
             }
             closeConnection(conn);
             return data;
@@ -875,7 +885,7 @@ public class DBHelper {
         return false;
     }
 
-    public boolean updateTask(Tasks tasks) {
+    public void updateTask(Tasks tasks) {
         String query = "UPDATE Tasks SET title = ?, description = ?, dueDate = ?, is_Completed = ?, category = ?, customerId = ?, is_ergent = ?, is_wait = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
@@ -897,14 +907,11 @@ public class DBHelper {
 
             if (stmt.executeUpdate() > 0) {
                 closeConnection(conn);
-                return true; // Ενημερώθηκε επιτυχώς
             } else {
                 // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
-                return false;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
@@ -1511,6 +1518,8 @@ public class DBHelper {
                 data.setAccName1(resultSet.getString("accName1"));
                 data.setAccEmail1(resultSet.getString("accEmail1"));
                 data.setRecommendation(resultSet.getString("recommendation"));
+                data.setBalance(resultSet.getString("balance"));
+                data.setBalanceReason(resultSet.getString("balanceReason"));
                 customers.add(data);
             }
             closeConnection(conn);
@@ -1558,7 +1567,7 @@ public class DBHelper {
 
     public List<Subscription> getAllSubs(LocalDate fromDate, LocalDate toDate) {
         List<Subscription> subs = new ArrayList<>();
-        String query = "SELECT s.id, s.title, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, c.name  " +
+        String query = "SELECT s.id, s.title, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name  " +
                 "FROM Subscriptions s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code " +
                 "LEFT JOIN SubsCategories i ON s.subCatId = i.id " +
@@ -1581,8 +1590,9 @@ public class DBHelper {
                 String note = resultSet.getString("note");
                 String price = resultSet.getString("price");
                 String customerName = resultSet.getString("name");
+                String sended = resultSet.getString("sended");
 
-                Subscription sub = new Subscription(id, title, endDate,customerId, categoryId, price, note);
+                Subscription sub = new Subscription(id, title, endDate, customerId, categoryId, price, note, sended);
                 sub.setCustomerName(customerName);
                 sub.setCategory(category);
                 subs.add(sub);
@@ -1641,7 +1651,7 @@ public class DBHelper {
     }
 
     public boolean saveSub(Subscription newSub) {
-        String query = "INSERT INTO Subscriptions (title, endDate, note, subCatId, customerId, price) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Subscriptions (title, endDate, note, subCatId, customerId, price, sended) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, newSub.getTitle());
@@ -1650,6 +1660,7 @@ public class DBHelper {
             stmt.setInt(4, newSub.getCategoryId());
             stmt.setInt(5, newSub.getCustomerId());
             stmt.setString(6, newSub.getPrice());
+            stmt.setString(7, newSub.getSended());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 closeConnection(conn);
@@ -1754,7 +1765,7 @@ public class DBHelper {
 
     public List<Subscription> getAllCustomerSubs(int customerCode) {
         List<Subscription> subs = new ArrayList<>();
-        String query = "SELECT s.id, s.title, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, c.name  " +
+        String query = "SELECT s.id, s.title, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name  " +
                 "FROM Subscriptions s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code " +
                 "LEFT JOIN SubsCategories i ON s.subCatId = i.id " +
@@ -1776,8 +1787,9 @@ public class DBHelper {
                 String note = resultSet.getString("note");
                 String price = resultSet.getString("price");
                 String customerName = resultSet.getString("name");
+                String sended = resultSet.getString("sended");
 
-                Subscription sub = new Subscription(id, title, endDate,customerId, categoryId, price, note);
+                Subscription sub = new Subscription(id, title, endDate, customerId, categoryId, price, note, sended);
                 sub.setCustomerName(customerName);
                 sub.setCategory(category);
                 subs.add(sub);
@@ -1823,7 +1835,7 @@ public class DBHelper {
 
     public List<Offer> getAllOffers() {
         List<Offer> offers = new ArrayList<>();
-        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, c.name " +
+        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, s.offer_file_paths, s.sended, c.name " +
                 "FROM Offers s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code";
 
@@ -1841,8 +1853,10 @@ public class DBHelper {
                 Date responseSqlDate = resultSet.getDate("response_date");
                 LocalDate responseDate = (responseSqlDate != null) ? responseSqlDate.toLocalDate() : null;
                 String customerName = resultSet.getString("name");
+                String paths = resultSet.getString("offer_file_paths");
+                String sended = resultSet.getString("sended");
 
-                Offer offer = new Offer(id, offerDate, description, hours, status, customerId, responseDate, customerName);
+                Offer offer = new Offer(id, offerDate, description, hours, status, customerId, responseDate, customerName, paths, sended);
                 offers.add(offer);
             }
             closeConnection(conn);
@@ -1868,14 +1882,16 @@ public class DBHelper {
     }
 
     public Boolean saveOffer(Offer newOffer) {
-        String query = "INSERT INTO Offers (offerDate, description, hours, status, customerId) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Offers (offerDate, description, hours, status, customerId, offer_file_paths, sended) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setDate(1, Date.valueOf(newOffer.getOfferDate()));
-            stmt.setString(2,newOffer.getDescription().trim());
+            stmt.setString(2, newOffer.getDescription().trim());
             stmt.setString(3, newOffer.getHours().trim());
             stmt.setString(4, newOffer.getStatus().trim());
             stmt.setInt(5, newOffer.getCustomerId());
+            stmt.setString(6, newOffer.getPaths());
+            stmt.setString(7, newOffer.getSended());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 closeConnection(conn);
@@ -1891,7 +1907,7 @@ public class DBHelper {
     }
 
     public Boolean updateOffer(Offer offer) {
-        String query = "UPDATE Offers SET offerDate = ?, description = ?, hours = ?, status = ?, customerId = ? WHERE id = ?";
+        String query = "UPDATE Offers SET offerDate = ?, description = ?, hours = ?, status = ?, customerId = ?, offer_file_paths = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -1901,7 +1917,8 @@ public class DBHelper {
             stmt.setString(3, offer.getHours().trim());
             stmt.setString(4, offer.getStatus().trim());
             stmt.setInt(5, offer.getCustomerId());
-            stmt.setInt(6, offer.getId());
+            stmt.setString(6, offer.getPaths());
+            stmt.setInt(7, offer.getId());
 
             if (stmt.executeUpdate() > 0) {
                 closeConnection(conn);
@@ -1918,7 +1935,7 @@ public class DBHelper {
 
     public List<Offer> getAllCustomerOffers(int customerCode) {
         List<Offer> offers = new ArrayList<>();
-        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, c.name " +
+        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, s.offer_file_paths, s.sended, c.name " +
                 "FROM Offers s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code " +
                 "WHERE s.customerId = ?";
@@ -1938,8 +1955,10 @@ public class DBHelper {
                 Date responseSqlDate = resultSet.getDate("response_date");
                 LocalDate responseDate = (responseSqlDate != null) ? responseSqlDate.toLocalDate() : null;
                 String customerName = resultSet.getString("name").trim();
+                String paths = resultSet.getString("offer_file_paths");
+                String sended = resultSet.getString("sended");
 
-                Offer offer = new Offer(id, offerDate, description, hours, status, customerId, responseDate, customerName);
+                Offer offer = new Offer(id, offerDate, description, hours, status, customerId, responseDate, customerName, paths, sended);
                 offers.add(offer);
             }
             closeConnection(conn);
@@ -1952,7 +1971,7 @@ public class DBHelper {
 
     public List<Offer> getUpdatedOffers(LocalDateTime lastCheck) {
         List<Offer> updatedOffers = new ArrayList<>();
-        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, c.name " +
+        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, s.offer_file_paths, s.sended, c.name " +
                 "FROM Offers s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code WHERE last_updated > ?";
 
@@ -1972,8 +1991,10 @@ public class DBHelper {
                 LocalDate response_date = resultSet.getDate("response_date") != null ?
                         resultSet.getDate("response_date").toLocalDate() : null;
                 String customerName = resultSet.getString("name");
+                String paths = resultSet.getString("offer_file_paths");
+                String sended = resultSet.getString("sended");
 
-                updatedOffers.add(new Offer(id, offerDate, description, hours, status, customerId, response_date, customerName));
+                updatedOffers.add(new Offer(id, offerDate, description, hours, status, customerId, response_date, customerName, paths, sended));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1995,6 +2016,40 @@ public class DBHelper {
             if (affectedRows > 0) {
                 System.out.println("Η προσφορά #" + offerId + " ενημερώθηκε σε " + newStatus);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateOfferSent(int id) {
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        String formattedDate = "Ναί " + myDateObj.format(myFormatObj);
+        String query = "UPDATE Offers SET sended = '" + formattedDate + "' WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateSubSent(int id) {
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        String formattedDate = "Ναί " + myDateObj.format(myFormatObj);
+        String query = "UPDATE Subscriptions SET sended = '" + formattedDate + "' WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

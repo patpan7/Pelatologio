@@ -7,6 +7,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.Clipboard;
@@ -14,10 +17,11 @@ import javafx.scene.input.ClipboardContent;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,9 +29,9 @@ public class CustomerOffersController {
     @FXML
     private TableView<Offer> offersTable;
     @FXML
-    private TableColumn idColumn, descriptionColumn, offerDateColumn, statusColumn, response_dateColumn;
+    private TableColumn idColumn, descriptionColumn, offerDateColumn, statusColumn, response_dateColumn, sendedColumn;
     @FXML
-    private Button addOfferButton, editOfferButton, deleteOfferButton;
+    private Button createOfferButton, addOfferButton, editOfferButton, deleteOfferButton;
 
     private ObservableList<Offer> allOffers;
 
@@ -35,9 +39,10 @@ public class CustomerOffersController {
 
     @FXML
     public void initialize() {
-        setTooltip(addOfferButton, "Προσθήκη νέου συμβολαίου");
-        setTooltip(editOfferButton, "Επεξεργασία συμβολαίου");
-        setTooltip(deleteOfferButton, "Διαγραφή συμβολαίου");
+        setTooltip(createOfferButton, "Δημιουργία προσφοράς από πρότυπα");
+        setTooltip(addOfferButton, "Προσθήκη νέας προσφοράς");
+        setTooltip(editOfferButton, "Επεξεργασία προσφοράς");
+        setTooltip(deleteOfferButton, "Διαγραφή προσφοράς");
 
         // Σύνδεση στηλών πίνακα με πεδία του Task
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -45,6 +50,7 @@ public class CustomerOffersController {
         offerDateColumn.setCellValueFactory(new PropertyValueFactory<>("offerDate"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         response_dateColumn.setCellValueFactory(new PropertyValueFactory<>("response_date"));
+        sendedColumn.setCellValueFactory(new PropertyValueFactory<>("sended"));
 
         allOffers = FXCollections.observableArrayList();
         offersTable.setItems(allOffers);
@@ -66,8 +72,50 @@ public class CustomerOffersController {
                 }
             }
         });
-        
+
         // Κουμπιά
+        createOfferButton.setOnAction(event -> {
+            ContextMenu contextMenu = new ContextMenu();
+            File folder = new File(AppSettings.loadSetting("datafolder") + "\\Templates");
+
+            // Δημιουργία φακέλου αν δεν υπάρχει
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            // Δημιουργία MenuItem για κάθε αρχείο στον φάκελο
+            File[] files = folder.listFiles();
+            if (files != null && files.length > 0) {
+                for (File file : files) {
+                    String displayName = file.getName();
+                    MenuItem fileItem = new MenuItem(displayName);
+                    fileItem.setOnAction(e -> {
+                        try {
+                            CustomerFolderManager folderManager = new CustomerFolderManager();
+                            // Κλήση της μεθόδου για δημιουργία ή άνοιγμα του φακέλου
+                            folderManager.createCustomerOfferFolder(customer.getName(), customer.getAfm());
+
+                            Desktop.getDesktop().open(file);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    });
+                    contextMenu.getItems().add(fileItem);
+                }
+            }
+
+            // Προσθήκη επιλογής για άνοιγμα του φακέλου
+            MenuItem openFolderItem = new MenuItem("Άνοιγμα φακέλου");
+            openFolderItem.setOnAction(e -> openFolder(AppSettings.loadSetting("datafolder") + "\\Templates"));
+            contextMenu.getItems().add(openFolderItem);
+
+            // Εμφάνιση του ContextMenu πάνω από το κουμπί
+            double buttonX = createOfferButton.localToScene(createOfferButton.getBoundsInLocal()).getMinX();
+            double buttonY = createOfferButton.localToScene(createOfferButton.getBoundsInLocal()).getMinY() - 2 * createOfferButton.getHeight();
+            contextMenu.show(createOfferButton, createOfferButton.getScene().getWindow().getX() + buttonX,
+                    createOfferButton.getScene().getWindow().getY() + buttonY);
+        });
+
         addOfferButton.setOnAction(e -> handleAddOffer());
         editOfferButton.setOnAction(e -> {
             try {
@@ -101,9 +149,9 @@ public class CustomerOffersController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addOffer.fxml"));
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(loader.load());
-            dialog.setTitle("Προσθήκη Συμβολαίου");
+            dialog.setTitle("Προσθήκη Προσφοράς");
             AddOfferController controller = loader.getController();
-            controller.setCustomerId(customer.getCode());
+            controller.setCustomer(customer);
             controller.setCustomerName(customer.getName());
             controller.lock();
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -147,6 +195,7 @@ public class CustomerOffersController {
 
             // Ορισμός δεδομένων για επεξεργασία
             controller.setOfferForEdit(selectedOffer);
+            controller.setCustomer(customer);
             controller.lock();
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
@@ -180,7 +229,7 @@ public class CustomerOffersController {
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Επιβεβαίωση");
-        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την προσφορά " + selectedOffer.getDescription() + ";" );
+        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την προσφορά " + selectedOffer.getDescription() + ";");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
@@ -196,7 +245,6 @@ public class CustomerOffersController {
     }
 
 
-
     public void handleAddTask(ActionEvent evt) {
         Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
         if (selectedOffer == null) {
@@ -208,7 +256,8 @@ public class CustomerOffersController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
         try {
@@ -218,7 +267,7 @@ public class CustomerOffersController {
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Προσθήκη Εργασίας");
             AddTaskController controller = loader.getController();
-            controller.setTaskTitle("Προσφορά "+ selectedOffer.getId() +": "+ selectedOffer.getCustomerName());
+            controller.setTaskTitle("Προσφορά " + selectedOffer.getId() + ": " + selectedOffer.getCustomerName());
             controller.setCustomerName(selectedOffer.getCustomerName());
             controller.setCustomerId(selectedOffer.getCustomerId());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -252,16 +301,67 @@ public class CustomerOffersController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
-        String msg ="Επωνυμία: "+selectedOffer.getCustomerName() +
-                "\nΣας αποστείλαμε μια νέα προσφορά"+
+        String msg = "Επωνυμία: " + selectedOffer.getCustomerName() +
+                "\nΣας αποστείλαμε μια νέα προσφορά" +
                 "\nΜπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου:" +
-                "\nhttp://dgou.dynns.com:8090/portal/offer.php?id="+selectedOffer.getId()+
+                "\nhttp://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() +
                 "\n\nΓια οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας." +
                 "\nΕυχαριστώ πολύ";
         copyTextToClipboard(msg);
+    }
+
+
+    public void handleSendEmail(ActionEvent event) {
+        Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
+        if (selectedOffer == null) {
+            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα προσφορά.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();
+            });
+            return;
+        }
+        try {
+            String email = customer.getEmail();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Αποστολή Email");
+            EmailDialogController controller = loader.getController();
+            controller.setCustomer(customer);
+            controller.setEmail(email);
+            controller.setSubject("Προσφορά " + selectedOffer.getId() + ": " + selectedOffer.getCustomerName());
+            controller.setBody(selectedOffer.getDescription());
+            List<File> attachments = new ArrayList<>();
+            String[] offerPaths = selectedOffer.getPaths().split(";");
+            for (String path : offerPaths) {
+                File file = new File(path);
+                attachments.add(file);
+            }
+            controller.setAttachments(attachments);
+            controller.setCopy(false);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.show();
+            dialog.setOnCloseRequest(evt -> {
+                if (controller.isSended) {
+                    // Εκτελούμε το handleSendEmail
+                    DBHelper dbHelper = new DBHelper();
+                    dbHelper.updateOfferSent(selectedOffer.getId());
+                    loadOffers(customer.getCode());
+                }
+            });
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+        }
     }
 
 
@@ -287,5 +387,14 @@ public class CustomerOffersController {
                 .hideAfter(Duration.seconds(5))
                 .position(Pos.TOP_RIGHT);
         notifications.showInformation();
+    }
+
+    // Μέθοδος για άνοιγμα του φακέλου
+    private void openFolder(String folderPath) {
+        try {
+            Desktop.getDesktop().open(new File(folderPath));
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα φακέλου.", e.getMessage(), Alert.AlertType.ERROR));
+        }
     }
 }

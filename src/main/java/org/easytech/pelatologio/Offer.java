@@ -1,7 +1,6 @@
 package org.easytech.pelatologio;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Offer {
     private int id;
@@ -12,8 +11,10 @@ public class Offer {
     private Integer customerId;
     private LocalDate response_date;
     private String customerName;
+    private String paths;
+    private String sended;
 
-    public Offer(int id, LocalDate offerDate, String description, String hours, String status, int customerId, LocalDate response_date, String customerName) {
+    public Offer(int id, LocalDate offerDate, String description, String hours, String status, int customerId, LocalDate response_date, String customerName, String paths, String sended) {
         this.id = id;
         this.offerDate = offerDate;
         this.description = description;
@@ -22,6 +23,9 @@ public class Offer {
         this.customerId = customerId;
         this.response_date = response_date;
         this.customerName = customerName;
+        this.paths = paths;
+        this.sended = sended;
+
     }
 
     public int getId() {
@@ -86,5 +90,21 @@ public class Offer {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public String getPaths() {
+        return paths;
+    }
+
+    public void setPaths(String paths) {
+        this.paths = paths;
+    }
+
+    public String getSended() {
+        return sended;
+    }
+
+    public void setSended(String sended) {
+        this.sended = sended;
     }
 }

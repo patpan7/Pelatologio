@@ -1042,4 +1042,8 @@ public class CustomersController implements Initializable {
     public void refresh(MouseEvent mouseEvent) {
         refreshTableData();
     }
+
+    public void showBalance(MouseEvent mouseEvent) {
+        observableList.removeIf(customer -> customer.getBalance().equals("") || customer.getBalance().isEmpty());
+    }
 }

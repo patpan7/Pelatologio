@@ -66,4 +66,38 @@ public class CustomerFolderManager {
 
         return folder;
     }
+
+    public File createCustomerOfferFolder(String customerName, String afm) {
+        File folder = customerFolder(customerName, afm);
+        String offerFolderPath = folder + "\\Προσφορές";
+        File folderOffer = new File(offerFolderPath);
+
+        if (!folderOffer.exists()) {
+            if (folderOffer.mkdirs()) {
+                System.out.println("Ο φάκελος δημιουργήθηκε: " + folderOffer);
+            } else {
+                System.err.println("Αποτυχία δημιουργίας του φακέλου.");
+                return null;
+            }
+        } else {
+            System.out.println("Ο φάκελος υπάρχει ήδη: " + folderOffer);
+        }
+        return folderOffer;
+    }
+
+    public File openCustomerOfferFolder(String customerName, String afm) {
+        File folder = createCustomerOfferFolder(customerName, afm);
+
+        if (folder != null) {
+            try {
+                Desktop.getDesktop().open(folder);
+                System.out.println("Ο φάκελος άνοιξε: " + folder.getAbsolutePath());
+            } catch (IOException e) {
+                System.err.println("Αποτυχία ανοίγματος του φακέλου.");
+                e.printStackTrace();
+            }
+        }
+
+        return folder;
+    }
 }

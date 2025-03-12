@@ -62,13 +62,24 @@
                     </JFXButton>
                 </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="110.0">
-               <children>
-                  <Label prefWidth="290.0" styleClass="normal-label" text="Αρχείο:" />
-                  <Pane fx:id="attachmentField" onDragDropped="#onDragDrop" onMouseDragOver="#onDragOver" prefHeight="100" prefWidth="325.0" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-               </VBox.margin>
+                <VBox.margin>
+                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                </VBox.margin>
+                <Label prefWidth="290.0" styleClass="normal-label" text="Αρχείο:" />
+                <ListView fx:id="attachmentList" prefHeight="100.0" prefWidth="325.0">
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin></ListView>
+                <JFXButton fx:id="btnSelectFile" buttonType="RAISED" mnemonicParsing="false" onAction="#selectFile" styleClass="click-button" text="">
+                    <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                            <Image url="@icons/file.png" />
+                        </ImageView>
+                    </graphic>
+                  <HBox.margin>
+                     <Insets left="5.0" right="10.0" />
+                  </HBox.margin>
+                </JFXButton>
             </HBox>
             </VBox>
         </ScrollPane>

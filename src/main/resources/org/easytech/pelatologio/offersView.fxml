@@ -58,16 +58,12 @@
                     <TableView fx:id="offersTable" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID"/>
-                            <TableColumn fx:id="descriptionColumn" maxWidth="3000.0" minWidth="250.0" prefWidth="450.0"
-                                         text="Περιγραφή"/>
-                            <TableColumn fx:id="offerDateColumn" maxWidth="394.0" minWidth="130.0" prefWidth="180.0"
-                                         text="Ημερ. Προσφοράς"/>
-                            <TableColumn fx:id="cucstomerColum" maxWidth="500.0" minWidth="150.0" prefWidth="150.0"
-                                         text="Πελάτης"/>
-                            <TableColumn fx:id="statusColumn" maxWidth="180.0" minWidth="120.0" prefWidth="120.0"
-                                         text="Κατάσταση"/>
-                            <TableColumn fx:id="response_dateColumn" maxWidth="700.0" minWidth="120.0" prefWidth="183.0"
-                                         text="Ημερ. Απόκρισης"/>
+                            <TableColumn fx:id="descriptionColumn" text="Περιγραφή"/>
+                            <TableColumn fx:id="offerDateColumn" text="Ημερ. Προσφοράς"/>
+                            <TableColumn fx:id="cucstomerColum" text="Πελάτης"/>
+                            <TableColumn fx:id="statusColumn" text="Κατάσταση"/>
+                            <TableColumn fx:id="response_dateColumn" text="Ημερ. Απόκρισης"/>
+                            <TableColumn fx:id="sendedColumn" text="Email?"/>
                         </columns>
                         <contextMenu>
                             <ContextMenu>
@@ -77,6 +73,8 @@
                                     <MenuItem mnemonicParsing="false" onAction="#handleShareOffer"
                                               styleClass="menu-item"
                                               text="Αντιγραφή συνδέσμου"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleSendEmail" styleClass="menu-item"
+                                              text="Αποστολή E-mail"/>
                                 </items>
                             </ContextMenu>
                         </contextMenu>

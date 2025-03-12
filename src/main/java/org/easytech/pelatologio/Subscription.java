@@ -12,8 +12,9 @@ public class Subscription {
     private String category;
     private String price;
     private String note;
+    private String sended;
 
-    public Subscription(int id, String title, LocalDate endDate, Integer customerId, Integer categoryId, String price, String note) {
+    public Subscription(int id, String title, LocalDate endDate, Integer customerId, Integer categoryId, String price, String note, String sended) {
         this.id = id;
         this.title = title;
         this.endDate = endDate;
@@ -21,6 +22,7 @@ public class Subscription {
         this.categoryId = categoryId;
         this.price = price;
         this.note = note;
+        this.sended = sended;
     }
 
     public Subscription() {
@@ -96,5 +98,13 @@ public class Subscription {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getSended() {
+        return sended;
+    }
+
+    public void setSended(String sended) {
+        this.sended = sended;
     }
 }

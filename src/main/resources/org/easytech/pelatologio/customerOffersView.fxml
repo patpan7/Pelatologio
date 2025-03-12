@@ -11,22 +11,24 @@
         <TableView fx:id="offersTable" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID"/>
-                <TableColumn fx:id="descriptionColumn" maxWidth="5000.0" minWidth="250.0" prefWidth="450.0"
+                <TableColumn fx:id="descriptionColumn" maxWidth="5000.0" minWidth="120.0" prefWidth="300.0"
                              text="Περιγραφή"/>
                 <TableColumn fx:id="offerDateColumn" maxWidth="394.0" minWidth="130.0" prefWidth="180.0"
                              text="Ημερ. Προσφοράς"/>
                 <TableColumn fx:id="statusColumn" maxWidth="180.0" minWidth="120.0" prefWidth="120.0" text="Κατάσταση"/>
                 <TableColumn fx:id="response_dateColumn" maxWidth="700.0" minWidth="120.0" prefWidth="183.0"
                              text="Ημερ. Απόκρισης"/>
+                <TableColumn fx:id="sendedColumn" maxWidth="700.0" minWidth="120.0" prefWidth="183.0" text="Email?"/>
             </columns>
             <contextMenu>
                 <ContextMenu>
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#handleAddTask" styleClass="menu-item"
                                   text="Προσθήκη εργασίας"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleShareOffer"
-                                  styleClass="menu-item"
+                        <MenuItem mnemonicParsing="false" onAction="#handleShareOffer" styleClass="menu-item"
                                   text="Αντιγραφή συνδέσμου"/>
+                        <MenuItem mnemonicParsing="false" onAction="#handleSendEmail" styleClass="menu-item"
+                                  text="Αποστολή E-mail"/>
                     </items>
                 </ContextMenu>
             </contextMenu>
@@ -39,6 +41,16 @@
         </VBox.margin>
     </VBox>
     <HBox alignment="CENTER_RIGHT" spacing="10" BorderPane.alignment="CENTER">
+        <JFXButton fx:id="createOfferButton" buttonType="RAISED" layoutX="317.0" layoutY="10.0"
+                   styleClass="click-button" text="Δημηουργία Προσφοράς">
+            <graphic>
+                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@icons/add.png"/>
+                    </image>
+                </ImageView>
+            </graphic>
+        </JFXButton>
         <Separator visible="false" HBox.hgrow="ALWAYS"/>
         <JFXButton fx:id="addOfferButton" buttonType="RAISED" prefWidth="220.0" styleClass="click-button"
                    text="Προσθήκη">

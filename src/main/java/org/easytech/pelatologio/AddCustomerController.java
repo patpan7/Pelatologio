@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -19,7 +20,9 @@ import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -40,7 +43,7 @@ public class AddCustomerController {
     @FXML
     private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabDevices, tabTasks, tabAccountant, tabSubs, tabOffers, tabNotes;
     @FXML
-    private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone;
+    private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone, tfBalance;
     @FXML
     private ComboBox<String> tfRecommendation;
     @FXML
@@ -52,13 +55,15 @@ public class AddCustomerController {
     @FXML
     private Button btnAddressAdd;
     @FXML
-    private TextArea taNotes;
+    private TextArea taNotes, taBalanceReason;
     @FXML
     private ProgressIndicator progressIndicator;
     @FXML
     private Button btnEmail, btnEmail2, btnAccEmail, btnAccEmail1;
     @FXML
     Button btnAddToMegasoft, btnShowToMegasoft, btnData, btnLabel,btnCopy, btnAppointment,btnTask;
+    @FXML
+    private Label lblBlance;
 
     private TaxisViewController taxisViewController;
     private MyposViewController myposViewController;
@@ -199,6 +204,9 @@ public class AddCustomerController {
         btnAppointment.setDisable(true);
         btnAppointment.setVisible(false);
         btnTask.setDisable(true);
+        tfBalance.setDisable(true);
+        tfBalance.setVisible(false);
+        lblBlance.setVisible(false);
         btnTask.setVisible(false);
         tabTaxis.setDisable(true);
         tabMypos.setDisable(true);
@@ -504,6 +512,8 @@ public class AddCustomerController {
         taNotes.setText(customer.getNotes());
         tfAccName1.setText(customer.getAccName1());
         tfAccEmail1.setText(customer.getAccEmail1());
+        tfBalance.setText(customer.getBalance());
+        taBalanceReason.setText(customer.getBalanceReason());
 
         btnAddressAdd.setDisable(false);
 
@@ -570,6 +580,9 @@ public class AddCustomerController {
         btnAppointment.setVisible(true);
         btnTask.setDisable(false);
         btnTask.setVisible(true);
+        tfBalance.setDisable(false);
+        tfBalance.setVisible(true);
+        lblBlance.setVisible(true);
         tabTaxis.setDisable(false);
         tabMypos.setDisable(false);
         tabSimply.setDisable(false);
@@ -788,6 +801,8 @@ public class AddCustomerController {
         String selectedRecommendation = tfRecommendation.getEditor().getText().trim();
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
         int accId = (selectedAccountant != null) ? selectedAccountant.getId() : 0;
+        String balance = tfBalance.getText();
+        String balanceReason = taBalanceReason.getText();
 
 
         if (mobile.startsWith("+30"))
@@ -819,7 +834,7 @@ public class AddCustomerController {
             });
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
-            customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation);
+            customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason);
             // Εμφάνιση επιτυχίας
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -878,6 +893,10 @@ public class AddCustomerController {
         customer.setAccEmail1(accEmail1);
         String selectedRecommendation = tfRecommendation.getEditor().getText().trim();
         customer.setRecommendation(selectedRecommendation);
+        String balance = tfBalance.getText();
+        customer.setBalance(balance);
+        String balanceReason = taBalanceReason.getText();
+        customer.setBalanceReason(balanceReason);
 
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
         int accId = (selectedAccountant != null) ? selectedAccountant.getId() : 0;
@@ -900,7 +919,7 @@ public class AddCustomerController {
         customer.setManagerPhone(managerPhone);
 
 
-        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation);
+        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason);
 
         String accName = tfAccName.getValue().toString();
         String accPhone = tfAccPhone.getText();
@@ -1118,7 +1137,47 @@ public class AddCustomerController {
         tfAccName.getSelectionModel().select(newAccountant); // Επιλογή
     }
 
+    @FXML
+    private void handleMouseClick(MouseEvent event) {
+        // Έλεγχος για διπλό κλικ
+        if (event.getClickCount() == 2) {
+            openNotesDialog();
+        }
+    }
 
+    private void openNotesDialog() {
+        // Ο κώδικας για το παράθυρο διαλόγου, όπως περιγράφεται
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("Επεξεργασία Σημειώσεων");
+
+        TextArea expandedTextArea = new TextArea(customer.getBalanceReason());
+        expandedTextArea.setWrapText(true);
+        expandedTextArea.setPrefSize(400, 300);
+        expandedTextArea.setStyle("-fx-font-size: 24px;");
+        if (customer.getBalanceReason() != null && !customer.getBalanceReason().isEmpty()) {
+            expandedTextArea.setText(customer.getBalanceReason());
+            expandedTextArea.positionCaret(customer.getBalanceReason().length());
+        } else {
+            expandedTextArea.setText(""); // Βεβαιωθείτε ότι το TextArea είναι κενό
+            expandedTextArea.positionCaret(0); // Τοποθετήστε τον κέρσορα στην αρχή
+        }
+
+        Button btnOk = new Button("OK");
+        btnOk.setPrefWidth(100);
+        btnOk.setOnAction(evt -> {
+            taBalanceReason.setText(expandedTextArea.getText()); // Ενημέρωση του αρχικού TextArea
+            dialogStage.close();
+        });
+
+        VBox vbox = new VBox(10, expandedTextArea, btnOk);
+        vbox.setAlignment(Pos.CENTER);
+        //vbox.setPadding(new Insets(10));
+
+        Scene scene = new Scene(vbox);
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();
+    }
 
     public void addMegasoft(ActionEvent event) {
         PrismaWinAutomation.addCustomer(customer);

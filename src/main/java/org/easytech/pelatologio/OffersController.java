@@ -17,11 +17,14 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -31,7 +34,7 @@ public class OffersController implements Initializable {
     @FXML
     private TableView<Offer> offersTable;
     @FXML
-    private TableColumn idColumn, descriptionColumn, offerDateColumn, cucstomerColum, statusColumn, response_dateColumn;
+    private TableColumn idColumn, descriptionColumn, offerDateColumn, cucstomerColum, statusColumn, response_dateColumn, sendedColumn;
     @FXML
     private CheckBox showAllCheckbox, acceptCheckbox, rejectCheckbox, pendingCheckbox;
     @FXML
@@ -59,6 +62,7 @@ public class OffersController implements Initializable {
         cucstomerColum.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         response_dateColumn.setCellValueFactory(new PropertyValueFactory<>("response_date"));
+        sendedColumn.setCellValueFactory(new PropertyValueFactory<>("sended"));
 
         // Υπολογισμός της πρώτης και τελευταίας ημέρας του τρέχοντος μήνα
         LocalDate today = LocalDate.now();
@@ -163,8 +167,9 @@ public class OffersController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addOffer.fxml"));
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(loader.load());
-            dialog.setTitle("Προσθήκη Εργασίας");
+            dialog.setTitle("Προσθήκη Προσφοράς");
             AddOfferController controller = loader.getController();
+            controller.lockFile();
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
             // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
@@ -310,6 +315,56 @@ public class OffersController implements Initializable {
                 "\n\nΓια οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας." +
                 "\nΕυχαριστώ πολύ";
         copyTextToClipboard(msg);
+    }
+
+    public void handleSendEmail(ActionEvent event) {
+        Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
+        if (selectedOffer == null) {
+            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα προσφορά.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();
+            });
+            return;
+        }
+        try {
+            DBHelper dbHelper = new DBHelper();
+            Customer customer = dbHelper.getSelectedCustomer(selectedOffer.getCustomerId());
+            String email = customer.getEmail();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Αποστολή Email");
+            EmailDialogController controller = loader.getController();
+            controller.setCustomer(customer);
+            controller.setEmail(email);
+            controller.setSubject("Προσφορά " + selectedOffer.getId() + ": " + selectedOffer.getCustomerName());
+            controller.setBody(selectedOffer.getDescription());
+            List<File> attachments = new ArrayList<>();
+            String[] offerPaths = selectedOffer.getPaths().split(";");
+            for (String path : offerPaths) {
+                File file = new File(path);
+                attachments.add(file);
+            }
+            controller.setAttachments(attachments);
+            controller.setCopy(false);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.show();
+            dialog.setOnCloseRequest(evt -> {
+                if (controller.isSended) {
+                    // Εκτελούμε το handleSendEmail
+                    dbHelper.updateOfferSent(selectedOffer.getId());
+                    loadOffers();
+                }
+            });
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+        }
     }
 
 

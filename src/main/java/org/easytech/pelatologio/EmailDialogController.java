@@ -37,11 +37,14 @@ public class EmailDialogController {
     @FXML
     private ProgressBar progressBar;
 
+    private Boolean copy = true;
+
 
     private Stage dialogStage;
     private Customer customer;
 
     private final List<File> attachments = new ArrayList<>();
+    public boolean isSended = false;
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
@@ -51,9 +54,23 @@ public class EmailDialogController {
         this.customer = customer;
     }
 
+    public void setCopy(Boolean copy) {
+        this.copy = copy;
+    }
+
 
     public void setEmail(String text) {
         emailField.setText(text);
+    }
+    public void setSubject(String text) {
+        subjectField.setText(text);
+    }
+    public void setBody(String text) {
+        bodyArea.setText(text);
+    }
+    public void setAttachments(List<File> attachments) {
+        this.attachments.addAll(attachments);
+        attachmentList.getItems().addAll(attachments);
     }
 
     @FXML
@@ -138,11 +155,13 @@ public class EmailDialogController {
                     subjectField.setText("");
                     bodyArea.setText("");
                     attachmentList.getItems().clear();
+                    isSended = true;
                     progressBar.setVisible(false); // Απόκρυψη προόδου
                 });
 
                 // Αποθήκευση του email (εκτός UI thread αλλά με τελική ενημέρωση στο UI)
-                saveEmailCopy(email, subject, body, attachments);
+                if (copy)
+                    saveEmailCopy(email, subject, body, attachments);
 
             } catch (Exception e) {
                 // Ενημέρωση του UI για αποτυχία (στο JavaFX thread)
