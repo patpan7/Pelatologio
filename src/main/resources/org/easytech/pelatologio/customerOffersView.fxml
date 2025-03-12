@@ -29,6 +29,10 @@
                                   text="Αντιγραφή συνδέσμου"/>
                         <MenuItem mnemonicParsing="false" onAction="#handleSendEmail" styleClass="menu-item"
                                   text="Αποστολή E-mail"/>
+                        <MenuItem mnemonicParsing="false" onAction="#handleAccept" styleClass="menu-item"
+                                  text="Αποδοχή"/>
+                        <MenuItem mnemonicParsing="false" onAction="#handleReject" styleClass="menu-item"
+                                  text="Απόρριψη"/>
                     </items>
                 </ContextMenu>
             </contextMenu>

@@ -245,7 +245,7 @@ public class AddDeviceController {
 
         TextArea expandedTextArea = new TextArea(currentNotes);
         expandedTextArea.setWrapText(true);
-        expandedTextArea.setPrefSize(400, 300);
+        expandedTextArea.setPrefSize(600, 500);
         expandedTextArea.setStyle("-fx-font-size: 24px;");
         if (currentNotes != null && !currentNotes.isEmpty()) {
             expandedTextArea.setText(currentNotes);
@@ -283,8 +283,11 @@ public class AddDeviceController {
                     }
                 }
             }
-
-            String description = "TID: " + descriptionField.getText();
+            String description;
+            if (descriptionField.getText().contains("TID"))
+                description = descriptionField.getText();
+            else
+                description = "TID: " + descriptionField.getText();
             String rate = rateField.getText();
             // Επιλογή πελάτη
             Object value = customerComboBox.getValue();

@@ -99,6 +99,7 @@
                             <TableColumn fx:id="mobileColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="Κινητό" />
                             <TableColumn fx:id="townColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="true" sortable="false" text="Πόλη" />
                             <TableColumn fx:id="emailColumn" resizable="true" sortable="false" text="E-mail" />
+                            <TableColumn fx:id="balanceColumn" resizable="true" sortable="false" text="Υπόλοιπο" />
                         </columns>
                         <contextMenu>
                             <ContextMenu>

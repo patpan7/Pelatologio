@@ -39,7 +39,7 @@ import java.util.stream.IntStream;
 
 public class CustomersController implements Initializable {
     @FXML
-    public TableColumn nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn;
+    public TableColumn nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn, balanceColumn;
     @FXML
     StackPane stackPane;
     @FXML
@@ -83,6 +83,7 @@ public class CustomersController implements Initializable {
         mobileColumn.setCellValueFactory(new PropertyValueFactory<>("mobile"));
         townColumn.setCellValueFactory(new PropertyValueFactory<>("town"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balance"));
 
         // Αρχικοποίηση πίνακα
         initializeTable();

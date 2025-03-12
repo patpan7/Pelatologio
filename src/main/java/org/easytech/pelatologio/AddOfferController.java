@@ -87,6 +87,8 @@ public class AddOfferController {
         }
         String[] offerPaths = offer.getPaths().split(";");
         for (String path : offerPaths) {
+            if (path.equals(""))
+                break;
             File file = new File(path);
             attachmentList.getItems().add(file);
             attachments.add(file);

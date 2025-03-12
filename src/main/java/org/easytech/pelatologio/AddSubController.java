@@ -234,7 +234,7 @@ public class AddSubController {
 
         TextArea expandedTextArea = new TextArea(currentNotes);
         expandedTextArea.setWrapText(true);
-        expandedTextArea.setPrefSize(400, 300);
+        expandedTextArea.setPrefSize(600, 500);
         expandedTextArea.setStyle("-fx-font-size: 24px;");
         if (currentNotes != null && !currentNotes.isEmpty()) {
             expandedTextArea.setText(currentNotes);

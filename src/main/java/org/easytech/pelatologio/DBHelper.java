@@ -69,8 +69,8 @@ public class DBHelper {
                 data.setAccName1(resultSet.getString("accName1"));
                 data.setAccEmail1(resultSet.getString("accEmail1"));
                 data.setRecommendation(resultSet.getString("recommendation"));
-                data.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance") : "");
-                data.setBalanceReason(resultSet.getString("balanceReason"));
+                data.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
+                data.setBalanceReason(resultSet.getString("balanceReason")!= null ? resultSet.getString("balanceReason").trim() : "");
 
                 dataList.add(data);
             }
@@ -1853,7 +1853,7 @@ public class DBHelper {
                 Date responseSqlDate = resultSet.getDate("response_date");
                 LocalDate responseDate = (responseSqlDate != null) ? responseSqlDate.toLocalDate() : null;
                 String customerName = resultSet.getString("name");
-                String paths = resultSet.getString("offer_file_paths");
+                String paths = resultSet.getObject("offer_file_paths") != null ? resultSet.getString("offer_file_paths").trim() : "";
                 String sended = resultSet.getString("sended");
 
                 Offer offer = new Offer(id, offerDate, description, hours, status, customerId, responseDate, customerName, paths, sended);
@@ -1991,7 +1991,7 @@ public class DBHelper {
                 LocalDate response_date = resultSet.getDate("response_date") != null ?
                         resultSet.getDate("response_date").toLocalDate() : null;
                 String customerName = resultSet.getString("name");
-                String paths = resultSet.getString("offer_file_paths");
+                String paths = resultSet.getObject("offer_file_paths") != null ? resultSet.getString("offer_file_paths").trim() : "";
                 String sended = resultSet.getString("sended");
 
                 updatedOffers.add(new Offer(id, offerDate, description, hours, status, customerId, response_date, customerName, paths, sended));
@@ -2002,7 +2002,7 @@ public class DBHelper {
         return updatedOffers;
     }
 
-    public void updateOfferStatus(int offerId, String newStatus) {
+    public boolean updateOfferStatus(int offerId, String newStatus) {
         String query = "UPDATE Offers SET status = ?, last_updated = GETDATE() WHERE id = ? AND status <> ?";
 
         try (Connection conn = getConnection();
@@ -2015,10 +2015,33 @@ public class DBHelper {
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 System.out.println("Η προσφορά #" + offerId + " ενημερώθηκε σε " + newStatus);
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
+    }
+
+    public boolean updateOfferStatusManual(int offerId, String newStatus) {
+        String query = "UPDATE Offers SET status = ?, response_date = GETDATE(), last_updated = GETDATE() WHERE id = ? AND status <> ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, newStatus);
+            stmt.setInt(2, offerId);
+            stmt.setString(3, newStatus); // Δεν αλλάζουμε αν το status είναι ίδιο
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Η προσφορά #" + offerId + " ενημερώθηκε σε " + newStatus);
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void updateOfferSent(int id) {

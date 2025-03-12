@@ -1153,7 +1153,7 @@ public class AddCustomerController {
 
         TextArea expandedTextArea = new TextArea(customer.getBalanceReason());
         expandedTextArea.setWrapText(true);
-        expandedTextArea.setPrefSize(400, 300);
+        expandedTextArea.setPrefSize(600, 500);
         expandedTextArea.setStyle("-fx-font-size: 24px;");
         if (customer.getBalanceReason() != null && !customer.getBalanceReason().isEmpty()) {
             expandedTextArea.setText(customer.getBalanceReason());

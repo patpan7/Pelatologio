@@ -150,11 +150,11 @@ public class OffersController implements Initializable {
         // Φιλτράρισμα βάσει ολοκλήρωσης
         if (!showAllCheckbox.isSelected()) {
             if (acceptCheckbox.isSelected()) {
-                filteredOffers.removeIf(offer -> !offer.getStatus().trim().equals("Αποδοχή"));
+                filteredOffers.removeIf(offer -> !offer.getStatus().trim().contains("Αποδοχή"));
             } else if (pendingCheckbox.isSelected()) {
-                filteredOffers.removeIf(offer -> !offer.getStatus().trim().equals("Αναμονή"));
+                filteredOffers.removeIf(offer -> !offer.getStatus().trim().contains("Αναμονή"));
             } else if (rejectCheckbox.isSelected()) {
-                filteredOffers.removeIf(offer -> !offer.getStatus().trim().equals("Απόρριψη"));
+                filteredOffers.removeIf(offer -> !offer.getStatus().trim().contains("Απόρριψη"));
             }
         }
         // Ανανεώνουμε τα δεδομένα του πίνακα
@@ -344,10 +344,15 @@ public class OffersController implements Initializable {
             controller.setCustomer(customer);
             controller.setEmail(email);
             controller.setSubject("Προσφορά " + selectedOffer.getId() + ": " + selectedOffer.getCustomerName());
-            controller.setBody(selectedOffer.getDescription());
+            controller.setBody(selectedOffer.getDescription() +
+                    "<br><br>Μπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου:" +
+                    "<br>http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() +
+                    "<br><br>Για οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας.");
             List<File> attachments = new ArrayList<>();
             String[] offerPaths = selectedOffer.getPaths().split(";");
             for (String path : offerPaths) {
+                if (path.equals(""))
+                    break;
                 File file = new File(path);
                 attachments.add(file);
             }
@@ -364,6 +369,57 @@ public class OffersController implements Initializable {
             });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+
+    @FXML
+    private void handleAccept (ActionEvent event) {
+        toggleAns("Αποδοχή Χειρ.");
+    }
+
+    @FXML
+    private void handleReject (ActionEvent event) {
+        toggleAns("Απόρριψη Χειρ.");
+    }
+
+    private void toggleAns(String ans) {
+        Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
+        if (selectedOffer == null) {
+            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα προσφορά.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();
+            });
+            return;
+        }
+
+        DBHelper dbHelper = new DBHelper();
+        if (dbHelper.updateOfferStatusManual(selectedOffer.getId(), ans)) {
+            System.out.println("Task completion status updated.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Ενημέρωση")
+                        .text("Ενημέρωση προσφοράς επιτυχής.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showConfirm();});
+            loadOffers(); // Φορτώνει ξανά τις εργασίες
+        } else {
+            System.out.println("Failed to update task completion status.");
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Ενημέρωση")
+                        .text("Αποτυχία ενημέρωση προσφοράς.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
         }
     }
 

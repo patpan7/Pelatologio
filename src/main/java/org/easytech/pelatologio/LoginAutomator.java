@@ -125,6 +125,11 @@ public class LoginAutomator {
 
         // Υποβολή φόρμας ή πάτημα κουμπιού αν χρειάζεται
         driver.findElement(btnLogin).click();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         driver.get("https://www1.gsis.gr/taxisnet/mytaxisnet/protected/grantEInvoiceProviderAuthorization.htm");
         WebElement vatField = driver.findElement(By.name("authorizationRequest.granteeVatNumber"));
         vatField.sendKeys("801400290");
