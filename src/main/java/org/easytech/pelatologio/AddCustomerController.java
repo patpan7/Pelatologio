@@ -61,7 +61,7 @@ public class AddCustomerController {
     @FXML
     private Button btnEmail, btnEmail2, btnAccEmail, btnAccEmail1;
     @FXML
-    Button btnAddToMegasoft, btnShowToMegasoft, btnData, btnLabel,btnCopy, btnAppointment,btnTask;
+    Button btnAddToMegasoft, btnData, btnLabel,btnCopy, btnAppointment,btnTask;
     @FXML
     private Label lblBlance;
 
@@ -193,8 +193,6 @@ public class AddCustomerController {
         btnAddressAdd.setDisable(true);
         btnAddToMegasoft.setDisable(true);
         btnAddToMegasoft.setVisible(false);
-        btnShowToMegasoft.setDisable(true);
-        btnShowToMegasoft.setVisible(false);
         btnData.setDisable(true);
         btnData.setVisible(false);
         btnLabel.setDisable(true);
@@ -568,8 +566,6 @@ public class AddCustomerController {
 
         btnAddToMegasoft.setDisable(false);
         btnAddToMegasoft.setVisible(true);
-        btnShowToMegasoft.setDisable(false);
-        btnShowToMegasoft.setVisible(true);
         btnData.setDisable(false);
         btnData.setVisible(true);
         btnLabel.setDisable(false);
@@ -1180,11 +1176,11 @@ public class AddCustomerController {
     }
 
     public void addMegasoft(ActionEvent event) {
-        PrismaWinAutomation.addCustomer(customer);
-    }
-
-    public void showMegasoft(ActionEvent event) {
-        PrismaWinAutomation.showCustomer(customer);
+        DBHelper dbHelper = new DBHelper();
+        if (dbHelper.isAfmExistsMegasoft(customer.getAfm()))
+            PrismaWinAutomation.showCustomer(customer);
+        else
+            PrismaWinAutomation.addCustomer(customer);
     }
 
     public void selectTaxisTab() {

@@ -72,11 +72,11 @@ public class LoginAutomator {
         driver.navigate().refresh(); // Ανανέωση της σελίδας
         Thread.sleep(5000); // Δώσε λίγο χρόνο μετά την ανανέωση
         // Εντοπισμός πεδίων username και password και εισαγωγή τιμών
-        WebElement usernameField = driver.findElement(usernameLocator);
-        WebElement passwordField = driver.findElement(passwordLocator);
-
-        usernameField.sendKeys(username);
-        passwordField.sendKeys(password);
+//        WebElement usernameField = driver.findElement(usernameLocator);
+//        WebElement passwordField = driver.findElement(passwordLocator);
+//
+//        usernameField.sendKeys(username);
+//        passwordField.sendKeys(password);
 //        Thread.sleep(3000);
 //        // Υποβολή φόρμας ή πάτημα κουμπιού αν χρειάζεται
 //        driver.findElement(submitButtonLocator).click();

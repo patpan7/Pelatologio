@@ -32,11 +32,10 @@
                         </Label>
                         <TextField fx:id="serialField" prefWidth="300"/>
                         <JFXButton fx:id="addSerialButton" alignment="TOP_LEFT" buttonType="RAISED"
-                                   mnemonicParsing="false" onAction="#addSerialNumber" styleClass="click-button"
-                                   text="" HBox.hgrow="ALWAYS">
+                                   mnemonicParsing="false" onAction="#addSerialNumber" styleClass="click-button" text=""
+                                   HBox.hgrow="ALWAYS">
                             <graphic>
-                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                           preserveRatio="true">
+                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/add.png"/>
                                 </ImageView>
                             </graphic>
@@ -67,15 +66,15 @@
                                 <Insets/>
                             </HBox.margin>
                         </Label>
-                        <TextField fx:id="rateField" prefWidth="300"/>
+                        <ComboBox fx:id="rateField" editable="true" minWidth="300.0" prefWidth="300.0"
+                                  HBox.hgrow="ALWAYS"/>
                     </HBox>
                     <HBox alignment="CENTER_LEFT">
                         <VBox.margin>
                             <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                         </VBox.margin>
                         <Label prefWidth="140.0" styleClass="normal-label" text="Πελάτης"/>
-                        <ComboBox fx:id="customerComboBox" editable="true" prefWidth="300"
-                                  promptText="Επιλογή Πελάτη"/>
+                        <ComboBox fx:id="customerComboBox" editable="true" prefWidth="300" promptText="Επιλογή Πελάτη"/>
                     </HBox>
                 </VBox>
                 <VBox HBox.hgrow="ALWAYS">

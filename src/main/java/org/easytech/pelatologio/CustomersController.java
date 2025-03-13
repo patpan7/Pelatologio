@@ -1,5 +1,7 @@
 package org.easytech.pelatologio;
 
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXPopup;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -21,7 +24,9 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.openqa.selenium.By;
@@ -45,6 +50,8 @@ public class CustomersController implements Initializable {
     @FXML
     TableView<Customer> customerTable;
     @FXML
+    Button filterButton;
+    @FXML
     TextField filterField;
     @FXML
     Button btnTaxis, btnMypos, btnSimply, btnEmblem, btnErgani, btnData, openFileButton;
@@ -52,7 +59,7 @@ public class CustomersController implements Initializable {
     ObservableList<Customer> observableList;
     FilteredList<Customer> filteredData;
     DBHelper dbHelper;
-
+    List<CheckBox> checkBoxes = new ArrayList<>();
     private TabPane mainTabPane;  // Θα το περάσουμε από τον MainMenuController
 
     // Μέθοδος για να περάσουμε το TabPane
@@ -70,6 +77,35 @@ public class CustomersController implements Initializable {
         setTooltip(btnErgani, "Διαχείριση κωδικών Εργάνη του πελάτη");
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
         setTooltip(openFileButton, "1) Αντιγραφή πληροφοριών\n2) Άνοιγμα φακέλου με δεδομένα");
+        VBox filterBox = new VBox();
+        filterBox.setSpacing(5);
+
+        // ** Δημιουργία των CheckBox φίλτρων **
+        String[] filters = {"Όνομα", "Τίτλος", "ΑΦΜ", "Αριθμοί επικοινωνίας", "Πόλη", "Υπεύθυνος", "Σύσταση"};
+
+        for (String filter : filters) {
+            CheckBox checkBox = new CheckBox(filter);
+            checkBoxes.add(checkBox);
+            filterBox.getChildren().add(checkBox);
+        }
+
+
+        // ** Δημιουργία του popup **
+        JFXPopup popup = new JFXPopup(filterBox);
+
+        // ** Όταν πατάμε το κουμπί, εμφανίζεται το popup **
+        filterButton.setOnMousePressed(e -> {
+            if (e.isSecondaryButtonDown()) {  // Έλεγχος αν έγινε δεξί κλικ
+                for (CheckBox checkBox : checkBoxes) {
+                    checkBox.setSelected(false);  // Αποεπιλογή όλων των CheckBox
+                }
+                // Ενημέρωση των φίλτρων αν χρειάζεται
+                applyFilters("");  // Άδειασμα του φίλτρου
+                filterField.setText("");
+
+            } else
+                popup.show(filterButton, JFXPopup.PopupVPosition.TOP, JFXPopup.PopupHPosition.RIGHT, 0,50);
+        });
 
 
         dbHelper = new DBHelper();
@@ -90,13 +126,14 @@ public class CustomersController implements Initializable {
 
         // Διπλό κλικ για επεξεργασία πελάτη
         customerTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {
+            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+            if (event.getClickCount() == 1 && selectedCustomer != null) {
                 btnTaxis.setStyle("-fx-border-color: #005599;");
                 btnMypos.setStyle("-fx-border-color: #005599;");
                 btnSimply.setStyle("-fx-border-color: #005599;");
                 btnEmblem.setStyle("-fx-border-color: #005599;");
                 // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
-                Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+
                 if (dbHelper.hasApp(selectedCustomer.getCode(), 1)) {
                     btnMypos.setStyle("-fx-border-color: #FF0000;");
                 }
@@ -114,8 +151,6 @@ public class CustomersController implements Initializable {
                 }
             }
             if (event.getClickCount() == 2) { // Έλεγχος για δύο κλικ
-                // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
-                Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
 
                 // Έλεγχος αν υπάρχει επιλεγμένο προϊόν
                 if (selectedCustomer != null) {
@@ -162,6 +197,20 @@ public class CustomersController implements Initializable {
             contextMenu.show(openFileButton, openFileButton.getScene().getWindow().getX() + buttonX,
                     openFileButton.getScene().getWindow().getY() + buttonY);
         });
+    }
+
+    // Μέθοδος για να πάρεις τα επιλεγμένα φίλτρα
+    private Set<String> getSelectedFilters(List<CheckBox> checkBoxes) {
+        Set<String> selectedFilters = new HashSet<>();
+
+        // Ελέγχουμε κάθε checkbox και προσθέτουμε το φίλτρο αν είναι επιλεγμένο
+        for (CheckBox checkBox : checkBoxes) {
+            if (checkBox.isSelected()) {
+                selectedFilters.add(checkBox.getText());
+            }
+        }
+
+        return selectedFilters;
     }
 
     private void initializeTable() {
@@ -234,16 +283,48 @@ public class CustomersController implements Initializable {
             String search1 = new String(chars1);
             String search2 = new String(chars2);
 
-            // Εφαρμογή φίλτρου
-            return (customer.getName() != null && (customer.getName().toUpperCase().contains(search1) || customer.getName().toUpperCase().contains(search2)))
-                    || (customer.getTitle() != null && (customer.getTitle().toUpperCase().contains(search1) || customer.getTitle().toUpperCase().contains(search2)))
-                    || (customer.getJob() != null && (customer.getJob().toUpperCase().contains(search1) || customer.getJob().toUpperCase().contains(search2)))
-                    || (String.valueOf(customer.getCode()).contains(search1) || String.valueOf(customer.getCode()).contains(search2))
-                    || (customer.getPhone1() != null && (customer.getPhone1().contains(search1) || customer.getPhone1().contains(search2)))
-                    || (customer.getPhone2() != null && (customer.getPhone2().contains(search1) || customer.getPhone2().contains(search2)))
-                    || (customer.getMobile() != null && (customer.getMobile().contains(search1) || customer.getMobile().contains(search2)))
-                    || (customer.getAfm() != null && (customer.getAfm().contains(search1) || customer.getAfm().contains(search2)))
-                    || (customer.getManager() != null && (customer.getManager().toUpperCase().contains(search1) || customer.getManager().toUpperCase().contains(search2)));
+            Set<String> selectedFilters = getSelectedFilters(checkBoxes);
+
+            // Αν δεν είναι επιλεγμένο κανένα φίλτρο, κάνε αναζήτηση σε όλα τα πεδία
+            if (selectedFilters.isEmpty()) {
+                return (customer.getName() != null && (customer.getName().toUpperCase().contains(search1) || customer.getName().toUpperCase().contains(search2)))
+                        || (customer.getTitle() != null && (customer.getTitle().toUpperCase().contains(search1) || customer.getTitle().toUpperCase().contains(search2)))
+                        || (customer.getJob() != null && (customer.getJob().toUpperCase().contains(search1) || customer.getJob().toUpperCase().contains(search2)))
+                        || (String.valueOf(customer.getCode()).contains(search1) || String.valueOf(customer.getCode()).contains(search2))
+                        || (customer.getPhone1() != null && (customer.getPhone1().contains(search1) || customer.getPhone1().contains(search2)))
+                        || (customer.getPhone2() != null && (customer.getPhone2().contains(search1) || customer.getPhone2().contains(search2)))
+                        || (customer.getMobile() != null && (customer.getMobile().contains(search1) || customer.getMobile().contains(search2)))
+                        || (customer.getAfm() != null && (customer.getAfm().contains(search1) || customer.getAfm().contains(search2)))
+                        || (customer.getManager() != null && (customer.getManager().toUpperCase().contains(search1) || customer.getManager().toUpperCase().contains(search2)))
+                        || (customer.getTown() != null && (customer.getTown().toUpperCase().contains(search1) || customer.getTown().toUpperCase().contains(search2)));
+            }
+
+            // Αν είναι επιλεγμένο το φίλτρο για κάποιο συγκεκριμένο πεδίο
+            if (selectedFilters.contains("Όνομα") && customer.getName() != null && (customer.getName().toUpperCase().contains(search1) || customer.getName().toUpperCase().contains(search2))) {
+                return true;
+            }
+            if (selectedFilters.contains("Τίτλος") && customer.getTitle() != null && (customer.getTitle().toUpperCase().contains(search1) || customer.getTitle().toUpperCase().contains(search2))) {
+                return true;
+            }
+            if (selectedFilters.contains("ΑΦΜ") && customer.getAfm() != null && (customer.getAfm().contains(search1) || customer.getAfm().contains(search2))) {
+                return true;
+            }
+            if (selectedFilters.contains("Αριθμοί επικοινωνίας") && (customer.getPhone1() != null && (customer.getPhone1().contains(search1) || customer.getPhone1().contains(search2))
+                    || customer.getPhone2() != null && (customer.getPhone2().contains(search1) || customer.getPhone2().contains(search2))
+                    || customer.getMobile() != null && (customer.getMobile().contains(search1) || customer.getMobile().contains(search2)))) {
+                return true;
+            }
+            if (selectedFilters.contains("Πόλη") && customer.getTown() != null && (customer.getTown().toUpperCase().contains(search1) || customer.getTown().toUpperCase().contains(search2))) {
+                return true;
+            }
+            if (selectedFilters.contains("Υπεύθυνος") && customer.getManager() != null && (customer.getManager().toUpperCase().contains(search1) || customer.getManager().toUpperCase().contains(search2))) {
+                return true;
+            }
+            if (selectedFilters.contains("Σύσταση") && customer.getRecommendation() != null && (customer.getRecommendation().toUpperCase().contains(search1) || customer.getRecommendation().toUpperCase().contains(search2))) {
+                return true;
+            }
+
+            return false;
         });
     }
 

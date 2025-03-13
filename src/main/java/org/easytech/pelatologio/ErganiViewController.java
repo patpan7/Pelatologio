@@ -443,7 +443,7 @@ public class ErganiViewController {
         try {
             LoginAutomator loginAutomation = new LoginAutomator(true);
             loginAutomation.openAndFillLoginFormErgani(
-                    "https://myaccount.epsilonnet.gr/identity/account/login?returnUrl=",
+                    "https://myaccount.epsilonnet.gr/Identity/Account/Login?product=8fd59003-5af4-4ca7-6fbd-08dace2c8999",
                     selectedLogin.getUsername(),
                     selectedLogin.getPassword(),
                     By.id("Input_Email"),

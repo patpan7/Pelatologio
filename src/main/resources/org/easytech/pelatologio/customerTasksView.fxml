@@ -24,6 +24,8 @@
                         <SeparatorMenuItem />
                         <MenuItem mnemonicParsing="false" onAction="#toggleComplete" styleClass="menu-item" text="Ολοκλήρωση" />
                         <MenuItem mnemonicParsing="false" onAction="#toggleRecall" styleClass="menu-item" text="Ανάκληση" />
+                        <SeparatorMenuItem />
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddOffer" styleClass="menu-item" text="Δημιουργία Προσφοράς" />
                     </items>
                 </ContextMenu>
             </contextMenu>

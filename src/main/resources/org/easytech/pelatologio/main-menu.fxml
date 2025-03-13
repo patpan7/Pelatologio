@@ -194,7 +194,7 @@
             </top>
             <bottom>
                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false" BorderPane.alignment="BOTTOM_CENTER">
-                    <Label fx:id="vesrion" alignment="CENTER" text="v 2.8.3" VBox.vgrow="NEVER">
+                    <Label fx:id="vesrion" alignment="CENTER" text="v 2.8.4" VBox.vgrow="NEVER">
                         <VBox.margin>
                             <Insets bottom="5.0" right="20.0" />
                         </VBox.margin>

@@ -170,17 +170,7 @@
                         </padding>
                     </VBox>
                     <VBox styleClass="pane">
-                        <JFXButton fx:id="btnAddToMegasoft" alignment="TOP_LEFT" buttonType="RAISED" mnemonicParsing="false" onAction="#addMegasoft" prefWidth="180.0" styleClass="click-button" text="Εισαγωγή Prisma" wrapText="true">
-                            <graphic>
-                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/megasoft.png" />
-                                </ImageView>
-                            </graphic>
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                            </VBox.margin>
-                        </JFXButton>
-                        <JFXButton fx:id="btnShowToMegasoft" alignment="TOP_LEFT" buttonType="RAISED" mnemonicParsing="false" onAction="#showMegasoft" prefWidth="180.0" styleClass="click-button" text="Εμφάνιση Prisma" wrapText="true">
+                        <JFXButton fx:id="btnAddToMegasoft" alignment="TOP_LEFT" buttonType="RAISED" mnemonicParsing="false" onAction="#addMegasoft" prefWidth="180.0" styleClass="click-button" text="Prisma" wrapText="true">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/megasoft.png" />

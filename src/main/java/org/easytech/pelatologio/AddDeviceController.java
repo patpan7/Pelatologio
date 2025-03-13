@@ -29,7 +29,7 @@ public class AddDeviceController {
     @FXML
     private TextArea descriptionField;
     @FXML
-    private TextField rateField;
+    private ComboBox<String> rateField;
     @FXML
     private ComboBox<Customer> customerComboBox;
     @FXML
@@ -42,6 +42,7 @@ public class AddDeviceController {
     private Button addSerialButton;
 
     private ObservableList<String> serialNumbers = FXCollections.observableArrayList();
+    private ObservableList<String> rateList = FXCollections.observableArrayList();
 
     private Device device;
     private int customerId;
@@ -67,7 +68,12 @@ public class AddDeviceController {
         this.device = device;
         serialField.setText(device.getSerial());
         descriptionField.setText(device.getDescription());
-        rateField.setText(device.getRate());
+        for (String rate : rateList) {
+            if (rate.equals(device.getRate())) {
+                rateField.getSelectionModel().select(rate);
+                break;
+            }
+        }
         for (Item item : itemComboBox.getItems()) {
             if (item.getName().equals(device.getItemName())) {
                 itemComboBox.setValue(item);
@@ -161,6 +167,10 @@ public class AddDeviceController {
                 keyEvent.consume();
             }
         });
+
+        rateList.clear();
+        rateList.addAll(dbHelper.getRates());
+        rateField.setItems(rateList);
     }
 
     private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
@@ -288,7 +298,7 @@ public class AddDeviceController {
                 description = descriptionField.getText();
             else
                 description = "TID: " + descriptionField.getText();
-            String rate = rateField.getText();
+            String rate = rateField.getEditor().getText().trim();
             // Επιλογή πελάτη
             Object value = customerComboBox.getValue();
             Customer selectedCustomer = null;
