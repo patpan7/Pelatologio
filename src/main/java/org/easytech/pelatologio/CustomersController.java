@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPopup;
 import javafx.application.Platform;
@@ -84,7 +85,9 @@ public class CustomersController implements Initializable {
         String[] filters = {"Όνομα", "Τίτλος", "ΑΦΜ", "Αριθμοί επικοινωνίας", "Πόλη", "Υπεύθυνος", "Σύσταση"};
 
         for (String filter : filters) {
-            CheckBox checkBox = new CheckBox(filter);
+            JFXCheckBox checkBox = new JFXCheckBox(filter);
+            //checkBox.applyCss();
+            checkBox.getStyleClass().add("normal-label");
             checkBoxes.add(checkBox);
             filterBox.getChildren().add(checkBox);
         }
@@ -104,7 +107,7 @@ public class CustomersController implements Initializable {
                 filterField.setText("");
 
             } else
-                popup.show(filterButton, JFXPopup.PopupVPosition.TOP, JFXPopup.PopupHPosition.RIGHT, 0,50);
+                popup.show(filterButton, JFXPopup.PopupVPosition.TOP, JFXPopup.PopupHPosition.LEFT, 0,50);
         });
 
 

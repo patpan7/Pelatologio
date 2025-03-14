@@ -67,7 +67,11 @@ public class CalendarController {
                     entry.setInterval(appointment.getStartTime(), appointment.getEndTime());
                     entry.setUserObject(appointment);
                     entry.setCalendar(fxCalendar); // Αυτό είναι απαραίτητο
-
+                    if (appointment.isCompleted()) {
+                        //entry.setTitle("[✔] " + appointment.getTitle());
+                        entry.setTitle("\u0336 [✔] " + appointment.getTitle().replaceAll(".", "$0\u0336")); // Διαγράμμιση κειμένου
+                        entry.getStyleClass().add("completed-entry");
+                    }
                     // Προσθήκη listener για drag-and-drop
                     addDragAndDropListener(entry);
 
@@ -115,7 +119,8 @@ public class CalendarController {
                         "", // Κενή περιγραφή
                         -1, // Προεπιλεγμένο ημερολόγιο (ID = -1)
                         entry.getStartAsLocalDateTime(),
-                        entry.getEndAsLocalDateTime()
+                        entry.getEndAsLocalDateTime(),
+                        false
                 );
                 controller.setCalendarMap(dbHelper.getAllCalendars());
                 controller.loadAppointment(newAppointment);

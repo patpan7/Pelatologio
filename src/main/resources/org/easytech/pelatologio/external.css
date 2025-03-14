@@ -271,3 +271,10 @@
     -fx-padding: 10px;
     -fx-border-radius: 0 0 10px 10px;
 }
+
+
+.completed-entry {
+    -fx-background-color: lightgray !important;
+    -fx-text-fill: darkgray !important;
+    -fx-font-style: italic;
+}

@@ -299,4 +299,9 @@ public class EditAppointmentController {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εμφάνιση του πελάτη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
+
+    public void markComplete(ActionEvent actionEvent) {
+        DBHelper dbHelper = new DBHelper();
+        dbHelper.completeAppointment(appointment.getId());
+    }
 }

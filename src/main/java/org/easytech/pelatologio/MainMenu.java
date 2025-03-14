@@ -7,6 +7,8 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -44,6 +46,7 @@ public class MainMenu extends Application {
 
         // Ξεκινά το polling αφού φορτωθεί η εφαρμογή
         startPolling();
+        startAppointmentReminder();
 
         stage.setOnCloseRequest(event -> {
             // Save settings before closing
@@ -107,6 +110,61 @@ public class MainMenu extends Application {
         });
 
         pollingService.start();
+    }
+
+    // ΝΕΟ: Υπενθύμιση για ραντεβού
+    public static void startAppointmentReminder() {
+        ScheduledService<List<Appointment>> appointmentService = new ScheduledService<>() {
+            @Override
+            protected Task<List<Appointment>> createTask() {
+                return new Task<>() {
+                    @Override
+                    protected List<Appointment> call() {
+                        DBHelper dbHelper = new DBHelper();
+
+                        return dbHelper.getUpcomingAppointments(LocalDateTime.now());
+                    }
+                };
+            }
+        };
+
+        appointmentService.setPeriod(Duration.seconds(30)); // Έλεγχος κάθε λεπτό
+        appointmentService.setOnSucceeded(event -> {
+            List<Appointment> upcomingAppointments = appointmentService.getValue();
+            if (!upcomingAppointments.isEmpty()) {
+                Platform.runLater(() -> showAppointmentReminder(upcomingAppointments));
+            }
+        });
+
+        appointmentService.start();
+    }
+
+    private static void showAppointmentReminder(List<Appointment> appointments) {
+        for (Appointment appointment : appointments) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Υπενθύμιση Ραντεβού");
+            alert.setHeaderText("Σε 15 λεπτά έχεις ραντεβού!");
+            alert.setContentText("Τίτλος: " + appointment.getTitle() + "\nΏρα: " + appointment.getStartTime());
+
+            ButtonType postponeButton = new ButtonType("Αναβολή (15 λεπτά)");
+            alert.getButtonTypes().add(postponeButton);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == postponeButton) {
+                postponeAppointment(appointment);
+            }
+        }
+    }
+
+    private static void postponeAppointment(Appointment appointment) {
+        DBHelper dbHelper = new DBHelper();
+        //dbHelper.postponeAppointment(appointment.getId(), appointment.getStartTime().plusMinutes(15));
+        Notifications.create()
+                .title("Αναβολή Ραντεβού")
+                .text("Το ραντεβού '" + appointment.getTitle() + "' αναβλήθηκε για 15 λεπτά.")
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT)
+                .showInformation();
     }
 
 

@@ -1,9 +1,12 @@
 package org.easytech.pelatologio;
 
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -671,7 +674,7 @@ public class DBHelper {
     }
 
     public boolean saveAppointment(Appointment appointment) {
-        String query = "INSERT INTO appointments (customerid, title, description, calendar_id, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO appointments (customerid, title, description, calendar_id, start_time, end_time, completed) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, appointment.getCustomerId());
@@ -680,6 +683,7 @@ public class DBHelper {
             stmt.setInt(4, appointment.getCalendarId());
             stmt.setTimestamp(5, Timestamp.valueOf(appointment.getStartTime()));
             stmt.setTimestamp(6, Timestamp.valueOf(appointment.getEndTime()));
+            stmt.setBoolean(7, false);
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 return true; // Ενημερώθηκε επιτυχώς
@@ -709,8 +713,9 @@ public class DBHelper {
                 int calendarId = rs.getInt("calendar_id");
                 LocalDateTime startTime = rs.getTimestamp("start_time").toLocalDateTime();
                 LocalDateTime endTime = rs.getTimestamp("end_time").toLocalDateTime();
+                Boolean completed = rs.getBoolean("completed");
 
-                appointments.add(new Appointment(id, customerId, title, description, calendarId, startTime, endTime));
+                appointments.add(new Appointment(id, customerId, title, description, calendarId, startTime, endTime, completed));
             }
             closeConnection(conn);
         } catch (SQLException e) {
@@ -2093,5 +2098,64 @@ public class DBHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean completeAppointment(int id) {
+        String query = "UPDATE appointments SET completed = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setBoolean(1, true);
+            stmt.setInt(2, id);
+            if (stmt.executeUpdate() > 0) {
+                closeConnection(conn);
+                return true;
+            } else {
+                closeConnection(conn);
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Appointment> getUpcomingAppointments(LocalDateTime checkTime) {
+        List<Appointment> appointments = new ArrayList<>();
+
+        // Στρογγυλοποιούμε την checkTime για να αφαιρέσουμε τη νανοδευτερόλεπτη ακρίβεια
+        checkTime = checkTime.truncatedTo(ChronoUnit.SECONDS);
+        System.out.println(checkTime);
+        // Ερώτημα SQL για να βρούμε τα ραντεβού που ξεκινούν σε απόσταση 15 λεπτών από την τρέχουσα ώρα
+        String query = "SELECT id, customerid, title, description, start_time, end_time FROM Appointments " +
+                "WHERE start_time BETWEEN ? AND ? AND completed = 0";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            // Βάζουμε το χρονικό παράθυρο για τα ραντεβού (από τώρα μέχρι 15 λεπτά μετά)
+            LocalDateTime startRange = checkTime;
+            LocalDateTime endRange = checkTime.plusMinutes(15);
+
+            stmt.setTimestamp(1, Timestamp.valueOf(startRange));
+            stmt.setTimestamp(2, Timestamp.valueOf(endRange));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String title = rs.getString("title");
+                    LocalDateTime startTime = rs.getTimestamp("start_time").toLocalDateTime();
+
+                    // Δημιουργούμε το αντικείμενο Appointment και το προσθέτουμε στη λίστα
+                    Appointment appointment = new Appointment();
+                    appointment.setId(id);
+                    appointment.setTitle(title);
+                    appointment.setStartTime(startTime);
+                    appointments.add(appointment);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return appointments;
     }
 }

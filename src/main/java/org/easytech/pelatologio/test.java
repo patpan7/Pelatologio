@@ -18,3 +18,4 @@ public class test {
         emailSender.sendEmail(recipient, subject, messageContent);
     }
 }
+

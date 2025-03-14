@@ -77,13 +77,15 @@
                                                 </ImageView>
                                             </graphic>
                                         </JFXButton>
-                                        <JFXButton fx:id="btnSubs" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#subsClick" styleClass="click-button" text="Συμβόλαια" textAlignment="CENTER">
-                                            <graphic>
-                                                <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                                    <Image url="@icons/contract.png" />
-                                                </ImageView>
-                                            </graphic>
-                                        </JFXButton>
+                              <JFXButton fx:id="btnSubs1" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#offersClick" styleClass="click-button" text="Προσφορές" textAlignment="CENTER">
+                                 <graphic>
+                                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@icons/offer.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXButton>
                                     </HBox>
                                     <HBox alignment="CENTER" spacing="30.0">
                                         <VBox.margin>
@@ -125,15 +127,13 @@
                                                 </ImageView>
                                             </graphic>
                                         </JFXButton>
-                              <JFXButton fx:id="btnSubs1" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#offersClick" styleClass="click-button" text="Προσφορές" textAlignment="CENTER">
-                                 <graphic>
-                                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@icons/offer.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </JFXButton>
+                                        <JFXButton fx:id="btnSubs" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#subsClick" styleClass="click-button" text="Συμβόλαια" textAlignment="CENTER">
+                                            <graphic>
+                                                <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                    <Image url="@icons/contract.png" />
+                                                </ImageView>
+                                            </graphic>
+                                        </JFXButton>
 
                                     </HBox>
                                     <HBox alignment="CENTER" spacing="30.0">

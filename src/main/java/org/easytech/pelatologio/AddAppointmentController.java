@@ -118,7 +118,7 @@ public class AddAppointmentController {
                     .orElse(null);
             Appointment appointment = null;
             if (selectedCalendar != null)
-                appointment = new Appointment(0, customerId, title, description, selectedCalendar.getId(), startDateTime, endDateTime);
+                appointment = new Appointment(0, customerId, title, description, selectedCalendar.getId(), startDateTime, endDateTime, false);
 
 
             DBHelper dbHelper = new DBHelper();
@@ -189,7 +189,8 @@ public class AddAppointmentController {
                     appointmentId, // ID του ραντεβού
                     customerId, title, description,
                     selectedCalendar.getId(),
-                    startDateTime, endDateTime
+                    startDateTime, endDateTime,
+                    false
             );
 
             DBHelper dbHelper = new DBHelper();
