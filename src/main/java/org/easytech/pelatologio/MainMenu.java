@@ -6,10 +6,12 @@ import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
@@ -114,12 +116,12 @@ public class MainMenu extends Application {
 
     // ΝΕΟ: Υπενθύμιση για ραντεβού
     public static void startAppointmentReminder() {
-        ScheduledService<List<Appointment>> appointmentService = new ScheduledService<>() {
+        ScheduledService<List<Tasks>> appointmentService = new ScheduledService<>() {
             @Override
-            protected Task<List<Appointment>> createTask() {
+            protected Task<List<Tasks>> createTask() {
                 return new Task<>() {
                     @Override
-                    protected List<Appointment> call() {
+                    protected List<Tasks> call() {
                         DBHelper dbHelper = new DBHelper();
 
                         return dbHelper.getUpcomingAppointments(LocalDateTime.now());
@@ -128,9 +130,9 @@ public class MainMenu extends Application {
             }
         };
 
-        appointmentService.setPeriod(Duration.seconds(30)); // Έλεγχος κάθε λεπτό
+        appointmentService.setPeriod(Duration.seconds(60)); // Έλεγχος κάθε λεπτό
         appointmentService.setOnSucceeded(event -> {
-            List<Appointment> upcomingAppointments = appointmentService.getValue();
+            List<Tasks> upcomingAppointments = appointmentService.getValue();
             if (!upcomingAppointments.isEmpty()) {
                 Platform.runLater(() -> showAppointmentReminder(upcomingAppointments));
             }
@@ -139,29 +141,78 @@ public class MainMenu extends Application {
         appointmentService.start();
     }
 
-    private static void showAppointmentReminder(List<Appointment> appointments) {
-        for (Appointment appointment : appointments) {
+    private static void showAppointmentReminder(List<Tasks> appointments) {
+        for (Tasks appointment : appointments) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Υπενθύμιση Ραντεβού");
-            alert.setHeaderText("Σε 15 λεπτά έχεις ραντεβού!");
+            alert.setHeaderText("Σε 30 λεπτά έχεις ραντεβού!");
             alert.setContentText("Τίτλος: " + appointment.getTitle() + "\nΏρα: " + appointment.getStartTime());
 
-            ButtonType postponeButton = new ButtonType("Αναβολή (15 λεπτά)");
+            ButtonType postponeButton = new ButtonType("Αναβολή");
             alert.getButtonTypes().add(postponeButton);
 
+            ButtonType okButton = new ButtonType("OK");
+            alert.getButtonTypes().add(okButton);
+
+
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == postponeButton) {
-                postponeAppointment(appointment);
+            if (result.isPresent() && result.get() == okButton) {
+                snoozeAppointment(appointment);
+            }
+            else if (result.isPresent() && result.get() == postponeButton) {
+                showCustomer(appointment.getCustomerId());
+                DBHelper dbHelper = new DBHelper();
+                dbHelper.getSelectedCustomer(appointment.getCustomerId());
             }
         }
     }
 
-    private static void postponeAppointment(Appointment appointment) {
+    private static void showCustomer(int customerId) {
         DBHelper dbHelper = new DBHelper();
-        //dbHelper.postponeAppointment(appointment.getId(), appointment.getStartTime().plusMinutes(15));
+
+        Customer selectedCustomer = dbHelper.getSelectedCustomer(customerId);
+        if (selectedCustomer.getCode() == 0) {
+            return;
+        }
+        try {
+            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+            if (res.equals("unlocked")) {
+                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                FXMLLoader loader = new FXMLLoader(MainMenu.class.getResource("newCustomer.fxml"));
+                Parent root = loader.load();
+
+                Stage stage = new Stage();
+                stage.setTitle("Λεπτομέρειες Πελάτη");
+                stage.setScene(new Scene(root));
+                stage.initModality(Modality.APPLICATION_MODAL); // Κλειδώνει το parent window αν το θες σαν dialog
+
+                AddCustomerController controller = loader.getController();
+
+                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                controller.setCustomerData(selectedCustomer);
+
+                stage.show();
+                stage.setOnCloseRequest(event -> {
+                    System.out.println("Το παράθυρο κλείνει!");
+                    dbHelper.customerUnlock(selectedCustomer.getCode());
+                });
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText(res);
+                alert.showAndWait();
+            }
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εμφάνιση του πελάτη.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+
+    private static void snoozeAppointment(Tasks appointment) {
+        DBHelper dbHelper = new DBHelper();
+        dbHelper.snoozeAppointment(appointment.getId());
         Notifications.create()
                 .title("Αναβολή Ραντεβού")
-                .text("Το ραντεβού '" + appointment.getTitle() + "' αναβλήθηκε για 15 λεπτά.")
+                .text("Το ραντεβού '" + appointment.getTitle() + "' ενημερώθηκε.")
                 .hideAfter(Duration.seconds(5))
                 .position(Pos.TOP_RIGHT)
                 .showInformation();

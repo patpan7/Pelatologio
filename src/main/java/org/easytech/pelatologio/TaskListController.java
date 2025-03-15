@@ -1,5 +1,7 @@
 package org.easytech.pelatologio;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -7,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -31,6 +34,8 @@ public class TaskListController implements Initializable {
     private TableView<Tasks> taskTable;
     @FXML
     private TableColumn idColumn, titleColumn, descriptionColumn, dueDateColumn, customerColumn, categoryColumn;
+    @FXML
+    private TableColumn<Tasks, Boolean> calendarColumn;
 
     @FXML
     private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox, showErgentCheckBox, showWaitCheckBox;
@@ -58,6 +63,34 @@ public class TaskListController implements Initializable {
         dueDateColumn.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+        calendarColumn.setCellValueFactory(cellData -> {
+            Tasks task = cellData.getValue();
+            BooleanProperty property = new SimpleBooleanProperty(task.getIsCalendar());
+
+            // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
+            property.addListener((obs, oldValue, newValue) -> {
+                task.setCalendar(newValue);
+                DBHelper dbHelper = new DBHelper();
+                dbHelper.updateTaskCalendar(task); // Ενημέρωση στη βάση
+            });
+
+            return property;
+        });
+
+// Σωστή χρήση του CheckBoxTableCell
+        calendarColumn.setCellFactory(col -> {
+            CheckBoxTableCell<Tasks, Boolean> cell = new CheckBoxTableCell<>();
+            cell.setEditable(true); // Επιτρέπει το click
+            return cell;
+        });
+
+// Κάνει τον πίνακα επεξεργάσιμο, αλλιώς το CheckBox δεν θα λειτουργεί
+        taskTable.setEditable(true);
+        calendarColumn.setEditable(true);
+
+
+
+
 
         showAllCheckbox.setSelected(false);
         showPendingCheckbox.setSelected(true);

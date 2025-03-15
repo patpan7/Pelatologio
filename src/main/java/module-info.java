@@ -24,6 +24,7 @@ module org.easytech.pelatologio {
     requires atlantafx.base;
     requires com.jfoenix;
     requires org.apache.commons.lang3;
+    requires org.mnode.ical4j.core;
 
     opens org.easytech.pelatologio to javafx.fxml;
     exports org.easytech.pelatologio;

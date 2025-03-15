@@ -24,6 +24,7 @@ import org.controlsfx.control.Notifications;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AddTaskController {
@@ -35,13 +36,20 @@ public class AddTaskController {
     @FXML
     private DatePicker dueDatePicker;
     @FXML
+    private ComboBox<String> startHourComboBox;
+
+    @FXML
+    private ComboBox<String> startMinuteComboBox;
+    @FXML
+    private ComboBox<Integer> durationComboBox;
+    @FXML
     private ComboBox<Customer> customerComboBox;
     @FXML
     private ComboBox<TaskCategory> categoryComboBox;
     @FXML
     private JFXButton btnCustomer;
     @FXML
-    private JFXCheckBox is_ergent, is_wait;
+    private JFXCheckBox is_ergent, is_wait, is_calendar;
 
     private Tasks tasks;
     private int customerId;
@@ -71,9 +79,15 @@ public class AddTaskController {
         titleField.setText(tasks.getTitle());
         descriptionField.setText(tasks.getDescription());
         dueDatePicker.setValue(tasks.getDueDate());
-        for (TaskCategory taskCategory : categoryComboBox.getItems()) {
-            if (taskCategory.getName().equals(tasks.getCategory())) {
-                categoryComboBox.setValue(taskCategory);
+        startHourComboBox.setValue(String.format("%02d", tasks.getStartTime() != null ? tasks.getStartTime().getHour() : 0));
+        startMinuteComboBox.setValue(String.format("%02d", tasks.getStartTime() != null ? tasks.getStartTime().getMinute() : 0));
+        long duration = 0;
+        if (tasks.getStartTime() != null && tasks.getEndTime() != null)
+            duration = java.time.Duration.between(tasks.getStartTime(), tasks.getEndTime()).toMinutes();
+        durationComboBox.setValue((int) duration);
+        for (TaskCategory tasksCategory : categoryComboBox.getItems()) {
+            if (tasksCategory.getName().equals(tasks.getCategory())) {
+                categoryComboBox.setValue(tasksCategory);
                 break;
             }
         }
@@ -89,6 +103,7 @@ public class AddTaskController {
 
         is_ergent.setSelected(tasks.getErgent());
         is_wait.setSelected(tasks.getWait());
+        is_calendar.setSelected(tasks.getIsCalendar());
     }
 
 
@@ -121,14 +136,14 @@ public class AddTaskController {
         categoryComboBox.getItems().addAll(categories);
         categoryComboBox.setConverter(new StringConverter<>() {
             @Override
-            public String toString(TaskCategory taskCategory) {
-                return taskCategory != null ? taskCategory.getName() : "";
+            public String toString(TaskCategory tasksCategory) {
+                return tasksCategory != null ? tasksCategory.getName() : "";
             }
 
             @Override
             public TaskCategory fromString(String string) {
                 return categoryComboBox.getItems().stream()
-                        .filter(taskCategory -> taskCategory.getName().equals(string))
+                        .filter(tasksCategory -> tasksCategory.getName().equals(string))
                         .findFirst()
                         .orElse(null);
             }
@@ -140,6 +155,15 @@ public class AddTaskController {
                 is_wait
         };
         configureSingleSelectionCheckBoxes(checkBoxes);
+        for (int hour = 7; hour < 23; hour++) {
+            startHourComboBox.getItems().add(String.format("%02d", hour));
+        }
+        for (int minute = 0; minute < 60; minute += 5) {
+            startMinuteComboBox.getItems().add(String.format("%02d", minute));
+        }
+
+        durationComboBox.getItems().addAll(15, 30, 45, 60, 90, 120, 0);
+        durationComboBox.getSelectionModel().select(1); // Προεπιλογή 30 λεπτά
     }
 
     private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
@@ -187,20 +211,52 @@ public class AddTaskController {
                 return false;
             }
 
+
             String title = titleField.getText();
             String description = descriptionField.getText();
             LocalDate date = dueDatePicker.getValue();
+            int startHour = Integer.parseInt(startHourComboBox.getValue());
+            int startMinute = Integer.parseInt(startMinuteComboBox.getValue());
+            LocalDateTime startDateTime = LocalDateTime.from(dueDatePicker.getValue().atTime(startHour, startMinute));
+            int duration = 0; // Προεπιλεγμένη τιμή για τη διάρκεια
+            String durationString = String.valueOf(durationComboBox.getValue());
+            if (durationString != null && !durationString.isEmpty()) {
+                try {
+                    duration = Integer.parseInt(durationString); // Μετατροπή από String σε Integer
+                } catch (NumberFormatException e) {
+                    System.out.println("Σφάλμα: Η διάρκεια δεν είναι έγκυρος αριθμός.");
+                    duration = 15; // Αν αποτύχει, θέτουμε μια προεπιλεγμένη τιμή
+                }
+            }
+
+            LocalDateTime endDateTime = startDateTime.plusMinutes(duration);
             Customer selectedCustomer = customerComboBox.getValue(); // Απευθείας χρήση του ComboBox
             String category = categoryComboBox.getValue().getName();
             Boolean isErgent = is_ergent.isSelected();
             Boolean isWait = is_wait.isSelected();
+            Boolean isCalendar = is_calendar.isSelected();
 
             DBHelper dbHelper = new DBHelper();
 
             if (tasks == null) {
                 // Δημιουργία νέας εργασίας
-                Tasks newTasks = new Tasks(0, title, description, date, false, category, selectedCustomer != null ? selectedCustomer.getCode() : 0, isErgent, isWait);
-                dbHelper.saveTask(newTasks);
+                Tasks newTask = new Tasks();
+                newTask.setId(0);
+                newTask.setTitle(title);
+                newTask.setTitle(title);
+                newTask.setDescription(description);
+                newTask.setDueDate(date);
+                newTask.setCategory(category);
+                newTask.setCustomerId(selectedCustomer != null ? selectedCustomer.getCode() : 0);
+                newTask.setErgent(isErgent);
+                newTask.setWait(isWait);
+                newTask.setCalendar(isCalendar);
+                newTask.setStartTime(startDateTime);
+                newTask.setEndTime(endDateTime);
+
+
+                //Tasks newTasks = new Tasks(0, title, description, date, false, category, selectedCustomer != null ? selectedCustomer.getCode() : 0, isErgent, isWait);
+                dbHelper.saveTask(newTask);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
                 tasks.setTitle(title);
@@ -211,6 +267,9 @@ public class AddTaskController {
                 tasks.setCustomerId(customerId);
                 tasks.setErgent(isErgent);
                 tasks.setWait(isWait);
+                tasks.setCalendar(isCalendar);
+                tasks.setStartTime(startDateTime);
+                tasks.setEndTime(endDateTime);
                 dbHelper.updateTask(tasks);
             }
 

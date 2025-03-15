@@ -1,8 +1,6 @@
 package org.easytech.pelatologio;
 
 import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -825,7 +823,7 @@ public class DBHelper {
 
     public List<Tasks> getAllTasks() {
         List<Tasks> tasks = new ArrayList<>();
-        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, t.is_ergent, t.is_wait, c.name " +
+        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, t.is_ergent, t.is_wait, t.is_calendar, t.start_time, t.end_time, c.name " +
                 "FROM Tasks t " +
                 "LEFT JOIN Customers c ON t.customerId = c.code";
 
@@ -844,8 +842,12 @@ public class DBHelper {
                 String customerName = resultSet.getString("name");
                 Boolean isErgent = resultSet.getBoolean("is_ergent");
                 Boolean isWait = resultSet.getBoolean("is_wait");
+                Boolean isCalendar = resultSet.getBoolean("is_calendar");
+                LocalDateTime startTime = resultSet.getTimestamp("start_time") != null ? resultSet.getTimestamp("start_time").toLocalDateTime() : null;
+                LocalDateTime endTime = resultSet.getTimestamp("end_time")!= null ? resultSet.getTimestamp("end_time").toLocalDateTime() : null;
 
-                Tasks task = new Tasks(id, title, description, dueDate, isCompleted, category, customerId, customerName, isErgent, isWait);
+
+                Tasks task = new Tasks(id, title, description, dueDate, isCompleted, category, customerId, customerName, isErgent, isWait, isCalendar, startTime, endTime);
                 tasks.add(task);
             }
             closeConnection(conn);
@@ -878,13 +880,13 @@ public class DBHelper {
 
 
     public boolean saveTask(Tasks tasks) {
-        String query = "INSERT INTO Tasks (title, description, dueDate, is_completed, customerId, category, is_ergent, is_wait) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Tasks (title, description, dueDate, is_completed, customerId, category, is_ergent, is_wait, is_calendar, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, tasks.getTitle());
             stmt.setString(2, tasks.getDescription());
             stmt.setDate(3, Date.valueOf(tasks.getDueDate()));
-            stmt.setBoolean(4, tasks.getCompleted());
+            stmt.setBoolean(4, false);
             if (tasks.getCustomerId() != null) {
                 stmt.setInt(5, tasks.getCustomerId());
             } else {
@@ -893,6 +895,10 @@ public class DBHelper {
             stmt.setString(6, tasks.getCategory());
             stmt.setBoolean(7, tasks.getErgent());
             stmt.setBoolean(8, tasks.getWait());
+            stmt.setBoolean(9, tasks.getIsCalendar());
+            stmt.setTimestamp(10, Timestamp.valueOf(tasks.getStartTime()));
+            stmt.setTimestamp(11, Timestamp.valueOf(tasks.getEndTime()));
+
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 closeConnection(conn);
@@ -907,8 +913,8 @@ public class DBHelper {
         return false;
     }
 
-    public void updateTask(Tasks tasks) {
-        String query = "UPDATE Tasks SET title = ?, description = ?, dueDate = ?, is_Completed = ?, category = ?, customerId = ?, is_ergent = ?, is_wait = ? WHERE id = ?";
+    public boolean updateTask(Tasks tasks) {
+        String query = "UPDATE Tasks SET title = ?, description = ?, dueDate = ?, is_Completed = ?, category = ?, customerId = ?, is_ergent = ?, is_wait = ?, is_calendar = ?, start_time = ?, end_time = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -925,7 +931,33 @@ public class DBHelper {
             }
             stmt.setBoolean(7, tasks.getErgent());
             stmt.setBoolean(8, tasks.getWait());
-            stmt.setInt(9, tasks.getId());
+            stmt.setBoolean(9, tasks.getIsCalendar());
+            stmt.setTimestamp(10, Timestamp.valueOf(tasks.getStartTime()));
+            stmt.setTimestamp(11, Timestamp.valueOf(tasks.getEndTime()));
+            stmt.setInt(12, tasks.getId());
+
+
+            if (stmt.executeUpdate() > 0) {
+                closeConnection(conn);
+                return true;
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void updateTaskCalendar(Tasks tasks) {
+        String query = "UPDATE Tasks SET is_calendar = ? WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setBoolean(1, tasks.getIsCalendar());
+            stmt.setInt(2, tasks.getId());
+
 
             if (stmt.executeUpdate() > 0) {
                 closeConnection(conn);
@@ -1376,7 +1408,7 @@ public class DBHelper {
 
     public List<Tasks> getAllCustomerTasks(int customerCode) {
         List<Tasks> tasks = new ArrayList<>();
-        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, t.is_ergent, t.is_wait, c.name " +
+        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, t.is_ergent, t.is_wait, t.is_calendar, t.start_time, t.end_time, c.name " +
                 "FROM Tasks t " +
                 "LEFT JOIN Customers c ON t.customerId = c.code " +
                 "WHERE t.customerId = ?";
@@ -1396,8 +1428,11 @@ public class DBHelper {
                 boolean isErgent = resultSet.getBoolean("is_ergent");
                 boolean isWait = resultSet.getBoolean("is_wait");
                 String customerName = resultSet.getString("name");
+                boolean isCalendar = resultSet.getBoolean("is_calendar");
+                LocalDateTime startTime = resultSet.getObject("start_time", LocalDateTime.class);
+                LocalDateTime endTime = resultSet.getObject("end_time", LocalDateTime.class);
 
-                Tasks task = new Tasks(id, title, description, dueDate, isCompleted, category, customerId, customerName, isErgent, isWait);
+                Tasks task = new Tasks(id, title, description, dueDate, isCompleted, category, customerId, customerName, isErgent, isWait, isCalendar, startTime, endTime);
                 tasks.add(task);
             }
             closeConnection(conn);
@@ -2119,22 +2154,21 @@ public class DBHelper {
         }
     }
 
-    public List<Appointment> getUpcomingAppointments(LocalDateTime checkTime) {
-        List<Appointment> appointments = new ArrayList<>();
+    public List<Tasks> getUpcomingAppointments(LocalDateTime checkTime) {
+        List<Tasks> appointments = new ArrayList<>();
 
         // Στρογγυλοποιούμε την checkTime για να αφαιρέσουμε τη νανοδευτερόλεπτη ακρίβεια
         checkTime = checkTime.truncatedTo(ChronoUnit.SECONDS);
-        System.out.println(checkTime);
         // Ερώτημα SQL για να βρούμε τα ραντεβού που ξεκινούν σε απόσταση 15 λεπτών από την τρέχουσα ώρα
-        String query = "SELECT id, customerid, title, description, start_time, end_time FROM Appointments " +
-                "WHERE start_time BETWEEN ? AND ? AND completed = 0";
+        String query = "SELECT id, customerId, title, description, start_time, end_time FROM Tasks " +
+                "WHERE start_time BETWEEN ? AND ? AND is_completed = 0 AND snooze = 0";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             // Βάζουμε το χρονικό παράθυρο για τα ραντεβού (από τώρα μέχρι 15 λεπτά μετά)
             LocalDateTime startRange = checkTime;
-            LocalDateTime endRange = checkTime.plusMinutes(15);
+            LocalDateTime endRange = checkTime.plusMinutes(30);
 
             stmt.setTimestamp(1, Timestamp.valueOf(startRange));
             stmt.setTimestamp(2, Timestamp.valueOf(endRange));
@@ -2143,12 +2177,14 @@ public class DBHelper {
                     int id = rs.getInt("id");
                     String title = rs.getString("title");
                     LocalDateTime startTime = rs.getTimestamp("start_time").toLocalDateTime();
+                    int customerId = rs.getInt("customerId");
 
                     // Δημιουργούμε το αντικείμενο Appointment και το προσθέτουμε στη λίστα
-                    Appointment appointment = new Appointment();
+                    Tasks appointment = new Tasks();
                     appointment.setId(id);
                     appointment.setTitle(title);
                     appointment.setStartTime(startTime);
+                    appointment.setCustomerId(customerId);
                     appointments.add(appointment);
                 }
             }
@@ -2157,5 +2193,24 @@ public class DBHelper {
         }
 
         return appointments;
+    }
+
+    public void snoozeAppointment(Integer id) {
+        String query = "UPDATE Tasks SET snooze = 1 WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, id);
+
+
+            if (stmt.executeUpdate() > 0) {
+                closeConnection(conn);
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

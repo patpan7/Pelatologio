@@ -15,7 +15,7 @@
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
-                    <Label prefWidth="235.0" styleClass="normal-label" text="Τίτλος:" />
+                    <Label minWidth="180.0" styleClass="normal-label" text="Τίτλος:" />
                     <TextField fx:id="titleField" prefWidth="325.0" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
@@ -23,25 +23,43 @@
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
-                    <Label prefWidth="235.0" styleClass="normal-label" text="Περιγραφή:" />
+                    <Label minWidth="180.0" styleClass="normal-label" text="Περιγραφή:" />
                     <TextArea fx:id="descriptionField" onMouseClicked="#handleMouseClick" prefHeight="100" prefWidth="325.0" wrapText="true" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
-                    <Label prefWidth="235.0" styleClass="normal-label" text="Ημερομηνία Λήξης:">
+                    <Label minWidth="180.0" styleClass="normal-label" text="Ημερομηνία:">
                         <opaqueInsets>
                             <Insets />
                         </opaqueInsets>
                     </Label>
-                    <DatePicker fx:id="dueDatePicker" prefWidth="325.0" />
+                    <DatePicker fx:id="dueDatePicker" prefWidth="325.0" promptText="Ημερομηνία" />
+                </HBox>
+                <HBox alignment="CENTER_LEFT">
+                    <Label minWidth="180.0" styleClass="normal-label" text="Ώρα:" />
+                    <ComboBox fx:id="startHourComboBox" editable="true" prefWidth="160.0" promptText="Ώρα" />
+                    <ComboBox fx:id="startMinuteComboBox" editable="true" prefWidth="160.0" promptText="Λεπτά">
+                  <HBox.margin>
+                     <Insets left="5.0" />
+                  </HBox.margin></ComboBox>
+                    <VBox.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="CENTER_LEFT">
+                    <Label prefWidth="180.0" styleClass="normal-label" text="Διάρκεια (λεπτά):" wrapText="true" />
+                    <ComboBox fx:id="durationComboBox" editable="true" prefWidth="160.0" promptText="Διάρκεια" />
+                    <VBox.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                    </VBox.margin>
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
-                    <Label prefWidth="235.0" styleClass="normal-label" text="Πελάτης:" />
+                    <Label minWidth="180.0" styleClass="normal-label" text="Πελάτης:" />
                     <ComboBox fx:id="customerComboBox" editable="true" prefWidth="325.0" promptText="Επιλογή Πελάτη" />
                     <JFXButton fx:id="btnCustomer" buttonType="RAISED" mnemonicParsing="false" onAction="#showCustomer" styleClass="click-button" text="">
                         <graphic>
@@ -58,25 +76,34 @@
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
-                    <Label prefWidth="235.0" styleClass="normal-label" text="Κατηγορία:" />
-                    <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="325.0" />
+                    <Label minWidth="180.0" styleClass="normal-label" text="Κατηγορία:" />
+                    <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="325.0" promptText="Πελάτης" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="329.0">
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
-                    <Label prefWidth="235.0" styleClass="normal-label" text="Επείγον:" />
+                    <Label minWidth="180.0" styleClass="normal-label" text="Επείγον:" />
                     <JFXCheckBox fx:id="is_ergent" mnemonicParsing="false" text="" />
                 </HBox>
-            <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="382.0">
-               <children>
-                  <Label prefWidth="235.0" styleClass="normal-label" text="Αναμονή:" />
-                  <JFXCheckBox fx:id="is_wait" mnemonicParsing="false" text="" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-               </VBox.margin>
-            </HBox>
+                <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="382.0">
+                    <children>
+                        <Label minWidth="180.0" styleClass="normal-label" text="Αναμονή:" />
+                        <JFXCheckBox fx:id="is_wait" mnemonicParsing="false" text="" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="419.0">
+                    <children>
+                        <Label minWidth="180.0" styleClass="normal-label" text="Ημερολογίο:" />
+                        <JFXCheckBox fx:id="is_calendar" mnemonicParsing="false" text="" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                    </VBox.margin>
+                </HBox>
             </VBox>
         </ScrollPane>
     </content>

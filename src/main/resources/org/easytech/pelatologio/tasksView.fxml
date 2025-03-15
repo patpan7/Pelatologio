@@ -107,9 +107,10 @@
                                          text="Περιγραφή"/>
                             <TableColumn fx:id="dueDateColumn" maxWidth="220.0" minWidth="110.0" prefWidth="110.0"
                                          text="Ημερομηνία"/>
-                            <TableColumn fx:id="customerColumn" minWidth="280.0" prefWidth="280.0" text="Πελάτης"/>
+                            <TableColumn fx:id="customerColumn" minWidth="230.0" prefWidth="230.0" text="Πελάτης"/>
                             <TableColumn fx:id="categoryColumn" maxWidth="200.0" minWidth="200.0" prefWidth="200.0"
                                          text="Κατηγορία"/>
+                            <TableColumn fx:id="calendarColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Ημερ."/>
                         </columns>
                         <columnResizePolicy>
                             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
