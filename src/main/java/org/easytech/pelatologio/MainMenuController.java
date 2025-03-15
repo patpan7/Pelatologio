@@ -366,4 +366,30 @@ public class MainMenuController implements Initializable {
         mainTabPane.getTabs().add(newTab);
         mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
     }
+
+    public void supplierClick(ActionEvent event) throws IOException {
+        for (Tab tab : mainTabPane.getTabs()) {
+            if (tab.getText().equals("Προμηθευτές")) {
+                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                return;
+            }
+        }
+
+        // Φόρτωση του FXML
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("suppliersView.fxml"));
+        Parent suppliersContent = fxmlLoader.load();
+
+        // Περνάμε το mainTabPane στον CustomersController
+        SuppliersController suppliersController = fxmlLoader.getController();
+        suppliersController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
+
+
+        // Δημιουργία νέου tab
+        Tab newTab = new Tab("Προμηθευτές");
+        newTab.setContent(suppliersContent);
+
+        // Προσθήκη του tab στο TabPane
+        mainTabPane.getTabs().add(newTab);
+        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
+    }
 }

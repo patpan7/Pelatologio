@@ -10,10 +10,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.apache.log4j.chainsaw.Main;
 import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
@@ -123,14 +125,13 @@ public class MainMenu extends Application {
                     @Override
                     protected List<Tasks> call() {
                         DBHelper dbHelper = new DBHelper();
-
                         return dbHelper.getUpcomingAppointments(LocalDateTime.now());
                     }
                 };
             }
         };
 
-        appointmentService.setPeriod(Duration.seconds(60)); // Έλεγχος κάθε λεπτό
+        appointmentService.setPeriod(Duration.minutes(15)); // Έλεγχος κάθε λεπτό
         appointmentService.setOnSucceeded(event -> {
             List<Tasks> upcomingAppointments = appointmentService.getValue();
             if (!upcomingAppointments.isEmpty()) {
@@ -151,59 +152,27 @@ public class MainMenu extends Application {
             ButtonType postponeButton = new ButtonType("Αναβολή");
             alert.getButtonTypes().add(postponeButton);
 
-            ButtonType okButton = new ButtonType("OK");
-            alert.getButtonTypes().add(okButton);
-
-
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == okButton) {
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 snoozeAppointment(appointment);
             }
             else if (result.isPresent() && result.get() == postponeButton) {
-                showCustomer(appointment.getCustomerId());
-                DBHelper dbHelper = new DBHelper();
-                dbHelper.getSelectedCustomer(appointment.getCustomerId());
+                try {
+                    FXMLLoader loader = new FXMLLoader(MainMenu.class.getResource("CalendarView.fxml"));
+                    Parent root = loader.load();
+
+                    Stage stage = new Stage();
+                    stage.setTitle("Ημερολόγιο");
+                    stage.setScene(new Scene(root));
+
+                    // Προαιρετικά: Κλείδωμα του MainMenu αν χρειάζεται
+                    stage.initModality(Modality.APPLICATION_MODAL);
+
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-    }
-
-    private static void showCustomer(int customerId) {
-        DBHelper dbHelper = new DBHelper();
-
-        Customer selectedCustomer = dbHelper.getSelectedCustomer(customerId);
-        if (selectedCustomer.getCode() == 0) {
-            return;
-        }
-        try {
-            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-            if (res.equals("unlocked")) {
-                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-                FXMLLoader loader = new FXMLLoader(MainMenu.class.getResource("newCustomer.fxml"));
-                Parent root = loader.load();
-
-                Stage stage = new Stage();
-                stage.setTitle("Λεπτομέρειες Πελάτη");
-                stage.setScene(new Scene(root));
-                stage.initModality(Modality.APPLICATION_MODAL); // Κλειδώνει το parent window αν το θες σαν dialog
-
-                AddCustomerController controller = loader.getController();
-
-                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setCustomerData(selectedCustomer);
-
-                stage.show();
-                stage.setOnCloseRequest(event -> {
-                    System.out.println("Το παράθυρο κλείνει!");
-                    dbHelper.customerUnlock(selectedCustomer.getCode());
-                });
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Προσοχή");
-                alert.setContentText(res);
-                alert.showAndWait();
-            }
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εμφάνιση του πελάτη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 

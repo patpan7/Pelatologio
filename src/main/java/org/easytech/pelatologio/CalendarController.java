@@ -14,6 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
@@ -31,23 +32,49 @@ public class CalendarController {
     @FXML
     private ButtonType deleteButton;
     DBHelper dbHelper;
+    List<TaskCategory> customCalendars;
+    List<Tasks> appointments;
 
     @FXML
     public void initialize() {
         Platform.runLater(() -> stackPane.requestFocus());
         // Ανάκτηση ημερολογίων από τη βάση
-        dbHelper = new DBHelper();
-        List<TaskCategory> customCalendars = dbHelper.getAllTaskCategory();
-        List<Tasks> appointments = dbHelper.getAllTasks();
+        loadEvents();
 
+        // Ρυθμίσεις εμφάνισης
+        calendarView.setShowSearchField(true);
+        calendarView.setShowToolBar(true);
+
+        calendarView.setEntryDetailsCallback(param -> {
+            Entry<Tasks> entry = (Entry<Tasks>) param.getEntry();
+            if (entry != null) {
+                showEditAppointmentDialog(entry, entry.getCalendar());
+            }
+            return null;
+        });
+
+    }
+
+    private void loadEvents() {
+        // Φόρτωση όλων των συμβάντων από τη βάση
+        dbHelper = new DBHelper();
+        customCalendars = dbHelper.getAllTaskCategory();
+        appointments = dbHelper.getAllTasks();
+        updateCalendar();
+    }
+
+    private void updateCalendar() {
+        // Αδειάζουμε το ημερολόγιο πριν την ανανέωση
+        calendarView.getCalendarSources().clear();
+
+        // Δημιουργούμε νέο CalendarSource για τα συμβάντα
         CalendarSource calendarSource = new CalendarSource("Calendars");
         // Αφαίρεση όλων των προεπιλεγμένων ημερολογίων
         calendarSource.getCalendars().clear();
-
         // Μετατροπή των δεδομένων σε CalendarFX Calendar
         String[] styles = {"STYLE1", "STYLE2", "STYLE3", "STYLE4", "STYLE5", "STYLE6", "STYLE7"};
         int styleIndex = 0;
-
+        System.out.println("test");
         for (TaskCategory customCalendar : customCalendars) {
             Calendar fxCalendar = new Calendar(customCalendar.getName());
 
@@ -60,7 +87,11 @@ public class CalendarController {
             for (Tasks appointment : appointments) {
                 if (appointment.getIsCalendar()) {
                     if (appointment.getCategory().equals(customCalendar.getName())) {
-                        Entry<Tasks> entry = new Entry<>(appointment.getCustomerName() + " " + appointment.getTitle());
+                        Entry<Tasks> entry;
+                        if (appointment.getCustomerId() != 0)
+                            entry = new Entry<>(appointment.getCustomerName() + " " + appointment.getTitle());
+                        else
+                            entry = new Entry<>(appointment.getTitle());
                         entry.setId(String.valueOf(appointment.getId()));
                         entry.setInterval(appointment.getStartTime(), appointment.getEndTime());
                         entry.setUserObject(appointment);
@@ -84,18 +115,6 @@ public class CalendarController {
         // Προσθήκη στο View
         calendarView.getCalendarSources().addAll(calendarSource);
         calendarView.setRequestedTime(LocalTime.now());
-        // Ρυθμίσεις εμφάνισης
-        calendarView.setShowSearchField(true);
-        calendarView.setShowToolBar(true);
-
-        calendarView.setEntryDetailsCallback(param -> {
-            Entry<Tasks> entry = (Entry<Tasks>) param.getEntry();
-            if (entry != null) {
-                showEditAppointmentDialog(entry, entry.getCalendar());
-            }
-            return null;
-        });
-
     }
 
 
@@ -135,6 +154,7 @@ public class CalendarController {
             });
 
             dialog.showAndWait();
+            loadEvents();
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -157,6 +177,7 @@ public class CalendarController {
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Σφάλμα κατά την ενημέρωση του ραντεβού στη βάση.");
                     errorAlert.show();
                 }
+                loadEvents();
             }
         });
     }
@@ -192,7 +213,7 @@ public class CalendarController {
             dialog.setTitle("Προσθήκη Ραντεβού");
 
             AddTaskController controller = loader.getController();
-
+            controller.checkCalendar();
 
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
@@ -212,5 +233,9 @@ public class CalendarController {
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
+    }
+
+    public void refresh(MouseEvent mouseEvent) {
+        loadEvents();
     }
 }

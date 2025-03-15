@@ -666,6 +666,16 @@ public class AddCustomerController {
         hasTabs();
         setAccountant();
         setRecommendation();
+        taxisViewController.setCustomer(customer);
+        myposViewController.setCustomer(customer);
+        simplyViewController.setCustomer(customer);
+        emblemViewController.setCustomer(customer);
+        erganiViewController.setCustomer(customer);
+        customerDevicesController.setCustomer(customer);
+        customerTasksController.setCustomer(customer);
+        customerSubsController.setCustomer(customer);
+        customerOffersController.setCustomer(customer);
+
     }
 
     private void setRecommendation() {

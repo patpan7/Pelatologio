@@ -310,6 +310,7 @@ public class TaskListController implements Initializable {
 
 
 
+    @FXML
     private void handleAddTask() {
             try {
                 // Φόρτωση του FXML για προσθήκη ραντεβού
@@ -339,6 +340,7 @@ public class TaskListController implements Initializable {
             }
     }
 
+    @FXML
     private void handleEditTask() throws IOException {
         // Επεξεργασία επιλεγμένης εργασίας
         Tasks selectedTasks = taskTable.getSelectionModel().getSelectedItem();
@@ -377,6 +379,7 @@ public class TaskListController implements Initializable {
         }
     }
 
+    @FXML
     private void handleDeleteTask() throws SQLException {
         // Διαγραφή επιλεγμένης εργασίας
         Tasks selectedTasks = taskTable.getSelectionModel().getSelectedItem();
@@ -425,6 +428,56 @@ public class TaskListController implements Initializable {
         tooltip.setShowDelay(Duration.seconds(0.3));
         tooltip.setText(text);
         button.setTooltip(tooltip);
+    }
+
+    public void toggleComplete(ActionEvent event) {
+        toggleComplete(true);
+    }
+
+    @FXML
+    private void handleAddOffer() throws SQLException {
+        Tasks selectedTasks = taskTable.getSelectionModel().getSelectedItem();
+        if (selectedTasks == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Προσοχή");
+            alert.setContentText("Δεν έχει επιλεγεί εργασία!");
+            Optional<ButtonType> result = alert.showAndWait();
+            return;
+        }
+        try {
+            // Φόρτωση του FXML για προσθήκη ραντεβού
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addOffer.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Προσθήκη Προσφοράς");
+            AddOfferController controller = loader.getController();
+            DBHelper dbHelper = new DBHelper();
+            Customer customer = dbHelper.getSelectedCustomer(selectedTasks.getCustomerId());
+            controller.setCustomer(customer);
+            controller.setCustomerName(customer.getName());
+            controller.lock();
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                // Εκτελούμε το handleSaveAppointment
+                boolean success = controller.handleSaveOffer();
+
+                if (!success) {
+                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                    event.consume();
+                }
+            });
+
+            dialog.showAndWait();
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+
+    public void toggleRecall(ActionEvent event) {
+        toggleComplete(false);
     }
 
     public void refresh(MouseEvent mouseEvent) {

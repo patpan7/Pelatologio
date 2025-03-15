@@ -49,7 +49,7 @@ public class AddTaskController {
     @FXML
     private JFXButton btnCustomer;
     @FXML
-    private JFXCheckBox is_ergent, is_wait, is_calendar;
+    private JFXCheckBox is_completed, is_ergent, is_wait, is_calendar;
 
     private Tasks tasks;
     private int customerId;
@@ -101,9 +101,11 @@ public class AddTaskController {
             }
         }
 
+        is_completed.setSelected(tasks.getCompleted());
         is_ergent.setSelected(tasks.getErgent());
         is_wait.setSelected(tasks.getWait());
         is_calendar.setSelected(tasks.getIsCalendar());
+
     }
 
 
@@ -210,7 +212,21 @@ public class AddTaskController {
                     notifications.showError();});
                 return false;
             }
-
+            if (is_calendar.isSelected()){
+                if (startHourComboBox.getValue() == null || startHourComboBox.getValue() == null ||
+                        startMinuteComboBox.getValue() == null || durationComboBox.getValue() == null ||
+                        categoryComboBox.getValue() == null) {
+                    Platform.runLater(() -> {
+                        Notifications notifications = Notifications.create()
+                                .title("Σφάλμα")
+                                .text("Συμπληρώστε όλα τα απαραίτητα πεδία.")
+                                .graphic(null)
+                                .hideAfter(Duration.seconds(5))
+                                .position(Pos.TOP_RIGHT);
+                        notifications.showError();});
+                    return false; // Αποτυχία
+                }
+            }
 
             String title = titleField.getText();
             String description = descriptionField.getText();
@@ -232,6 +248,7 @@ public class AddTaskController {
             LocalDateTime endDateTime = startDateTime.plusMinutes(duration);
             Customer selectedCustomer = customerComboBox.getValue(); // Απευθείας χρήση του ComboBox
             String category = categoryComboBox.getValue().getName();
+            Boolean isCompleted = is_completed.isSelected();
             Boolean isErgent = is_ergent.isSelected();
             Boolean isWait = is_wait.isSelected();
             Boolean isCalendar = is_calendar.isSelected();
@@ -254,7 +271,6 @@ public class AddTaskController {
                 newTask.setStartTime(startDateTime);
                 newTask.setEndTime(endDateTime);
 
-
                 //Tasks newTasks = new Tasks(0, title, description, date, false, category, selectedCustomer != null ? selectedCustomer.getCode() : 0, isErgent, isWait);
                 dbHelper.saveTask(newTask);
             } else {
@@ -270,6 +286,7 @@ public class AddTaskController {
                 tasks.setCalendar(isCalendar);
                 tasks.setStartTime(startDateTime);
                 tasks.setEndTime(endDateTime);
+                tasks.setCompleted(isCompleted);
                 dbHelper.updateTask(tasks);
             }
 
@@ -388,5 +405,9 @@ public class AddTaskController {
                 }
             });
         }
+    }
+
+    public void checkCalendar() {
+        is_calendar.setSelected(true);
     }
 }

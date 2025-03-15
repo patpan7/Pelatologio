@@ -112,6 +112,20 @@
                                          text="Κατηγορία"/>
                             <TableColumn fx:id="calendarColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Ημερ."/>
                         </columns>
+                        <contextMenu>
+                            <ContextMenu>
+                                <items>
+                                    <MenuItem onAction="#handleEditTask" styleClass="menu-item" text="Επεξεργασία" />
+                                    <MenuItem mnemonicParsing="false" onAction="#handleAddTask" styleClass="menu-item" text="Προσθήκη" />
+                                    <MenuItem mnemonicParsing="false" onAction="#handleDeleteTask" styleClass="menu-item" text="Διαγραφή" />
+                                    <SeparatorMenuItem />
+                                    <MenuItem mnemonicParsing="false" onAction="#toggleComplete" styleClass="menu-item" text="Ολοκλήρωση" />
+                                    <MenuItem mnemonicParsing="false" onAction="#toggleRecall" styleClass="menu-item" text="Ανάκληση" />
+                                    <SeparatorMenuItem />
+                                    <MenuItem mnemonicParsing="false" onAction="#handleAddOffer" styleClass="menu-item" text="Δημιουργία Προσφοράς" />
+                                </items>
+                            </ContextMenu>
+                        </contextMenu>
                         <columnResizePolicy>
                             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                         </columnResizePolicy>

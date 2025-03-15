@@ -77,29 +77,59 @@
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
                     <Label minWidth="180.0" styleClass="normal-label" text="Κατηγορία:" />
-                    <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="325.0" promptText="Πελάτης" />
+                    <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="325.0" promptText="Κατηγορία" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="329.0">
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
-                    <Label minWidth="180.0" styleClass="normal-label" text="Επείγον:" />
-                    <JFXCheckBox fx:id="is_ergent" mnemonicParsing="false" text="" />
+                    <Label styleClass="normal-label" text="Επείγον:">
+                  <HBox.margin>
+                     <Insets bottom="5.0" right="5.0" top="5.0" />
+                  </HBox.margin></Label>
+                    <JFXCheckBox fx:id="is_ergent" mnemonicParsing="false" text="">
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </HBox.margin></JFXCheckBox>
+                     <Label styleClass="normal-label" text="Αναμονή:">
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
+                  </HBox.margin>
+               </Label>
+                     <JFXCheckBox fx:id="is_wait" mnemonicParsing="false" text="">
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </HBox.margin>
+               </JFXCheckBox>
+                     <Label styleClass="normal-label" text="Ημερολογίο:">
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
+                  </HBox.margin>
+               </Label>
+                     <JFXCheckBox fx:id="is_calendar" mnemonicParsing="false" text="">
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </HBox.margin>
+               </JFXCheckBox>
                 </HBox>
                 <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="382.0">
-                    <children>
-                        <Label minWidth="180.0" styleClass="normal-label" text="Αναμονή:" />
-                        <JFXCheckBox fx:id="is_wait" mnemonicParsing="false" text="" />
-                    </children>
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
+               <children>
+                  <Label styleClass="normal-label" text="Ολοκληρωμένο:">
+                     <HBox.margin>
+                        <Insets bottom="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Label>
+                  <JFXCheckBox fx:id="is_completed" mnemonicParsing="false" text="">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </JFXCheckBox>
+               </children>
                 </HBox>
                 <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="419.0">
-                    <children>
-                        <Label minWidth="180.0" styleClass="normal-label" text="Ημερολογίο:" />
-                        <JFXCheckBox fx:id="is_calendar" mnemonicParsing="false" text="" />
-                    </children>
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>

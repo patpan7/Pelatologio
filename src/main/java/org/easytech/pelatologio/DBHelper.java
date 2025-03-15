@@ -880,7 +880,7 @@ public class DBHelper {
 
 
     public boolean saveTask(Tasks tasks) {
-        String query = "INSERT INTO Tasks (title, description, dueDate, is_completed, customerId, category, is_ergent, is_wait, is_calendar, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Tasks (title, description, dueDate, is_completed, customerId, category, is_ergent, is_wait, is_calendar, start_time, end_time, snooze) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, tasks.getTitle());
@@ -898,6 +898,7 @@ public class DBHelper {
             stmt.setBoolean(9, tasks.getIsCalendar());
             stmt.setTimestamp(10, Timestamp.valueOf(tasks.getStartTime()));
             stmt.setTimestamp(11, Timestamp.valueOf(tasks.getEndTime()));
+            stmt.setBoolean(12, false);
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
@@ -2212,5 +2213,105 @@ public class DBHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Supplier> getSuppliers() {
+        List<Supplier> suppliers = new ArrayList<>();
+        String query = "SELECT * FROM Suppliers";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String phone = rs.getString("phone");
+                String mobile = rs.getString("mobile");
+                String email = rs.getString("email");
+                Supplier supplier = new Supplier(id, name, phone, mobile, email);
+                suppliers.add(supplier);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return suppliers;
+    }
+
+    public int insertSupplier(String name, String phone, String mobile, String email) {
+        String insertQuery = "INSERT INTO Suppliers (name, phone, mobile, email) "
+                + "VALUES (?, ?, ?, ?)";
+        int newCustomerId = -1; // Default value for error handling
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setString(1, name);
+            pstmt.setString(2, phone);
+            pstmt.setString(3, mobile);
+            pstmt.setString(4, email);
+
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Η εισαγωγή του προμηθευτή ήταν επιτυχής.");
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        newCustomerId = generatedKeys.getInt(1);
+                    }
+                }
+            } else {
+                System.out.println("Η εισαγωγή του προμηθευτή απέτυχε.");
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            System.err.println("Σφάλμα κατά την εισαγωγή του λογιστή: " + e.getMessage());
+        }
+
+        return newCustomerId; // Επιστρέφει το CustomerID ή -1 αν υπήρξε σφάλμα
+    }
+
+    public void updateSupplier(int code, String name, String phone, String mobile, String email) {
+        String sql = "UPDATE suppliers SET name = ?, phone = ?, mobile = ?, email = ? WHERE id = ?";
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, name);
+            pstmt.setString(2, phone);
+            pstmt.setString(3, mobile);
+            pstmt.setString(4, email);
+            pstmt.setInt(5, code);
+
+            int rowsUpdated = pstmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Η ενημέρωση ήταν επιτυχής!");
+                // Μπορείς να προσθέσεις εδώ και μια ενημέρωση της λίστας πελατών στην κύρια σκηνή.
+            } else {
+                System.out.println("Δεν βρέθηκε πελάτης με αυτό το κωδικό.");
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Supplier getSelectedSupplier (int accountantId) {
+        String query = "SELECT * FROM suppliers WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, accountantId);
+            ResultSet resultSet = stmt.executeQuery();
+            Supplier data = null;
+            if (resultSet.next()) {
+                data = new Supplier();
+                data.setId(resultSet.getInt("id"));
+                data.setName(resultSet.getString("name"));
+                data.setPhone(resultSet.getString("phone"));
+                data.setMobile(resultSet.getString("mobile"));
+                data.setEmail(resultSet.getString("email"));
+            }
+            closeConnection(conn);
+            return data;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

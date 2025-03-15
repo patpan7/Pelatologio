@@ -25,6 +25,7 @@ module org.easytech.pelatologio {
     requires com.jfoenix;
     requires org.apache.commons.lang3;
     requires org.mnode.ical4j.core;
+    requires log4j;
 
     opens org.easytech.pelatologio to javafx.fxml;
     exports org.easytech.pelatologio;
