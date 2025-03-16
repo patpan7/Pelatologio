@@ -29,7 +29,7 @@ public class AddSupplierController {
     @FXML
     private AnchorPane customersContainer;
     @FXML
-    private TextField tfName, tfPhone, tfMobile, tfEmail;
+    private TextField tfName, tfTitle, tfPhone, tfMobile, tfContact, tfEmail, tfSite;
     @FXML
     private ProgressIndicator progressIndicator;
 
@@ -90,8 +90,11 @@ public class AddSupplierController {
 
         // Προσθήκη του contextMenu στα υπόλοιπα TextFields
         setupTextFieldContextMenu(tfName, contextMenu);
+        setupTextFieldContextMenu(tfTitle, contextMenu);
         setupTextFieldContextMenu(tfPhone, phoneContextMenu);
         setupTextFieldContextMenu(tfMobile, phoneContextMenu);
+        setupTextFieldContextMenu(tfContact, contextMenu);
+        setupTextFieldContextMenu(tfSite, contextMenu);
 
         // Ανάθεση emailContextMenu στο tfEmail
         tfEmail.setContextMenu(emailContextMenu);
@@ -230,9 +233,12 @@ public class AddSupplierController {
     public void setSupplierData(Supplier supplier) {
         // Ρύθμιση των πεδίων με τα υπάρχοντα στοιχεία του πελάτη
         tfName.setText(supplier.getName());
+        tfTitle.setText(supplier.getTitle());
         tfPhone.setText(supplier.getPhone());
         tfMobile.setText(supplier.getMobile());
+        tfContact.setText(supplier.getContact());
         tfEmail.setText(supplier.getEmail());
+        tfSite.setText(supplier.getSite());
 
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = supplier.getId();
@@ -258,9 +264,12 @@ public class AddSupplierController {
 
     void addSupplier() {
         String name = tfName.getText();
+        String title = tfTitle.getText() != null ? tfTitle.getText() : "";
         String phone = (tfPhone.getText() != null ? tfPhone.getText() : "");
         String mobile = (tfMobile.getText() != null ? tfMobile.getText() : "");
+        String contact = (tfContact.getText() != null ? tfContact.getText() : "");
         String email = (tfEmail.getText() != null ? tfEmail.getText() : "");
+        String site = (tfSite.getText() != null ? tfSite.getText() : "");
         if (mobile.startsWith("+30"))
             mobile = mobile.substring(3);
         if (phone.startsWith("+30"))
@@ -272,10 +281,10 @@ public class AddSupplierController {
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         int supplierId;
-        supplierId = dbHelper.insertSupplier(name, phone, mobile, email);
+        supplierId = dbHelper.insertSupplier(name, title, phone, mobile, contact, email, site);
         // Εμφάνιση επιτυχίας
         if (supplierId > 0) {
-            Supplier newSupplier = new Supplier(supplierId, name, phone, mobile, email);
+            Supplier newSupplier = new Supplier(supplierId, name, title, phone, mobile, contact, email, site);
 
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -307,9 +316,12 @@ public class AddSupplierController {
         DBHelper dbHelper = new DBHelper();
 
         String name = tfName.getText();
+        String title = tfTitle.getText() != null ? tfTitle.getText() : "";
         String phone = (tfPhone.getText() != null ? tfPhone.getText() : "");
         String mobile = (tfMobile.getText() != null ? tfMobile.getText() : "");
+        String contact = (tfContact.getText() != null ? tfContact.getText() : "");
         String email = (tfEmail.getText() != null ? tfEmail.getText() : "");
+        String site = (tfSite.getText() != null ? tfSite.getText() : "");
 
         if (mobile.startsWith("+30"))
             mobile = mobile.substring(3);
@@ -318,7 +330,7 @@ public class AddSupplierController {
         mobile = mobile.replaceAll("\\s+", "");
         phone = phone.replaceAll("\\s+", "");
 
-        dbHelper.updateSupplier(code, name, phone, mobile, email);
+        dbHelper.updateSupplier(code, name, title, phone, mobile, contact, email, site);
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
         Notifications notifications = Notifications.create()
                 .title("Επιτυχία")
@@ -347,6 +359,26 @@ public class AddSupplierController {
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
+        }
+    }
+
+    public void openSite(ActionEvent actionEvent) {
+//        if (supplier.getSite().isEmpty() || supplier.getSite().equals("")){
+//            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Δεν υπάρχει site.","Ο προμηθευτής δεν έχει site!", Alert.AlertType.ERROR));
+//            return;
+//        }
+
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator(false);
+            String site = supplier.getSite().trim();
+            if (site.contains("http:"))
+                loginAutomation.openPage(site);
+            else
+                loginAutomation.openPage("http://"+site);
+
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+
         }
     }
 }

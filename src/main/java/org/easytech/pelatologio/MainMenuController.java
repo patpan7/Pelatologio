@@ -392,4 +392,29 @@ public class MainMenuController implements Initializable {
         mainTabPane.getTabs().add(newTab);
         mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
     }
+
+    public void ordersClick(ActionEvent actionEvent) throws IOException {
+        for (Tab tab : mainTabPane.getTabs()) {
+            if (tab.getText().equals("Παραγγελίες")) {
+                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                return;
+            }
+        }
+
+        // Φόρτωση του FXML
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ordersView.fxml"));
+        Parent ordersContent = fxmlLoader.load();
+
+        // Περνάμε το mainTabPane στον CustomersController
+        OrdersListController ordersListController = fxmlLoader.getController();
+
+
+        // Δημιουργία νέου tab
+        Tab newTab = new Tab("Παραγγελίες");
+        newTab.setContent(ordersContent);
+
+        // Προσθήκη του tab στο TabPane
+        mainTabPane.getTabs().add(newTab);
+        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
+    }
 }

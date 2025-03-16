@@ -2217,17 +2217,20 @@ public class DBHelper {
 
     public List<Supplier> getSuppliers() {
         List<Supplier> suppliers = new ArrayList<>();
-        String query = "SELECT * FROM Suppliers";
+        String query = "SELECT * FROM Suppliers where Id > 0";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
+                String title = rs.getString("title");
                 String phone = rs.getString("phone");
                 String mobile = rs.getString("mobile");
+                String contact = rs.getString("contact");
                 String email = rs.getString("email");
-                Supplier supplier = new Supplier(id, name, phone, mobile, email);
+                String site = rs.getNString("site");
+                Supplier supplier = new Supplier(id, name, title, phone, mobile, contact, email, site);
                 suppliers.add(supplier);
             }
             closeConnection(conn);
@@ -2237,17 +2240,20 @@ public class DBHelper {
         return suppliers;
     }
 
-    public int insertSupplier(String name, String phone, String mobile, String email) {
-        String insertQuery = "INSERT INTO Suppliers (name, phone, mobile, email) "
-                + "VALUES (?, ?, ?, ?)";
+    public int insertSupplier(String name, String title, String phone, String mobile, String contact, String email, String site) {
+        String insertQuery = "INSERT INTO Suppliers (name, title, phone, mobile, email, contact, site) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
         int newCustomerId = -1; // Default value for error handling
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, name);
-            pstmt.setString(2, phone);
-            pstmt.setString(3, mobile);
-            pstmt.setString(4, email);
+            pstmt.setString(2, title);
+            pstmt.setString(3, phone);
+            pstmt.setString(4, mobile);
+            pstmt.setString(5, contact);
+            pstmt.setString(6, email);
+            pstmt.setString(7, site);
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -2268,16 +2274,19 @@ public class DBHelper {
         return newCustomerId; // Επιστρέφει το CustomerID ή -1 αν υπήρξε σφάλμα
     }
 
-    public void updateSupplier(int code, String name, String phone, String mobile, String email) {
-        String sql = "UPDATE suppliers SET name = ?, phone = ?, mobile = ?, email = ? WHERE id = ?";
+    public void updateSupplier(int code, String name, String title, String phone, String mobile, String contact, String email, String site) {
+        String sql = "UPDATE suppliers SET name = ?, title = ?, phone = ?, mobile = ?, contact = ?, email = ?, site = ? WHERE id = ?";
 
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, name);
-            pstmt.setString(2, phone);
-            pstmt.setString(3, mobile);
-            pstmt.setString(4, email);
-            pstmt.setInt(5, code);
+            pstmt.setString(2, title);
+            pstmt.setString(3, phone);
+            pstmt.setString(4, mobile);
+            pstmt.setString(5, contact);
+            pstmt.setString(6, email);
+            pstmt.setString(7, site);
+            pstmt.setInt(8, code);
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -2303,9 +2312,12 @@ public class DBHelper {
                 data = new Supplier();
                 data.setId(resultSet.getInt("id"));
                 data.setName(resultSet.getString("name"));
+                data.setTitle(resultSet.getString("title"));
                 data.setPhone(resultSet.getString("phone"));
                 data.setMobile(resultSet.getString("mobile"));
+                data.setMobile(resultSet.getString("contact"));
                 data.setEmail(resultSet.getString("email"));
+                data.setMobile(resultSet.getString("site"));
             }
             closeConnection(conn);
             return data;
@@ -2314,4 +2326,154 @@ public class DBHelper {
         }
         return null;
     }
+
+    public List<Order> getAllOrders() {
+        List<Order> orders = new ArrayList<>();
+        String query = "SELECT " +
+                "o.id," +
+                "o.title," +
+                "o.description," +
+                "o.dueDate," +
+                "o.is_completed," +
+                "o.customerId," +
+                "o.supplierId," +
+                "o.is_ergent," +
+                "o.is_wait," +
+                "c.name AS customerName," +
+                "s.name AS supplierName " +
+                "FROM Orders o " +
+                "LEFT JOIN Customers c ON o.customerId = c.code " +
+                "LEFT JOIN Suppliers s ON o.supplierId = s.id " +
+                "ORDER BY o.dueDate DESC;";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet resultSet = stmt.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                LocalDate dueDate = resultSet.getDate("dueDate").toLocalDate();
+                boolean isCompleted = resultSet.getBoolean("is_Completed");
+                Integer customerId = resultSet.getObject("customerId", Integer.class);
+                Integer supplierId = resultSet.getObject("supplierId", Integer.class);
+                Boolean isErgent = resultSet.getBoolean("is_ergent");
+                Boolean isWait = resultSet.getBoolean("is_wait");
+                String customerName = resultSet.getString("customerName");
+                String supplierName = resultSet.getString("supplierName");
+
+
+                Order order = new Order(id, title, description, dueDate, isCompleted, customerId, supplierId, isErgent, isWait, customerName, supplierName);
+                orders.add(order);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
+
+    public boolean completeOrder(int orderId, boolean isCompleted) {
+        String query = "UPDATE orders SET is_completed = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setBoolean(1, isCompleted);
+            stmt.setInt(2, orderId);
+            if (stmt.executeUpdate() > 0) {
+                closeConnection(conn);
+                return true;
+            } else {
+                closeConnection(conn);
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void deleteOrder(int orderId) throws SQLException {
+        String query = "DELETE FROM Orders WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setInt(1, orderId);
+            statement.executeUpdate();
+            closeConnection(conn);
+        }
+    }
+
+    public boolean saveOrder(Order order) {
+        String query = "INSERT INTO Orders (title, description, dueDate, is_completed, customerId, supplierId, is_ergent, is_wait) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, order.getTitle());
+            stmt.setString(2, order.getDescription());
+            stmt.setDate(3, Date.valueOf(order.getDueDate()));
+            stmt.setBoolean(4, false);
+            if (order.getCustomerId() != null) {
+                stmt.setInt(5, order.getCustomerId());
+            } else {
+                stmt.setNull(5, java.sql.Types.INTEGER);
+            }
+            if (order.getSupplierId() != null) {
+                stmt.setInt(6, order.getSupplierId());
+            } else {
+                stmt.setNull(6, java.sql.Types.INTEGER);
+            }
+            stmt.setBoolean(7, order.getErgent());
+            stmt.setBoolean(8, order.getWait());
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                closeConnection(conn);
+                return true; // Ενημερώθηκε επιτυχώς
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+                return saveOrder(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateOrder(Order order) {
+        String query = "UPDATE Orders SET title = ?, description = ?, dueDate = ?, is_Completed = ?, customerId = ?, supplierId = ?, is_ergent = ?, is_wait = ? WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, order.getTitle());
+            stmt.setString(2, order.getDescription());
+            stmt.setDate(3, java.sql.Date.valueOf(order.getDueDate()));
+            stmt.setBoolean(4, order.getCompleted());
+            if (order.getCustomerId() != null) {
+                stmt.setInt(5, order.getCustomerId());
+            } else {
+                stmt.setNull(5, java.sql.Types.INTEGER);
+            }
+            if (order.getSupplierId() != null) {
+                stmt.setInt(6, order.getSupplierId());
+            } else {
+                stmt.setNull(6, java.sql.Types.INTEGER);
+            }
+            stmt.setBoolean(7, order.getErgent());
+            stmt.setBoolean(8, order.getWait());
+            stmt.setInt(9, order.getId());
+
+
+            if (stmt.executeUpdate() > 0) {
+                closeConnection(conn);
+                return true;
+            } else {
+                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }
