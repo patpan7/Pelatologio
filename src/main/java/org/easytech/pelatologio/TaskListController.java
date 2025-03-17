@@ -1,9 +1,11 @@
 package org.easytech.pelatologio;
+
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,8 +15,6 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-
-import javafx.event.ActionEvent;
 import javafx.stage.Modality;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
@@ -41,7 +41,7 @@ public class TaskListController implements Initializable {
     private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox, showErgentCheckBox, showWaitCheckBox;
 
     @FXML
-    private ComboBox <TaskCategory> categoryFilterComboBox;
+    private ComboBox<TaskCategory> categoryFilterComboBox;
     @FXML
     private Button addCategoryButton, addTaskButton, editTaskButton, deleteTaskButton, completeTaskButton, uncompletedTaskButton;
 
@@ -54,7 +54,7 @@ public class TaskListController implements Initializable {
         setTooltip(editTaskButton, "Επεξεργασία εργασίας");
         setTooltip(deleteTaskButton, "Διαγραφή εργασίας");
         setTooltip(completeTaskButton, "Σημείωση εργασίας ως ολοκληρωμένη");
-        setTooltip(uncompletedTaskButton,"Σημείωση εργασίας ως σε επεξεργασία");
+        setTooltip(uncompletedTaskButton, "Σημείωση εργασίας ως σε επεξεργασία");
         setTooltip(addCategoryButton, "Προσθήκη/Επεξεργασία κατηγοριών εργασιών");
         // Σύνδεση στηλών πίνακα με πεδία του Task
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -87,9 +87,6 @@ public class TaskListController implements Initializable {
 // Κάνει τον πίνακα επεξεργάσιμο, αλλιώς το CheckBox δεν θα λειτουργεί
         taskTable.setEditable(true);
         calendarColumn.setEditable(true);
-
-
-
 
 
         showAllCheckbox.setSelected(false);
@@ -153,7 +150,7 @@ public class TaskListController implements Initializable {
 
         DBHelper dbHelper = new DBHelper();
         List<TaskCategory> categories = dbHelper.getAllTaskCategory();
-        categoryFilterComboBox.getItems().add(new TaskCategory(0,"Όλες"));
+        categoryFilterComboBox.getItems().add(new TaskCategory(0, "Όλες"));
         categoryFilterComboBox.getItems().addAll(categories);
         categoryFilterComboBox.getSelectionModel().selectFirst();
         categoryFilterComboBox.setConverter(new StringConverter<>() {
@@ -229,7 +226,8 @@ public class TaskListController implements Initializable {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 
@@ -243,7 +241,8 @@ public class TaskListController implements Initializable {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();});
+                notifications.showConfirm();
+            });
             loadTasks(); // Φορτώνει ξανά τις εργασίες
         } else {
             System.out.println("Failed to update task completion status.");
@@ -254,10 +253,10 @@ public class TaskListController implements Initializable {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
         }
     }
-
 
 
     private void loadTasks() {
@@ -309,35 +308,34 @@ public class TaskListController implements Initializable {
     }
 
 
-
     @FXML
     private void handleAddTask() {
-            try {
-                // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Προσθήκη Εργασίας");
-                AddTaskController controller = loader.getController();
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        try {
+            // Φόρτωση του FXML για προσθήκη ραντεβού
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Προσθήκη Εργασίας");
+            AddTaskController controller = loader.getController();
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
-                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                    // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveTask();
+            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                // Εκτελούμε το handleSaveAppointment
+                boolean success = controller.handleSaveTask();
 
-                    if (!success) {
-                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                        event.consume();
-                    }
-                });
+                if (!success) {
+                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                    event.consume();
+                }
+            });
 
-                dialog.showAndWait();
-                loadTasks();
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
-            }
+            dialog.showAndWait();
+            loadTasks();
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+        }
     }
 
     @FXML
@@ -392,7 +390,7 @@ public class TaskListController implements Initializable {
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Επιβεβαίωση");
-        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedTasks.getTitle() + ";" );
+        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedTasks.getTitle() + ";");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();

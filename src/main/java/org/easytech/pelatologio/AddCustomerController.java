@@ -39,9 +39,9 @@ public class AddCustomerController {
     @FXML
     private TabPane tabPane;
     @FXML
-    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, devicesContainer, tasksContainer, subsContainer, offersContainer;
+    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, devicesContainer, tasksContainer, subsContainer, offersContainer, ordersContainer, notesContainer;
     @FXML
-    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabDevices, tabTasks, tabAccountant, tabSubs, tabOffers, tabNotes;
+    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabDevices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabNotes;
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone, tfBalance;
     @FXML
@@ -74,6 +74,7 @@ public class AddCustomerController {
     private CustomerTasksController customerTasksController;
     private CustomerSubsController customerSubsController;
     private CustomerOffersController customerOffersController;
+    private CustomerOrdersController customerOrdersController;
 
     int code = 0;
 
@@ -178,6 +179,15 @@ public class AddCustomerController {
             AnchorPane.setLeftAnchor(offersContent, 0.0);
             AnchorPane.setRightAnchor(offersContent, 0.0);
 
+            FXMLLoader loaderOrders = new FXMLLoader(getClass().getResource("ordersCustView.fxml"));
+            Parent ordersContent = loaderOrders.load();
+            customerOrdersController = loaderOrders.getController();// Πάρε τον controller
+            ordersContainer.getChildren().setAll(ordersContent);
+            AnchorPane.setTopAnchor(ordersContent, 0.0);
+            AnchorPane.setBottomAnchor(ordersContent, 0.0);
+            AnchorPane.setLeftAnchor(ordersContent, 0.0);
+            AnchorPane.setRightAnchor(ordersContent, 0.0);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -215,6 +225,7 @@ public class AddCustomerController {
         tabTasks.setDisable(true);
         tabSubs.setDisable(true);
         tabOffers.setDisable(true);
+        tabOrders.setDisable(true);
 
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
@@ -563,6 +574,11 @@ public class AddCustomerController {
         } else {
             System.out.println("customerOffersController δεν είναι ακόμα έτοιμος.");
         }
+        if (customerOrdersController != null) {
+            customerOrdersController.setCustomer(customer);
+        } else {
+            System.out.println("customerOrdersController δεν είναι ακόμα έτοιμος.");
+        }
 
         btnAddToMegasoft.setDisable(false);
         btnAddToMegasoft.setVisible(true);
@@ -588,6 +604,7 @@ public class AddCustomerController {
         tabTasks.setDisable(false);
         tabSubs.setDisable(false);
         tabOffers.setDisable(false);
+        tabOrders.setDisable(false);
 
         hasTabs();
         setAccountant();
@@ -675,6 +692,7 @@ public class AddCustomerController {
         customerTasksController.setCustomer(customer);
         customerSubsController.setCustomer(customer);
         customerOffersController.setCustomer(customer);
+        customerOrdersController.setCustomer(customer);
 
     }
 
@@ -775,6 +793,10 @@ public class AddCustomerController {
         if (customer.getAccId() != 0){
             tabAccountant.getStyleClass().add("tabHas");
         }
+        if(dbHelper.hasOrders(customer.getCode())){
+            tabOrders.getStyleClass().add("tabHas");
+        }
+
     }
 
     private void closeCurrentTab() {

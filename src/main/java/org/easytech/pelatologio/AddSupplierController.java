@@ -6,10 +6,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.*;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.AnchorPane;
@@ -27,12 +27,15 @@ public class AddSupplierController {
     @FXML
     private TabPane tabPane;
     @FXML
-    private AnchorPane customersContainer;
+    private Tab tabOrders;
+    @FXML
+    private AnchorPane ordersContainer;
     @FXML
     private TextField tfName, tfTitle, tfPhone, tfMobile, tfContact, tfEmail, tfSite;
     @FXML
     private ProgressIndicator progressIndicator;
 
+    private OrdersSupViewController orderSupViewController;
 
     int code = 0;
 
@@ -40,6 +43,7 @@ public class AddSupplierController {
     private Supplier supplier;
 
     private SuppliersController suppliersController;
+
 
     private Consumer<Supplier> callback; // Callback function
     private Stage stage;
@@ -64,6 +68,22 @@ public class AddSupplierController {
 
     public void initialize() {
         Platform.runLater(() -> tabPane.requestFocus());
+
+        try {
+            FXMLLoader loaderTaxis = new FXMLLoader(getClass().getResource("ordersSupView.fxml"));
+            Parent ordersContent = loaderTaxis.load();
+            orderSupViewController = loaderTaxis.getController(); // Πάρε τον controller
+            ordersContainer.getChildren().setAll(ordersContent);
+            AnchorPane.setTopAnchor(ordersContent, 0.0);
+            AnchorPane.setBottomAnchor(ordersContent, 0.0);
+            AnchorPane.setLeftAnchor(ordersContent, 0.0);
+            AnchorPane.setRightAnchor(ordersContent, 0.0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        tabOrders.setDisable(true);
+
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
         MenuItem copyItem = new MenuItem("Αντιγραφή");
@@ -243,6 +263,13 @@ public class AddSupplierController {
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = supplier.getId();
         this.supplier = supplier;
+        if (orderSupViewController != null) {
+            orderSupViewController.setSupplier(supplier);
+        } else {
+            System.out.println("orderSupViewController δεν είναι ακόμα έτοιμος.");
+        }
+
+        tabOrders.setDisable(false);
     }
 
     public void handleOkButton() {
@@ -374,7 +401,7 @@ public class AddSupplierController {
             if (site.contains("http:"))
                 loginAutomation.openPage(site);
             else
-                loginAutomation.openPage("http://"+site);
+                loginAutomation.openPage("http://" + site);
 
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));

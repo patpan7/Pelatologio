@@ -101,6 +101,8 @@
                     <TableView fx:id="taskTable" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID"/>
+                            <TableColumn fx:id="categoryColumn" maxWidth="200.0" minWidth="200.0" prefWidth="200.0"
+                                         text="Κατηγορία"/>
                             <TableColumn fx:id="titleColumn" maxWidth="500.0" minWidth="250.0" prefWidth="250.0"
                                          text="Τίτλος"/>
                             <TableColumn fx:id="descriptionColumn" maxWidth="700.0" minWidth="300.0" prefWidth="300.0"
@@ -108,8 +110,6 @@
                             <TableColumn fx:id="dueDateColumn" maxWidth="220.0" minWidth="110.0" prefWidth="110.0"
                                          text="Ημερομηνία"/>
                             <TableColumn fx:id="customerColumn" minWidth="230.0" prefWidth="230.0" text="Πελάτης"/>
-                            <TableColumn fx:id="categoryColumn" maxWidth="200.0" minWidth="200.0" prefWidth="200.0"
-                                         text="Κατηγορία"/>
                             <TableColumn fx:id="calendarColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Ημερ."/>
                         </columns>
                         <contextMenu>

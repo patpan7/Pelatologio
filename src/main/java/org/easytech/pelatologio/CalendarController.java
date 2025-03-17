@@ -74,7 +74,6 @@ public class CalendarController {
         // Μετατροπή των δεδομένων σε CalendarFX Calendar
         String[] styles = {"STYLE1", "STYLE2", "STYLE3", "STYLE4", "STYLE5", "STYLE6", "STYLE7"};
         int styleIndex = 0;
-        System.out.println("test");
         for (TaskCategory customCalendar : customCalendars) {
             Calendar fxCalendar = new Calendar(customCalendar.getName());
 

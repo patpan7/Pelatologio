@@ -15,6 +15,8 @@ import org.openqa.selenium.By;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MainMenuController implements Initializable {
@@ -37,6 +39,8 @@ public class MainMenuController implements Initializable {
     Label lbSimply;
     @FXML
     Label lbMypos;
+    @FXML
+    ListView <Order> ordersList;
     @FXML
     Button btnCustomers, btnMyPOS, btnTasks, btnCalendar, btnD11, btnMyDataStatus, btnItems, btnDevices, btnSettings;
 
@@ -65,6 +69,14 @@ public class MainMenuController implements Initializable {
         lbSimply.setText("Πελάτες Simply: "+simplyCount);
         int myposCount = dbHelper.getLoginsCount(1);
         lbMypos.setText("Πελάτες myPOS: " + myposCount);
+        loadOrders();
+    }
+
+    private void loadOrders() {
+        DBHelper dbHelper = new DBHelper();
+        List<Order> orders = dbHelper.getPendingOrders();
+        ordersList.getItems().clear();
+        ordersList.getItems().addAll(orders);
     }
 
     public void mainMenuClick(StackPane stackPane) throws IOException {
@@ -417,4 +429,45 @@ public class MainMenuController implements Initializable {
         mainTabPane.getTabs().add(newTab);
         mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
     }
+
+    @FXML
+    private void handleOrderSelection(MouseEvent event) {
+        if (event.getClickCount() == 2) { // Διπλό κλικ για άνοιγμα παραθύρου
+            Order selectedOrder = ordersList.getSelectionModel().getSelectedItem();
+            if (selectedOrder == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText("Δεν έχει επιλεγεί παραγγελία!");
+                Optional<ButtonType> result = alert.showAndWait();
+                return;
+            }
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addOrder.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Επεξεργασία παραγγελίας");
+                AddOrderController controller = loader.getController();
+
+                // Ορισμός δεδομένων για επεξεργασία
+                controller.setOrderForEdit(selectedOrder);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.addEventFilter(ActionEvent.ACTION, evt -> {
+                    // Εκτελούμε το handleSaveAppointment
+                    boolean success = controller.handleSaveOrder();
+
+                    if (!success) {
+                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                        event.consume();
+                    }
+                });
+                dialog.showAndWait();
+                loadOrders();
+            } catch (IOException e) {
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
+            }
+        }
+    }
+
 }

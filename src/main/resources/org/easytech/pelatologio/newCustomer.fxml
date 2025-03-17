@@ -289,6 +289,11 @@
                 <AnchorPane fx:id="offersContainer" styleClass="pane" />
             </ScrollPane>
         </Tab>
+        <Tab fx:id="tabOrders" closable="false" text="Παραγγελίες">
+            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
+                <AnchorPane fx:id="ordersContainer" styleClass="pane" />
+            </ScrollPane>
+        </Tab>
         <Tab fx:id="tabNotes" closable="false" text="Σημειώσεις">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
                 <VBox VBox.vgrow="ALWAYS">

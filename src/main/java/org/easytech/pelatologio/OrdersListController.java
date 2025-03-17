@@ -38,6 +38,8 @@ public class OrdersListController implements Initializable {
     private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox, showErgentCheckBox, showWaitCheckBox, showWithSupplierCheckbox, showWithoutSupplierCheckbox;
     @FXML
     private Button addOrderButton, editOrderButton, deleteOrderButton, completeOrderButton, uncompletedOrderButton;
+    @FXML
+    private ComboBox <Supplier> supplierFilterComboBox;
 
     private ObservableList<Order> allOrders = FXCollections.observableArrayList();
 
@@ -125,6 +127,31 @@ public class OrdersListController implements Initializable {
                 showWithoutSupplierCheckbox
         };
         configureSingleSelectionCheckBoxes(checkBoxes4);
+
+        DBHelper dbHelper = new DBHelper();
+        List<Supplier> suppliers = dbHelper.getSuppliersFromOrders();
+        supplierFilterComboBox.getItems().add(new Supplier(-1, "Όλα","","","","","",""));
+        supplierFilterComboBox.getItems().addAll(suppliers);
+        supplierFilterComboBox.getSelectionModel().selectFirst();
+        supplierFilterComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Supplier supplier) {
+                return supplier != null ? supplier.getName() : "";
+            }
+
+            @Override
+            public Supplier fromString(String string) {
+                return supplierFilterComboBox.getItems().stream()
+                        .filter(supplier -> supplier.getName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+
+        supplierFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateOrdersTable());
+
+
 
         showAllCheckbox.setOnAction(e -> updateOrdersTable());
         showCompletedCheckbox.setOnAction(e -> updateOrdersTable());

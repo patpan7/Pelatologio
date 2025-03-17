@@ -1,86 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-
-<DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddOfferController">
+<DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddOfferController">
     <content>
         <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-        <VBox alignment="TOP_CENTER">
-                <Label styleClass="header-label" text="Διαχείριση Προσφοράς" />
+            <VBox alignment="TOP_CENTER">
+                <Label styleClass="header-label" text="Διαχείριση Προσφοράς"/>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
                     <Label prefWidth="290.0" styleClass="normal-label" text="Ημερομηνία Προσοράς:">
                         <opaqueInsets>
-                            <Insets />
+                            <Insets/>
                         </opaqueInsets>
                     </Label>
-                    <DatePicker fx:id="dueDatePicker" prefWidth="325.0" />
+                    <DatePicker fx:id="dueDatePicker" prefWidth="325.0"/>
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
 
-                    <Label prefWidth="290.0" styleClass="normal-label" text="Περιγραφή:" />
-                    <TextArea fx:id="descriptionField" onMouseClicked="#handleMouseClick" prefHeight="100" prefWidth="325.0" wrapText="true" />
+                    <Label prefWidth="290.0" styleClass="normal-label" text="Περιγραφή:"/>
+                    <TextArea fx:id="descriptionField" onMouseClicked="#handleMouseClick" prefHeight="100"
+                              prefWidth="325.0" wrapText="true"/>
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label prefWidth="290.0" styleClass="normal-label" text="Ώρες:" />
-                    <TextField fx:id="hoursField" prefWidth="325.0" />
+                    <Label prefWidth="290.0" styleClass="normal-label" text="Ώρες:"/>
+                    <TextField fx:id="hoursField" prefWidth="325.0"/>
                 </HBox>
                 <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="57.0">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label prefWidth="290.0" styleClass="normal-label" text="Κατάσταση:" />
-                    <TextField fx:id="statusField" prefWidth="325.0" />
+                    <Label prefWidth="290.0" styleClass="normal-label" text="Κατάσταση:"/>
+                    <TextField fx:id="statusField" prefWidth="325.0"/>
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label prefWidth="290.0" styleClass="normal-label" text="Πελάτης:" />
-                    <ComboBox fx:id="customerComboBox" editable="true" prefWidth="325.0" promptText="Επιλογή Πελάτη" />
-                    <JFXButton fx:id="btnCustomer" buttonType="RAISED" mnemonicParsing="false" onAction="#showCustomer" styleClass="click-button" text="">
+                    <Label prefWidth="290.0" styleClass="normal-label" text="Πελάτης:"/>
+                    <ComboBox fx:id="customerComboBox" editable="true" prefWidth="325.0" promptText="Επιλογή Πελάτη"/>
+                    <JFXButton fx:id="btnCustomer" buttonType="RAISED" mnemonicParsing="false" onAction="#showCustomer"
+                               styleClass="click-button" text="">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/users.png" />
+                                <Image url="@icons/users.png"/>
                             </ImageView>
                         </graphic>
                         <HBox.margin>
-                            <Insets left="5.0" right="10.0" />
+                            <Insets left="5.0" right="10.0"/>
                         </HBox.margin>
                     </JFXButton>
                 </HBox>
-            <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="110.0">
-                <VBox.margin>
-                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                </VBox.margin>
-                <Label prefWidth="290.0" styleClass="normal-label" text="Αρχείο:" />
-                <ListView fx:id="attachmentList" prefHeight="100.0" prefWidth="325.0">
-                  <HBox.margin>
-                     <Insets />
-                  </HBox.margin></ListView>
-                <JFXButton fx:id="btnSelectFile" buttonType="RAISED" mnemonicParsing="false" onAction="#selectFile" styleClass="click-button" text="">
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <Image url="@icons/file.png" />
-                        </ImageView>
-                    </graphic>
-                  <HBox.margin>
-                     <Insets left="5.0" right="10.0" />
-                  </HBox.margin>
-                </JFXButton>
-            </HBox>
+                <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="110.0">
+                    <VBox.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                    </VBox.margin>
+                    <Label prefWidth="290.0" styleClass="normal-label" text="Αρχείο:"/>
+                    <ListView fx:id="attachmentList" prefHeight="100.0" prefWidth="325.0">
+                        <HBox.margin>
+                            <Insets/>
+                        </HBox.margin>
+                    </ListView>
+                    <JFXButton fx:id="btnSelectFile" buttonType="RAISED" mnemonicParsing="false" onAction="#selectFile"
+                               styleClass="click-button" text="">
+                        <graphic>
+                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@icons/file.png"/>
+                            </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                            <Insets left="5.0" right="10.0"/>
+                        </HBox.margin>
+                    </JFXButton>
+                </HBox>
             </VBox>
         </ScrollPane>
     </content>

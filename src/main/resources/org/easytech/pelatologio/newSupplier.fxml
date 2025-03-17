@@ -17,14 +17,14 @@
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
 
-                            <Label minWidth="185.0" styleClass="normal-label" text="Επωνυμία:"/>
+                            <Label minWidth="140.0" styleClass="normal-label" text="Επωνυμία:"/>
                             <TextField fx:id="tfName" HBox.hgrow="ALWAYS"/>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" layoutX="25.0" layoutY="20.0" VBox.vgrow="NEVER">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
-                            <Label minWidth="185.0" styleClass="normal-label" text="Τίτλος:"/>
+                            <Label minWidth="140.0" styleClass="normal-label" text="Τίτλος:"/>
                             <TextField fx:id="tfTitle" HBox.hgrow="ALWAYS"/>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
@@ -32,7 +32,7 @@
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
 
-                            <Label minWidth="185.0" styleClass="normal-label" text="Τηλέφωνο:"/>
+                            <Label minWidth="140.0" styleClass="normal-label" text="Τηλέφωνο:"/>
                             <TextField fx:id="tfPhone" alignment="TOP_LEFT" prefWidth="312.0" HBox.hgrow="ALWAYS"/>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
@@ -40,14 +40,14 @@
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
 
-                            <Label minWidth="185.0" styleClass="normal-label" text="Κινητό:"/>
+                            <Label minWidth="140.0" styleClass="normal-label" text="Κινητό:"/>
                             <TextField fx:id="tfMobile" HBox.hgrow="ALWAYS"/>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" layoutX="25.0" layoutY="169.0" VBox.vgrow="NEVER">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
-                            <Label minWidth="185.0" styleClass="normal-label" text="Επαφή:"/>
+                            <Label minWidth="140.0" styleClass="normal-label" text="Επαφή:"/>
                             <TextField fx:id="tfContact" HBox.hgrow="ALWAYS"/>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
@@ -55,7 +55,7 @@
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
 
-                            <Label minWidth="185.0" styleClass="normal-label" text="E-mail:"/>
+                            <Label minWidth="140.0" styleClass="normal-label" text="E-mail:"/>
                             <TextField fx:id="tfEmail" HBox.hgrow="ALWAYS"/>
                             <JFXButton fx:id="btnEmail" buttonType="RAISED" mnemonicParsing="false"
                                        onAction="#showEmailDialog" styleClass="click-button" text="">
@@ -74,10 +74,10 @@
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
-                            <Label minWidth="185.0" styleClass="normal-label" text="Site:"/>
+                            <Label minWidth="140.0" styleClass="normal-label" text="Site:"/>
                             <TextField fx:id="tfSite" HBox.hgrow="ALWAYS"/>
-                            <JFXButton fx:id="btnSite" buttonType="RAISED" mnemonicParsing="false"
-                                       onAction="#openSite" styleClass="click-button" text="">
+                            <JFXButton fx:id="btnSite" buttonType="RAISED" mnemonicParsing="false" onAction="#openSite"
+                                       styleClass="click-button" text="">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
                                                preserveRatio="true">
@@ -90,14 +90,18 @@
                             </JFXButton>
                         </HBox>
                         <HBox alignment="CENTER" layoutX="15.0" layoutY="336.0">
-                            <ProgressBar fx:id="progressIndicator" prefWidth="200.0" progress="0.0"
-                                         visible="false"/>
+                            <ProgressBar fx:id="progressIndicator" prefWidth="200.0" progress="0.0" visible="false"/>
                         </HBox>
                         <padding>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                         </padding>
                     </VBox>
                 </HBox>
+            </ScrollPane>
+        </Tab>
+        <Tab fx:id="tabOrders" closable="false" text="Παραγγελίες">
+            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
+                <AnchorPane fx:id="ordersContainer" styleClass="pane"/>
             </ScrollPane>
         </Tab>
         <VBox.margin>

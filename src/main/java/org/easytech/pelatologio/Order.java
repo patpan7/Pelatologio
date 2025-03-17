@@ -120,6 +120,11 @@ public class Order {
     public void setSupplierName(String supplierName) {
         this.supplierName = supplierName;
     }
+
+    @Override
+    public String toString() {
+        return this.title;
+    }
 }
 
 
