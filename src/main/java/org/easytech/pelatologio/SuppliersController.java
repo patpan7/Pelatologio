@@ -107,6 +107,7 @@ public class SuppliersController implements Initializable {
     }
 
     private void refreshTableData() {
+        List<TableColumn<Supplier, ?>> sortOrder = new ArrayList<>(supplierTable.getSortOrder());
         observableList.clear();
         try {
             observableList.addAll(fetchDataFromMySQL());
@@ -114,6 +115,7 @@ public class SuppliersController implements Initializable {
             throw new RuntimeException(e);
         }
         applyFilters(filterField.getText());
+        supplierTable.getSortOrder().setAll(sortOrder);
     }
 
     private List<Supplier> fetchDataFromMySQL() throws SQLException {

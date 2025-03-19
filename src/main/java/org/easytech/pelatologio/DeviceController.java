@@ -19,6 +19,7 @@ import org.controlsfx.control.Notifications;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -148,10 +149,12 @@ public class DeviceController implements Initializable {
     }
 
     private void loadDevices() {
+        List<TableColumn<Device, ?>> sortOrder = new ArrayList<>(devicesTable.getSortOrder());
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
         allDevices.setAll(dbHelper.getAllDevices());
         updateDevicesTable();
+        devicesTable.getSortOrder().setAll(sortOrder);
     }
 
     private void updateDevicesTable() {

@@ -42,6 +42,10 @@ public class MainMenuController implements Initializable {
     @FXML
     ListView <Order> ordersList;
     @FXML
+    ListView <Order> pedingOrdersList;
+    @FXML
+    ListView <Order> deliveryOrdersList;
+    @FXML
     Button btnCustomers, btnMyPOS, btnTasks, btnCalendar, btnD11, btnMyDataStatus, btnItems, btnDevices, btnSettings;
 
 
@@ -77,6 +81,12 @@ public class MainMenuController implements Initializable {
         List<Order> orders = dbHelper.getPendingOrders();
         ordersList.getItems().clear();
         ordersList.getItems().addAll(orders);
+        List<Order> pedingOrders = dbHelper.getUnreceivedOrders();
+        pedingOrdersList.getItems().clear();
+        pedingOrdersList.getItems().addAll(pedingOrders);
+        List<Order> deliveryOrders = dbHelper.getUndeliveredOrders();
+        deliveryOrdersList.getItems().clear();
+        deliveryOrdersList.getItems().addAll(deliveryOrders);
     }
 
     public void mainMenuClick(StackPane stackPane) throws IOException {

@@ -796,6 +796,9 @@ public class AddCustomerController {
         if(dbHelper.hasOrders(customer.getCode())){
             tabOrders.getStyleClass().add("tabHas");
         }
+        if (!customer.getNotes().isEmpty()){
+            tabNotes.getStyleClass().add("tabHas");
+        }
 
     }
 

@@ -7,14 +7,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
+<StackPane fx:id="stackPane" prefHeight="810.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" styleClass="pane">
         <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
             <center>
                 <TabPane fx:id="mainTabPane" BorderPane.alignment="CENTER">
                     <tabs>
                         <Tab fx:id="mainTab" closable="false" text="Κεντρικό menu">
-                            <HBox>
+                            <HBox alignment="TOP_CENTER">
                                 <VBox prefWidth="200.0">
                                     <HBox.margin>
                                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -167,17 +167,41 @@
                                             </graphic>
                                         </JFXButton>
                                     </HBox>
+                           <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
+                               <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false">
+                                   <Label fx:id="vesrion" alignment="CENTER" text="v 2.8.7" VBox.vgrow="NEVER">
+                                       <VBox.margin>
+                                           <Insets bottom="5.0" right="20.0" />
+                                       </VBox.margin>
+                                       <font>
+                                           <Font size="18.0" />
+                                       </font>
+                                   </Label>
+                               </VBox>
                                 </VBox>
                                 <VBox alignment="TOP_CENTER" prefWidth="200.0">
                                     <HBox.margin>
-                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                        <Insets bottom="5.0" left="5.0" right="5.0" />
                                     </HBox.margin>
-                                    <Label styleClass="normal-label" text="Παραγγελίες" />
-                                    <ListView fx:id="ordersList" onMouseClicked="#handleOrderSelection" styleClass="normal-label" VBox.vgrow="ALWAYS">
+                                    <Label styleClass="normal-label" text="Για παραγγελία" textAlignment="CENTER">
+                              <VBox.margin>
+                                 <Insets bottom="3.0" />
+                              </VBox.margin></Label>
+                                    <ListView fx:id="ordersList" onMouseClicked="#handleOrderSelection" prefHeight="190.0" styleClass="list-label" VBox.vgrow="ALWAYS">
                                         <VBox.margin>
-                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            <Insets />
                                         </VBox.margin>
                                     </ListView>
+                           <Label layoutX="38.0" layoutY="10.0" styleClass="normal-label" text="Αναμονη παραλαβής" textAlignment="CENTER" wrapText="true">
+                              <VBox.margin>
+                                 <Insets bottom="3.0" />
+                              </VBox.margin></Label>
+                           <ListView fx:id="pedingOrdersList" layoutX="15.0" layoutY="42.0" onMouseClicked="#handleOrderSelection" prefHeight="190.0" styleClass="list-label" VBox.vgrow="ALWAYS" />
+                           <Label layoutX="10.0" layoutY="247.0" styleClass="normal-label" text="Προς παράδωση" textAlignment="CENTER" wrapText="true">
+                              <VBox.margin>
+                                 <Insets bottom="3.0" />
+                              </VBox.margin></Label>
+                           <ListView fx:id="deliveryOrdersList" layoutX="10.0" layoutY="302.0" onMouseClicked="#handleOrderSelection" prefHeight="190.0" styleClass="list-label" VBox.vgrow="ALWAYS" />
                                 </VBox>
                             </HBox>
                         </Tab>
@@ -210,18 +234,6 @@
                     </HBox>
                 </HBox>
             </top>
-            <bottom>
-                <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false" BorderPane.alignment="BOTTOM_CENTER">
-                    <Label fx:id="vesrion" alignment="CENTER" text="v 2.8.6" VBox.vgrow="NEVER">
-                        <VBox.margin>
-                            <Insets bottom="5.0" right="20.0" />
-                        </VBox.margin>
-                        <font>
-                            <Font size="18.0" />
-                        </font>
-                    </Label>
-                </VBox>
-            </bottom>
         </BorderPane>
     </ScrollPane>
 </StackPane>

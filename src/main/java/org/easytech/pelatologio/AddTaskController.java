@@ -382,6 +382,7 @@ public class AddTaskController {
 
         Customer selectedCustomer = dbHelper.getSelectedCustomer(tasks.getCustomerId());
         if (selectedCustomer.getCode() == 0) {
+            System.out.println("No customer selected.");
             return;
         }
         try {

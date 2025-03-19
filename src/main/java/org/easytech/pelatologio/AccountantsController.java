@@ -112,6 +112,9 @@ public class AccountantsController implements Initializable {
     }
 
     private void refreshTableData() {
+        // Αποθήκευση των ρυθμίσεων ταξινόμησης
+        List<TableColumn<Accountant, ?>> sortOrder = new ArrayList<>(accountantTable.getSortOrder());
+
         observableList.clear();
         try {
             observableList.addAll(fetchDataFromMySQL());
@@ -119,6 +122,8 @@ public class AccountantsController implements Initializable {
             throw new RuntimeException(e);
         }
         applyFilters(filterField.getText());
+        // Επαναφορά των ρυθμίσεων ταξινόμησης
+        accountantTable.getSortOrder().setAll(sortOrder);
     }
 
     private List<Accountant> fetchDataFromMySQL() throws SQLException {

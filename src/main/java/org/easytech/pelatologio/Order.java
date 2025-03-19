@@ -1,7 +1,6 @@
 package org.easytech.pelatologio;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class Order {
     private Integer id;
@@ -13,13 +12,15 @@ public class Order {
     private Integer supplierId;
     private Boolean isErgent;
     private Boolean isWait;
+    private Boolean isReceived;
+    private Boolean isDelivered;
     private String customerName;
     private String supplierName;
 
     public Order() {
     }
 
-    public Order(Integer id, String title, String description, LocalDate dueDate, Boolean isCompleted, Integer customerId, Integer supplierId, Boolean isErgent, Boolean isWait, String customerName, String supplierName) {
+    public Order(Integer id, String title, String description, LocalDate dueDate, Boolean isCompleted, Integer customerId, Integer supplierId, Boolean isErgent, Boolean isWait, Boolean isReceived, Boolean isDelivered, String customerName, String supplierName) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -29,6 +30,8 @@ public class Order {
         this.supplierId = supplierId;
         this.isErgent = isErgent;
         this.isWait = isWait;
+        this.isReceived = isReceived;
+        this.isDelivered = isDelivered;
         this.customerName = customerName;
         this.supplierName = supplierName;
     }
@@ -103,6 +106,22 @@ public class Order {
 
     public void setWait(Boolean wait) {
         isWait = wait;
+    }
+
+    public Boolean getReceived() {
+        return isReceived;
+    }
+
+    public void setReceived(Boolean received) {
+        isReceived = received;
+    }
+
+    public Boolean getDelivered() {
+        return isDelivered;
+    }
+
+    public void setDelivered(Boolean delivered) {
+        isDelivered = delivered;
     }
 
     public String getCustomerName() {

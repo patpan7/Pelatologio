@@ -65,7 +65,7 @@ public class DBHelper {
                 data.setEmail2(resultSet.getString("email2"));
                 data.setManager(resultSet.getString("manager"));
                 data.setManagerPhone(resultSet.getString("managerPhone"));
-                data.setNotes(resultSet.getString("notes"));
+                data.setNotes(resultSet.getString("notes") != null ? resultSet.getString("notes").trim() : "");
                 data.setAccId(resultSet.getInt("accId"));
                 data.setAccName1(resultSet.getString("accName1"));
                 data.setAccEmail1(resultSet.getString("accEmail1"));
@@ -823,11 +823,16 @@ public class DBHelper {
                 data.setTown(resultSet.getString("town"));
                 data.setPostcode(resultSet.getString("postcode"));
                 data.setEmail(resultSet.getString("email"));
+                data.setEmail2(resultSet.getString("email2"));
                 data.setManager(resultSet.getString("manager"));
                 data.setManagerPhone(resultSet.getString("managerPhone"));
-                data.setNotes(resultSet.getString("notes"));
-                data.setBalance(resultSet.getString("balance"));
-                data.setBalanceReason(resultSet.getString("balanceReason"));
+                data.setNotes(resultSet.getString("notes") != null ? resultSet.getString("notes").trim() : "");
+                data.setAccId(resultSet.getInt("accId"));
+                data.setAccName1(resultSet.getString("accName1"));
+                data.setAccEmail1(resultSet.getString("accEmail1"));
+                data.setRecommendation(resultSet.getString("recommendation"));
+                data.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
+                data.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
             }
             closeConnection(conn);
             return data;
@@ -2356,6 +2361,8 @@ public class DBHelper {
                 "o.supplierId," +
                 "o.is_ergent," +
                 "o.is_wait," +
+                "o.is_received," +
+                "o.is_delivered," +
                 "c.name AS customerName," +
                 "s.name AS supplierName " +
                 "FROM Orders o " +
@@ -2377,11 +2384,13 @@ public class DBHelper {
                 Integer supplierId = resultSet.getObject("supplierId", Integer.class);
                 Boolean isErgent = resultSet.getBoolean("is_ergent");
                 Boolean isWait = resultSet.getBoolean("is_wait");
+                Boolean isReceived = resultSet.getBoolean("is_received");
+                Boolean isDelivered = resultSet.getBoolean("is_delivered");
                 String customerName = resultSet.getString("customerName");
                 String supplierName = resultSet.getString("supplierName");
 
 
-                Order order = new Order(id, title, description, dueDate, isCompleted, customerId, supplierId, isErgent, isWait, customerName, supplierName);
+                Order order = new Order(id, title, description, dueDate, isCompleted, customerId, supplierId, isErgent, isWait, isReceived, isDelivered, customerName, supplierName);
                 orders.add(order);
             }
             closeConnection(conn);
@@ -2457,7 +2466,7 @@ public class DBHelper {
     }
 
     public boolean updateOrder(Order order) {
-        String query = "UPDATE Orders SET title = ?, description = ?, dueDate = ?, is_Completed = ?, customerId = ?, supplierId = ?, is_ergent = ?, is_wait = ? WHERE id = ?";
+        String query = "UPDATE Orders SET title = ?, description = ?, dueDate = ?, is_Completed = ?, customerId = ?, supplierId = ?, is_ergent = ?, is_wait = ?, is_received = ?, is_delivered = ?  WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -2478,7 +2487,9 @@ public class DBHelper {
             }
             stmt.setBoolean(7, order.getErgent());
             stmt.setBoolean(8, order.getWait());
-            stmt.setInt(9, order.getId());
+            stmt.setBoolean(9, order.getReceived());
+            stmt.setBoolean(10, order.getDelivered());
+            stmt.setInt(11, order.getId());
 
 
             if (stmt.executeUpdate() > 0) {
@@ -2534,6 +2545,8 @@ public class DBHelper {
                 "o.supplierId," +
                 "o.is_ergent," +
                 "o.is_wait," +
+                "o.is_received," +
+                "o.is_delivered," +
                 "c.name AS customerName," +
                 "s.name AS supplierName " +
                 "FROM Orders o " +
@@ -2556,11 +2569,119 @@ public class DBHelper {
                 Integer supplierId = resultSet.getObject("supplierId", Integer.class);
                 Boolean isErgent = resultSet.getBoolean("is_ergent");
                 Boolean isWait = resultSet.getBoolean("is_wait");
+                Boolean isReceived = resultSet.getBoolean("is_received");
+                Boolean isDelivered = resultSet.getBoolean("is_delivered");
                 String customerName = resultSet.getString("customerName");
                 String supplierName = resultSet.getString("supplierName");
 
 
-                Order order = new Order(id, title, description, dueDate, isCompleted, customerId, supplierId, isErgent, isWait, customerName, supplierName);
+                Order order = new Order(id, title, description, dueDate, isCompleted, customerId, supplierId, isErgent, isWait, isReceived, isDelivered, customerName, supplierName);
+                orders.add(order);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
+
+    public List<Order> getUnreceivedOrders() {
+        List<Order> orders = new ArrayList<>();
+        String query = "SELECT " +
+                "o.id," +
+                "o.title," +
+                "o.description," +
+                "o.dueDate," +
+                "o.is_completed," +
+                "o.customerId," +
+                "o.supplierId," +
+                "o.is_ergent," +
+                "o.is_wait," +
+                "o.is_received," +
+                "o.is_delivered," +
+                "c.name AS customerName," +
+                "s.name AS supplierName " +
+                "FROM Orders o " +
+                "LEFT JOIN Customers c ON o.customerId = c.code " +
+                "LEFT JOIN Suppliers s ON o.supplierId = s.id " +
+                "WHERE o.is_completed = 1 AND o.is_received = 0 " +
+                "ORDER BY o.dueDate DESC;";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet resultSet = stmt.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                LocalDate dueDate = resultSet.getDate("dueDate").toLocalDate();
+                boolean isCompleted = resultSet.getBoolean("is_Completed");
+                Integer customerId = resultSet.getObject("customerId", Integer.class);
+                Integer supplierId = resultSet.getObject("supplierId", Integer.class);
+                Boolean isErgent = resultSet.getBoolean("is_ergent");
+                Boolean isWait = resultSet.getBoolean("is_wait");
+                Boolean isReceived = resultSet.getBoolean("is_received");
+                Boolean isDelivered = resultSet.getBoolean("is_delivered");
+                String customerName = resultSet.getString("customerName");
+                String supplierName = resultSet.getString("supplierName");
+
+
+                Order order = new Order(id, title, description, dueDate, isCompleted, customerId, supplierId, isErgent, isWait, isReceived, isDelivered, customerName, supplierName);
+                orders.add(order);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
+
+    public List<Order> getUndeliveredOrders() {
+        List<Order> orders = new ArrayList<>();
+        String query = "SELECT " +
+                "o.id," +
+                "o.title," +
+                "o.description," +
+                "o.dueDate," +
+                "o.is_completed," +
+                "o.customerId," +
+                "o.supplierId," +
+                "o.is_ergent," +
+                "o.is_wait," +
+                "o.is_received," +
+                "o.is_delivered," +
+                "c.name AS customerName," +
+                "s.name AS supplierName " +
+                "FROM Orders o " +
+                "LEFT JOIN Customers c ON o.customerId = c.code " +
+                "LEFT JOIN Suppliers s ON o.supplierId = s.id " +
+                "WHERE o.is_completed = 1 AND o.is_received = 1 AND o.is_delivered = 0 " +
+                "ORDER BY o.dueDate DESC;";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet resultSet = stmt.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                LocalDate dueDate = resultSet.getDate("dueDate").toLocalDate();
+                boolean isCompleted = resultSet.getBoolean("is_Completed");
+                Integer customerId = resultSet.getObject("customerId", Integer.class);
+                Integer supplierId = resultSet.getObject("supplierId", Integer.class);
+                Boolean isErgent = resultSet.getBoolean("is_ergent");
+                Boolean isWait = resultSet.getBoolean("is_wait");
+                Boolean isReceived = resultSet.getBoolean("is_received");
+                Boolean isDelivered = resultSet.getBoolean("is_delivered");
+                String customerName = resultSet.getString("customerName");
+                String supplierName = resultSet.getString("supplierName");
+
+
+                Order order = new Order(id, title, description, dueDate, isCompleted, customerId, supplierId, isErgent, isWait, isReceived, isDelivered, customerName, supplierName);
                 orders.add(order);
             }
             closeConnection(conn);
@@ -2583,6 +2704,8 @@ public class DBHelper {
                 "o.supplierId," +
                 "o.is_ergent," +
                 "o.is_wait," +
+                "o.is_received," +
+                "o.is_delivered," +
                 "c.name AS customerName," +
                 "s.name AS supplierName " +
                 "FROM Orders o " +
@@ -2607,10 +2730,12 @@ public class DBHelper {
                     Integer suppId = resultSet.getObject("supplierId", Integer.class);
                     Boolean isErgent = resultSet.getBoolean("is_ergent");
                     Boolean isWait = resultSet.getBoolean("is_wait");
+                    Boolean isReceived = resultSet.getBoolean("is_received");
+                    Boolean isDelivered = resultSet.getBoolean("is_delivered");
                     String customerName = resultSet.getString("customerName");
                     String supplierName = resultSet.getString("supplierName");
 
-                    Order order = new Order(id, title, description, dueDate, isCompleted, customerId, suppId, isErgent, isWait, customerName, supplierName);
+                    Order order = new Order(id, title, description, dueDate, isCompleted, customerId, suppId, isErgent, isWait, isReceived, isDelivered, customerName, supplierName);
                     orders.add(order);
                 }
             }
@@ -2658,10 +2783,12 @@ public class DBHelper {
                     Integer suppId = resultSet.getObject("supplierId", Integer.class);
                     Boolean isErgent = resultSet.getBoolean("is_ergent");
                     Boolean isWait = resultSet.getBoolean("is_wait");
+                    Boolean isReceived = resultSet.getBoolean("is_received");
+                    Boolean isDelivered = resultSet.getBoolean("is_delivered");
                     String customerName = resultSet.getString("customerName");
                     String supplierName = resultSet.getString("supplierName");
 
-                    Order order = new Order(id, title, description, dueDate, isCompleted, customerId, suppId, isErgent, isWait, customerName, supplierName);
+                    Order order = new Order(id, title, description, dueDate, isCompleted, customerId, suppId, isErgent, isWait, isReceived, isDelivered, customerName, supplierName);
                     orders.add(order);
                 }
             }

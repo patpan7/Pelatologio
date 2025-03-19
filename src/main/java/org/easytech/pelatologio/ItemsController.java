@@ -134,6 +134,7 @@ public class ItemsController implements Initializable {
     }
 
     private void refreshTableData() {
+        List<TableColumn<Item, ?>> sortOrder = new ArrayList<>(itemsTable.getSortOrder());
         observableList.clear();
         try {
             observableList.addAll(fetchDataFromMySQL());
@@ -141,6 +142,7 @@ public class ItemsController implements Initializable {
             throw new RuntimeException(e);
         }
         applyFilters(filterField.getText());
+        itemsTable.getSortOrder().setAll(sortOrder);
     }
 
     public void itemAddNew(ActionEvent actionEvent) throws IOException {

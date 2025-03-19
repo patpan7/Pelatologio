@@ -23,6 +23,7 @@ import org.controlsfx.control.Notifications;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -262,8 +263,10 @@ public class TaskListController implements Initializable {
     private void loadTasks() {
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
+        List<TableColumn<Tasks, ?>> sortOrder = new ArrayList<>(taskTable.getSortOrder());
         allTasks.setAll(dbHelper.getAllTasks());
         updateTaskTable();
+        taskTable.getSortOrder().setAll(sortOrder);
     }
 
     private void updateTaskTable() {

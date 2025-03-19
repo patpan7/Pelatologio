@@ -138,10 +138,12 @@ public class OffersController implements Initializable {
     }
 
     private void loadOffers() {
+        List<TableColumn<Offer, ?>> sortOrder = new ArrayList<>(offersTable.getSortOrder());
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
         allOffers.setAll(dbHelper.getAllOffers());
         updateOffersTable();
+        offersTable.getSortOrder().setAll(sortOrder);
     }
 
     private void updateOffersTable() {

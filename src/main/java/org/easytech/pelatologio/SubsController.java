@@ -193,10 +193,12 @@ public class SubsController implements Initializable {
     }
 
     private void loadSubs(LocalDate from, LocalDate to) {
+        List<TableColumn<Subscription, ?>> sortOrder = new ArrayList<>(subsTable.getSortOrder());
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
         allSubs.setAll(dbHelper.getAllSubs(from, to));
         updateTaskTable();
+        subsTable.getSortOrder().setAll(sortOrder);
     }
 
     private void updateTaskTable() {

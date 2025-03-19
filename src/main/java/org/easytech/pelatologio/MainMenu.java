@@ -158,7 +158,7 @@ public class MainMenu extends Application {
             }
             else if (result.isPresent() && result.get() == postponeButton) {
                 try {
-                    FXMLLoader loader = new FXMLLoader(MainMenu.class.getResource("CalendarView.fxml"));
+                    FXMLLoader loader = new FXMLLoader(MainMenu.class.getResource("calendarView.fxml"));
                     Parent root = loader.load();
 
                     Stage stage = new Stage();

@@ -238,6 +238,7 @@ public class CustomersController implements Initializable {
     }
 
     private void refreshTableData() {
+        List<TableColumn<Customer, ?>> sortOrder = new ArrayList<>(customerTable.getSortOrder());
         observableList.clear();
         try {
             observableList.addAll(fetchDataFromMySQL());
@@ -245,6 +246,7 @@ public class CustomersController implements Initializable {
             throw new RuntimeException(e);
         }
         applyFilters(filterField.getText());
+        customerTable.getSortOrder().setAll(sortOrder);
     }
 
     private List<Customer> fetchDataFromMySQL() throws SQLException {

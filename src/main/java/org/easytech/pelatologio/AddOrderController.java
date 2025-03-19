@@ -44,7 +44,7 @@ public class AddOrderController {
     @FXML
     private JFXButton btnCustomer, btnSupplier;
     @FXML
-    private JFXCheckBox is_completed, is_ergent, is_wait;
+    private JFXCheckBox is_completed, is_ergent, is_wait, is_received, is_delivered;
 
     private Order order;
     private int customerId;
@@ -101,6 +101,8 @@ public class AddOrderController {
         is_completed.setSelected(order.getCompleted());
         is_ergent.setSelected(order.getErgent());
         is_wait.setSelected(order.getWait());
+        is_received.setSelected(order.getReceived());
+        is_delivered.setSelected(order.getDelivered());
     }
 
 
@@ -288,6 +290,8 @@ public class AddOrderController {
             Boolean isCompleted = is_completed.isSelected();
             Boolean isErgent = is_ergent.isSelected();
             Boolean isWait = is_wait.isSelected();
+            Boolean isReceived = is_received.isSelected();
+            Boolean isDelivered = is_delivered.isSelected();
 
             DBHelper dbHelper = new DBHelper();
 
@@ -318,6 +322,8 @@ public class AddOrderController {
                 order.setErgent(isErgent);
                 order.setWait(isWait);
                 order.setCompleted(isCompleted);
+                order.setReceived(isReceived);
+                order.setDelivered(isDelivered);
                 dbHelper.updateOrder(order);
             }
 
