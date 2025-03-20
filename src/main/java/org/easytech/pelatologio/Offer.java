@@ -13,8 +13,9 @@ public class Offer {
     private String customerName;
     private String paths;
     private String sended;
+    Boolean isArchived;
 
-    public Offer(int id, LocalDate offerDate, String description, String hours, String status, int customerId, LocalDate response_date, String customerName, String paths, String sended) {
+    public Offer(int id, LocalDate offerDate, String description, String hours, String status, int customerId, LocalDate response_date, String customerName, String paths, String sended, Boolean isArchived) {
         this.id = id;
         this.offerDate = offerDate;
         this.description = description;
@@ -25,6 +26,7 @@ public class Offer {
         this.customerName = customerName;
         this.paths = paths;
         this.sended = sended;
+        this.isArchived = isArchived;
 
     }
 
@@ -72,6 +74,10 @@ public class Offer {
         return customerId;
     }
 
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
+    }
+
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
     }
@@ -106,5 +112,14 @@ public class Offer {
 
     public void setSended(String sended) {
         this.sended = sended;
+    }
+
+
+    public Boolean getArchived() {
+        return isArchived;
+    }
+
+    public void setArchived(Boolean archived) {
+        isArchived = archived;
     }
 }

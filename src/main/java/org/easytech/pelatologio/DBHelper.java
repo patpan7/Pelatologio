@@ -1915,7 +1915,7 @@ public class DBHelper {
 
     public List<Offer> getAllOffers() {
         List<Offer> offers = new ArrayList<>();
-        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, s.offer_file_paths, s.sended, c.name " +
+        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, s.offer_file_paths, s.sended, s.is_archived, c.name " +
                 "FROM Offers s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code";
 
@@ -1935,8 +1935,9 @@ public class DBHelper {
                 String customerName = resultSet.getString("name");
                 String paths = resultSet.getObject("offer_file_paths") != null ? resultSet.getString("offer_file_paths").trim() : "";
                 String sended = resultSet.getString("sended");
+                Boolean isArchived = resultSet.getBoolean("is_archived");
 
-                Offer offer = new Offer(id, offerDate, description, hours, status, customerId, responseDate, customerName, paths, sended);
+                Offer offer = new Offer(id, offerDate, description, hours, status, customerId, responseDate, customerName, paths, sended, isArchived);
                 offers.add(offer);
             }
             closeConnection(conn);
@@ -1987,7 +1988,7 @@ public class DBHelper {
     }
 
     public Boolean updateOffer(Offer offer) {
-        String query = "UPDATE Offers SET offerDate = ?, description = ?, hours = ?, status = ?, customerId = ?, offer_file_paths = ? WHERE id = ?";
+        String query = "UPDATE Offers SET offerDate = ?, description = ?, hours = ?, status = ?, customerId = ?, offer_file_paths = ?, is_archived = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -1998,7 +1999,8 @@ public class DBHelper {
             stmt.setString(4, offer.getStatus().trim());
             stmt.setInt(5, offer.getCustomerId());
             stmt.setString(6, offer.getPaths());
-            stmt.setInt(7, offer.getId());
+            stmt.setBoolean(7, offer.getArchived());
+            stmt.setInt(8, offer.getId());
 
             if (stmt.executeUpdate() > 0) {
                 closeConnection(conn);
@@ -2015,7 +2017,7 @@ public class DBHelper {
 
     public List<Offer> getAllCustomerOffers(int customerCode) {
         List<Offer> offers = new ArrayList<>();
-        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, s.offer_file_paths, s.sended, c.name " +
+        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, s.offer_file_paths, s.sended, is_archived, c.name " +
                 "FROM Offers s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code " +
                 "WHERE s.customerId = ?";
@@ -2037,8 +2039,9 @@ public class DBHelper {
                 String customerName = resultSet.getString("name").trim();
                 String paths = resultSet.getString("offer_file_paths");
                 String sended = resultSet.getString("sended");
+                Boolean isArchived = resultSet.getBoolean("is_archived");
 
-                Offer offer = new Offer(id, offerDate, description, hours, status, customerId, responseDate, customerName, paths, sended);
+                Offer offer = new Offer(id, offerDate, description, hours, status, customerId, responseDate, customerName, paths, sended, isArchived);
                 offers.add(offer);
             }
             closeConnection(conn);
@@ -2051,7 +2054,7 @@ public class DBHelper {
 
     public List<Offer> getUpdatedOffers(LocalDateTime lastCheck) {
         List<Offer> updatedOffers = new ArrayList<>();
-        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, s.offer_file_paths, s.sended, c.name " +
+        String query = "SELECT s.id, s.offerDate, s.description, s.hours, s.status, s.customerId, s.response_date, s.offer_file_paths, s.sended, is_archived, c.name " +
                 "FROM Offers s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code WHERE last_updated > ?";
 
@@ -2073,8 +2076,9 @@ public class DBHelper {
                 String customerName = resultSet.getString("name");
                 String paths = resultSet.getObject("offer_file_paths") != null ? resultSet.getString("offer_file_paths").trim() : "";
                 String sended = resultSet.getString("sended");
+                Boolean isArchived = resultSet.getBoolean("is_archived");
 
-                updatedOffers.add(new Offer(id, offerDate, description, hours, status, customerId, response_date, customerName, paths, sended));
+                updatedOffers.add(new Offer(id, offerDate, description, hours, status, customerId, response_date, customerName, paths, sended, isArchived));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -2798,5 +2802,23 @@ public class DBHelper {
         }
 
         return orders;
+    }
+
+    public boolean updateOfferArchived(int id) {
+        String query = "UPDATE Offers SET is_archived = 1 WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, id);
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

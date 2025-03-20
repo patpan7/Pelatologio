@@ -87,8 +87,11 @@ public class CalendarController {
                 if (appointment.getIsCalendar()) {
                     if (appointment.getCategory().equals(customCalendar.getName())) {
                         Entry<Tasks> entry;
-                        if (appointment.getCustomerId() != 0)
+                        String title = appointment.getTitle();
+                        if (appointment.getCustomerId() != 0) {
+                            title = appointment.getCustomerName() + " " + appointment.getTitle();
                             entry = new Entry<>(appointment.getCustomerName() + " " + appointment.getTitle());
+                        }
                         else
                             entry = new Entry<>(appointment.getTitle());
                         entry.setId(String.valueOf(appointment.getId()));
@@ -97,7 +100,7 @@ public class CalendarController {
                         entry.setCalendar(fxCalendar); // Αυτό είναι απαραίτητο
                         if (appointment.getCompleted()) {
                             //entry.setTitle("[✔] " + appointment.getTitle());
-                            entry.setTitle("\u0336 [✔] " + appointment.getTitle().replaceAll(".", "$0\u0336")); // Διαγράμμιση κειμένου
+                            entry.setTitle("\u0336 [✔] " + title.replaceAll(".", "$0\u0336")); // Διαγράμμιση κειμένου
                             entry.getStyleClass().add("completed-entry");
                         }
                         // Προσθήκη listener για drag-and-drop
@@ -169,6 +172,8 @@ public class CalendarController {
                 System.out.println("move");
                 appointment.setStartTime(newInterval.getStartDateTime());
                 appointment.setEndTime(newInterval.getEndDateTime());
+                appointment.setDueDate(newInterval.getStartDate());
+
                 // Ενημέρωση της βάσης
                 boolean success = dbHelper.updateTask(appointment);
 

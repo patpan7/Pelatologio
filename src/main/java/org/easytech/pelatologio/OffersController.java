@@ -36,7 +36,7 @@ public class OffersController implements Initializable {
     @FXML
     private TableColumn idColumn, descriptionColumn, offerDateColumn, cucstomerColum, statusColumn, response_dateColumn, sendedColumn;
     @FXML
-    private CheckBox showAllCheckbox, acceptCheckbox, rejectCheckbox, pendingCheckbox;
+    private CheckBox showAllCheckbox, acceptCheckbox, rejectCheckbox, pendingCheckbox, archivedCheckbox;
     @FXML
     private Button addOfferButton, editOfferButton, deleteOfferButton;
 
@@ -104,6 +104,7 @@ public class OffersController implements Initializable {
         acceptCheckbox.setOnAction(e -> updateOffersTable());
         rejectCheckbox.setOnAction(e -> updateOffersTable());
         pendingCheckbox.setOnAction(e -> updateOffersTable());
+        archivedCheckbox.setOnAction(e -> updateOffersTable());
 
         // Κουμπιά
         addOfferButton.setOnAction(e -> handleAddOffer());
@@ -158,6 +159,11 @@ public class OffersController implements Initializable {
             } else if (rejectCheckbox.isSelected()) {
                 filteredOffers.removeIf(offer -> !offer.getStatus().trim().contains("Απόρριψη"));
             }
+        }
+        if (archivedCheckbox.isSelected()) {
+            filteredOffers.removeIf(offer -> !offer.getArchived());
+        } else {
+            filteredOffers.removeIf(offer -> offer.getArchived());
         }
         // Ανανεώνουμε τα δεδομένα του πίνακα
         offersTable.setItems(filteredOffers);
@@ -384,6 +390,46 @@ public class OffersController implements Initializable {
         toggleAns("Απόρριψη Χειρ.");
     }
 
+    @FXML
+    private void handleArchive (ActionEvent event) {
+        Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
+        if (selectedOffer == null) {
+            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα προσφορά.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();
+            });
+            return;
+        }
+
+        DBHelper dbHelper = new DBHelper();
+        if (dbHelper.updateOfferArchived(selectedOffer.getId())) {
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Ενημέρωση")
+                        .text("Ενημέρωση προσφοράς επιτυχής.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showConfirm();});
+            loadOffers(); // Φορτώνει ξανά τις εργασίες
+        } else {
+            Platform.runLater(() -> {
+                Notifications notifications = Notifications.create()
+                        .title("Ενημέρωση")
+                        .text("Αποτυχία ενημέρωση προσφοράς.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();});
+        }
+    }
+
     private void toggleAns(String ans) {
         Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
         if (selectedOffer == null) {
@@ -402,22 +448,20 @@ public class OffersController implements Initializable {
 
         DBHelper dbHelper = new DBHelper();
         if (dbHelper.updateOfferStatusManual(selectedOffer.getId(), ans)) {
-            System.out.println("Task completion status updated.");
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Ενημέρωση")
-                        .text("Ενημέρωση προσφοράς επιτυχής.")
+                        .text("Η προσφορά αρχειοθετήθηκε.")
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showConfirm();});
             loadOffers(); // Φορτώνει ξανά τις εργασίες
         } else {
-            System.out.println("Failed to update task completion status.");
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Ενημέρωση")
-                        .text("Αποτυχία ενημέρωση προσφοράς.")
+                        .text("Αποτυχία αρχειοθέτησης προσφοράς.")
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);

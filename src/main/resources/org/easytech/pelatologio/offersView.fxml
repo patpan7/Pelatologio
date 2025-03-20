@@ -39,6 +39,12 @@
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </HBox.margin>
                         </JFXCheckBox>
+                        <JFXCheckBox fx:id="archivedCheckbox" layoutX="566.0" layoutY="20.0" styleClass="normal-label"
+                                     text="Μόνο Αρχειοθετημένες">
+                            <HBox.margin>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                            </HBox.margin>
+                        </JFXCheckBox>
                         <Separator HBox.hgrow="ALWAYS"/>
                         <JFXButton fx:id="btnRefresh" buttonType="RAISED" mnemonicParsing="false"
                                    onMouseClicked="#refresh" styleClass="click-button" text="">
@@ -71,14 +77,15 @@
                                     <MenuItem mnemonicParsing="false" onAction="#handleAddTask" styleClass="menu-item"
                                               text="Προσθήκη εργασίας"/>
                                     <MenuItem mnemonicParsing="false" onAction="#handleShareOffer"
-                                              styleClass="menu-item"
-                                              text="Αντιγραφή συνδέσμου"/>
+                                              styleClass="menu-item" text="Αντιγραφή συνδέσμου"/>
                                     <MenuItem mnemonicParsing="false" onAction="#handleSendEmail" styleClass="menu-item"
                                               text="Αποστολή E-mail"/>
                                     <MenuItem mnemonicParsing="false" onAction="#handleAccept" styleClass="menu-item"
                                               text="Αποδοχή"/>
                                     <MenuItem mnemonicParsing="false" onAction="#handleReject" styleClass="menu-item"
                                               text="Απόρριψη"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleArchive" styleClass="menu-item"
+                                              text="Αρχειοθέτηση"/>
                                 </items>
                             </ContextMenu>
                         </contextMenu>

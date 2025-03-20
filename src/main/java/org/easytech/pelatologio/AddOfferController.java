@@ -1,6 +1,7 @@
 package org.easytech.pelatologio;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -51,6 +52,8 @@ public class AddOfferController {
     private ComboBox<Customer> customerComboBox;
     @FXML
     private JFXButton btnCustomer, btnSelectFile;
+    @FXML
+    private CheckBox isArchived;
 
     private Offer offer;
     private Customer selectedCustomer;
@@ -96,6 +99,7 @@ public class AddOfferController {
             attachmentList.getItems().add(file);
             attachments.add(file);
         }
+        isArchived.setSelected(offer.getArchived());
     }
 
 
@@ -266,7 +270,7 @@ public class AddOfferController {
 
             if (offer == null) {
                 //Δημιουργία νέας εργασίας
-                Offer newOffer = new Offer(0, offerDate, description, hours, status, selectedCustomer.getCode(), null, null, paths, "Όχι");
+                Offer newOffer = new Offer(0, offerDate, description, hours, status, selectedCustomer.getCode(), null, null, paths, "Όχι",false);
                 dbHelper.saveOffer(newOffer);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
@@ -276,6 +280,7 @@ public class AddOfferController {
                 offer.setStatus(status);
                 offer.setCustomerId(selectedCustomer.getCode());
                 offer.setPaths(paths);
+                offer.setArchived(isArchived.isSelected());
                 dbHelper.updateOffer(offer);
             }
 
