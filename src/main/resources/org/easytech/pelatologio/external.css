@@ -59,7 +59,7 @@
 
 .table-row-cell:empty {
     -fx-background-color: white;
-    -fx-border-width: 0;
+    -fx-border-width: 0 0 0 0;
 }
 
 /*------------------ComboBox----------------*/
@@ -288,4 +288,29 @@
     -fx-text-fill: #333;
     -fx-border: 2px;
     -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.5), 0,0,0,1);
+}
+
+.list-view1 {
+    -fx-background-color: transparent;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.list-cell {
+    -fx-border-color: #d3d3d3; /* Χρώμα ορίου */
+    -fx-border-width: 0 0 1px 0; /* Μόνο κάτω όριο */
+    -fx-padding: 5px;
+    -fx-font-size: 16px;
+}
+
+.list-cell:selected {
+    -fx-font-weight: bold;
+    -fx-background-color: -fx-selected; /* Μπλε επιλογή */
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.list-cell:empty {
+    -fx-border-width: 0 0 0 0; /* Μόνο κάτω όριο */
 }

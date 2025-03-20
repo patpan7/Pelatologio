@@ -2763,6 +2763,8 @@ public class DBHelper {
                 "o.supplierId," +
                 "o.is_ergent," +
                 "o.is_wait," +
+                "o.is_received," +
+                "o.is_delivered," +
                 "c.name AS customerName," +
                 "s.name AS supplierName " +
                 "FROM Orders o " +

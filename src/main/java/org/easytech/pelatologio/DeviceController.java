@@ -310,9 +310,4 @@ public class DeviceController implements Initializable {
         devicesTable.getSelectionModel().clearSelection();
     }
 
-    public void mainMenuClick(ActionEvent event) throws IOException {
-        MainMenuController mainMenuController = new MainMenuController();
-        mainMenuController.mainMenuClick(stackPane);
-    }
-
 }

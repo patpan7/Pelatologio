@@ -28,32 +28,37 @@ public class MainMenuController implements Initializable {
     @FXML
     private Tab mainTab;
     @FXML
-    Label vesrion;
+    private Label vesrion, lbAppUser, lbTasks, lbAppointments, lbSimply, lbMypos;
     @FXML
-    Label lbAppUser;
+    private ListView<Order> ordersList, pendingOrdersList, deliveryOrdersList;
     @FXML
-    Label lbTasks;
-    @FXML
-    Label lbAppointments;
-    @FXML
-    Label lbSimply;
-    @FXML
-    Label lbMypos;
-    @FXML
-    ListView <Order> ordersList;
-    @FXML
-    ListView <Order> pedingOrdersList;
-    @FXML
-    ListView <Order> deliveryOrdersList;
-    @FXML
-    Button btnCustomers, btnMyPOS, btnTasks, btnCalendar, btnD11, btnMyDataStatus, btnItems, btnDevices, btnSettings;
+    private Button btnCustomers, btnMyPOS, btnTasks, btnCalendar, btnD11, btnMyDataStatus, btnItems, btnDevices, btnSettings;
 
-
-    public Parent root;
+    private final DBHelper dbHelper = new DBHelper();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        mainTab.setClosable(false); // Αποτρέπει το κλείσιμο του κεντρικού menu
+        mainTab.setClosable(false);
+        setTooltips();
+        lbAppUser.setText("Χειριστής: " + AppSettings.loadSetting("appuser"));
+        loadDashboardData();
+        loadOrders();
+    }
+
+    private void loadDashboardData() {
+        lbTasks.setText("Εκκρεμείς εργασίες: " + dbHelper.getTasksCount());
+        lbAppointments.setText("Ραντεβού ημέρας: " + dbHelper.getAppointmentsCount());
+        lbSimply.setText("Πελάτες Simply: " + dbHelper.getLoginsCount(2));
+        lbMypos.setText("Πελάτες myPOS: " + dbHelper.getLoginsCount(1));
+    }
+
+    private void loadOrders() {
+        ordersList.getItems().setAll(dbHelper.getPendingOrders());
+        pendingOrdersList.getItems().setAll(dbHelper.getUnreceivedOrders());
+        deliveryOrdersList.getItems().setAll(dbHelper.getUndeliveredOrders());
+    }
+
+    private void setTooltips() {
         setTooltip(btnCustomers, "Διαχείριση πελατών");
         setTooltip(btnMyPOS, "1)Είσοδος στο DAS της myPOS\n2)Έλεγχος κατάστασης myPOS");
         setTooltip(btnTasks, "Διαχείριση εργασιών");
@@ -62,422 +67,184 @@ public class MainMenuController implements Initializable {
         setTooltip(btnMyDataStatus, "Έλεγχος κατάστασης myData");
         setTooltip(btnItems, "Διαχείριση ειδών");
         setTooltip(btnDevices, "Διαχείριση συσκευών");
-        Platform.runLater(() -> stackPane.requestFocus());
-        lbAppUser.setText("Χειριστή: "+AppSettings.loadSetting("appuser"));
-        DBHelper dbHelper = new DBHelper();
-        int tasksCount = dbHelper.getTasksCount();
-        lbTasks.setText("Εκκρεμής εργασίες: "+tasksCount);
-        int appointmentsCount = dbHelper.getAppointmentsCount();
-        lbAppointments.setText("Ραντεβού ημέρας: "+appointmentsCount);
-        int simplyCount = dbHelper.getLoginsCount(2);
-        lbSimply.setText("Πελάτες Simply: "+simplyCount);
-        int myposCount = dbHelper.getLoginsCount(1);
-        lbMypos.setText("Πελάτες myPOS: " + myposCount);
-        loadOrders();
     }
 
-    private void loadOrders() {
-        DBHelper dbHelper = new DBHelper();
-        List<Order> orders = dbHelper.getPendingOrders();
-        ordersList.getItems().clear();
-        ordersList.getItems().addAll(orders);
-        List<Order> pedingOrders = dbHelper.getUnreceivedOrders();
-        pedingOrdersList.getItems().clear();
-        pedingOrdersList.getItems().addAll(pedingOrders);
-        List<Order> deliveryOrders = dbHelper.getUndeliveredOrders();
-        deliveryOrdersList.getItems().clear();
-        deliveryOrdersList.getItems().addAll(deliveryOrders);
+    private void setTooltip(Button button, String text) {
+        Tooltip tooltip = new Tooltip(text);
+        tooltip.setShowDelay(Duration.seconds(0.3));
+        button.setTooltip(tooltip);
     }
 
-    public void mainMenuClick(StackPane stackPane) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
-        root = fxmlLoader.load();
-        stackPane.getChildren().clear();
-        stackPane.getChildren().add(root);
+    private void openTab(String title, String fxmlPath) throws IOException {
+        for (Tab tab : mainTabPane.getTabs()) {
+            if (tab.getText().equals(title)) {
+                mainTabPane.getSelectionModel().select(tab);
+                return;
+            }
+        }
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Parent content = fxmlLoader.load();
+        Tab newTab = new Tab(title, content);
+        mainTabPane.getTabs().add(newTab);
+        mainTabPane.getSelectionModel().select(newTab);
     }
 
     public void customersClick(ActionEvent e) throws IOException {
-        DBHelper dbHelper = new DBHelper();
         dbHelper.customerUnlockAll(AppSettings.loadSetting("appuser"));
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("customersView.fxml"));
-//        root = fxmlLoader.load();
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(root);
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Πελάτες")) {
-                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                return;
-            }
-        }
-
-        // Φόρτωση του FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("customersView.fxml"));
-        Parent customersContent = fxmlLoader.load();
-
-        // Περνάμε το mainTabPane στον CustomersController
-        CustomersController customersController = fxmlLoader.getController();
-        customersController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
-
-
-        // Δημιουργία νέου tab
-        Tab newTab = new Tab("Πελάτες");
-        newTab.setContent(customersContent);
-
-        // Προσθήκη του tab στο TabPane
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
+        openTab("Πελάτες", "customersView.fxml");
     }
 
+    public void accauntantsClick(ActionEvent e) throws IOException {
+        openTab("Λογιστές", "accountantsView.fxml");
+    }
 
-    public void settingsClick(ActionEvent e) throws IOException {
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("settings.fxml"));
-//        root = fxmlLoader.load();
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(root);
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Ρυθμίσεις")) {
-                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                return;
-            }
-        }
+    public void suppliersClick(ActionEvent e) throws IOException {
+        openTab("Προμηθευτές", "suppliersView.fxml");
+    }
 
-        // Φόρτωση του FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("settings.fxml"));
-        Parent settingsContent = fxmlLoader.load();
+    public void tasksClick(ActionEvent event) throws IOException {
+        openTab("Εργασίες", "tasksView.fxml");
+    }
 
-        // Δημιουργία νέου tab
-        Tab newTab = new Tab("Ρυθμίσεις");
-        newTab.setContent(settingsContent);
+    public void calendarClick(ActionEvent event) throws IOException {
+        openTab("Ημερολόγιο", "calendarView.fxml");
+    }
 
-        // Προσθήκη του tab στο TabPane
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
+    public void offersClick(ActionEvent event) throws IOException {
+        openTab("Προσφορές", "offersView.fxml");
     }
 
     public void myposdasClick(MouseEvent event) {
-
-        if (event.getButton() == MouseButton.SECONDARY) {
-            try {
-                LoginAutomator loginAutomation = new LoginAutomator(true);
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator(true);
+            if (event.getButton() == MouseButton.SECONDARY) {
                 loginAutomation.openPage("https://status.mypos.com/");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                LoginAutomator loginAutomation = new LoginAutomator(true);
+            } else {
                 loginAutomation.openAndFillLoginFormDas("https://das.mypos.eu/en/login",
                         AppSettings.loadSetting("myposUser"),
                         AppSettings.loadSetting("myposPass"),
                         By.id("username"),
                         By.className("btn-primary"),
                         By.id("password"));
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
+        } catch (IOException e) {
+            showErrorDialog("Σφάλμα κατά το άνοιγμα.", e.getMessage());
         }
+    }
+
+    public void myDataStatusClick(ActionEvent event) {
+        openWebPage("https://status.mydatacloud.gr/");
+    }
+
+    public void ordersClick(ActionEvent event) throws IOException {
+        openTab("Παραγγελίες", "ordersView.fxml");
+    }
+
+    public void itemsClick(ActionEvent actionEvent) throws IOException {
+        openTab("Είδη", "itemsView.fxml");
+    }
+
+    public void devicesClick(ActionEvent actionEvent) throws IOException {
+        openTab("Συσκευές", "deviceView.fxml");
+    }
+
+    public void subsClick(ActionEvent actionEvent) throws IOException {
+        openTab("Συμβόλαια", "subsView.fxml");
     }
 
     public void d11Click(ActionEvent event) {
         try {
-        LoginAutomator loginAutomation = new LoginAutomator(true);
-        loginAutomation.openAndFillLoginForm(
-                "https://www1.aade.gr/taxisnet/kvs/protected/displayLiabilitiesForYear.htm?declarationType=kvsD11",
-                AppSettings.loadSetting("taxisUser"),
-                AppSettings.loadSetting("taxisPass"),
-                By.id("username"),
-                By.id("password"),
-                By.name("btn_login")
-        );
-    } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-        }
-    }
-
-    public void tasksClick(ActionEvent event) throws IOException {
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("tasksView.fxml"));
-//        root = fxmlLoader.load();
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(root);
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Εργασίες")) {
-                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                return;
-            }
-        }
-
-        // Φόρτωση του FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("tasksView.fxml"));
-        Parent tasksContent = fxmlLoader.load();
-
-        // Δημιουργία νέου tab
-        Tab newTab = new Tab("Εργασίες");
-        newTab.setContent(tasksContent);
-
-        // Προσθήκη του tab στο TabPane
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
-    }
-
-    @FXML
-    public void myDataStatusClick(ActionEvent event) {
-        try {
-            LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openPage("https://status.mydatacloud.gr/");
+            new LoginAutomator(true).openAndFillLoginForm(
+                    "https://www1.aade.gr/taxisnet/kvs/protected/displayLiabilitiesForYear.htm?declarationType=kvsD11",
+                    AppSettings.loadSetting("taxisUser"),
+                    AppSettings.loadSetting("taxisPass"),
+                    By.id("username"),
+                    By.id("password"),
+                    By.name("btn_login"));
         } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-
+            showErrorDialog("Σφάλμα κατά το άνοιγμα.", e.getMessage());
         }
     }
 
-    public void calendarClick(ActionEvent event) throws IOException {
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("calendarView.fxml"));
-//        root = fxmlLoader.load();
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(root);
-        // Έλεγχος αν υπάρχει ήδη tab για το ημερολόγιο
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Ημερολόγιο")) {
-                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                return;
-            }
-        }
-
-        // Φόρτωση του FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("calendarView.fxml"));
-        Parent calendarContent = fxmlLoader.load();
-
-        // Δημιουργία νέου tab
-        Tab newTab = new Tab("Ημερολόγιο");
-        newTab.setContent(calendarContent);
-
-        // Προσθήκη του tab στο TabPane
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
-    }
-
-    public void itemsClick(ActionEvent actionEvent) throws IOException {
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("itemsView.fxml"));
-//        root = fxmlLoader.load();
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(root);
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Είδη")) {
-                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                return;
-            }
-        }
-
-        // Φόρτωση του FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("itemsView.fxml"));
-        Parent itemsContent = fxmlLoader.load();
-
-        // Δημιουργία νέου tab
-        Tab newTab = new Tab("Είδη");
-        newTab.setContent(itemsContent);
-
-        // Προσθήκη του tab στο TabPane
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
-    }
-
-    public void devicesClick(ActionEvent actionEvent) throws IOException {
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("deviceView.fxml"));
-//        root = fxmlLoader.load();
-//        stackPane.getChildren().clear();
-//        stackPane.getChildren().add(root);
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Συσκευές")) {
-                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                return;
-            }
-        }
-
-        // Φόρτωση του FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("deviceView.fxml"));
-        Parent devicesContent = fxmlLoader.load();
-
-        // Δημιουργία νέου tab
-        Tab newTab = new Tab("Συσκευές");
-        newTab.setContent(devicesContent);
-
-        // Προσθήκη του tab στο TabPane
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
-    }
-
-    private void setTooltip(Button button, String text) {
-        Tooltip tooltip = new Tooltip();
-        tooltip.setShowDelay(Duration.seconds(0.3));
-        tooltip.setText(text);
-        button.setTooltip(tooltip);
-    }
-
-    public void accauntantsClick(ActionEvent event) throws IOException {
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Λογιστές")) {
-                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                return;
-            }
-        }
-
-        // Φόρτωση του FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("accountantsView.fxml"));
-        Parent accountantsContent = fxmlLoader.load();
-
-        // Περνάμε το mainTabPane στον CustomersController
-        AccountantsController accountantsController = fxmlLoader.getController();
-        accountantsController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
-
-
-        // Δημιουργία νέου tab
-        Tab newTab = new Tab("Λογιστές");
-        newTab.setContent(accountantsContent);
-
-        // Προσθήκη του tab στο TabPane
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
-    }
-
-    public void subsClick(ActionEvent actionEvent) throws IOException {
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Συμβόλαια")) {
-                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                return;
-            }
-        }
-        // Φόρτωση του FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("subsView.fxml"));
-        Parent subsContent = fxmlLoader.load();
-
-        // Περνάμε το mainTabPane στον CustomersController
-        SubsController subsController = fxmlLoader.getController();
-        subsController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
-
-
-        // Δημιουργία νέου tab
-        Tab newTab = new Tab("Συμβόλαια");
-        newTab.setContent(subsContent);
-
-        // Προσθήκη του tab στο TabPane
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
-    }
-
-    public void offersClick(ActionEvent actionEvent) throws IOException {
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Προσφορές")) {
-                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                return;
-            }
-        }
-        // Φόρτωση του FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("offersView.fxml"));
-        Parent offerContent = fxmlLoader.load();
-
-        // Περνάμε το mainTabPane στον CustomersController
-        OffersController offerController = fxmlLoader.getController();
-        offerController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
-
-
-        // Δημιουργία νέου tab
-        Tab newTab = new Tab("Προσφορές");
-        newTab.setContent(offerContent);
-
-        // Προσθήκη του tab στο TabPane
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
-    }
-
-    public void supplierClick(ActionEvent event) throws IOException {
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Προμηθευτές")) {
-                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                return;
-            }
-        }
-
-        // Φόρτωση του FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("suppliersView.fxml"));
-        Parent suppliersContent = fxmlLoader.load();
-
-        // Περνάμε το mainTabPane στον CustomersController
-        SuppliersController suppliersController = fxmlLoader.getController();
-        suppliersController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
-
-
-        // Δημιουργία νέου tab
-        Tab newTab = new Tab("Προμηθευτές");
-        newTab.setContent(suppliersContent);
-
-        // Προσθήκη του tab στο TabPane
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
-    }
-
-    public void ordersClick(ActionEvent actionEvent) throws IOException {
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Παραγγελίες")) {
-                mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                return;
-            }
-        }
-
-        // Φόρτωση του FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ordersView.fxml"));
-        Parent ordersContent = fxmlLoader.load();
-
-        // Περνάμε το mainTabPane στον CustomersController
-        OrdersListController ordersListController = fxmlLoader.getController();
-
-
-        // Δημιουργία νέου tab
-        Tab newTab = new Tab("Παραγγελίες");
-        newTab.setContent(ordersContent);
-
-        // Προσθήκη του tab στο TabPane
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
+    public void settingsClick(ActionEvent e) throws IOException {
+        openTab("Ρυθμίσεις", "settings.fxml");
     }
 
     @FXML
     private void handleOrderSelection(MouseEvent event) {
         if (event.getClickCount() == 2) { // Διπλό κλικ για άνοιγμα παραθύρου
             Order selectedOrder = ordersList.getSelectionModel().getSelectedItem();
-            if (selectedOrder == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Προσοχή");
-                alert.setContentText("Δεν έχει επιλεγεί παραγγελία!");
-                Optional<ButtonType> result = alert.showAndWait();
-                return;
-            }
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addOrder.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Επεξεργασία παραγγελίας");
-                AddOrderController controller = loader.getController();
-
-                // Ορισμός δεδομένων για επεξεργασία
-                controller.setOrderForEdit(selectedOrder);
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.addEventFilter(ActionEvent.ACTION, evt -> {
-                    // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveOrder();
-
-                    if (!success) {
-                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                        event.consume();
-                    }
-                });
-                dialog.showAndWait();
-                loadOrders();
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
-            }
+            openOrderDetails(selectedOrder, event);
         }
     }
 
+    @FXML
+    private void handlePendingOrderSelection(MouseEvent event) {
+
+        if (event.getClickCount() == 2) { // Διπλό κλικ για άνοιγμα παραθύρου
+            Order selectedOrder = pendingOrdersList.getSelectionModel().getSelectedItem();
+            openOrderDetails(selectedOrder, event);
+        }
+    }
+
+    @FXML
+    private void handleDeliveryOrderSelection(MouseEvent event) {
+        if (event.getClickCount() == 2) { // Διπλό κλικ για άνοιγμα παραθύρου
+            Order selectedOrder = deliveryOrdersList.getSelectionModel().getSelectedItem();
+            openOrderDetails(selectedOrder, event);
+        }
+    }
+
+    public void handleRefreshButton() {
+        loadDashboardData();
+        loadOrders();
+    }
+
+    private void openOrderDetails(Order selectedOrder, MouseEvent event) {
+        if (selectedOrder == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Προσοχή");
+            alert.setContentText("Δεν έχει επιλεγεί παραγγελία!");
+            Optional<ButtonType> result = alert.showAndWait();
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addOrder.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Επεξεργασία παραγγελίας");
+            AddOrderController controller = loader.getController();
+
+            // Ορισμός δεδομένων για επεξεργασία
+            controller.setOrderForEdit(selectedOrder);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, evt -> {
+                // Εκτελούμε το handleSaveAppointment
+                boolean success = controller.handleSaveOrder();
+
+                if (!success) {
+                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                    event.consume();
+                }
+            });
+            dialog.showAndWait();
+            loadOrders();
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+
+    private void openWebPage(String url) {
+        try {
+            new LoginAutomator(true).openPage(url);
+        } catch (IOException e) {
+            showErrorDialog("Σφάλμα κατά το άνοιγμα.", e.getMessage());
+        }
+    }
+
+    private void showErrorDialog(String title, String message) {
+        Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", title, message, Alert.AlertType.ERROR));
+    }
 }

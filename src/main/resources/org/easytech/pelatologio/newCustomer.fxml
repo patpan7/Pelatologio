@@ -415,9 +415,7 @@
         <JFXButton buttonType="RAISED" layoutX="1050.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleRefreshButton" styleClass="click-button" text="Ανανέωση">
             <graphic>
                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@icons/refresh.png" />
-                    </image>
+                    <Image url="@icons/refresh.png"/>
                 </ImageView>
             </graphic>
             <HBox.margin>
