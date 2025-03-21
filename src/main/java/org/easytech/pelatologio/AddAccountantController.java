@@ -36,6 +36,8 @@ public class AddAccountantController {
     private Tab tabCustomers;
     @FXML
     private ProgressIndicator progressIndicator;
+    @FXML
+    private Button btnPhone, btnMobile;
 
     private CustomerAccViewController customerAccViewController;
 
@@ -144,6 +146,11 @@ public class AddAccountantController {
                 sendTestEmail(tfEmail);
             }
         });
+
+        btnPhone.setUserData(tfPhone);
+        btnPhone.setOnAction(PhoneCall::callHandle);
+        btnMobile.setUserData(tfMobile);
+        btnMobile.setOnAction(PhoneCall::callHandle);
     }
 
 

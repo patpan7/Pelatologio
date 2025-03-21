@@ -36,7 +36,7 @@ public class OrdersListController implements Initializable {
     @FXML
     private TableColumn idColumn, titleColumn, descriptionColumn, dueDateColumn, customerColumn, supplierColumn;
     @FXML
-    private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox, showErgentCheckBox, showWaitCheckBox, showWithSupplierCheckbox, showWithoutSupplierCheckbox;
+    private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox, showReceivedCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox, showErgentCheckBox, showWaitCheckBox, showWithSupplierCheckbox, showWithoutSupplierCheckbox;
     @FXML
     private Button addOrderButton, editOrderButton, deleteOrderButton, completeOrderButton, uncompletedOrderButton;
     @FXML
@@ -77,7 +77,7 @@ public class OrdersListController implements Initializable {
                 if (empty || order == null) {
                     setStyle("");
                 } else {
-                    if (order.getCompleted()) {
+                    if (order.getCompleted() && order.getReceived() && order.getDelivered()) {
                         setStyle("-fx-background-color: #d4edda; -fx-text-fill: #155724;"); // Πράσινο
                     } else {
                         setStyle(""); // Προεπιλογή
@@ -107,7 +107,8 @@ public class OrdersListController implements Initializable {
         CheckBox[] checkBoxes1 = {
                 showAllCheckbox,
                 showCompletedCheckbox,
-                showPendingCheckbox
+                showPendingCheckbox,
+                showReceivedCheckbox
         };
         configureSingleSelectionCheckBoxes(checkBoxes1);
 
@@ -157,6 +158,7 @@ public class OrdersListController implements Initializable {
         showAllCheckbox.setOnAction(e -> updateOrdersTable());
         showCompletedCheckbox.setOnAction(e -> updateOrdersTable());
         showPendingCheckbox.setOnAction(e -> updateOrdersTable());
+        showReceivedCheckbox.setOnAction(e -> updateOrdersTable());
         showWithCustomerCheckbox.setOnAction(e -> updateOrdersTable());
         showWithoutCustomerCheckbox.setOnAction(e -> updateOrdersTable());
         showErgentCheckBox.setOnAction(e -> updateOrdersTable());
@@ -255,11 +257,23 @@ public class OrdersListController implements Initializable {
 
         // Φιλτράρισμα βάσει ολοκλήρωσης
         if (!showAllCheckbox.isSelected()) {
-            if (showCompletedCheckbox.isSelected()) {
-                filteredOrders.removeIf(order -> !order.getCompleted());
-            } else if (showPendingCheckbox.isSelected()) {
-                filteredOrders.removeIf(Order::getCompleted);
-            }
+            filteredOrders = filteredOrders.filtered(order -> {
+                boolean matches = true;
+
+                if (showPendingCheckbox.isSelected()) {
+                    matches = !order.getCompleted(); // Εμφανίζει μόνο τις μη ολοκληρωμένες παραγγελίες
+                }
+                if (showCompletedCheckbox.isSelected()) {
+                    matches = order.getCompleted() && !order.getReceived() && !order.getDelivered();
+                    // Ολοκληρωμένες που δεν έχουν παραληφθεί ή παραδοθεί
+                }
+                if (showReceivedCheckbox.isSelected()) {
+                    matches = order.getCompleted() && order.getReceived() && !order.getDelivered();
+                    // Ολοκληρωμένες και παραληφθείσες, αλλά όχι παραδοθείσες
+                }
+
+                return matches;
+            });
         }
 
         // Φιλτράρισμα βάσει πελάτη

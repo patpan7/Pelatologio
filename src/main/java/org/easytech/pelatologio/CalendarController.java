@@ -103,6 +103,7 @@ public class CalendarController {
                             entry.setTitle("\u0336 [✔] " + title.replaceAll(".", "$0\u0336")); // Διαγράμμιση κειμένου
                             entry.getStyleClass().add("completed-entry");
                         }
+                        entry.getStyleClass().add("entry-label");
                         // Προσθήκη listener για drag-and-drop
                         addDragAndDropListener(entry);
 

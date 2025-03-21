@@ -64,6 +64,8 @@ public class AddCustomerController {
     Button btnAddToMegasoft, btnData, btnLabel,btnCopy, btnAppointment,btnTask;
     @FXML
     private Label lblBlance;
+    @FXML
+    Button btnPhone1, btnPhone2, btnMobile, btnPhoneManager, btnAccPhone, btnAccMobile;
 
     private TaxisViewController taxisViewController;
     private MyposViewController myposViewController;
@@ -289,6 +291,18 @@ public class AddCustomerController {
         btnAccEmail.setOnAction(this::showEmailDialog);
         btnAccEmail1.setOnAction(this::showEmailDialog);
 
+        btnPhone1.setUserData(tfPhone1);
+        btnPhone1.setOnAction(PhoneCall::callHandle);
+        btnPhone2.setUserData(tfPhone2);
+        btnPhone2.setOnAction(PhoneCall::callHandle);
+        btnMobile.setUserData(tfMobile);
+        btnMobile.setOnAction(PhoneCall::callHandle);
+        btnPhoneManager.setUserData(tfManagerPhone);
+        btnPhoneManager.setOnAction(PhoneCall::callHandle);
+        btnAccPhone.setUserData(tfAccPhone);
+        btnAccPhone.setOnAction(PhoneCall::callHandle);
+        btnAccMobile.setUserData(tfAccMobile);
+        btnAccMobile.setOnAction(PhoneCall::callHandle);
 
 
         // Ενέργειες για τα copy, paste, clear items στο βασικό contextMenu
@@ -1144,6 +1158,8 @@ public class AddCustomerController {
             }
         }
     }
+
+
     public void addAccountant(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("newAccountant.fxml"));

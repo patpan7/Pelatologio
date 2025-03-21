@@ -314,3 +314,8 @@
 .list-cell:empty {
     -fx-border-width: 0 0 0 0; /* Μόνο κάτω όριο */
 }
+
+.entry-label {
+    -fx-font-size: 14px;  /* Μέγεθος τίτλου Entry */
+}
+

@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
@@ -20,6 +21,7 @@ import org.controlsfx.control.Notifications;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.function.Consumer;
 
 public class AddSupplierController {
@@ -34,6 +36,8 @@ public class AddSupplierController {
     private TextField tfName, tfTitle, tfPhone, tfMobile, tfContact, tfEmail, tfSite;
     @FXML
     private ProgressIndicator progressIndicator;
+    @FXML
+    private Button btnPhone, btnMobile;
 
     private OrdersSupViewController orderSupViewController;
 
@@ -146,6 +150,11 @@ public class AddSupplierController {
                 sendTestEmail(tfEmail);
             }
         });
+
+        btnPhone.setUserData(tfPhone);
+        btnPhone.setOnAction(PhoneCall::callHandle);
+        btnMobile.setUserData(tfMobile);
+        btnMobile.setOnAction(PhoneCall::callHandle);
     }
 
 
