@@ -180,7 +180,7 @@
                                 </HBox>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false">
-                                    <Label fx:id="vesrion" alignment="CENTER" text="v 2.8.7" VBox.vgrow="NEVER">
+                                    <Label fx:id="vesrion" alignment="CENTER" text="v 2.8.8" VBox.vgrow="NEVER">
                                         <VBox.margin>
                                             <Insets bottom="5.0" right="20.0" />
                                         </VBox.margin>

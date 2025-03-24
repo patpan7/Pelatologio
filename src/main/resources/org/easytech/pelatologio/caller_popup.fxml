@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CallerPopupController">
+    <DialogPane>
+        <content>
+            <VBox spacing="10" alignment="CENTER_RIGHT">
+                <Label fx:id="callerNumberLabel" styleClass="content-label"/>
+                <HBox spacing="10" alignment="BOTTOM_RIGHT">
+                    <Button fx:id="openCustomerButton" text="Άνοιγμα Πελάτη" defaultButton="true"/>
+                    <Button fx:id="closeButton" text="Κλείσιμο" cancelButton="true"/>
+                </HBox>
+            </VBox>
+        </content>
+    </DialogPane>
+</StackPane>

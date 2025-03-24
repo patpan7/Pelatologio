@@ -1,5 +1,9 @@
 package org.easytech.pelatologio;
 
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.ScheduledService;
@@ -8,19 +12,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import org.apache.log4j.chainsaw.Main;
 import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -47,6 +53,9 @@ public class MainMenu extends Application {
         //stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+
+        // Ξεκίνημα του HTTP server για λήψη κλήσεων
+        startCallReceiverServer();
 
         // Ξεκινά το polling αφού φορτωθεί η εφαρμογή
         startPolling();
@@ -185,6 +194,85 @@ public class MainMenu extends Application {
                 .hideAfter(Duration.seconds(5))
                 .position(Pos.TOP_RIGHT)
                 .showInformation();
+    }
+
+    private void startCallReceiverServer() {
+        try {
+            HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
+            server.createContext("/incomingcall", new HttpHandler() {
+                @Override
+                public void handle(HttpExchange exchange) throws IOException {
+                    URI requestURI = exchange.getRequestURI();
+                    String query = requestURI.getQuery();
+                    Map<String, String> params = parseQuery(query);
+
+                    String callerNumber = params.get("num");
+                    System.out.println("Incoming call from: " + callerNumber);
+
+                    // Αντικατάσταση της Notifications με το FXML popup
+                    Platform.runLater(() -> showCallerPopup(callerNumber));
+
+                    // Απάντηση στο τηλέφωνο
+                    String response = "Call received";
+                    exchange.sendResponseHeaders(200, response.length());
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(response.getBytes());
+                    os.close();
+                }
+            });
+            server.setExecutor(null);
+            server.start();
+            System.out.println("Call receiver server started on port 8000");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Notifications.create()
+                    .title("Σφάλμα")
+                    .text("Αδυναμία εκκίνησης του server λήψης κλήσεων.")
+                    .showError();
+        }
+    }
+
+    private void showCallerPopup(String callerNumber) {
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/easytech/pelatologio/caller_popup.fxml"));
+                Parent root = loader.load();
+
+                CallerPopupController controller = loader.getController();
+                controller.initData(callerNumber);
+
+                Stage popupStage = new Stage();
+                controller.setStage(popupStage); // Περνάμε το stage στον controller
+
+                popupStage.initStyle(StageStyle.UTILITY); // Απλό παράθυρο χωρίς κουμπιά
+                popupStage.initModality(Modality.NONE); // Να μην μπλοκάρει άλλα παράθυρα
+                popupStage.setScene(new Scene(root));
+                popupStage.setTitle("Εισερχόμενη Κλήση");
+                popupStage.show();
+
+                // Αυτόματο κλείσιμο μετά από 10 δευτερόλεπτα (προαιρετικό)
+                PauseTransition delay = new PauseTransition(Duration.seconds(10));
+                delay.setOnFinished(e -> popupStage.close());
+                delay.play();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private Map<String, String> parseQuery(String query) {
+        Map<String, String> result = new HashMap<>();
+        if (query != null) {
+            for (String param : query.split("&")) {
+                String[] entry = param.split("=");
+                if (entry.length > 1) {
+                    result.put(entry[0], entry[1]);
+                } else {
+                    result.put(entry[0], "");
+                }
+            }
+        }
+        return result;
     }
 
 

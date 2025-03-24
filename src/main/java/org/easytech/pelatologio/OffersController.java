@@ -320,6 +320,8 @@ public class OffersController implements Initializable {
                 "\nΣας αποστείλαμε μια νέα προσφορά"+
                 "\nΜπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου:" +
                 "\nhttp://dgou.dynns.com:8090/portal/offer.php?id="+selectedOffer.getId()+
+                "\n\nΜπορείτε δείτε τους τραπεζικούς μας λογαριασμούς στην παρακάτω διεύθυνση:" +
+                "\nhttp://dgou.dynns.com:8090/portal/bank_accounts.php" +
                 "\n\nΓια οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας." +
                 "\nΕυχαριστώ πολύ";
         copyTextToClipboard(msg);
@@ -355,6 +357,8 @@ public class OffersController implements Initializable {
             controller.setBody(selectedOffer.getDescription() +
                     "<br><br>Μπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου:" +
                     "<br>http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() +
+                    "<br><br>Μπορείτε δείτε τους τραπεζικούς μας λογαριασμούς στην παρακάτω διεύθυνση:" +
+                    "<br>http://dgou.dynns.com:8090/portal/bank_accounts.php" +
                     "<br><br>Για οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας.");
             List<File> attachments = new ArrayList<>();
             String[] offerPaths = selectedOffer.getPaths().split(";");

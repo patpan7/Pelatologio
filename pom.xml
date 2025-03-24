@@ -158,7 +158,7 @@
         <dependency>
             <groupId>com.calendarfx</groupId>
             <artifactId>view</artifactId>
-            <version>11.10.1</version>
+            <version>11.12.7</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -189,6 +189,12 @@
             <groupId>io.github.mkpaz</groupId>
             <artifactId>atlantafx-base</artifactId>
             <version>2.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.2.1</version> <!-- ή την τελευταία έκδοση -->
         </dependency>
 
     </dependencies>
