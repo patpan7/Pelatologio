@@ -28,9 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainMenu extends Application {
+    HttpServer server;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -65,6 +67,7 @@ public class MainMenu extends Application {
             // Save settings before closing
             DBHelper dbHelper = new DBHelper();
             dbHelper.customerUnlockAll(AppSettings.loadSetting("appuser"));
+            server.stop(0);
         });
 
     }
@@ -196,40 +199,103 @@ public class MainMenu extends Application {
                 .showInformation();
     }
 
-    private void startCallReceiverServer() {
-        try {
-            HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
-            server.createContext("/incomingcall", new HttpHandler() {
-                @Override
-                public void handle(HttpExchange exchange) throws IOException {
-                    URI requestURI = exchange.getRequestURI();
-                    String query = requestURI.getQuery();
-                    Map<String, String> params = parseQuery(query);
+    private void startCallReceiverServer() throws IOException {
+        //            server = HttpServer.create(new InetSocketAddress(8000), 0);
+//            server.createContext("/incomingcall", new HttpHandler() {
+//                @Override
+//                public void handle(HttpExchange exchange) throws IOException {
+//                    URI requestURI = exchange.getRequestURI();
+//                    String query = requestURI.getQuery();
+//                    Map<String, String> params = parseQuery(query);
+//
+//                    String rawCallerNumber = params.get("num");
+//                    String callerNumber = extractNumber(rawCallerNumber);
+//                    String rawDevice = params.get("Device");
+//                    String deviceNumber = extractNumber(rawDevice);
+//                    System.out.println("Incoming call from: " + callerNumber);
+//                    System.out.println("Device: " + deviceNumber);
+//
+//                    // Αντικατάσταση της Notifications με το FXML popup
+//                    Platform.runLater(() -> showCallerPopup(callerNumber));
+//
+//                    // Απάντηση στο τηλέφωνο
+//                    String response = "Call received";
+//                    exchange.sendResponseHeaders(200, response.length());
+//                    OutputStream os = exchange.getResponseBody();
+//                    os.write(response.getBytes());
+//                    os.close();
+//                }
+//            });
+        server = HttpServer.create(new InetSocketAddress(8000), 0);
+        server.createContext("/incomingcall", exchange -> {
+            URI requestURI = exchange.getRequestURI();
+            Map<String, String> params = parseQuery(requestURI.getQuery());
 
-                    String callerNumber = params.get("num");
-                    System.out.println("Incoming call from: " + callerNumber);
+            String callerNumber = params.get("num");
+            String device = params.get("device");
 
-                    // Αντικατάσταση της Notifications με το FXML popup
-                    Platform.runLater(() -> showCallerPopup(callerNumber));
+            //logIncomingCall(callerNumber, device);
+            System.out.println("Incoming call from: " + extractNumber(callerNumber));
+            System.out.println("Device: " + extractNumber(device));
 
-                    // Απάντηση στο τηλέφωνο
-                    String response = "Call received";
-                    exchange.sendResponseHeaders(200, response.length());
-                    OutputStream os = exchange.getResponseBody();
-                    os.write(response.getBytes());
-                    os.close();
-                }
-            });
-            server.setExecutor(null);
-            server.start();
-            System.out.println("Call receiver server started on port 8000");
-        } catch (IOException e) {
-            e.printStackTrace();
-            Notifications.create()
-                    .title("Σφάλμα")
-                    .text("Αδυναμία εκκίνησης του server λήψης κλήσεων.")
-                    .showError();
-        }
+            //sendResponse(exchange, "Incoming call logged.");
+        });
+
+        server.createContext("/callestablished", exchange -> {
+            URI requestURI = exchange.getRequestURI();
+            Map<String, String> params = parseQuery(requestURI.getQuery());
+
+            String callerNumber = params.get("num");
+            String user = params.get("user");
+
+            //markCallAsAnswered(callerNumber, user);
+            System.out.println("Call established with: " + user);
+            System.out.println("Caller number: " + extractNumber(callerNumber));
+            //sendResponse(exchange, "Call answered.");
+        });
+
+        server.createContext("/callended", exchange -> {
+            URI requestURI = exchange.getRequestURI();
+            Map<String, String> params = parseQuery(requestURI.getQuery());
+
+            String callerNumber = params.get("num");
+
+            //updateCallDuration(callerNumber);
+            System.out.println("Call ended for: " + callerNumber);
+            //sendResponse(exchange, "Call ended.");
+        });
+
+        server.createContext("/outgoingcall", exchange -> {
+            URI requestURI = exchange.getRequestURI();
+            Map<String, String> params = parseQuery(requestURI.getQuery());
+
+            String callerNumber = params.get("num");
+            String device = params.get("device");
+            String user = params.get("user");
+
+            //logOutgoingCall(callerNumber, device, user);
+            System.out.println("Outgoing call from: " + callerNumber);
+            System.out.println("Device: " + extractNumber(device));
+            System.out.println("User: " + user);
+            //sendResponse(exchange, "Outgoing call logged.");
+        });
+
+        server.createContext("/missedcall", exchange -> {
+            URI requestURI = exchange.getRequestURI();
+            Map<String, String> params = parseQuery(requestURI.getQuery());
+
+            String callerNumber = params.get("num");
+            String device = params.get("device");
+
+            //logMissedCall(callerNumber, device);
+            System.out.println("Missed call from: " + extractNumber(callerNumber));
+            System.out.println("Device: " + extractNumber(device));
+            //sendResponse(exchange, "Missed call logged.");
+        });
+
+        server.setExecutor(null);
+        server.start();
+        System.out.println("Call receiver server started on port 8000");
     }
 
     private void showCallerPopup(String callerNumber) {
@@ -273,6 +339,15 @@ public class MainMenu extends Application {
             }
         }
         return result;
+    }
+
+    public static String extractNumber(String sip) {
+        Pattern pattern = Pattern.compile("sip:([0-9]+)@");
+        Matcher matcher = pattern.matcher(sip);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return sip; // Αν δεν βρει τίποτα, επιστρέφει το αρχικό string
     }
 
 

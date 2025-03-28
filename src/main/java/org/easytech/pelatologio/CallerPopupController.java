@@ -1,10 +1,12 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class CallerPopupController {
     @FXML private Label callerNumberLabel;
@@ -20,10 +22,17 @@ public class CallerPopupController {
     }
 
     private void positionWindowBottomRight() {
-        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(screenBounds.getMaxX() - stage.getWidth());  // 20px απόσταση από το δεξί άκρο
-        stage.setY(screenBounds.getMaxY() - stage.getHeight()); // 20px απόσταση από το κάτω άκρο
+        Platform.runLater(() -> {
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+            double x = screenBounds.getMaxX() - stage.getWidth() - 20; // 20px απόσταση από τη δεξιά άκρη
+            double y = screenBounds.getMaxY() - stage.getHeight() - 20; // 20px απόσταση από την κάτω άκρη
+
+            stage.setX(x);
+            stage.setY(y);
+        });
     }
+
 
     @FXML
     private void initialize() {

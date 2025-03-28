@@ -86,6 +86,8 @@ public class SettingsController implements Initializable {
     TextField tfSMTPPort;
     @FXML
     TextArea taSignature;
+    @FXML
+    TextField tfFanvilIp;
 
 
 
@@ -100,6 +102,7 @@ public class SettingsController implements Initializable {
         tfServer.setText(AppSettings.loadSetting("server") != null ? AppSettings.loadSetting("server") : "");
         tfUser.setText(AppSettings.loadSetting("dbUser") != null ? AppSettings.loadSetting("dbUser") : "");
         tfPass.setText(AppSettings.loadSetting("dbPass") != null ? AppSettings.loadSetting("dbPass") : "");
+        tfFanvilIp.setText(AppSettings.loadSetting("fanvilIp") != null ? AppSettings.loadSetting("fanvilIp") : "");
         tfMyposLink.setText(AppSettings.loadSetting("myposlink") != null ? AppSettings.loadSetting("myposlink") : "");
         tfMyposUser.setText(AppSettings.loadSetting("myposUser") != null ? AppSettings.loadSetting("myposUser") : "");
         tfMyposPass.setText(AppSettings.loadSetting("myposPass") != null ? AppSettings.loadSetting("myposPass") : "");
@@ -143,6 +146,7 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("server", tfServer.getText());
         AppSettings.saveSetting("dbUser", tfUser.getText());
         AppSettings.saveSetting("dbPass", tfPass.getText());
+        AppSettings.saveSetting("fanvilIp", tfFanvilIp.getText());
         AppSettings.saveSetting("myposlink", tfMyposLink.getText());
         AppSettings.saveSetting("myposUser",tfMyposUser.getText());
         AppSettings.saveSetting("myposPass", tfMyposPass.getText());

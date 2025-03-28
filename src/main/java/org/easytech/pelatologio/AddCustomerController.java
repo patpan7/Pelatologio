@@ -966,7 +966,7 @@ public class AddCustomerController {
 
         dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason);
 
-        String accName = tfAccName.getValue().toString();
+        String accName = tfAccName.getValue() != null ? tfAccName.getValue().toString() : "";
         String accPhone = tfAccPhone.getText();
         if (accPhone.startsWith("+30"))
             accPhone = accPhone.substring(3);

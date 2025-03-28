@@ -34,6 +34,7 @@
                                         <RowConstraints/>
                                         <RowConstraints/>
                                         <RowConstraints/>
+                                        <RowConstraints/>
                                     </rowConstraints>
                                     <Label styleClass="normal-label" text="Server" GridPane.columnIndex="0"
                                            GridPane.rowIndex="0"/>
@@ -90,7 +91,7 @@
                                     <Button contentDisplay="TOP" layoutX="634.0" layoutY="167.0" minHeight="100.0"
                                             minWidth="220.0" mnemonicParsing="false" onAction="#syncClick"
                                             styleClass="click-button" text="Megasoft Sync" textAlignment="CENTER"
-                                            GridPane.columnIndex="1" GridPane.rowIndex="8">
+                                            GridPane.columnIndex="1" GridPane.rowIndex="9">
                                         <graphic>
                                             <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true"
                                                        preserveRatio="true">
@@ -98,6 +99,10 @@
                                             </ImageView>
                                         </graphic>
                                     </Button>
+                                    <Label layoutX="312.0" layoutY="453.0" styleClass="normal-label" text="Fanvil IP"
+                                           GridPane.rowIndex="8"/>
+                                    <TextField fx:id="tfFanvilIp" layoutX="569.0" layoutY="445.0" text=""
+                                               GridPane.columnIndex="1" GridPane.rowIndex="8"/>
                                 </GridPane>
 
                             </TitledPane>
@@ -245,6 +250,8 @@
                                         <ColumnConstraints/>
                                     </columnConstraints>
                                     <rowConstraints>
+                                        <RowConstraints/>
+                                        <RowConstraints/>
                                         <RowConstraints/>
                                     </rowConstraints>
                                     <Label styleClass="normal-label" text="E-mail Εργάνη" GridPane.columnIndex="0"
