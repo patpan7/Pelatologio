@@ -197,6 +197,14 @@
             <version>5.2.1</version> <!-- ή την τελευταία έκδοση -->
         </dependency>
 
+
+        <dependency>
+            <groupId>org.asteriskjava</groupId>
+            <artifactId>asterisk-java</artifactId>
+            <version>3.41.0</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

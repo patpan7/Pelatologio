@@ -556,12 +556,12 @@ public class CustomersController implements Initializable {
         if (selectedCustomer != null) {
             try {
                 // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addAppointment.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(loader.load());
                 dialog.setTitle("Προσθήκη Ραντεβού");
 
-                AddAppointmentController controller = loader.getController();
+                AddTaskController controller = loader.getController();
 
                 // Προ-συμπλήρωση πελάτη
                 controller.setCustomerId(selectedCustomer.getCode());
@@ -573,7 +573,7 @@ public class CustomersController implements Initializable {
                 Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.addEventFilter(ActionEvent.ACTION, event -> {
                     // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveAppointment();
+                    boolean success = controller.handleSaveTask();
 
                     if (!success) {
                         // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου

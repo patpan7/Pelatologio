@@ -903,7 +903,7 @@ public class AddCustomerController {
     }
 
 
-    void updateCustomer() {
+     void updateCustomer() {
         DBHelper dbHelper = new DBHelper();
 
         String name = tfName.getText();
@@ -1050,12 +1050,12 @@ public class AddCustomerController {
         if (customer != null) {
             try {
                 // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addAppointment.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(loader.load());
                 dialog.setTitle("Προσθήκη Ραντεβού");
 
-                AddAppointmentController controller = loader.getController();
+                AddTaskController controller = loader.getController();
 
                 // Προ-συμπλήρωση πελάτη
                 controller.setCustomerId(customer.getCode());
@@ -1067,7 +1067,7 @@ public class AddCustomerController {
                 Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.addEventFilter(ActionEvent.ACTION, event -> {
                     // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveAppointment();
+                    boolean success = controller.handleSaveTask();
 
                     if (!success) {
                         // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου

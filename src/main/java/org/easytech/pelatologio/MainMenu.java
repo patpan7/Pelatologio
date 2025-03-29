@@ -1,9 +1,5 @@
 package org.easytech.pelatologio;
 
-import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.ScheduledService;
@@ -15,24 +11,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainMenu extends Application {
-    HttpServer server;
+
+    private AsteriskAMIClient amiClient;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -56,18 +45,20 @@ public class MainMenu extends Application {
         stage.setScene(scene);
         stage.show();
 
-        // Ξεκίνημα του HTTP server για λήψη κλήσεων
-        startCallReceiverServer();
-
         // Ξεκινά το polling αφού φορτωθεί η εφαρμογή
         startPolling();
         startAppointmentReminder();
-
+        try {
+            amiClient = new AsteriskAMIClient("192.168.1.20", "admin", "password");
+            amiClient.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         stage.setOnCloseRequest(event -> {
             // Save settings before closing
             DBHelper dbHelper = new DBHelper();
             dbHelper.customerUnlockAll(AppSettings.loadSetting("appuser"));
-            server.stop(0);
+            amiClient.disconnect();
         });
 
     }
@@ -197,157 +188,6 @@ public class MainMenu extends Application {
                 .hideAfter(Duration.seconds(5))
                 .position(Pos.TOP_RIGHT)
                 .showInformation();
-    }
-
-    private void startCallReceiverServer() throws IOException {
-        //            server = HttpServer.create(new InetSocketAddress(8000), 0);
-//            server.createContext("/incomingcall", new HttpHandler() {
-//                @Override
-//                public void handle(HttpExchange exchange) throws IOException {
-//                    URI requestURI = exchange.getRequestURI();
-//                    String query = requestURI.getQuery();
-//                    Map<String, String> params = parseQuery(query);
-//
-//                    String rawCallerNumber = params.get("num");
-//                    String callerNumber = extractNumber(rawCallerNumber);
-//                    String rawDevice = params.get("Device");
-//                    String deviceNumber = extractNumber(rawDevice);
-//                    System.out.println("Incoming call from: " + callerNumber);
-//                    System.out.println("Device: " + deviceNumber);
-//
-//                    // Αντικατάσταση της Notifications με το FXML popup
-//                    Platform.runLater(() -> showCallerPopup(callerNumber));
-//
-//                    // Απάντηση στο τηλέφωνο
-//                    String response = "Call received";
-//                    exchange.sendResponseHeaders(200, response.length());
-//                    OutputStream os = exchange.getResponseBody();
-//                    os.write(response.getBytes());
-//                    os.close();
-//                }
-//            });
-        server = HttpServer.create(new InetSocketAddress(8000), 0);
-        server.createContext("/incomingcall", exchange -> {
-            URI requestURI = exchange.getRequestURI();
-            Map<String, String> params = parseQuery(requestURI.getQuery());
-
-            String callerNumber = params.get("num");
-            String device = params.get("device");
-
-            //logIncomingCall(callerNumber, device);
-            System.out.println("Incoming call from: " + extractNumber(callerNumber));
-            System.out.println("Device: " + extractNumber(device));
-
-            //sendResponse(exchange, "Incoming call logged.");
-        });
-
-        server.createContext("/callestablished", exchange -> {
-            URI requestURI = exchange.getRequestURI();
-            Map<String, String> params = parseQuery(requestURI.getQuery());
-
-            String callerNumber = params.get("num");
-            String user = params.get("user");
-
-            //markCallAsAnswered(callerNumber, user);
-            System.out.println("Call established with: " + user);
-            System.out.println("Caller number: " + extractNumber(callerNumber));
-            //sendResponse(exchange, "Call answered.");
-        });
-
-        server.createContext("/callended", exchange -> {
-            URI requestURI = exchange.getRequestURI();
-            Map<String, String> params = parseQuery(requestURI.getQuery());
-
-            String callerNumber = params.get("num");
-
-            //updateCallDuration(callerNumber);
-            System.out.println("Call ended for: " + callerNumber);
-            //sendResponse(exchange, "Call ended.");
-        });
-
-        server.createContext("/outgoingcall", exchange -> {
-            URI requestURI = exchange.getRequestURI();
-            Map<String, String> params = parseQuery(requestURI.getQuery());
-
-            String callerNumber = params.get("num");
-            String device = params.get("device");
-            String user = params.get("user");
-
-            //logOutgoingCall(callerNumber, device, user);
-            System.out.println("Outgoing call from: " + callerNumber);
-            System.out.println("Device: " + extractNumber(device));
-            System.out.println("User: " + user);
-            //sendResponse(exchange, "Outgoing call logged.");
-        });
-
-        server.createContext("/missedcall", exchange -> {
-            URI requestURI = exchange.getRequestURI();
-            Map<String, String> params = parseQuery(requestURI.getQuery());
-
-            String callerNumber = params.get("num");
-            String device = params.get("device");
-
-            //logMissedCall(callerNumber, device);
-            System.out.println("Missed call from: " + extractNumber(callerNumber));
-            System.out.println("Device: " + extractNumber(device));
-            //sendResponse(exchange, "Missed call logged.");
-        });
-
-        server.setExecutor(null);
-        server.start();
-        System.out.println("Call receiver server started on port 8000");
-    }
-
-    private void showCallerPopup(String callerNumber) {
-        Platform.runLater(() -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/easytech/pelatologio/caller_popup.fxml"));
-                Parent root = loader.load();
-
-                CallerPopupController controller = loader.getController();
-                controller.initData(callerNumber);
-
-                Stage popupStage = new Stage();
-                controller.setStage(popupStage); // Περνάμε το stage στον controller
-
-                popupStage.initStyle(StageStyle.UTILITY); // Απλό παράθυρο χωρίς κουμπιά
-                popupStage.initModality(Modality.NONE); // Να μην μπλοκάρει άλλα παράθυρα
-                popupStage.setScene(new Scene(root));
-                popupStage.setTitle("Εισερχόμενη Κλήση");
-                popupStage.show();
-
-                // Αυτόματο κλείσιμο μετά από 10 δευτερόλεπτα (προαιρετικό)
-                PauseTransition delay = new PauseTransition(Duration.seconds(10));
-                delay.setOnFinished(e -> popupStage.close());
-                delay.play();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    private Map<String, String> parseQuery(String query) {
-        Map<String, String> result = new HashMap<>();
-        if (query != null) {
-            for (String param : query.split("&")) {
-                String[] entry = param.split("=");
-                if (entry.length > 1) {
-                    result.put(entry[0], entry[1]);
-                } else {
-                    result.put(entry[0], "");
-                }
-            }
-        }
-        return result;
-    }
-
-    public static String extractNumber(String sip) {
-        Pattern pattern = Pattern.compile("sip:([0-9]+)@");
-        Matcher matcher = pattern.matcher(sip);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return sip; // Αν δεν βρει τίποτα, επιστρέφει το αρχικό string
     }
 
 
