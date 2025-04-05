@@ -75,6 +75,10 @@ public class AddOfferController {
         }
     }
 
+    public void setDescription(String description) {
+        descriptionField.setText(description);
+    }
+
     public void setOfferForEdit(Offer offer) {
         this.offer = offer;
         dueDatePicker.setValue(offer.getOfferDate());

@@ -247,6 +247,7 @@ public class CustomerTasksController {
     @FXML
     private void handleAddOffer() throws SQLException {
         try {
+            Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
             // Φόρτωση του FXML για προσθήκη ραντεβού
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addOffer.fxml"));
             Dialog<ButtonType> dialog = new Dialog<>();
@@ -255,6 +256,7 @@ public class CustomerTasksController {
             AddOfferController controller = loader.getController();
             controller.setCustomer(customer);
             controller.setCustomerName(customer.getName());
+            controller.setDescription(selectedTasks.getDescription());
             controller.lock();
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 

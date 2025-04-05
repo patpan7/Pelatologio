@@ -65,6 +65,22 @@ public class LoginAutomator {
         driver.findElement(submitButtonLocator).click();
     }
 
+    public void openAndFillRegistermyPOSForm(String url, String username, String password, String phone, By usernameLocator, By passwordLocator, By phoneLocator) {
+        driver.get(url);
+
+        // Εντοπισμός πεδίων username και password και εισαγωγή τιμών
+        WebElement usernameField = driver.findElement(usernameLocator);
+        WebElement passwordField = driver.findElement(passwordLocator);
+        WebElement phoneField = driver.findElement(phoneLocator);
+
+        usernameField.click();
+        usernameField.sendKeys(username);
+        passwordField.click();
+        passwordField.sendKeys(password);
+        phoneField.click();
+        phoneField.sendKeys(phone);
+    }
+
     public void openAndFillLoginFormErgani(String url, String username, String password, By usernameLocator, By passwordLocator, By submitButtonLocator) throws InterruptedException {
         driver.get(url);
         // Περιμένουμε να φορτώσει πλήρως η σελίδα πριν την ανανεώσουμε

@@ -48,17 +48,17 @@ public class MainMenu extends Application {
         // Ξεκινά το polling αφού φορτωθεί η εφαρμογή
         startPolling();
         startAppointmentReminder();
-        try {
-            amiClient = new AsteriskAMIClient("192.168.1.20", "admin", "password");
-            amiClient.connect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            amiClient = new AsteriskAMIClient("192.168.1.20", "admin", "password");
+//            amiClient.connect();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         stage.setOnCloseRequest(event -> {
             // Save settings before closing
             DBHelper dbHelper = new DBHelper();
             dbHelper.customerUnlockAll(AppSettings.loadSetting("appuser"));
-            amiClient.disconnect();
+            //amiClient.disconnect();
         });
 
     }

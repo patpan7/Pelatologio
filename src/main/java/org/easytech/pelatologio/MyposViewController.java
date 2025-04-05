@@ -16,6 +16,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -315,7 +321,7 @@ public class MyposViewController {
 
     }
 
-    public void myposregisterOpen(MouseEvent event) {
+    public void myposregisterOpen(MouseEvent event) throws IOException {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         String myposRegister = AppSettings.loadSetting("myposlink");
 
@@ -349,12 +355,43 @@ public class MyposViewController {
             }
         } else if (event.getButton() == MouseButton.PRIMARY) {
             // Left-click for regular functionality
-            try {
-                LoginAutomator loginAutomation = new LoginAutomator(true);
-                loginAutomation.openPage(myposRegister);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            LoginAutomator loginAutomation = new LoginAutomator(true);
+                //loginAutomation.openPage(myposRegister);
+                loginAutomation.openAndFillRegistermyPOSForm(
+                        AppSettings.loadSetting("myposlink"),
+                        selectedLogin.getUsername(),
+                        selectedLogin.getPassword(),
+                        selectedLogin.getPhone(),
+                        By.cssSelector("[data-testid='enroll_credentials_email']"),
+                        By.cssSelector("[data-testid='enroll_credentials_password']"),
+                        By.cssSelector("[data-testid='enroll_credentials_phone_number']")
+                );
+//            WebDriver driver = new ChromeDriver();
+//
+//            try {
+//                driver.get("https://merchant.mypos.com/el/onboarding?ref=1006179#/");
+//
+//                WebDriverWait wait = new WebDriverWait(driver, java.time.Duration.ofSeconds(5));
+//
+//                // Πεδίο email
+//                WebElement email = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[data-testid='enroll_credentials_email']")));
+//                // Πεδίο password
+//                WebElement password = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[data-testid='enroll_credentials_password']")));
+//                // Πεδίο κινητού
+//                WebElement phone = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[data-testid='enroll_credentials_phone_number']")));
+//
+//                email.click();
+//                email.sendKeys(selectedLogin.getUsername());
+//
+//                password.click();
+//                password.sendKeys(selectedLogin.getPassword());
+//
+//                phone.click();
+//                phone.sendKeys(selectedLogin.getPhone());
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
             if (selectedLogin == null) {
                 Platform.runLater(() -> {
                     Notifications notifications = Notifications.create()
@@ -367,9 +404,7 @@ public class MyposViewController {
                 return;
             }
         }
-    }
-
-    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
+    }    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
     private void copyTextToClipboard(String msg) {
         // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
         Clipboard clipboard = Clipboard.getSystemClipboard();
