@@ -64,7 +64,7 @@ public class AddCustomerController {
     @FXML
     private Button btnEmail, btnEmail2, btnAccEmail, btnAccEmail1;
     @FXML
-    Button btnAddToMegasoft, btnData, btnLabel,btnCopy, btnAppointment,btnTask;
+    Button btnAddToMegasoft, btnData, btnLabel,btnCopy, btnTask;
     @FXML
     private Label lblBlance;
     @FXML
@@ -199,7 +199,6 @@ public class AddCustomerController {
 
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
         setTooltip(btnLabel, "Εκτύπωση ετικέτας πελάτη");
-        setTooltip(btnAppointment,"Προσθήκη νέου ραντεβού");
         setTooltip(btnTask,"Προσθήκη νέας εργασίας");
         setTooltip(btnAddToMegasoft, "Προσθήκη πελάτη στο Megasoft");
 
@@ -214,8 +213,6 @@ public class AddCustomerController {
         btnLabel.setVisible(false);
         btnCopy.setDisable(true);
         btnCopy.setVisible(false);
-        btnAppointment.setDisable(true);
-        btnAppointment.setVisible(false);
         btnTask.setDisable(true);
         tfBalance.setDisable(true);
         tfBalance.setVisible(false);
@@ -453,7 +450,6 @@ public class AddCustomerController {
     // Μέθοδος αποστολής με viber
     private void viberComunicate(TextField phoneField) {
         String phone = phoneField.getText();
-        System.out.println("Τηλέφωνο: " + phone);
         if (phone != null && !phone.isEmpty()) {
             try {
                 File viberPath = new File(System.getenv("LOCALAPPDATA") + "\\Viber\\Viber.exe");
@@ -609,8 +605,6 @@ public class AddCustomerController {
         btnLabel.setVisible(true);
         btnCopy.setDisable(false);
         btnCopy.setVisible(true);
-        btnAppointment.setDisable(false);
-        btnAppointment.setVisible(true);
         btnTask.setDisable(false);
         btnTask.setVisible(true);
         tfBalance.setDisable(false);
@@ -828,7 +822,6 @@ public class AddCustomerController {
     private void hasTabs() {
         DBHelper dbHelper = new DBHelper();
         if (dbHelper.hasSubAddress(customer.getCode())) {
-            System.out.println("Έχει υποδιεύθυνση");
             btnAddressAdd.setStyle("-fx-border-color: #FF0000;");
         }
         if(dbHelper.hasApp(customer.getCode(),1)){
@@ -951,96 +944,100 @@ public class AddCustomerController {
     }
     private void openCustomerTab(int customerId) {
         if (customersController != null) {
-            System.out.println(customerId);
             customersController.openCustomerTab(customerId);
         }
     }
 
 
-     void updateCustomer() {
-        DBHelper dbHelper = new DBHelper();
+   void updateCustomer() {
+       DBHelper dbHelper = new DBHelper();
 
-        String name = tfName.getText();
-        customer.setName(name);
-        String title = tfTitle.getText();
-        customer.setTitle(title);
-        String job = tfJob.getText().substring(0, Math.min(tfJob.getText().length(), 255));
-        customer.setJob(job);
-        String afm = tfAfm.getText();
-        customer.setAfm(afm);
-        String phone1 = (tfPhone1.getText() != null ? tfPhone1.getText() : "");
-        String phone2 = (tfPhone2.getText() != null ? tfPhone2.getText() : "");
-        String mobile = (tfMobile.getText() != null ? tfMobile.getText() : "");
-        String address = tfAddress.getText();
-        customer.setAddress(address);
-        String town = tfTown.getText();
-        customer.setTown(town);
-        String posCode = tfPostCode.getText();
-        customer.setPostcode(posCode);
-        String email = (tfEmail.getText() != null ? tfEmail.getText() : "");
-        customer.setEmail(email);
-        String email2 = (tfEmail2.getText() != null ? tfEmail2.getText() : "");
-        customer.setEmail2(email2);
-        String manager = (tfManager.getText() != null ? tfManager.getText() : "");
-        customer.setManager(manager);
-        String managerPhone = (tfManagerPhone.getText() != null ? tfManagerPhone.getText() : "");
-        String notes = taNotes.getText();
-        customer.setNotes(notes);
-        String accName1 = (tfAccName1.getText() != null ? tfAccName1.getText() : "");
-        customer.setAccName1(accName1);
-        String accEmail1 = (tfAccEmail1.getText() != null ? tfAccEmail1.getText() : "");
-        customer.setAccEmail1(accEmail1);
-        String selectedRecommendation = tfRecommendation.getEditor().getText().trim();
-        customer.setRecommendation(selectedRecommendation);
-        String balance = tfBalance.getText();
-        customer.setBalance(balance);
-        String balanceReason = taBalanceReason.getText();
-        customer.setBalanceReason(balanceReason);
+       String name = tfName.getText();
+       customer.setName(name);
+       String title = tfTitle.getText();
+       customer.setTitle(title);
+       String job = tfJob.getText().substring(0, Math.min(tfJob.getText().length(), 255));
+       customer.setJob(job);
+       String afm = tfAfm.getText();
+       customer.setAfm(afm);
+       String phone1 = tfPhone1.getText() == null ? "" : tfPhone1.getText();
+       String phone2 = tfPhone2.getText() == null ? "" : tfPhone2.getText();
+       String mobile = tfMobile.getText() == null ? "" : tfMobile.getText();
+       String address = tfAddress.getText();
+       customer.setAddress(address);
+       String town = tfTown.getText();
+       customer.setTown(town);
+       String posCode = tfPostCode.getText();
+       customer.setPostcode(posCode);
+       String email = tfEmail.getText() == null ? "" : tfEmail.getText();
+       customer.setEmail(email);
+       String email2 = tfEmail2.getText() == null ? "" : tfEmail2.getText();
+       customer.setEmail2(email2);
+       String manager = tfManager.getText() == null ? "" : tfManager.getText();
+       customer.setManager(manager);
+       String managerPhone = tfManagerPhone.getText() == null ? "" : tfManagerPhone.getText();
+       String notes = taNotes.getText();
+       customer.setNotes(notes);
+       String accName1 = tfAccName1.getText() == null ? "" : tfAccName1.getText();
+       customer.setAccName1(accName1);
+       String accEmail1 = tfAccEmail1.getText() == null ? "" : tfAccEmail1.getText();
+       customer.setAccEmail1(accEmail1);
+       String selectedRecommendation = tfRecommendation.getEditor().getText().trim();
+       customer.setRecommendation(selectedRecommendation);
+       String balance = tfBalance.getText();
+       customer.setBalance(balance);
+       String balanceReason = taBalanceReason.getText();
+       customer.setBalanceReason(balanceReason);
 
-        Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
-        int accId = (selectedAccountant != null) ? selectedAccountant.getId() : 0;
-        customer.setAccId(accId);
-        if (mobile.startsWith("+30"))
-            mobile = mobile.substring(3);
-        if (phone1.startsWith("+30"))
-            phone1 = phone1.substring(3);
-        if (phone2.startsWith("+30"))
-            phone2 = phone2.substring(3);
-        if (managerPhone.startsWith("+30"))
-            managerPhone = managerPhone.substring(3);
-        mobile = mobile.replaceAll("\\s+", "");
-        phone1 = phone1.replaceAll("\\s+", "");
-        phone2 = phone2.replaceAll("\\s+", "");
-        managerPhone = managerPhone.replaceAll("\\s+", "");
-        customer.setMobile(mobile);
-        customer.setPhone1(phone1);
-        customer.setPhone2(phone2);
-        customer.setManagerPhone(managerPhone);
+       Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
+       int accId = selectedAccountant != null ? selectedAccountant.getId() : 0;
+       customer.setAccId(accId);
 
+       if (mobile.startsWith("+30")) {
+           mobile = mobile.substring(3);
+       }
+       if (phone1.startsWith("+30")) {
+           phone1 = phone1.substring(3);
+       }
+       if (phone2.startsWith("+30")) {
+           phone2 = phone2.substring(3);
+       }
+       if (managerPhone.startsWith("+30")) {
+           managerPhone = managerPhone.substring(3);
+       }
+       mobile = mobile.replaceAll("\\s+", "");
+       phone1 = phone1.replaceAll("\\s+", "");
+       phone2 = phone2.replaceAll("\\s+", "");
+       managerPhone = managerPhone.replaceAll("\\s+", "");
+       customer.setMobile(mobile);
+       customer.setPhone1(phone1);
+       customer.setPhone2(phone2);
+       customer.setManagerPhone(managerPhone);
 
-        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason);
+       dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason);
 
-        String accName = tfAccName.getValue() != null ? tfAccName.getValue().toString() : "";
-        String accPhone = tfAccPhone.getText();
-        if (accPhone.startsWith("+30"))
-            accPhone = accPhone.substring(3);
-        String accMobile = tfAccMobile.getText();
-        if (accMobile.startsWith("+30"))
-            accMobile = accMobile.substring(3);
-        String accEmail = tfAccEmail.getText();
-        String accErganiEmail = tfAccErganiEmail.getText();
+       String accName = tfAccName.getValue() != null ? tfAccName.getValue().toString() : "";
+       String accPhone = tfAccPhone.getText();
+       if (accPhone.startsWith("+30")) {
+           accPhone = accPhone.substring(3);
+       }
+       String accMobile = tfAccMobile.getText();
+       if (accMobile.startsWith("+30")) {
+           accMobile = accMobile.substring(3);
+       }
+       String accEmail = tfAccEmail.getText();
+       String accErganiEmail = tfAccErganiEmail.getText();
 
-        dbHelper.updateAccountant(accId, accName, accPhone, accMobile, accEmail, accErganiEmail);
+       dbHelper.updateAccountant(accId, accName, accPhone, accMobile, accEmail, accErganiEmail);
 
-        //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
-        Notifications notifications = Notifications.create()
-                .title("Επιτυχία")
-                .text("Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.")
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
-        notifications.showInformation();
-    }
+       Notifications notifications = Notifications.create()
+               .title("Επιτυχία")
+               .text("Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.")
+               .graphic(null)
+               .hideAfter(Duration.seconds(5))
+               .position(Pos.TOP_RIGHT);
+       notifications.showInformation();
+   }
 
     public void addAddress(ActionEvent event) {
         if (tfAddress.getText() == null || tfAddress.getText().isEmpty()) {
@@ -1100,41 +1097,6 @@ public class AddCustomerController {
         copyTextToClipboard(msg);
     }
 
-    public void newAppointment(ActionEvent actionEvent) {
-        if (customer != null) {
-            try {
-                // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Προσθήκη Ραντεβού");
-
-                AddTaskController controller = loader.getController();
-
-                // Προ-συμπλήρωση πελάτη
-                controller.setCustomerId(customer.getCode());
-                controller.setCustomerName(customer.getName());
-
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
-                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                    // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveTask();
-
-                    if (!success) {
-                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                        event.consume();
-                    }
-                });
-
-                dialog.showAndWait();
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη ραντεβού.", e.getMessage(), Alert.AlertType.ERROR));
-            }
-        }
-    }
 
     public void newTask(ActionEvent actionEvent){
         if (customer != null) {

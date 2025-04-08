@@ -26,7 +26,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class AccountantsController implements Initializable {
     @FXML
@@ -141,34 +140,39 @@ public class AccountantsController implements Initializable {
     }
 
     private void applyFilters(String filterValue) {
-        filteredData.setPredicate(accountant -> {
-            if (filterValue == null || filterValue.isEmpty()) {
-                return true;
+        if (filterValue == null || filterValue.isEmpty()) {
+            filteredData.setPredicate(accountant -> true);
+            return;
+        }
+
+        String filter = filterValue.toUpperCase();
+
+        // Υποστήριξη Ελληνικών/Αγγλικών
+        char[] chars1 = filter.toCharArray();
+        for (int i = 0; i < chars1.length; i++) {
+            Character repl = ENGLISH_TO_GREEK.get(chars1[i]);
+            if (repl != null) {
+                chars1[i] = repl;
             }
-            String filter = filterValue.toUpperCase();
+        }
+        char[] chars2 = filter.toCharArray();
+        for (int i = 0; i < chars2.length; i++) {
+            Character repl = GREEK_TO_ENGLISH.get(chars2[i]);
+            if (repl != null) {
+                chars2[i] = repl;
+            }
+        }
+        String search1 = new String(chars1);
+        String search2 = new String(chars2);
 
-            // Υποστήριξη Ελληνικών/Αγγλικών
-            char[] chars1 = filter.toCharArray();
-            IntStream.range(0, chars1.length).forEach(i -> {
-                Character repl = ENGLISH_TO_GREEK.get(chars1[i]);
-                if (repl != null) chars1[i] = repl;
-            });
-            char[] chars2 = filter.toCharArray();
-            IntStream.range(0, chars2.length).forEach(i -> {
-                Character repl = GREEK_TO_ENGLISH.get(chars2[i]);
-                if (repl != null) chars2[i] = repl;
-            });
-            String search1 = new String(chars1);
-            String search2 = new String(chars2);
-
-            // Εφαρμογή φίλτρου
-            return (accountant.getName() != null && (accountant.getName().toUpperCase().contains(search1) || accountant.getName().toUpperCase().contains(search2)))
-                    || (accountant.getPhone() != null && (accountant.getPhone().contains(search1) || accountant.getPhone().contains(search2)))
-                    || (accountant.getMobile() != null && (accountant.getMobile().contains(search1) || accountant.getMobile().contains(search2)))
-                    || (accountant.getEmail() != null && (accountant.getEmail().toUpperCase().contains(search1) || accountant.getEmail().toUpperCase().contains(search2)));
-        });
+        // Εφαρμογή φίλτρου
+        filteredData.setPredicate(accountant ->
+                (accountant.getName() != null && (accountant.getName().toUpperCase().contains(search1) || accountant.getName().toUpperCase().contains(search2)))
+                        || (accountant.getPhone() != null && (accountant.getPhone().contains(search1) || accountant.getPhone().contains(search2)))
+                        || (accountant.getMobile() != null && (accountant.getMobile().contains(search1) || accountant.getMobile().contains(search2)))
+                        || (accountant.getEmail() != null && (accountant.getEmail().toUpperCase().contains(search1) || accountant.getEmail().toUpperCase().contains(search2)))
+        );
     }
-
 
     public void accountantAddNew(ActionEvent actionEvent) throws IOException {
         try {

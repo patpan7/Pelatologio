@@ -23,71 +23,71 @@ public class SettingsController implements Initializable {
     @FXML
     StackPane stackPane;
     @FXML
-    TextField tfServer;
+    private TextField tfServer;
     @FXML
-    TextField tfUser;
+    private TextField tfUser;
     @FXML
-    TextField tfPass;
+    private TextField tfPass;
     @FXML
-    TextField tfMyposLink;
+    private TextField tfMyposLink;
     @FXML
-    TextField tfMyposUser;
+    private TextField tfMyposUser;
     @FXML
-    TextField tfMyposPass;
+    private TextField tfMyposPass;
     @FXML
-    TextField tfSimplyPosUser;
+    private TextField tfSimplyPosUser;
     @FXML
-    TextField tfSimplyPosPass;
+    private TextField tfSimplyPosPass;
     @FXML
-    TextField tfSimplyCloudUser;
+    private TextField tfSimplyCloudUser;
     @FXML
-    TextField tfSimplyCloudPass;
+    private TextField tfSimplyCloudPass;
     @FXML
-    TextField tfSimplyRegisterMail;
+    private TextField tfSimplyRegisterMail;
     @FXML
-    TextField tfSimplyMail1;
+    private TextField tfSimplyMail1;
     @FXML
-    TextField tfSimplyMail2;
+    private TextField tfSimplyMail2;
     @FXML
-    TextField tfEmblemUser;
+    private TextField tfEmblemUser;
     @FXML
-    TextField tfEmblemPass;
+    private TextField tfEmblemPass;
     @FXML
-    TextField tfEmblemRegisterMail;
+    private TextField tfEmblemRegisterMail;
     @FXML
-    TextField tfErganiRegisterMail;
+    private TextField tfErganiRegisterMail;
     @FXML
-    TextField tfTaxisUser;
+    private TextField tfTaxisUser;
     @FXML
-    TextField tfTaxisPass;
+    private TextField tfTaxisPass;
     @FXML
-    TextField tfAfmUser;
+    private TextField tfAfmUser;
     @FXML
-    TextField tfAfmPass;
+    private TextField tfAfmPass;
     @FXML
-    RadioButton rbChrome;
+    private RadioButton rbChrome;
     @FXML
-    RadioButton rbFirefox;
+    private RadioButton rbFirefox;
     @FXML
-    RadioButton rbEdge;
+    private RadioButton rbEdge;
     @FXML
-    ToggleGroup browserToggleGroup;
+    private ToggleGroup browserToggleGroup;
     @FXML
-    TextField tfAppUser;
+    private TextField tfAppUser;
     @FXML
-    TextField tfDataFolder;
+    private TextField tfDataFolder;
     @FXML
-    TextField tfEmail;
+    private TextField tfEmail;
     @FXML
-    TextField tfEmailPassKey;
+    private TextField tfEmailPassKey;
     @FXML
-    TextField tfSMTP;
+    private TextField tfSMTP;
     @FXML
-    TextField tfSMTPPort;
+    private TextField tfSMTPPort;
     @FXML
-    TextArea taSignature;
+    private TextArea taSignature;
     @FXML
-    TextField tfFanvilIp;
+    private TextField tfFanvilIp;
 
 
 
@@ -95,44 +95,57 @@ public class SettingsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> stackPane.requestFocus());
+        setupBrowserToggleGroup();
+        loadTextFieldSettings();
+        loadBrowserSettings();
+    }
+
+    private void setupBrowserToggleGroup() {
         browserToggleGroup = new ToggleGroup();
         rbChrome.setToggleGroup(browserToggleGroup);
         rbEdge.setToggleGroup(browserToggleGroup);
         rbFirefox.setToggleGroup(browserToggleGroup);
-        tfServer.setText(AppSettings.loadSetting("server") != null ? AppSettings.loadSetting("server") : "");
-        tfUser.setText(AppSettings.loadSetting("dbUser") != null ? AppSettings.loadSetting("dbUser") : "");
-        tfPass.setText(AppSettings.loadSetting("dbPass") != null ? AppSettings.loadSetting("dbPass") : "");
-        tfFanvilIp.setText(AppSettings.loadSetting("fanvilIp") != null ? AppSettings.loadSetting("fanvilIp") : "");
-        tfMyposLink.setText(AppSettings.loadSetting("myposlink") != null ? AppSettings.loadSetting("myposlink") : "");
-        tfMyposUser.setText(AppSettings.loadSetting("myposUser") != null ? AppSettings.loadSetting("myposUser") : "");
-        tfMyposPass.setText(AppSettings.loadSetting("myposPass") != null ? AppSettings.loadSetting("myposPass") : "");
-        tfSimplyPosUser.setText(AppSettings.loadSetting("simplyPosUser") != null ? AppSettings.loadSetting("simplyPosUser") : "");
-        tfSimplyPosPass.setText(AppSettings.loadSetting("simplyPosPass") != null ? AppSettings.loadSetting("simplyPosPass") : "");
-        tfSimplyCloudUser.setText(AppSettings.loadSetting("simplyCloudUser") != null ? AppSettings.loadSetting("simplyCloudUser") : "");
-        tfSimplyCloudPass.setText(AppSettings.loadSetting("simplyCloudPass") != null ? AppSettings.loadSetting("simplyCloudPass") : "");
-        tfSimplyRegisterMail.setText(AppSettings.loadSetting("simplyRegisterMail") != null ? AppSettings.loadSetting("simplyRegisterMail") : "");
-        tfSimplyMail1.setText(AppSettings.loadSetting("simplyMail1") != null ? AppSettings.loadSetting("simplyMail1") : "");
-        tfSimplyMail2.setText(AppSettings.loadSetting("simplyMail2") != null ? AppSettings.loadSetting("simplyMail2") : "");
-        tfTaxisUser.setText(AppSettings.loadSetting("taxisUser") != null ? AppSettings.loadSetting("taxisUser") : "");
-        tfTaxisPass.setText(AppSettings.loadSetting("taxisPass") != null ? AppSettings.loadSetting("taxisPass") : "");
-        tfAfmUser.setText(AppSettings.loadSetting("afmUser") != null ? AppSettings.loadSetting("afmUser") : "");
-        tfAfmPass.setText(AppSettings.loadSetting("afmPass") != null ? AppSettings.loadSetting("afmPass") : "");
-        tfAppUser.setText(AppSettings.loadSetting("appuser") != null ? AppSettings.loadSetting("appuser") : "");
-        tfDataFolder.setText(AppSettings.loadSetting("datafolder") != null ? AppSettings.loadSetting("datafolder") : "");
-        tfEmail.setText(AppSettings.loadSetting("email") != null ? AppSettings.loadSetting("email") : "");
-        tfEmailPassKey.setText(AppSettings.loadSetting("emailPass") != null ? AppSettings.loadSetting("emailPass") : "");
-        tfSMTP.setText(AppSettings.loadSetting("smtp") != null ? AppSettings.loadSetting("smtp") : "");
-        tfSMTPPort.setText(AppSettings.loadSetting("smtpport") != null ? AppSettings.loadSetting("smtpport") : "");
+    }
 
-        tfEmblemUser.setText(AppSettings.loadSetting("emblemUser") != null ? AppSettings.loadSetting("emblemUser") : "");
-        tfEmblemPass.setText(AppSettings.loadSetting("emblemPass") != null ? AppSettings.loadSetting("emblemPass") : "");
-        tfEmblemRegisterMail.setText(AppSettings.loadSetting("emblemRegisterMail") != null ? AppSettings.loadSetting("emblemRegisterMail") : "");
-        taSignature.setText(AppSettings.loadSetting("signature") != null ? AppSettings.loadSetting("signature") : "");
+    private void loadTextFieldSettings() {
+        tfServer.setText(getSettingOrEmpty("server"));
+        tfUser.setText(getSettingOrEmpty("dbUser"));
+        tfPass.setText(getSettingOrEmpty("dbPass"));
+        tfFanvilIp.setText(getSettingOrEmpty("fanvilIp"));
+        tfMyposLink.setText(getSettingOrEmpty("myposlink"));
+        tfMyposUser.setText(getSettingOrEmpty("myposUser"));
+        tfMyposPass.setText(getSettingOrEmpty("myposPass"));
+        tfSimplyPosUser.setText(getSettingOrEmpty("simplyPosUser"));
+        tfSimplyPosPass.setText(getSettingOrEmpty("simplyPosPass"));
+        tfSimplyCloudUser.setText(getSettingOrEmpty("simplyCloudUser"));
+        tfSimplyCloudPass.setText(getSettingOrEmpty("simplyCloudPass"));
+        tfSimplyRegisterMail.setText(getSettingOrEmpty("simplyRegisterMail"));
+        tfSimplyMail1.setText(getSettingOrEmpty("simplyMail1"));
+        tfSimplyMail2.setText(getSettingOrEmpty("simplyMail2"));
+        tfTaxisUser.setText(getSettingOrEmpty("taxisUser"));
+        tfTaxisPass.setText(getSettingOrEmpty("taxisPass"));
+        tfAfmUser.setText(getSettingOrEmpty("afmUser"));
+        tfAfmPass.setText(getSettingOrEmpty("afmPass"));
+        tfAppUser.setText(getSettingOrEmpty("appuser"));
+        tfDataFolder.setText(getSettingOrEmpty("datafolder"));
+        tfEmail.setText(getSettingOrEmpty("email"));
+        tfEmailPassKey.setText(getSettingOrEmpty("emailPass"));
+        tfSMTP.setText(getSettingOrEmpty("smtp"));
+        tfSMTPPort.setText(getSettingOrEmpty("smtpport"));
+        tfEmblemUser.setText(getSettingOrEmpty("emblemUser"));
+        tfEmblemPass.setText(getSettingOrEmpty("emblemPass"));
+        tfEmblemRegisterMail.setText(getSettingOrEmpty("emblemRegisterMail"));
+        taSignature.setText(getSettingOrEmpty("signature"));
+        tfErganiRegisterMail.setText(getSettingOrEmpty("erganiRegisterMail"));
+    }
 
-        tfErganiRegisterMail.setText(AppSettings.loadSetting("erganiRegisterMail") != null ? AppSettings.loadSetting("erganiRegisterMail") : "");
+    private String getSettingOrEmpty(String key) {
+        String setting = AppSettings.loadSetting(key);
+        return setting != null ? setting : "";
+    }
 
-
-        String browser = AppSettings.loadSetting("browser") != null ? AppSettings.loadSetting("browser") : "";
+    private void loadBrowserSettings() {
+        String browser = getSettingOrEmpty("browser");
         switch (browser) {
             case "chrome" -> rbChrome.setSelected(true);
             case "firefox" -> rbFirefox.setSelected(true);
@@ -140,8 +153,7 @@ public class SettingsController implements Initializable {
         }
     }
 
-
-    public void saveSettings(ActionEvent event) throws IOException {
+    public void saveSettings(ActionEvent event) {
 
         AppSettings.saveSetting("server", tfServer.getText());
         AppSettings.saveSetting("dbUser", tfUser.getText());

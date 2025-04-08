@@ -99,7 +99,6 @@
                                     <MenuItem mnemonicParsing="false" onAction="#customerAddNew" styleClass="menu-item" text="Προσθήκη" />
                                     <MenuItem mnemonicParsing="false" onAction="#customerDelete" styleClass="menu-item" text="Διαγραφή" />
                                     <SeparatorMenuItem />
-                                    <MenuItem mnemonicParsing="false" onAction="#customerNewAppointment" styleClass="menu-item" text="Νέο Ραντεβού" />
                                     <MenuItem mnemonicParsing="false" onAction="#customerNewTask" styleClass="menu-item" text="Νέα Εργασία" />
                                     <SeparatorMenuItem />
                                     <MenuItem mnemonicParsing="false" onAction="#customerInfo" styleClass="menu-item" text="Αντιγραφή Στοιχείων" />
