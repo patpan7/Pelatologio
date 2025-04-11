@@ -226,7 +226,7 @@ public class ErganiViewController {
                 notifications.showError();});
             return;
         }
-        String msg ="Στοιχεία εισόδου" + selectedLogin.getTag() +
+        String msg ="Στοιχεία εισόδου " + selectedLogin.getTag() +
                 "\nΕπωνυμία: "+customer.getName()+
                 "\nΑΦΜ: "+customer.getAfm()+
                 "\nEmail: "+selectedLogin.getUsername()+

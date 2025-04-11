@@ -354,12 +354,14 @@ public class OffersController implements Initializable {
             controller.setCustomer(customer);
             controller.setEmail(email);
             controller.setSubject("Προσφορά " + selectedOffer.getId() + ": " + selectedOffer.getCustomerName());
-            controller.setBody(selectedOffer.getDescription() +
-                    "<br><br>Μπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου:" +
-                    "<br>http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() +
-                    "<br><br>Μπορείτε δείτε τους τραπεζικούς μας λογαριασμούς στην παρακάτω διεύθυνση:" +
-                    "<br>http://dgou.dynns.com:8090/portal/bank_accounts.php" +
-                    "<br><br>Για οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας.");
+            controller.setBody("<h3>"+selectedOffer.getDescription() + "</h3>" +
+                    "<br><br><h3>Μπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου: </h3>" +
+                    "<a href=http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId()+"><b><h2>Αποδοχή ή Απόρριψη προσφορά "+selectedOffer.getId()+"</b><h2></a>" +
+                    //"<br>http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() +
+                    "<br><br><h3>Μπορείτε δείτε τους τραπεζικούς μας λογαριασμούς </h3>" +
+                    "<a href=http://dgou.dynns.com:8090/portal/bank_accounts.php><b><h2>Τραπεζικοί λογαριασμοί</b></h2></a>" +
+                    //"<br>http://dgou.dynns.com:8090/portal/bank_accounts.php" +
+                    "<br><br><h3>Για οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας.</h3>");
             List<File> attachments = new ArrayList<>();
             String[] offerPaths = selectedOffer.getPaths().split(";");
             for (String path : offerPaths) {
