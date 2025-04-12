@@ -24,6 +24,7 @@ public class Customer {
     String recommendation;
     String balance;
     String balanceReason;
+    Boolean isActive;
 
     public Customer() {
 
@@ -219,6 +220,14 @@ public class Customer {
 
     public void setBalanceReason(String balanceReason) {
         this.balanceReason = balanceReason;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 
     @Override

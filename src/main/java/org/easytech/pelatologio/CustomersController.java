@@ -269,9 +269,15 @@ public class CustomersController implements Initializable {
 
     private void applyFilters(String filterValue) {
         filteredData.setPredicate(customer -> {
+            // ✅ Αγνόησε τους μη ενεργούς πελάτες
+            if (!customer.getActive()) {
+                return false;
+            }
+
             if (filterValue == null || filterValue.isEmpty()) {
                 return true;
             }
+
             String filter = filterValue.toUpperCase();
 
             // Υποστήριξη Ελληνικών/Αγγλικών
@@ -290,7 +296,6 @@ public class CustomersController implements Initializable {
 
             Set<String> selectedFilters = getSelectedFilters(checkBoxes);
 
-            // Αν δεν είναι επιλεγμένο κανένα φίλτρο, κάνε αναζήτηση σε όλα τα πεδία
             if (selectedFilters.isEmpty()) {
                 return (customer.getName() != null && (customer.getName().toUpperCase().contains(search1) || customer.getName().toUpperCase().contains(search2)))
                         || (customer.getTitle() != null && (customer.getTitle().toUpperCase().contains(search1) || customer.getTitle().toUpperCase().contains(search2)))
@@ -304,7 +309,6 @@ public class CustomersController implements Initializable {
                         || (customer.getTown() != null && (customer.getTown().toUpperCase().contains(search1) || customer.getTown().toUpperCase().contains(search2)));
             }
 
-            // Αν είναι επιλεγμένο το φίλτρο για κάποιο συγκεκριμένο πεδίο
             if (selectedFilters.contains("Όνομα") && customer.getName() != null && (customer.getName().toUpperCase().contains(search1) || customer.getName().toUpperCase().contains(search2))) {
                 return true;
             }
@@ -1120,6 +1124,10 @@ public class CustomersController implements Initializable {
         if (event.getButton() == MouseButton.PRIMARY) {
             filterField.setText("");
             customerTable.getSelectionModel().clearSelection();
+            btnTaxis.setStyle("-fx-border-color: #005599;");
+            btnMypos.setStyle("-fx-border-color: #005599;");
+            btnSimply.setStyle("-fx-border-color: #005599;");
+            btnEmblem.setStyle("-fx-border-color: #005599;");
         } else if (event.getButton() == MouseButton.SECONDARY) {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
             dbHelper.customerUnlock(selectedCustomer.getCode());
@@ -1132,5 +1140,9 @@ public class CustomersController implements Initializable {
 
     public void showBalance(MouseEvent mouseEvent) {
         observableList.removeIf(customer -> customer.getBalance().equals("") || customer.getBalance().isEmpty());
+    }
+
+    public void showInactive(MouseEvent mouseEvent) {
+        filteredData.setPredicate(customer -> !customer.getActive());
     }
 }

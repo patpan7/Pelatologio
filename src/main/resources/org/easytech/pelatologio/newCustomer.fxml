@@ -267,6 +267,10 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </TextField>
+                  <JFXCheckBox fx:id="checkboxActive" mnemonicParsing="false" styleClass="normal-label" text="Ενεργός">
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin></JFXCheckBox>
                         <HBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                         </HBox.margin>

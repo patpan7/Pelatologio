@@ -69,6 +69,18 @@
                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                             </HBox.margin>
                         </Separator>
+                        <JFXButton fx:id="btnShowInactive" buttonType="RAISED" layoutX="937.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#showInactive" styleClass="click-button" text="">
+                            <graphic>
+                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@icons/inactive.png" />
+                                </ImageView>
+                            </graphic>
+                        </JFXButton>
+                        <Separator HBox.hgrow="ALWAYS">
+                            <HBox.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </HBox.margin>
+                        </Separator>
                         <JFXButton fx:id="btnRefresh" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#refresh" styleClass="click-button" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">

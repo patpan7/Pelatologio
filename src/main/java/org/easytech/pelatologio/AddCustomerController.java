@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import com.jfoenix.controls.JFXCheckBox;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -67,6 +68,8 @@ public class AddCustomerController {
     Button btnAddToMegasoft, btnData, btnLabel,btnCopy, btnTask;
     @FXML
     private Label lblBlance;
+    @FXML
+    public JFXCheckBox checkboxActive;
     @FXML
     Button btnPhone1, btnPhone2, btnMobile, btnPhoneManager, btnAccPhone, btnAccMobile;
 
@@ -217,6 +220,8 @@ public class AddCustomerController {
         tfBalance.setDisable(true);
         tfBalance.setVisible(false);
         lblBlance.setVisible(false);
+        checkboxActive.setVisible(false);
+        checkboxActive.setDisable(true);
         btnTask.setVisible(false);
         tabTaxis.setDisable(true);
         tabMypos.setDisable(true);
@@ -540,6 +545,11 @@ public class AddCustomerController {
         tfAccEmail1.setText(customer.getAccEmail1());
         tfBalance.setText(customer.getBalance());
         taBalanceReason.setText(customer.getBalanceReason());
+        if (customer.getActive())
+            checkboxActive.setSelected(true);
+        else
+            checkboxActive.setSelected(false);
+
 
         btnAddressAdd.setDisable(false);
 
@@ -610,6 +620,8 @@ public class AddCustomerController {
         tfBalance.setDisable(false);
         tfBalance.setVisible(true);
         lblBlance.setVisible(true);
+        checkboxActive.setVisible(true);
+        checkboxActive.setDisable(false);
         tabTaxis.setDisable(false);
         tabMypos.setDisable(false);
         tabSimply.setDisable(false);
@@ -988,6 +1000,8 @@ public class AddCustomerController {
        customer.setBalance(balance);
        String balanceReason = taBalanceReason.getText();
        customer.setBalanceReason(balanceReason);
+       Boolean isActive = checkboxActive.isSelected();
+       customer.setActive(isActive);
 
        Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
        int accId = selectedAccountant != null ? selectedAccountant.getId() : 0;
@@ -1014,7 +1028,7 @@ public class AddCustomerController {
        customer.setPhone2(phone2);
        customer.setManagerPhone(managerPhone);
 
-       dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason);
+       dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason, isActive);
 
        String accName = tfAccName.getValue() != null ? tfAccName.getValue().toString() : "";
        String accPhone = tfAccPhone.getText();
