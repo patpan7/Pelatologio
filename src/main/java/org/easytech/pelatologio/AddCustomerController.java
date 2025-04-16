@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 public class AddCustomerController {
@@ -65,7 +66,7 @@ public class AddCustomerController {
     @FXML
     private Button btnEmail, btnEmail2, btnAccEmail, btnAccEmail1;
     @FXML
-    Button btnAddToMegasoft, btnData, btnLabel,btnCopy, btnTask;
+    Button btnAddToMegasoft, btnData, btnLabel,btnCopy, btnTask, btnAcs;
     @FXML
     private Label lblBlance;
     @FXML
@@ -1343,4 +1344,36 @@ public class AddCustomerController {
             GREEK_TO_ENGLISH.put('\u03A5', '\u0059');  // uppercase Υ
             GREEK_TO_ENGLISH.put('\u0396', '\u005A');  // uppercase Ζ
         }
+
+    public void acsVoucher(ActionEvent actionEvent) {
+        // Δημιουργία του παραθύρου (dialog)
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Αριθμός Αποστολής");
+        dialog.setHeaderText("Εισάγετε τον αριθμό αποστολής της courier");
+        dialog.setContentText("Αριθμός:");
+
+        // Προαιρετικά: προεπιλεγμένο κείμενο
+        // dialog.getEditor().setText("...");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(trackingNumber -> {
+            if (!trackingNumber.trim().isEmpty()) {
+                // Το κείμενο που θέλεις να αντιγραφεί
+                String message = "Μπορείτε να δείτε την εξέλιξη της αποστολής σας εδώ: https://www.acscourier.net/el/track-and-trace/?trackingNumber=" + trackingNumber;
+
+                // Αντιγραφή στο clipboard
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString(message);
+                clipboard.setContent(content);
+
+                // Προαιρετικό: εμφάνιση επιβεβαίωσης
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Επιτυχία");
+                alert.setHeaderText(null);
+                alert.setContentText("Το μήνυμα αντιγράφηκε στο πρόχειρο.");
+                alert.showAndWait();
+            }
+        });
+    }
 }
