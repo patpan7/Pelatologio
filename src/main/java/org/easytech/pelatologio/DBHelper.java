@@ -670,6 +670,7 @@ public class DBHelper {
                 data.setRecommendation(resultSet.getString("recommendation"));
                 data.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
                 data.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
+                data.setActive(resultSet.getBoolean("isActive"));
             }
             closeConnection(conn);
             return data;
