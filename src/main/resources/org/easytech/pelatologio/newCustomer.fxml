@@ -260,7 +260,7 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </JFXButton>
-                        <JFXButton fx:id="btnAcs" alignment="TOP_LEFT" buttonType="RAISED" mnemonicParsing="false" onAction="#acsVoucher" prefWidth="180.0" styleClass="click-button" text="ACS" wrapText="true" HBox.hgrow="ALWAYS">
+                        <JFXButton fx:id="btnAcs" alignment="TOP_LEFT" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#acsVoucher" prefWidth="180.0" styleClass="click-button" text="ACS" wrapText="true" HBox.hgrow="ALWAYS">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/acs.png" />

@@ -18,25 +18,24 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
 public class AddCustomerController {
@@ -1234,11 +1233,11 @@ public class AddCustomerController {
         expandedTextArea.setPrefSize(600, 500);
         expandedTextArea.setStyle("-fx-font-size: 24px;");
         if (customer.getBalanceReason() != null && !customer.getBalanceReason().isEmpty()) {
-            expandedTextArea.setText(customer.getBalanceReason());
-            expandedTextArea.positionCaret(customer.getBalanceReason().length());
+            expandedTextArea.setText(taBalanceReason.getText());
+            expandedTextArea.positionCaret(taBalanceReason.getText().length());
         } else {
-            expandedTextArea.setText(""); // Βεβαιωθείτε ότι το TextArea είναι κενό
-            expandedTextArea.positionCaret(0); // Τοποθετήστε τον κέρσορα στην αρχή
+            expandedTextArea.setText(taBalanceReason.getText()); // Βεβαιωθείτε ότι το TextArea είναι κενό
+            expandedTextArea.positionCaret(taBalanceReason.getText().length()); // Τοποθετήστε τον κέρσορα στην αρχή
         }
 
         Button btnOk = new Button("OK");
@@ -1345,35 +1344,74 @@ public class AddCustomerController {
             GREEK_TO_ENGLISH.put('\u0396', '\u005A');  // uppercase Ζ
         }
 
-    public void acsVoucher(ActionEvent actionEvent) {
-        // Δημιουργία του παραθύρου (dialog)
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Αριθμός Αποστολής");
-        dialog.setHeaderText("Εισάγετε τον αριθμό αποστολής της courier");
-        dialog.setContentText("Αριθμός:");
+    public void acsVoucher(MouseEvent actionEvent) {
+        if (actionEvent.getButton() == MouseButton.PRIMARY) {
+            addTrackingNumer();
+        } else if (actionEvent.getButton() == MouseButton.SECONDARY) {
+            showTrackingHistory();
+        }
+    }
 
-        // Προαιρετικά: προεπιλεγμένο κείμενο
-        // dialog.getEditor().setText("...");
+    void addTrackingNumer() {
+        Dialog<Pair<String, LocalDate>> dialog = new Dialog<>();
+        dialog.setTitle("Καταχώριση Αποστολής");
 
-        Optional<String> result = dialog.showAndWait();
-        result.ifPresent(trackingNumber -> {
-            if (!trackingNumber.trim().isEmpty()) {
-                // Το κείμενο που θέλεις να αντιγραφεί
-                String message = "Μπορείτε να δείτε την εξέλιξη της αποστολής σας εδώ: https://www.acscourier.net/el/track-and-trace/?trackingNumber=" + trackingNumber;
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
-                // Αντιγραφή στο clipboard
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                ClipboardContent content = new ClipboardContent();
-                content.putString(message);
-                clipboard.setContent(content);
+        TextField trackingField = new TextField();
+        trackingField.setPromptText("Αριθμός αποστολής");
 
-                // Προαιρετικό: εμφάνιση επιβεβαίωσης
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Επιτυχία");
-                alert.setHeaderText(null);
-                alert.setContentText("Το μήνυμα αντιγράφηκε στο πρόχειρο.");
-                alert.showAndWait();
+        DatePicker datePicker = new DatePicker(LocalDate.now());
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.add(new Label("Αριθμός:"), 0, 0);
+        grid.add(trackingField, 1, 0);
+        grid.add(new Label("Ημερομηνία:"), 0, 1);
+        grid.add(datePicker, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == okButtonType) {
+                return new Pair<>(trackingField.getText(), datePicker.getValue());
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(pair -> {
+            String tracking = pair.getKey();
+            LocalDate date = pair.getValue();
+            DBHelper dbHelper = new DBHelper();
+            dbHelper.saveTrackingNumber(tracking, date, customer.getCode());
+        });
+    }
+
+    public void showTrackingHistory() {
+        ListView<String> listView = new ListView<>();
+        DBHelper dbHelper = new DBHelper();
+        int customerId = customer.getCode();
+        List<String> trackingNumbers = dbHelper.getTrackingNumbers(customerId);
+        listView.getItems().addAll(trackingNumbers);
+        // Διπλό κλικ -> Αντιγραφή
+        listView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                String selected = listView.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    Clipboard clipboard = Clipboard.getSystemClipboard();
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString("Αποστολή: " + selected);
+                    clipboard.setContent(content);
+                }
             }
         });
+
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Ιστορικό Αποστολών");
+        dialog.getDialogPane().setContent(listView);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.showAndWait();
     }
 }

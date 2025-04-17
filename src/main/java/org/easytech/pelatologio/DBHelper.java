@@ -2661,4 +2661,59 @@ public class DBHelper {
         }
         return false;
     }
+
+    public void saveTrackingNumber(String tracking, LocalDate date, int code) {
+        String insertQuery = "INSERT INTO CourierTracking (tracking_number, date, customerId) "
+                + "VALUES (?, ?, ?)";
+        int trackingId = -1; // Default value for error handling
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setString(1, tracking);
+            pstmt.setString(2, date.toString());
+            pstmt.setInt(3, code);
+
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Η εισαγωγή του προμηθευτή ήταν επιτυχής.");
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        trackingId = generatedKeys.getInt(1);
+                    }
+                }
+            } else {
+                System.out.println("Η εισαγωγή του προμηθευτή απέτυχε.");
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            System.err.println("Σφάλμα κατά την εισαγωγή του λογιστή: " + e.getMessage());
+        }
+    }
+
+    public List<String> getTrackingNumbers(int customerId) {
+        List<String> trackingList = new ArrayList<>();
+        String query = "SELECT tracking_number, date FROM CourierTracking WHERE customerId = ? ORDER BY date DESC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, customerId);
+
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet.next()) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    LocalDate date = resultSet.getDate("date").toLocalDate();
+                    String formattedDate = formatter.format(date);
+
+                    String entry = formattedDate + " | Αρ. Αποστολής: " + resultSet.getString("tracking_number");
+                    trackingList.add(entry);
+                }
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return trackingList;
+    }
 }
