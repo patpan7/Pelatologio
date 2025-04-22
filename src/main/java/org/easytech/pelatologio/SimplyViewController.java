@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import com.jfoenix.controls.JFXCheckBox;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -14,6 +15,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.openqa.selenium.By;
@@ -26,16 +28,15 @@ public class SimplyViewController {
     @FXML
     public Button btnSimplyPOS, btnSimplyCash, btnSimplyRest, btnSimplyPOSRegister, btnSimplyCloudRegister;
     @FXML
-    private Label customerLabel;
-
+    public VBox progressBox;
+    @FXML
+    public JFXCheckBox cbStock, cbRegister, cbAuth, cbAccept, cbMail, cbParam, cbMydata, cbDelivered, cbPaid;
     @FXML
     private TableView<Logins> loginTable;
-
     @FXML
     private TableColumn<Logins, String> usernameColumn;
     @FXML
     private TableColumn<Logins, String> passwordColumn;
-
     @FXML
     private TableColumn<Logins, String> tagColumn;
 
@@ -52,6 +53,8 @@ public class SimplyViewController {
         setTooltip(btnSimplyPOSRegister, "Εγγραφή στο Simply POS");
         setTooltip(btnSimplyCloudRegister,"Εγγραφή Simply Cash/Rest");
 
+        progressBox.setVisible(false);
+
         loginList = FXCollections.observableArrayList();
         // Ρύθμιση στήλης username
         usernameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
@@ -66,6 +69,10 @@ public class SimplyViewController {
             if (event.getClickCount() == 2){
                 handleEditLogin(null);
             }
+            if (event.getClickCount() == 1){
+                Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+                progressBox.setVisible(selectedLogin.getTag().contains("Cash") || selectedLogin.getTag().contains("Rest"));
+            }
         });
 
     }
@@ -77,8 +84,11 @@ public class SimplyViewController {
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
         loginList.addAll(dbHelper.getLogins(customerId,2));
-        if (loginTable.getItems().size() == 1)
+        if (loginTable.getItems().size() == 1) {
             loginTable.getSelectionModel().select(0);
+            Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+            progressBox.setVisible(selectedLogin.getTag().contains("Cash") || selectedLogin.getTag().contains("Rest"));
+        }
     }
 
     public void setCustomer(Customer customer) {
@@ -116,6 +126,7 @@ public class SimplyViewController {
             dialog.showAndWait();
             // Ανανέωση του πίνακα logins
             loadLoginsForCustomer(customer.getCode());
+
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
 

@@ -317,7 +317,8 @@ public class DBHelper {
         return dataList;
     }
 
-    public void addLogin(int code, Logins newLogin, int i) {
+    public int addLogin(int code, Logins newLogin, int i) {
+        int loginId = 0;
         String sql = "INSERT INTO CustomerLogins (CustomerID, ApplicationID, username, password, tag, phone) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -328,10 +329,22 @@ public class DBHelper {
             pstmt.setString(5, newLogin.getTag());
             pstmt.setString(6, newLogin.getPhone());
             pstmt.executeUpdate();
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Η εισαγωγή του πελάτη ήταν επιτυχής.");
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        loginId = generatedKeys.getInt(1);
+                    }
+                }
+            } else {
+                System.out.println("Η εισαγωγή του πελάτη απέτυχε.");
+            }
             closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return loginId;
     }
 
     public void updateLogin(Logins updatedLogin) {
@@ -750,7 +763,7 @@ public class DBHelper {
             if (tasks.getCustomerId() != null) {
                 stmt.setInt(5, tasks.getCustomerId());
             } else {
-                stmt.setNull(5, java.sql.Types.INTEGER);
+                stmt.setNull(5, Types.INTEGER);
             }
             stmt.setString(6, tasks.getCategory());
             stmt.setBoolean(7, tasks.getErgent());
@@ -782,13 +795,13 @@ public class DBHelper {
 
             stmt.setString(1, tasks.getTitle());
             stmt.setString(2, tasks.getDescription());
-            stmt.setDate(3, java.sql.Date.valueOf(tasks.getDueDate()));
+            stmt.setDate(3, Date.valueOf(tasks.getDueDate()));
             stmt.setBoolean(4, tasks.getCompleted());
             stmt.setString(5, tasks.getCategory());
             if (tasks.getCustomerId() != null) {
                 stmt.setInt(6, tasks.getCustomerId());
             } else {
-                stmt.setNull(6, java.sql.Types.INTEGER);
+                stmt.setNull(6, Types.INTEGER);
             }
             stmt.setBoolean(7, tasks.getErgent());
             stmt.setBoolean(8, tasks.getWait());
@@ -1108,7 +1121,7 @@ public class DBHelper {
             if (device.getCustomerId() != null) {
                 stmt.setInt(5, device.getCustomerId());
             } else {
-                stmt.setNull(5, java.sql.Types.INTEGER);
+                stmt.setNull(5, Types.INTEGER);
             }
             stmt.setInt(6, device.getId());
 
@@ -2283,12 +2296,12 @@ public class DBHelper {
             if (order.getCustomerId() != null) {
                 stmt.setInt(5, order.getCustomerId());
             } else {
-                stmt.setNull(5, java.sql.Types.INTEGER);
+                stmt.setNull(5, Types.INTEGER);
             }
             if (order.getSupplierId() != null) {
                 stmt.setInt(6, order.getSupplierId());
             } else {
-                stmt.setNull(6, java.sql.Types.INTEGER);
+                stmt.setNull(6, Types.INTEGER);
             }
             stmt.setBoolean(7, order.getErgent());
             stmt.setBoolean(8, order.getWait());
@@ -2315,17 +2328,17 @@ public class DBHelper {
 
             stmt.setString(1, order.getTitle());
             stmt.setString(2, order.getDescription());
-            stmt.setDate(3, java.sql.Date.valueOf(order.getDueDate()));
+            stmt.setDate(3, Date.valueOf(order.getDueDate()));
             stmt.setBoolean(4, order.getCompleted());
             if (order.getCustomerId() != null) {
                 stmt.setInt(5, order.getCustomerId());
             } else {
-                stmt.setNull(5, java.sql.Types.INTEGER);
+                stmt.setNull(5, Types.INTEGER);
             }
             if (order.getSupplierId() != null) {
                 stmt.setInt(6, order.getSupplierId());
             } else {
-                stmt.setNull(6, java.sql.Types.INTEGER);
+                stmt.setNull(6, Types.INTEGER);
             }
             stmt.setBoolean(7, order.getErgent());
             stmt.setBoolean(8, order.getWait());

@@ -36,27 +36,6 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-        <Label styleClass="section-label" text="Πρόοδος Εγκατάστασης Simply" />
-        <TableView fx:id="setupProgressTable" prefHeight="300" VBox.vgrow="ALWAYS">
-            <columns>
-                <TableColumn fx:id="appNameColumn" prefWidth="87.0" text="Εφαρμογή" />
-                <TableColumn fx:id="contractDateColumn" prefWidth="90.0" text="Σύμβαση" />
-                <TableColumn fx:id="stockColumn" prefWidth="63.0" text="Stock" />
-                <TableColumn fx:id="registrationColumn" text="Εγγραφή" />
-                <TableColumn fx:id="aadeAuthColumn" text="ΑΑΔΕ" />
-                <TableColumn fx:id="contractAcceptedColumn" prefWidth="81.0" text="Αποδοχή Σύμβασης" />
-                <TableColumn fx:id="mailSentColumn" prefWidth="79.0" text="Αποστολή Mail" />
-                <TableColumn fx:id="paramCompletedColumn" text="Ολοκ. Παραμετρ." />
-                <TableColumn fx:id="mydataCompletedColumn" text="Ολοκ. MyData" />
-                <TableColumn fx:id="deliveredColumn" text="Παράδοση" />
-                <TableColumn fx:id="simplyPaidColumn" text="Πληρωμή Simply" />
-                <TableColumn fx:id="simplyInvoiceSentColumn" text="Απόδειξη Simply" />
-                <TableColumn fx:id="customerPaidColumn" text="Πληρωμή Πελάτη" />
-            </columns>
-            <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-            </columnResizePolicy>
-        </TableView>
         <JFXButton fx:id="addLoginButton" buttonType="RAISED" onAction="#handleAddLogin" prefWidth="277.0" styleClass="click-button" text="Προσθήκη Νέου Login">
             <VBox.margin>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -114,5 +93,24 @@
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </JFXButton>
+        <VBox fx:id="progressBox">
+            <VBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </VBox.margin>
+            <Label styleClass="normal-label" text="Πρόοδος" VBox.vgrow="ALWAYS">
+                <VBox.margin>
+                    <Insets bottom="5.0" right="5.0" top="5.0"/>
+                </VBox.margin>
+          </Label>
+            <JFXCheckBox fx:id="cbStock" prefWidth="63.0" styleClass="normal-label" text="Stock"/>
+            <JFXCheckBox fx:id="cbRegister" prefWidth="63.0" styleClass="normal-label" text="Εγγραφή"/>
+            <JFXCheckBox fx:id="cbAuth" prefWidth="63.0" styleClass="normal-label" text="Stock"/>
+            <JFXCheckBox fx:id="cbAccept" prefWidth="63.0" styleClass="normal-label" text="Αποδοχή Σύμβασης"/>
+            <JFXCheckBox fx:id="cbMail" prefWidth="63.0" styleClass="normal-label" text="Αποστολή Mail"/>
+            <JFXCheckBox fx:id="cbParam" prefWidth="63.0" styleClass="normal-label" text="Ολοκ. Παραμετρ"/>
+            <JFXCheckBox fx:id="cbMydata" prefWidth="63.0" styleClass="normal-label" text="Ολοκ. MyData"/>
+            <JFXCheckBox fx:id="cbDelivered" prefWidth="63.0" styleClass="normal-label" text="Παράδοση"/>
+            <JFXCheckBox fx:id="cbPaid" prefWidth="63.0" styleClass="normal-label" text="Πληρωμή Πελάτη"/>
+        </VBox>
     </VBox>
 </HBox>

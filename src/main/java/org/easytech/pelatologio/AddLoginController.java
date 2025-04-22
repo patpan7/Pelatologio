@@ -92,7 +92,7 @@ public class AddLoginController {
             String tag = tagField.getSelectionModel().getSelectedItem().toString();
             Logins newLogin = new Logins(username, password, tag, phone);
             DBHelper dbHelper = new DBHelper();
-            dbHelper.addLogin(customer.getCode(),newLogin,appicationId); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
+            int loginId = dbHelper.addLogin(customer.getCode(),newLogin,appicationId); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
 
             // Κλείσιμο του διαλόγου
             Dialog<ButtonType> dialog = new Dialog<>();
