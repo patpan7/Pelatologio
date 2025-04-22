@@ -93,7 +93,9 @@ public class AddLoginController {
             Logins newLogin = new Logins(username, password, tag, phone);
             DBHelper dbHelper = new DBHelper();
             int loginId = dbHelper.addLogin(customer.getCode(),newLogin,appicationId); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
-
+            System.out.println("Login added successfully with ID: " + loginId);
+            if (loginId != 0 && tag.contains("Cash") || tag.contains("Rest"))
+                dbHelper.addSimplySetupProgress(loginId);
             // Κλείσιμο του διαλόγου
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setContentText("Το νέο login προστέθηκε επιτυχώς!");

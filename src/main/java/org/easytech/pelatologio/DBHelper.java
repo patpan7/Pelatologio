@@ -321,31 +321,33 @@ public class DBHelper {
         int loginId = 0;
         String sql = "INSERT INTO CustomerLogins (CustomerID, ApplicationID, username, password, tag, phone) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, code);
             pstmt.setInt(2, i);
             pstmt.setString(3, newLogin.getUsername());
             pstmt.setString(4, newLogin.getPassword());
             pstmt.setString(5, newLogin.getTag());
             pstmt.setString(6, newLogin.getPhone());
-            pstmt.executeUpdate();
-            int rowsInserted = pstmt.executeUpdate();
+
+            int rowsInserted = pstmt.executeUpdate(); // ✅ μόνο μία φορά
+
             if (rowsInserted > 0) {
-                System.out.println("Η εισαγωγή του πελάτη ήταν επιτυχής.");
+                System.out.println("Η εισαγωγή του login ήταν επιτυχής.");
                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         loginId = generatedKeys.getInt(1);
                     }
                 }
             } else {
-                System.out.println("Η εισαγωγή του πελάτη απέτυχε.");
+                System.out.println("Η εισαγωγή του login απέτυχε.");
             }
-            closeConnection(conn);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return loginId;
     }
+
 
     public void updateLogin(Logins updatedLogin) {
         String query = "UPDATE CustomerLogins SET username = ?, password = ?, tag = ?, phone = ? WHERE LoginID = ?";
@@ -2728,5 +2730,31 @@ public class DBHelper {
         }
 
         return trackingList;
+    }
+
+    public void addSimplySetupProgress(int loginId) {
+        String insertQuery = "INSERT INTO SimplySetupProgress (app_login_id) "
+                + "VALUES (?)";
+        int trackingId = -1; // Default value for error handling
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setInt(1, loginId);
+
+            int rowsInserted = pstmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Η εισαγωγή ήταν επιτυχής.");
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        trackingId = generatedKeys.getInt(1);
+                    }
+                }
+            } else {
+                System.out.println("Η εισαγωγή απέτυχε.");
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            System.err.println("Σφάλμα κατά την εισαγωγή: " + e.getMessage());
+        }
     }
 }
