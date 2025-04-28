@@ -1376,6 +1376,13 @@ public class AddCustomerController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == okButtonType) {
+                if (trackingField.getText().isEmpty()) {
+                    return null;
+                }
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString("Μπορείτε να δείτε την εξέλιξη της αποστολής σας εδώ: https://www.acscourier.net/el/track-and-trace/?trackingNumber="+trackingField.getText());  // Replace with the desired text
+                clipboard.setContent(content);
                 return new Pair<>(trackingField.getText(), datePicker.getValue());
             }
             return null;
