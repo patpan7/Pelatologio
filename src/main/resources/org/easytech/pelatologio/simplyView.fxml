@@ -6,6 +6,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <HBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SimplyViewController">
     <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
         <HBox.margin>
@@ -111,6 +113,17 @@
             <JFXCheckBox fx:id="cbMydata" prefWidth="63.0" styleClass="normal-label" text="Ολοκ. MyData" />
             <JFXCheckBox fx:id="cbDelivered" prefWidth="63.0" styleClass="normal-label" text="Παράδοση" />
             <JFXCheckBox fx:id="cbPaid" prefWidth="63.0" styleClass="normal-label" text="Πληρωμή Πελάτη" />
+            <HBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+            <Label text="Διάρκεια ετών:" styleClass="normal-label" />
+            <ComboBox fx:id="cbContractDuration" prefWidth="150.0" styleClass="normal-label">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="1" />
+                        <String fx:value="2" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            </HBox>
         </VBox>
     </VBox>
 </HBox>

@@ -2808,4 +2808,96 @@ public class DBHelper {
             throw new RuntimeException(e);
         }
     }
+
+    public List<SimplyStatus> getAllSimplyStatus() {
+        List<SimplyStatus> statuses = new ArrayList<>();
+        String query = "SELECT " +
+                "    s.id AS SetupID, " +
+                "    s.app_login_id AS appLoginId, " +
+                "    s.stock, " +
+                "    s.register, " +
+                "    s.auth, " +
+                "    s.accept, " +
+                "    s.mail, " +
+                "    s.param, " +
+                "    s.mydata, " +
+                "    s.delivered, " +
+                "    s.paid, " +
+                "    s.years, " +
+                "    cl.Username, " +
+                "    c.name AS CustomerName, " +
+                "    c.code AS CustomerCode " +
+                "FROM " +
+                "    SimplySetupProgress s " +
+                "INNER JOIN " +
+                "    CustomerLogins cl ON s.app_login_id = cl.LoginID " +
+                "INNER JOIN " +
+                "    Customers c ON cl.CustomerID = c.code " +
+                "ORDER BY " +
+                "    s.id DESC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet resultSet = stmt.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("SetupID");
+                int appLoginId = resultSet.getInt("appLoginId");
+                boolean stock = resultSet.getBoolean("stock");
+                boolean register = resultSet.getBoolean("register");
+                boolean auth = resultSet.getBoolean("auth");
+                boolean accept = resultSet.getBoolean("accept");
+                boolean mail = resultSet.getBoolean("mail");
+                boolean param = resultSet.getBoolean("param");
+                boolean mydata = resultSet.getBoolean("mydata");
+                boolean delivered = resultSet.getBoolean("delivered");
+                boolean paid = resultSet.getBoolean("paid");
+                String yeras = resultSet.getString("years");
+                String username = resultSet.getString("Username");
+                String customerName = resultSet.getString("CustomerName");
+                int customerCode = resultSet.getInt("CustomerCode");
+
+                SimplyStatus status = new SimplyStatus(id,appLoginId,stock, register,auth,accept, mail,param,mydata,delivered,paid,yeras,customerCode, customerName, username);
+                statuses.add(status);
+            }
+            closeConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return statuses;
+    }
+
+    public void updateSimplyStatusYears(int id, String selectedYear) {
+        String sql = "UPDATE SimplySetupProgress SET years = ? WHERE app_login_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, selectedYear);
+            stmt.setInt(2, id);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Optionally show error alert
+        }
+    }
+
+    public String getSimplyYears(int id) {
+        String sql = "SELECT years FROM SimplySetupProgress WHERE app_login_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("years");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // μπορείς να εμφανίσεις και alert αν θέλεις
+        }
+        return null; // ή "1" ως default αν θέλεις
+    }
 }

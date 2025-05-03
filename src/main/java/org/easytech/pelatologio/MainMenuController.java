@@ -463,23 +463,23 @@ public class MainMenuController implements Initializable {
             }
         } else {
             for (Tab tab : mainTabPane.getTabs()) {
-                if (tab.getText().equals("Συμβόλαια")) {
+                if (tab.getText().equals("Simply")) {
                     mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
                     return;
                 }
             }
             // Φόρτωση του FXML
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("subsView.fxml"));
-            Parent subsContent = fxmlLoader.load();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("simplyStatusView.fxml"));
+            Parent simplyStatusContent = fxmlLoader.load();
 
             // Περνάμε το mainTabPane στον CustomersController
-            SubsController subsController = fxmlLoader.getController();
-            subsController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
+            SimplyStatusController simplyStatusController = fxmlLoader.getController();
+            simplyStatusController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
 
 
             // Δημιουργία νέου tab
             Tab newTab = new Tab("Συμβόλαια");
-            newTab.setContent(subsContent);
+            newTab.setContent(simplyStatusContent);
 
             // Προσθήκη του tab στο TabPane
             mainTabPane.getTabs().add(newTab);

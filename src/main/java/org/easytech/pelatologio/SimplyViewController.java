@@ -35,6 +35,8 @@ public class SimplyViewController {
     @FXML
     public JFXCheckBox cbStock, cbRegister, cbAuth, cbAccept, cbMail, cbParam, cbMydata, cbDelivered, cbPaid;
     @FXML
+    private ComboBox<String> cbContractDuration;
+    @FXML
     private TableView<Logins> loginTable;
     @FXML
     private TableColumn<Logins, String> usernameColumn;
@@ -50,6 +52,7 @@ public class SimplyViewController {
 
     @FXML
     public void initialize() {
+        DBHelper dbHelper = new DBHelper();
         setTooltip(btnSimplyPOS, "1) Είσοδος στο Simply POS με επιλεγμένο κωδικό\n2) Αντιγραφή στοιχείων για επιλεγμένο κωδικό");
         setTooltip(btnSimplyCash, "1) Είσοδος στο Simply Cash με επιλεγμένο κωδικό\n2α) Αποστολή στοιχείων για επιλεγμένο κωδικό σε Simply \n2β) Αντιγραφή στοιχείων για επιλεγμένου κωδικού");
         setTooltip(btnSimplyRest, "1) Είσοδος στο Simply Rest με επιλεγμένο κωδικό\n2α) Αποστολή στοιχείων για επιλεγμένο κωδικό σε Simply \n2β) Αντιγραφή στοιχείων για επιλεγμένου κωδικού");
@@ -93,7 +96,7 @@ public class SimplyViewController {
             if (selected != null) {
                 CheckBox source = (CheckBox) ((ReadOnlyBooleanProperty) obs).getBean();
                 String columnName = getColumnNameForCheckbox(source);
-                DBHelper dbHelper = new DBHelper();
+
                 try {
                     dbHelper.updateSimplyStatus(selected.getId(), columnName, newVal);
                 } catch (SQLException e) {
@@ -111,6 +114,15 @@ public class SimplyViewController {
         cbMydata.selectedProperty().addListener(listener);
         cbDelivered.selectedProperty().addListener(listener);
         cbPaid.selectedProperty().addListener(listener);
+
+        cbContractDuration.setOnAction(event -> {
+            Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+            String selectedYear = cbContractDuration.getValue();
+            if (selectedYear != null && !selectedYear.isEmpty()) {
+                dbHelper.updateSimplyStatusYears(selectedLogin.getId(), selectedYear);
+
+            }
+        });
 
 
     }
@@ -151,6 +163,8 @@ public class SimplyViewController {
             cbMydata.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "mydata"));
             cbDelivered.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "delivered"));
             cbPaid.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "paid"));
+            cbContractDuration.setValue(dbhelper.getSimplyYears(selectedLogin.getId()));
+
         }
     }
 
