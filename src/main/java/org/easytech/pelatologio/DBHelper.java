@@ -2757,4 +2757,55 @@ public class DBHelper {
             System.err.println("Σφάλμα κατά την εισαγωγή: " + e.getMessage());
         }
     }
+
+    public boolean updateSimplyStatus(int id, String fieldName, boolean value)  throws SQLException {
+        List<String> allowedFields = List.of(
+                "stock", "register", "auth", "accept", "mail", "param", "mydata", "delivered", "paid"
+        );
+        if (!allowedFields.contains(fieldName.toLowerCase())) {
+            throw new IllegalArgumentException("Invalid field name: " + fieldName);
+        }
+
+        String sql = "UPDATE SimplySetupProgress SET " + fieldName + " = ? WHERE app_login_id = ?";
+
+        try (Connection conn = getConnection();  // φτιάξε την DB.getConnection() να σου δίνει το connection
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setBoolean(1, value);
+            stmt.setInt(2, id);
+
+            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean getSimpyStatus(int id, String fieldName) {
+        List<String> allowedFields = List.of(
+                "stock", "register", "auth", "accept", "mail", "param", "mydata", "delivered", "paid"
+        );
+        if (!allowedFields.contains(fieldName.toLowerCase())) {
+            throw new IllegalArgumentException("Invalid field name: " + fieldName);
+        }
+
+        String query = "SELECT " + fieldName + " FROM SimplySetupProgress WHERE app_login_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, id);
+            pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            closeConnection(conn);
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

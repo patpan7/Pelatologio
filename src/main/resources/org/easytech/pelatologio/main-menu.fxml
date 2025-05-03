@@ -177,10 +177,17 @@
                                             </ImageView>
                                         </graphic>
                                     </JFXButton>
+                           <JFXButton fx:id="btnSimplyStatus" buttonType="RAISED" contentDisplay="TOP" layoutX="399.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onMouseClicked="#simplyClick" styleClass="click-button" text="Simply" textAlignment="CENTER">
+                              <graphic>
+                                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                      <Image url="@icons/simply1.png"/>
+                                  </ImageView>
+                              </graphic>
+                           </JFXButton>
                                 </HBox>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false">
-                                    <Label fx:id="vesrion" alignment="CENTER" text="v 2.8.12" VBox.vgrow="NEVER">
+                                    <Label fx:id="vesrion" alignment="CENTER" text="v 2.8.13" VBox.vgrow="NEVER">
                                         <VBox.margin>
                                             <Insets bottom="5.0" right="20.0" />
                                         </VBox.margin>

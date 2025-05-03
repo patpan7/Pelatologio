@@ -32,7 +32,7 @@ public class MainMenuController implements Initializable {
     @FXML
     private ListView<Order> ordersList, pendingOrdersList, deliveryOrdersList;
     @FXML
-    private Button btnCustomers, btnMyPOS, btnTasks, btnCalendar, btnD11, btnMyDataStatus, btnItems, btnDevices, btnSettings;
+    private Button btnCustomers, btnMyPOS, btnTasks, btnCalendar, btnD11, btnMyDataStatus, btnItems, btnDevices, btnSettings, btnSimplyStatus;
 
     private final DBHelper dbHelper = new DBHelper();
 
@@ -449,6 +449,41 @@ public class MainMenuController implements Initializable {
             loadOrders();
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+
+    public void simplyClick(MouseEvent event) throws IOException {
+
+        if (event.getButton() == MouseButton.SECONDARY) {
+            try {
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openPage("https://simplypos.statuspage.io/");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            for (Tab tab : mainTabPane.getTabs()) {
+                if (tab.getText().equals("Συμβόλαια")) {
+                    mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                    return;
+                }
+            }
+            // Φόρτωση του FXML
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("subsView.fxml"));
+            Parent subsContent = fxmlLoader.load();
+
+            // Περνάμε το mainTabPane στον CustomersController
+            SubsController subsController = fxmlLoader.getController();
+            subsController.setMainTabPane(mainTabPane);  // Περίπου εδώ γίνεται η μετάβαση
+
+
+            // Δημιουργία νέου tab
+            Tab newTab = new Tab("Συμβόλαια");
+            newTab.setContent(subsContent);
+
+            // Προσθήκη του tab στο TabPane
+            mainTabPane.getTabs().add(newTab);
+            mainTabPane.getSelectionModel().select(newTab); // Επιλογή του νέου tab
         }
     }
 

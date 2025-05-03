@@ -95,22 +95,22 @@
         </JFXButton>
         <VBox fx:id="progressBox">
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
             <Label styleClass="normal-label" text="Πρόοδος" VBox.vgrow="ALWAYS">
                 <VBox.margin>
-                    <Insets bottom="5.0" right="5.0" top="5.0"/>
+                    <Insets bottom="5.0" right="5.0" top="5.0" />
                 </VBox.margin>
           </Label>
-            <JFXCheckBox fx:id="cbStock" prefWidth="63.0" styleClass="normal-label" text="Stock"/>
-            <JFXCheckBox fx:id="cbRegister" prefWidth="63.0" styleClass="normal-label" text="Εγγραφή"/>
-            <JFXCheckBox fx:id="cbAuth" prefWidth="63.0" styleClass="normal-label" text="Stock"/>
-            <JFXCheckBox fx:id="cbAccept" prefWidth="63.0" styleClass="normal-label" text="Αποδοχή Σύμβασης"/>
-            <JFXCheckBox fx:id="cbMail" prefWidth="63.0" styleClass="normal-label" text="Αποστολή Mail"/>
-            <JFXCheckBox fx:id="cbParam" prefWidth="63.0" styleClass="normal-label" text="Ολοκ. Παραμετρ"/>
-            <JFXCheckBox fx:id="cbMydata" prefWidth="63.0" styleClass="normal-label" text="Ολοκ. MyData"/>
-            <JFXCheckBox fx:id="cbDelivered" prefWidth="63.0" styleClass="normal-label" text="Παράδοση"/>
-            <JFXCheckBox fx:id="cbPaid" prefWidth="63.0" styleClass="normal-label" text="Πληρωμή Πελάτη"/>
+            <JFXCheckBox fx:id="cbStock" prefWidth="63.0" styleClass="normal-label" text="Stock" />
+            <JFXCheckBox fx:id="cbRegister" prefWidth="63.0" styleClass="normal-label" text="Εγγραφή" />
+            <JFXCheckBox fx:id="cbAuth" prefWidth="63.0" styleClass="normal-label" text="Εξουσιοδότηση" />
+            <JFXCheckBox fx:id="cbAccept" prefWidth="63.0" styleClass="normal-label" text="Αποδοχή Σύμβασης" />
+            <JFXCheckBox fx:id="cbMail" prefWidth="63.0" styleClass="normal-label" text="Αποστολή Mail" />
+            <JFXCheckBox fx:id="cbParam" prefWidth="63.0" styleClass="normal-label" text="Ολοκ. Παραμετρ" />
+            <JFXCheckBox fx:id="cbMydata" prefWidth="63.0" styleClass="normal-label" text="Ολοκ. MyData" />
+            <JFXCheckBox fx:id="cbDelivered" prefWidth="63.0" styleClass="normal-label" text="Παράδοση" />
+            <JFXCheckBox fx:id="cbPaid" prefWidth="63.0" styleClass="normal-label" text="Πληρωμή Πελάτη" />
         </VBox>
     </VBox>
 </HBox>
