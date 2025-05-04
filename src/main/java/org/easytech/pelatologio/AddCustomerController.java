@@ -36,10 +36,13 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class AddCustomerController {
     private TabPane mainTabPane;
+    private Tab myTab;
     @FXML
     private TabPane tabPane;
     @FXML
@@ -65,7 +68,7 @@ public class AddCustomerController {
     @FXML
     private Button btnEmail, btnEmail2, btnAccEmail, btnAccEmail1;
     @FXML
-    Button btnAddToMegasoft, btnData, btnLabel,btnCopy, btnTask, btnAcs;
+    Button btnAddToMegasoft, btnData, btnLabel, btnCopy, btnTask, btnAcs;
     @FXML
     private Label lblBlance;
     @FXML
@@ -85,6 +88,7 @@ public class AddCustomerController {
     private CustomerOrdersController customerOrdersController;
 
     int code = 0;
+    private boolean hasUnsavedChanges = false; // Νέο flag για παρακολούθηση αλλαγών
 
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
     private Customer customer;
@@ -94,8 +98,10 @@ public class AddCustomerController {
     private CustomersController customersController;
 
     // Θα περάσουμε το TabPane από τον MainMenuController
-    public void setMainTabPane(TabPane mainTabPane) {
+    public void setMainTabPane(TabPane mainTabPane, Tab myTab) {
         this.mainTabPane = mainTabPane;
+        this.myTab = myTab;
+        setupCloseHandler();
     }
 
     public void setCustomersController(CustomersController controller) {
@@ -202,7 +208,7 @@ public class AddCustomerController {
 
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
         setTooltip(btnLabel, "Εκτύπωση ετικέτας πελάτη");
-        setTooltip(btnTask,"Προσθήκη νέας εργασίας");
+        setTooltip(btnTask, "Προσθήκη νέας εργασίας");
         setTooltip(btnAddToMegasoft, "Προσθήκη πελάτη στο Megasoft");
 
 
@@ -217,6 +223,9 @@ public class AddCustomerController {
         btnCopy.setDisable(true);
         btnCopy.setVisible(false);
         btnTask.setDisable(true);
+        btnTask.setVisible(false);
+        btnAcs.setDisable(true);
+        btnAcs.setVisible(false);
         tfBalance.setDisable(true);
         tfBalance.setVisible(false);
         lblBlance.setVisible(false);
@@ -268,7 +277,7 @@ public class AddCustomerController {
         setupTextFieldContextMenu(tfMobile, phoneContextMenu);
         setupTextFieldContextMenu(tfAddress, contextMenu);
         setupTextFieldContextMenu(tfTown, contextMenu);
-        setupTextFieldContextMenu(tfPostCode,contextMenu);
+        setupTextFieldContextMenu(tfPostCode, contextMenu);
         setupTextFieldContextMenu(tfManager, contextMenu);
         setupTextFieldContextMenu(tfManagerPhone, phoneContextMenu);
         setupTextFieldContextMenu(tfAccPhone, phoneContextMenu);
@@ -336,8 +345,7 @@ public class AddCustomerController {
                 sendTestEmail(tfEmail);
             } else if (currentTextField == tfEmail2) { // Εκτέλεση μόνο αν είναι στο tfEmail2
                 sendTestEmail(tfEmail2);
-            }
-            else if (currentTextField == tfAccEmail) { // Εκτέλεση μόνο αν είναι στο tfEmail2
+            } else if (currentTextField == tfAccEmail) { // Εκτέλεση μόνο αν είναι στο tfEmail2
                 sendTestEmail(tfAccEmail);
             }
         });
@@ -376,7 +384,7 @@ public class AddCustomerController {
                 tfAccErganiEmail.clear();
             }
         });
-        setupComboBoxFilter(tfAccName,filteredAccountants);
+        setupComboBoxFilter(tfAccName, filteredAccountants);
         recommendationList.clear();
         recommendationList.addAll(dbHelper.getRecomedations());
 //        tfRecommendation.setItems(recommendationList);
@@ -384,6 +392,13 @@ public class AddCustomerController {
         tfRecommendation.setItems(filteredRecommendations);
         setupComboBoxFilterForStrings(tfRecommendation, filteredRecommendations);
 
+
+        // Προσθήκη ακροατών αλλαγών στα πεδία
+        Platform.runLater(() -> {
+            setupFieldListeners();
+            this.hasUnsavedChanges = false;
+            updateTabTitle("");
+        });
     }
 
     private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
@@ -545,6 +560,11 @@ public class AddCustomerController {
         tfAccEmail1.setText(customer.getAccEmail1());
         tfBalance.setText(customer.getBalance());
         taBalanceReason.setText(customer.getBalanceReason());
+        setupFieldListeners();
+        this.hasUnsavedChanges = false;
+        updateTabTitle("");
+
+
         if (customer.getActive())
             checkboxActive.setSelected(true);
         else
@@ -617,6 +637,8 @@ public class AddCustomerController {
         btnCopy.setVisible(true);
         btnTask.setDisable(false);
         btnTask.setVisible(true);
+        btnAcs.setDisable(false);
+        btnAcs.setVisible(true);
         tfBalance.setDisable(false);
         tfBalance.setVisible(true);
         lblBlance.setVisible(true);
@@ -655,7 +677,8 @@ public class AddCustomerController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 
@@ -672,7 +695,8 @@ public class AddCustomerController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 
@@ -693,17 +717,20 @@ public class AddCustomerController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
         }
     }
 
 
     public void handleOkButton() {
-        if (code == 0) { // Αν δεν υπάρχει κωδικός, είναι νέα προσθήκη
+        if (code == 0) {
             addCustomer();
-        } else { // Αν υπάρχει, είναι ενημέρωση
+        } else {
             updateCustomer();
         }
+        hasUnsavedChanges = false;
+        updateTabTitle(""); // Αφαίρεση αστερίσκου
     }
 
     public void handleRefreshButton() {
@@ -828,7 +855,7 @@ public class AddCustomerController {
                 break;
             }
         }
-        setupComboBoxFilter(tfAccName,filteredAccountants);
+        setupComboBoxFilter(tfAccName, filteredAccountants);
     }
 
     private void hasTabs() {
@@ -836,52 +863,43 @@ public class AddCustomerController {
         if (dbHelper.hasSubAddress(customer.getCode())) {
             btnAddressAdd.setStyle("-fx-border-color: #FF0000;");
         }
-        if(dbHelper.hasApp(customer.getCode(),1)){
+        if (dbHelper.hasApp(customer.getCode(), 1)) {
             tabMypos.getStyleClass().add("tabHas");
         }
-        if(dbHelper.hasApp(customer.getCode(),2)){
+        if (dbHelper.hasApp(customer.getCode(), 2)) {
             tabSimply.getStyleClass().add("tabHas");
         }
-        if(dbHelper.hasApp(customer.getCode(),3)){
+        if (dbHelper.hasApp(customer.getCode(), 3)) {
             tabTaxis.getStyleClass().add("tabHas");
         }
-        if(dbHelper.hasApp(customer.getCode(),4)){
+        if (dbHelper.hasApp(customer.getCode(), 4)) {
             tabEmblem.getStyleClass().add("tabHas");
         }
-        if(dbHelper.hasApp(customer.getCode(),5)){
+        if (dbHelper.hasApp(customer.getCode(), 5)) {
             tabErgani.getStyleClass().add("tabHas");
         }
-        if(dbHelper.hasDevice(customer.getCode())){
+        if (dbHelper.hasDevice(customer.getCode())) {
             tabDevices.getStyleClass().add("tabHas");
         }
-        if(dbHelper.hasTask(customer.getCode())){
+        if (dbHelper.hasTask(customer.getCode())) {
             tabTasks.getStyleClass().add("tabHas");
         }
-        if(dbHelper.hasSub(customer.getCode())){
+        if (dbHelper.hasSub(customer.getCode())) {
             tabSubs.getStyleClass().add("tabHas");
         }
-        if(dbHelper.hasOffer(customer.getCode())){
+        if (dbHelper.hasOffer(customer.getCode())) {
             tabOffers.getStyleClass().add("tabHas");
         }
-        if (customer.getAccId() != 0){
+        if (customer.getAccId() != 0) {
             tabAccountant.getStyleClass().add("tabHas");
         }
-        if(dbHelper.hasOrders(customer.getCode())){
+        if (dbHelper.hasOrders(customer.getCode())) {
             tabOrders.getStyleClass().add("tabHas");
         }
-        if (!customer.getNotes().isEmpty()){
+        if (!customer.getNotes().isEmpty()) {
             tabNotes.getStyleClass().add("tabHas");
         }
 
-    }
-
-    private void closeCurrentTab() {
-        Platform.runLater(() -> {
-            Tab currentTab = mainTabPane.getSelectionModel().getSelectedItem();
-            System.out.println("Τρέχον tab: " + currentTab.getText());
-            TabPane parentTabPane = currentTab.getTabPane();
-            parentTabPane.getTabs().remove(currentTab);
-        });
     }
 
     void addCustomer() {
@@ -954,6 +972,7 @@ public class AddCustomerController {
         }
 
     }
+
     private void openCustomerTab(int customerId) {
         if (customersController != null) {
             customersController.openCustomerTab(customerId);
@@ -961,97 +980,97 @@ public class AddCustomerController {
     }
 
 
-   void updateCustomer() {
-       DBHelper dbHelper = new DBHelper();
+    void updateCustomer() {
+        DBHelper dbHelper = new DBHelper();
 
-       String name = tfName.getText();
-       customer.setName(name);
-       String title = tfTitle.getText();
-       customer.setTitle(title);
-       String job = tfJob.getText().substring(0, Math.min(tfJob.getText().length(), 255));
-       customer.setJob(job);
-       String afm = tfAfm.getText();
-       customer.setAfm(afm);
-       String phone1 = tfPhone1.getText() == null ? "" : tfPhone1.getText();
-       String phone2 = tfPhone2.getText() == null ? "" : tfPhone2.getText();
-       String mobile = tfMobile.getText() == null ? "" : tfMobile.getText();
-       String address = tfAddress.getText();
-       customer.setAddress(address);
-       String town = tfTown.getText();
-       customer.setTown(town);
-       String posCode = tfPostCode.getText();
-       customer.setPostcode(posCode);
-       String email = tfEmail.getText() == null ? "" : tfEmail.getText();
-       customer.setEmail(email);
-       String email2 = tfEmail2.getText() == null ? "" : tfEmail2.getText();
-       customer.setEmail2(email2);
-       String manager = tfManager.getText() == null ? "" : tfManager.getText();
-       customer.setManager(manager);
-       String managerPhone = tfManagerPhone.getText() == null ? "" : tfManagerPhone.getText();
-       String notes = taNotes.getText();
-       customer.setNotes(notes);
-       String accName1 = tfAccName1.getText() == null ? "" : tfAccName1.getText();
-       customer.setAccName1(accName1);
-       String accEmail1 = tfAccEmail1.getText() == null ? "" : tfAccEmail1.getText();
-       customer.setAccEmail1(accEmail1);
-       String selectedRecommendation = tfRecommendation.getEditor().getText().trim();
-       customer.setRecommendation(selectedRecommendation);
-       String balance = tfBalance.getText();
-       customer.setBalance(balance);
-       String balanceReason = taBalanceReason.getText();
-       customer.setBalanceReason(balanceReason);
-       Boolean isActive = checkboxActive.isSelected();
-       customer.setActive(isActive);
+        String name = tfName.getText();
+        customer.setName(name);
+        String title = tfTitle.getText();
+        customer.setTitle(title);
+        String job = tfJob.getText().substring(0, Math.min(tfJob.getText().length(), 255));
+        customer.setJob(job);
+        String afm = tfAfm.getText();
+        customer.setAfm(afm);
+        String phone1 = tfPhone1.getText() == null ? "" : tfPhone1.getText();
+        String phone2 = tfPhone2.getText() == null ? "" : tfPhone2.getText();
+        String mobile = tfMobile.getText() == null ? "" : tfMobile.getText();
+        String address = tfAddress.getText();
+        customer.setAddress(address);
+        String town = tfTown.getText();
+        customer.setTown(town);
+        String posCode = tfPostCode.getText();
+        customer.setPostcode(posCode);
+        String email = tfEmail.getText() == null ? "" : tfEmail.getText();
+        customer.setEmail(email);
+        String email2 = tfEmail2.getText() == null ? "" : tfEmail2.getText();
+        customer.setEmail2(email2);
+        String manager = tfManager.getText() == null ? "" : tfManager.getText();
+        customer.setManager(manager);
+        String managerPhone = tfManagerPhone.getText() == null ? "" : tfManagerPhone.getText();
+        String notes = taNotes.getText();
+        customer.setNotes(notes);
+        String accName1 = tfAccName1.getText() == null ? "" : tfAccName1.getText();
+        customer.setAccName1(accName1);
+        String accEmail1 = tfAccEmail1.getText() == null ? "" : tfAccEmail1.getText();
+        customer.setAccEmail1(accEmail1);
+        String selectedRecommendation = tfRecommendation.getEditor().getText().trim();
+        customer.setRecommendation(selectedRecommendation);
+        String balance = tfBalance.getText();
+        customer.setBalance(balance);
+        String balanceReason = taBalanceReason.getText();
+        customer.setBalanceReason(balanceReason);
+        Boolean isActive = checkboxActive.isSelected();
+        customer.setActive(isActive);
 
-       Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
-       int accId = selectedAccountant != null ? selectedAccountant.getId() : 0;
-       customer.setAccId(accId);
+        Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
+        int accId = selectedAccountant != null ? selectedAccountant.getId() : 0;
+        customer.setAccId(accId);
 
-       if (mobile.startsWith("+30")) {
-           mobile = mobile.substring(3);
-       }
-       if (phone1.startsWith("+30")) {
-           phone1 = phone1.substring(3);
-       }
-       if (phone2.startsWith("+30")) {
-           phone2 = phone2.substring(3);
-       }
-       if (managerPhone.startsWith("+30")) {
-           managerPhone = managerPhone.substring(3);
-       }
-       mobile = mobile.replaceAll("\\s+", "");
-       phone1 = phone1.replaceAll("\\s+", "");
-       phone2 = phone2.replaceAll("\\s+", "");
-       managerPhone = managerPhone.replaceAll("\\s+", "");
-       customer.setMobile(mobile);
-       customer.setPhone1(phone1);
-       customer.setPhone2(phone2);
-       customer.setManagerPhone(managerPhone);
+        if (mobile.startsWith("+30")) {
+            mobile = mobile.substring(3);
+        }
+        if (phone1.startsWith("+30")) {
+            phone1 = phone1.substring(3);
+        }
+        if (phone2.startsWith("+30")) {
+            phone2 = phone2.substring(3);
+        }
+        if (managerPhone.startsWith("+30")) {
+            managerPhone = managerPhone.substring(3);
+        }
+        mobile = mobile.replaceAll("\\s+", "");
+        phone1 = phone1.replaceAll("\\s+", "");
+        phone2 = phone2.replaceAll("\\s+", "");
+        managerPhone = managerPhone.replaceAll("\\s+", "");
+        customer.setMobile(mobile);
+        customer.setPhone1(phone1);
+        customer.setPhone2(phone2);
+        customer.setManagerPhone(managerPhone);
 
-       dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason, isActive);
+        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason, isActive);
 
-       String accName = tfAccName.getValue() != null ? tfAccName.getValue().toString() : "";
-       String accPhone = tfAccPhone.getText();
-       if (accPhone.startsWith("+30")) {
-           accPhone = accPhone.substring(3);
-       }
-       String accMobile = tfAccMobile.getText();
-       if (accMobile.startsWith("+30")) {
-           accMobile = accMobile.substring(3);
-       }
-       String accEmail = tfAccEmail.getText();
-       String accErganiEmail = tfAccErganiEmail.getText();
+        String accName = tfAccName.getValue() != null ? tfAccName.getValue().toString() : "";
+        String accPhone = tfAccPhone.getText();
+        if (accPhone.startsWith("+30")) {
+            accPhone = accPhone.substring(3);
+        }
+        String accMobile = tfAccMobile.getText();
+        if (accMobile.startsWith("+30")) {
+            accMobile = accMobile.substring(3);
+        }
+        String accEmail = tfAccEmail.getText();
+        String accErganiEmail = tfAccErganiEmail.getText();
 
-       dbHelper.updateAccountant(accId, accName, accPhone, accMobile, accEmail, accErganiEmail);
+        dbHelper.updateAccountant(accId, accName, accPhone, accMobile, accEmail, accErganiEmail);
 
-       Notifications notifications = Notifications.create()
-               .title("Επιτυχία")
-               .text("Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.")
-               .graphic(null)
-               .hideAfter(Duration.seconds(5))
-               .position(Pos.TOP_RIGHT);
-       notifications.showInformation();
-   }
+        Notifications notifications = Notifications.create()
+                .title("Επιτυχία")
+                .text("Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.")
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT);
+        notifications.showInformation();
+    }
 
     public void addAddress(ActionEvent event) {
         if (tfAddress.getText() == null || tfAddress.getText().isEmpty()) {
@@ -1096,7 +1115,7 @@ public class AddCustomerController {
         LabelPrintHelper.printCustomerLabel(customer);
     }
 
-    public void copyClick (ActionEvent event){
+    public void copyClick(ActionEvent event) {
         String msg = "Στοιχεία πελάτη" +
                 "\nΕπωνυμία: " + customer.getName() +
                 "\nΤίτλος: " + customer.getTitle() +
@@ -1112,7 +1131,7 @@ public class AddCustomerController {
     }
 
 
-    public void newTask(ActionEvent actionEvent){
+    public void newTask(ActionEvent actionEvent) {
         if (customer != null) {
             try {
                 // Φόρτωση του FXML για προσθήκη ραντεβού
@@ -1280,69 +1299,71 @@ public class AddCustomerController {
         Platform.runLater(() -> tabPane.getSelectionModel().select(tabEmblem));
     }
 
-    public void selectErganiTab(){ Platform.runLater(() -> tabPane.getSelectionModel().select(tabErgani)); }
+    public void selectErganiTab() {
+        Platform.runLater(() -> tabPane.getSelectionModel().select(tabErgani));
+    }
 
-        private static final Map<Character, Character> ENGLISH_TO_GREEK = new HashMap<>();
+    private static final Map<Character, Character> ENGLISH_TO_GREEK = new HashMap<>();
 
-        static {
-            ENGLISH_TO_GREEK.put('\u0041', '\u0391');  // uppercase A
-            ENGLISH_TO_GREEK.put('\u0042', '\u0392');  // uppercase B
-            ENGLISH_TO_GREEK.put('\u0043', '\u03A8');  // uppercase C
-            ENGLISH_TO_GREEK.put('\u0044', '\u0394');  // uppercase D
-            ENGLISH_TO_GREEK.put('\u0045', '\u0395');  // uppercase E
-            ENGLISH_TO_GREEK.put('\u0046', '\u03A6');  // uppercase F
-            ENGLISH_TO_GREEK.put('\u0047', '\u0393');  // uppercase G
-            ENGLISH_TO_GREEK.put('\u0048', '\u0397');  // uppercase H
-            ENGLISH_TO_GREEK.put('\u0049', '\u0399');  // uppercase I
-            ENGLISH_TO_GREEK.put('\u004A', '\u039E');  // uppercase J
-            ENGLISH_TO_GREEK.put('\u004B', '\u039A');  // uppercase K
-            ENGLISH_TO_GREEK.put('\u004C', '\u039B');  // uppercase L
-            ENGLISH_TO_GREEK.put('\u004D', '\u039C');  // uppercase M
-            ENGLISH_TO_GREEK.put('\u004E', '\u039D');  // uppercase N
-            ENGLISH_TO_GREEK.put('\u004F', '\u039F');  // uppercase O
-            ENGLISH_TO_GREEK.put('\u0050', '\u03A0');  // uppercase P
-            //ENGLISH_TO_GREEK.put('\u0051', '\u0391');  // uppercase Q
-            ENGLISH_TO_GREEK.put('\u0052', '\u03A1');  // uppercase R
-            ENGLISH_TO_GREEK.put('\u0053', '\u03A3');  // uppercase S
-            ENGLISH_TO_GREEK.put('\u0054', '\u03A4');  // uppercase T
-            ENGLISH_TO_GREEK.put('\u0055', '\u0398');  // uppercase U
-            ENGLISH_TO_GREEK.put('\u0056', '\u03A9');  // uppercase V
-            ENGLISH_TO_GREEK.put('\u0057', '\u03A3');  // uppercase W
-            ENGLISH_TO_GREEK.put('\u0058', '\u03A7');  // uppercase X
-            ENGLISH_TO_GREEK.put('\u0059', '\u03A5');  // uppercase Y
-            ENGLISH_TO_GREEK.put('\u005A', '\u0396');  // uppercase Z
-        }
+    static {
+        ENGLISH_TO_GREEK.put('\u0041', '\u0391');  // uppercase A
+        ENGLISH_TO_GREEK.put('\u0042', '\u0392');  // uppercase B
+        ENGLISH_TO_GREEK.put('\u0043', '\u03A8');  // uppercase C
+        ENGLISH_TO_GREEK.put('\u0044', '\u0394');  // uppercase D
+        ENGLISH_TO_GREEK.put('\u0045', '\u0395');  // uppercase E
+        ENGLISH_TO_GREEK.put('\u0046', '\u03A6');  // uppercase F
+        ENGLISH_TO_GREEK.put('\u0047', '\u0393');  // uppercase G
+        ENGLISH_TO_GREEK.put('\u0048', '\u0397');  // uppercase H
+        ENGLISH_TO_GREEK.put('\u0049', '\u0399');  // uppercase I
+        ENGLISH_TO_GREEK.put('\u004A', '\u039E');  // uppercase J
+        ENGLISH_TO_GREEK.put('\u004B', '\u039A');  // uppercase K
+        ENGLISH_TO_GREEK.put('\u004C', '\u039B');  // uppercase L
+        ENGLISH_TO_GREEK.put('\u004D', '\u039C');  // uppercase M
+        ENGLISH_TO_GREEK.put('\u004E', '\u039D');  // uppercase N
+        ENGLISH_TO_GREEK.put('\u004F', '\u039F');  // uppercase O
+        ENGLISH_TO_GREEK.put('\u0050', '\u03A0');  // uppercase P
+        //ENGLISH_TO_GREEK.put('\u0051', '\u0391');  // uppercase Q
+        ENGLISH_TO_GREEK.put('\u0052', '\u03A1');  // uppercase R
+        ENGLISH_TO_GREEK.put('\u0053', '\u03A3');  // uppercase S
+        ENGLISH_TO_GREEK.put('\u0054', '\u03A4');  // uppercase T
+        ENGLISH_TO_GREEK.put('\u0055', '\u0398');  // uppercase U
+        ENGLISH_TO_GREEK.put('\u0056', '\u03A9');  // uppercase V
+        ENGLISH_TO_GREEK.put('\u0057', '\u03A3');  // uppercase W
+        ENGLISH_TO_GREEK.put('\u0058', '\u03A7');  // uppercase X
+        ENGLISH_TO_GREEK.put('\u0059', '\u03A5');  // uppercase Y
+        ENGLISH_TO_GREEK.put('\u005A', '\u0396');  // uppercase Z
+    }
 
-        private static final Map<Character, Character> GREEK_TO_ENGLISH = new HashMap<>();
+    private static final Map<Character, Character> GREEK_TO_ENGLISH = new HashMap<>();
 
-        static {
-            GREEK_TO_ENGLISH.put('\u0391', '\u0041');  // uppercase Α
-            GREEK_TO_ENGLISH.put('\u0392', '\u0042');  // uppercase Β
-            GREEK_TO_ENGLISH.put('\u03A8', '\u0043');  // uppercase Ψ
-            GREEK_TO_ENGLISH.put('\u0394', '\u0044');  // uppercase Δ
-            GREEK_TO_ENGLISH.put('\u0395', '\u0045');  // uppercase Ε
-            GREEK_TO_ENGLISH.put('\u03A6', '\u0046');  // uppercase Φ
-            GREEK_TO_ENGLISH.put('\u0393', '\u0047');  // uppercase Γ
-            GREEK_TO_ENGLISH.put('\u0397', '\u0048');  // uppercase Η
-            GREEK_TO_ENGLISH.put('\u0399', '\u0049');  // uppercase Ι
-            GREEK_TO_ENGLISH.put('\u039E', '\u004A');  // uppercase Ξ
-            GREEK_TO_ENGLISH.put('\u039A', '\u004B');  // uppercase Κ
-            GREEK_TO_ENGLISH.put('\u039B', '\u004C');  // uppercase Λ
-            GREEK_TO_ENGLISH.put('\u039C', '\u004D');  // uppercase Μ
-            GREEK_TO_ENGLISH.put('\u039D', '\u004E');  // uppercase Ν
-            GREEK_TO_ENGLISH.put('\u039F', '\u004F');  // uppercase Ο
-            GREEK_TO_ENGLISH.put('\u03A0', '\u0050');  // uppercase Π
-            //GREEK_TO_ENGLISH.put('\u0051', '\u0391');  // uppercase Q
-            GREEK_TO_ENGLISH.put('\u03A1', '\u0052');  // uppercase Ρ
-            GREEK_TO_ENGLISH.put('\u03A3', '\u0053');  // uppercase Σ
-            GREEK_TO_ENGLISH.put('\u03A4', '\u0054');  // uppercase Τ
-            GREEK_TO_ENGLISH.put('\u0398', '\u0055');  // uppercase Θ
-            GREEK_TO_ENGLISH.put('\u03A9', '\u0056');  // uppercase Ω
-            GREEK_TO_ENGLISH.put('\u03A3', '\u0053');  // uppercase ς
-            GREEK_TO_ENGLISH.put('\u03A7', '\u0058');  // uppercase Χ
-            GREEK_TO_ENGLISH.put('\u03A5', '\u0059');  // uppercase Υ
-            GREEK_TO_ENGLISH.put('\u0396', '\u005A');  // uppercase Ζ
-        }
+    static {
+        GREEK_TO_ENGLISH.put('\u0391', '\u0041');  // uppercase Α
+        GREEK_TO_ENGLISH.put('\u0392', '\u0042');  // uppercase Β
+        GREEK_TO_ENGLISH.put('\u03A8', '\u0043');  // uppercase Ψ
+        GREEK_TO_ENGLISH.put('\u0394', '\u0044');  // uppercase Δ
+        GREEK_TO_ENGLISH.put('\u0395', '\u0045');  // uppercase Ε
+        GREEK_TO_ENGLISH.put('\u03A6', '\u0046');  // uppercase Φ
+        GREEK_TO_ENGLISH.put('\u0393', '\u0047');  // uppercase Γ
+        GREEK_TO_ENGLISH.put('\u0397', '\u0048');  // uppercase Η
+        GREEK_TO_ENGLISH.put('\u0399', '\u0049');  // uppercase Ι
+        GREEK_TO_ENGLISH.put('\u039E', '\u004A');  // uppercase Ξ
+        GREEK_TO_ENGLISH.put('\u039A', '\u004B');  // uppercase Κ
+        GREEK_TO_ENGLISH.put('\u039B', '\u004C');  // uppercase Λ
+        GREEK_TO_ENGLISH.put('\u039C', '\u004D');  // uppercase Μ
+        GREEK_TO_ENGLISH.put('\u039D', '\u004E');  // uppercase Ν
+        GREEK_TO_ENGLISH.put('\u039F', '\u004F');  // uppercase Ο
+        GREEK_TO_ENGLISH.put('\u03A0', '\u0050');  // uppercase Π
+        //GREEK_TO_ENGLISH.put('\u0051', '\u0391');  // uppercase Q
+        GREEK_TO_ENGLISH.put('\u03A1', '\u0052');  // uppercase Ρ
+        GREEK_TO_ENGLISH.put('\u03A3', '\u0053');  // uppercase Σ
+        GREEK_TO_ENGLISH.put('\u03A4', '\u0054');  // uppercase Τ
+        GREEK_TO_ENGLISH.put('\u0398', '\u0055');  // uppercase Θ
+        GREEK_TO_ENGLISH.put('\u03A9', '\u0056');  // uppercase Ω
+        GREEK_TO_ENGLISH.put('\u03A3', '\u0053');  // uppercase ς
+        GREEK_TO_ENGLISH.put('\u03A7', '\u0058');  // uppercase Χ
+        GREEK_TO_ENGLISH.put('\u03A5', '\u0059');  // uppercase Υ
+        GREEK_TO_ENGLISH.put('\u0396', '\u005A');  // uppercase Ζ
+    }
 
     public void acsVoucher(MouseEvent actionEvent) {
         if (actionEvent.getButton() == MouseButton.PRIMARY) {
@@ -1381,7 +1402,7 @@ public class AddCustomerController {
                 }
                 Clipboard clipboard = Clipboard.getSystemClipboard();
                 ClipboardContent content = new ClipboardContent();
-                content.putString("Μπορείτε να δείτε την εξέλιξη της αποστολής σας εδώ: https://www.acscourier.net/el/track-and-trace/?trackingNumber="+trackingField.getText());  // Replace with the desired text
+                content.putString("Μπορείτε να δείτε την εξέλιξη της αποστολής σας εδώ: https://www.acscourier.net/el/track-and-trace/?trackingNumber=" + trackingField.getText());  // Replace with the desired text
                 clipboard.setContent(content);
                 return new Pair<>(trackingField.getText(), datePicker.getValue());
             }
@@ -1420,5 +1441,108 @@ public class AddCustomerController {
         dialog.getDialogPane().setContent(listView);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         dialog.showAndWait();
+    }
+
+    private void setupFieldListeners() {
+        // Προσθήκη listeners σε όλα τα input fields
+        Consumer<TextInputControl> textListener = field ->
+                field.textProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
+        // TextFields
+        textListener.accept(tfName);
+        textListener.accept(tfTitle);
+        textListener.accept(tfJob);
+        textListener.accept(tfAfm);
+        textListener.accept(tfPhone1);
+        textListener.accept(tfPhone2);
+        textListener.accept(tfMobile);
+        textListener.accept(tfAddress);
+        textListener.accept(tfTown);
+        textListener.accept(tfPostCode);
+        textListener.accept(tfEmail);
+        textListener.accept(tfEmail2);
+        textListener.accept(tfManager);
+        textListener.accept(tfManagerPhone);
+        textListener.accept(tfBalance);
+        textListener.accept(tfAccName1);
+        textListener.accept(tfAccEmail1);
+        textListener.accept(tfAccPhone);
+        textListener.accept(tfAccMobile);
+        textListener.accept(tfAccEmail);
+        textListener.accept(tfAccErganiEmail);
+
+        // TextAreas
+        textListener.accept(taNotes);
+        textListener.accept(taBalanceReason);
+
+        // CheckBox
+        checkboxActive.selectedProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
+
+        // ComboBoxes
+        tfAccName.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
+        tfRecommendation.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
+
+    }
+
+    private void markAsChanged() {
+        if (!hasUnsavedChanges) {
+            hasUnsavedChanges = true;
+        }
+        updateTabTitle("*");
+    }
+
+    private void updateTabTitle(String suffix) {
+        if (myTab != null) {
+            String title = myTab.getText().replace("*", "");
+            myTab.setText(title + suffix);
+        }
+    }
+
+    boolean handleTabCloseRequest() {
+        if (hasUnsavedChanges) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Μη Αποθηκευμένες Αλλαγές");
+            alert.setHeaderText("Υπάρχουν μη αποθηκευμένες αλλαγές!");
+            alert.setContentText("Τι θέλετε να κάνετε;");
+
+            ButtonType saveButton = new ButtonType("Αποθήκευση");
+            ButtonType discardButton = new ButtonType("Απόρριψη");
+            ButtonType cancelButton = new ButtonType("Ακύρωση", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            alert.getButtonTypes().setAll(saveButton, discardButton, cancelButton);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent()) {
+                if (result.get() == saveButton) {
+                    handleOkButton();
+                    return true;
+                } else if (result.get() == discardButton) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
+    //    private void closeCurrentTab() {
+//        if (handleTabCloseRequest()) {
+//            Platform.runLater(() -> {
+//                Tab currentTab = mainTabPane.getSelectionModel().getSelectedItem();
+//                mainTabPane.getTabs().remove(currentTab);
+//            });
+//        }
+//    }
+    private void setupCloseHandler() {
+        myTab.setOnCloseRequest(event -> {
+            if (!handleTabCloseRequest()) {
+                event.consume();
+            }
+        });
+    }
+
+    private void closeCurrentTab() {
+        if (mainTabPane != null && myTab != null) {
+            Platform.runLater(() -> mainTabPane.getTabs().remove(myTab));
+        }
     }
 }

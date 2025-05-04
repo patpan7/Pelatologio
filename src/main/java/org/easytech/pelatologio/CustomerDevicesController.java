@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
@@ -87,10 +88,15 @@ public class CustomerDevicesController {
                 }
                 loadDevicesForCustomer(customer.getCode());
             });
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
 
-            dialog.showAndWait();
-            // Ανανέωση του πίνακα logins
-            loadDevicesForCustomer(customer.getCode());
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadDevicesForCustomer(customer.getCode());
+                }
+            });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -178,7 +184,10 @@ public class CustomerDevicesController {
                 }
                 loadDevicesForCustomer(customer.getCode());
             });
-            dialog.showAndWait();
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -217,7 +226,10 @@ public class CustomerDevicesController {
                 }
             });
 
-            dialog.showAndWait();
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }

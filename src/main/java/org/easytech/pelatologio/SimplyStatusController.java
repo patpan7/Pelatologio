@@ -5,7 +5,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -36,6 +35,8 @@ public class SimplyStatusController implements Initializable {
     @FXML
     private TableColumn customerColumn;
     @FXML
+    private TableColumn usernameColumn;
+    @FXML
     private TableColumn<SimplyStatus, Boolean> registerColumn;
     @FXML
     private TableColumn<SimplyStatus, Boolean> authColumn;
@@ -55,6 +56,8 @@ public class SimplyStatusController implements Initializable {
     private TableColumn<SimplyStatus, Boolean> stockColumn;
     @FXML
     private TableColumn yearsColumn;
+    @FXML
+    private Label countLabel;
 
     @FXML
     private CheckBox stockCheckbox, registerCheckbox, acceptCheckbox, paramCheckbox, myDataCheckBox, deliveredCheckBox, paidCheckBox;
@@ -81,6 +84,7 @@ public class SimplyStatusController implements Initializable {
         // Σύνδεση στηλών πίνακα με πεδία του Task
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customer"));
+        usernameColumn.setCellValueFactory(new PropertyValueFactory<>("custMail"));
         yearsColumn.setCellValueFactory(new PropertyValueFactory<>("years"));
         registerColumn.setCellValueFactory(cellData -> {
             SimplyStatus data = cellData.getValue();
@@ -352,10 +356,19 @@ public class SimplyStatusController implements Initializable {
         loadStatus();
 
 
-        yearsFilter.getItems().add(0, "Όλες");
+        yearsFilter.getItems().add(0, "Όλα");
         yearsFilter.getItems().add(1, "1 Έτος");
         yearsFilter.getItems().add(2, "2 Έτη");
         yearsFilter.getSelectionModel().selectFirst();
+
+        stockCheckbox.setOnAction(e -> updateStatusTable());
+        registerCheckbox.setOnAction(e -> updateStatusTable());
+        acceptCheckbox.setOnAction(e -> updateStatusTable());
+        paramCheckbox.setOnAction(e -> updateStatusTable());
+        myDataCheckBox.setOnAction(e -> updateStatusTable());
+        deliveredCheckBox.setOnAction(e -> updateStatusTable());
+        paidCheckBox.setOnAction(e -> updateStatusTable());
+
 
         yearsFilter.valueProperty().addListener((obs, oldVal, newVal) -> updateStatusTable());
 
@@ -389,44 +402,44 @@ public class SimplyStatusController implements Initializable {
     private void updateStatusTable() {
         // Ξεκινάμε με όλες τις εργασίες
         ObservableList<SimplyStatus> filteredStatus = FXCollections.observableArrayList(allSimplyStatus);
-//
-//        // Φιλτράρισμα βάσει ολοκλήρωσης
-//        if (!showAllCheckbox.isSelected()) {
-//            if (showCompletedCheckbox.isSelected()) {
-//                filteredTasks.removeIf(task -> !task.getCompleted());
-//            } else if (showPendingCheckbox.isSelected()) {
-//                filteredTasks.removeIf(Tasks::getCompleted);
-//            }
-//        }
-//
-//        // Φιλτράρισμα βάσει πελάτη
-//        if (showWithCustomerCheckbox.isSelected()) {
-//            filteredTasks.removeIf(task -> task.getCustomerId() == 0);
-//        }
-//        if (showWithoutCustomerCheckbox.isSelected()) {
-//            filteredTasks.removeIf(task -> task.getCustomerId() != 0);
-//        }
-//
-//        if (showErgentCheckBox.isSelected()) {
-//            filteredTasks.removeIf(task -> !task.getErgent());
-//        }
-//        if (showWaitCheckBox.isSelected()) {
-//            filteredTasks.removeIf(task -> !task.getWait());
-//        } else {
-//            filteredTasks.removeIf(tasks -> tasks.getWait());
-//        }
-//
-//        // Φιλτράρισμα βάσει κατηγορίας
-//        TaskCategory selectedCategory = categoryFilterComboBox.getValue(); // Η επιλεγμένη κατηγορία από το ComboBox
-//        if (selectedCategory != null && selectedCategory.getId() != 0) { // Εξαιρείται η κατηγορία "Όλες"
-//            filteredTasks.removeIf(task -> !task.getCategory().equals(selectedCategory.getName()));
-//        }
 
+
+        // Φιλτράρισμα
+        if (stockCheckbox.isSelected()) {
+            filteredStatus.removeIf(status -> !status.isStock());
+        }
+
+        if (registerCheckbox.isSelected()) {
+            filteredStatus.removeIf(status -> status.isRegister());
+        }
+
+        if (acceptCheckbox.isSelected()) {
+            filteredStatus.removeIf(status -> status.isAccept());
+        }
+        if (paramCheckbox.isSelected()) {
+            filteredStatus.removeIf(status -> status.isParam());
+        }
+        if (myDataCheckBox.isSelected()) {
+            filteredStatus.removeIf(status -> status.isMydata());
+        }
+        if (deliveredCheckBox.isSelected()) {
+            filteredStatus.removeIf(status -> status.isDelivered());
+        }
+        if (paidCheckBox.isSelected()) {
+            filteredStatus.removeIf(status -> status.isPaid());
+        }
+
+        // Φιλτράρισμα βάσει κατηγορίας
+        if (yearsFilter.getSelectionModel().getSelectedIndex() == 1) { // Εξαιρείται η κατηγορία "Όλες"
+            filteredStatus.removeIf(status -> !status.getYears().equals("1"));
+        } else if (yearsFilter.getSelectionModel().getSelectedIndex() == 2) {
+            filteredStatus.removeIf(status -> !status.getYears().equals("2"));
+        }
 
         // Ανανεώνουμε τα δεδομένα του πίνακα
         statusTable.setItems(filteredStatus);
+        countLabel.setText("Πλήθος: " + filteredStatus.size());
     }
-
 
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();
@@ -434,6 +447,7 @@ public class SimplyStatusController implements Initializable {
         tooltip.setText(text);
         button.setTooltip(tooltip);
     }
+
     public void refresh(MouseEvent mouseEvent) {
         loadStatus();
     }

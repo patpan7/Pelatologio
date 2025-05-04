@@ -355,7 +355,7 @@ public class CustomersController implements Initializable {
             customerTab.setContent(customerForm);
 
             AddCustomerController controller = loader.getController();
-            controller.setMainTabPane(mainTabPane);
+            controller.setMainTabPane(mainTabPane, customerTab);
             controller.setCustomersController(this); // Περνάμε το instance του CustomersController
             String filterValue = filterField.getText();
             if (filterValue != null && filterValue.matches("\\d{9}")) {
@@ -397,24 +397,29 @@ public class CustomersController implements Initializable {
                         return;
                     }
                 }
+
+                // Δημιουργία νέου tab
+                Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
                 // Φόρτωση του FXML
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
                 Parent customerForm = loader.load();
 
                 // Δημιουργία νέου tab για την ενημέρωση του πελάτη
-                Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
+                //Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
                 customerTab.setContent(customerForm);
 
                 AddCustomerController controller = loader.getController();
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                controller.setMainTabPane(mainTabPane, customerTab);
                 controller.setCustomerData(selectedCustomer);
-                controller.setMainTabPane(mainTabPane);
+
                 // Προσθήκη του tab στο TabPane
                 mainTabPane.getTabs().add(customerTab);
                 mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
 
                 customerTab.setOnCloseRequest(event -> {
                     dbHelper.customerUnlock(selectedCustomer.getCode());
+                    controller.handleTabCloseRequest();
                 });
 
                 customerTab.setOnClosed(event -> {
@@ -483,7 +488,7 @@ public class CustomersController implements Initializable {
                 AddCustomerController controller = loader.getController();
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
                 controller.setCustomerData(selectedCustomer);
-                controller.setMainTabPane(mainTabPane);
+                controller.setMainTabPane(mainTabPane, customerTab);
                 // Προσθήκη του tab στο TabPane
                 Platform.runLater(() -> {
                     mainTabPane.getTabs().add(customerTab);

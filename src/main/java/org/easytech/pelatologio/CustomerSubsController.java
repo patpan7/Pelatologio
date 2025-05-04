@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
@@ -147,8 +148,15 @@ public class CustomerSubsController {
                 }
             });
 
-            dialog.showAndWait();
-            loadSubs(customer.getCode());
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadSubs(customer.getCode());
+                }
+            });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -187,8 +195,15 @@ public class CustomerSubsController {
                     event.consume();
                 }
             });
-            dialog.showAndWait();
-            loadSubs(customer.getCode());
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadSubs(customer.getCode());
+                }
+            });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }

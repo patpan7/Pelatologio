@@ -215,35 +215,40 @@ public class SubsController implements Initializable {
 
     private void handleAddSub() {
         try {
-            // Φόρτωση του FXML για προσθήκη ραντεβού
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
+            DialogPane dialogPane = loader.load();
+
             Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Προσθήκη Εργασίας");
+            dialog.setDialogPane(dialogPane);
+            dialog.setTitle("Προσθήκη Συμβολαίου");
+
+
             AddSubController controller = loader.getController();
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                // Εκτελούμε το handleSaveAppointment
                 boolean success = controller.handleSaveSub();
-
                 if (!success) {
-                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
                     event.consume();
                 }
             });
 
+            dialog.setOnHidden(e -> {
+                loadSubs(dateFrom.getValue(), dateTo.getValue());
+            });
+
+            dialog.initModality(Modality.NONE);  // <-- Εδώ γίνεται η κύρια αλλαγή
+            dialog.initOwner(null);  // Προαιρετικό για καλύτερη εμφάνιση
             dialog.showAndWait();
-            loadSubs(dateFrom.getValue(), dateTo.getValue());
+
         } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα",
+                    "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
     private void handleEditSub() throws IOException {
-        // Επεξεργασία επιλεγμένης εργασίας
         Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
         if (selectedSub == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -254,29 +259,35 @@ public class SubsController implements Initializable {
         }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Επεξεργασία Εργασίας");
-            AddSubController controller = loader.getController();
+            DialogPane dialogPane = loader.load();
 
-            // Ορισμός δεδομένων για επεξεργασία
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(dialogPane);
+            dialog.setTitle("Επεξεργασία Συμβολαίου");
+
+            AddSubController controller = loader.getController();
             controller.setSubForEdit(selectedSub);
+
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                // Εκτελούμε το handleSaveAppointment
                 boolean success = controller.handleSaveSub();
-
                 if (!success) {
-                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
                     event.consume();
                 }
             });
+
+            dialog.setOnHidden(e -> {
+                loadSubs(dateFrom.getValue(), dateTo.getValue());
+            });
+
+            dialog.initModality(Modality.NONE);
             dialog.showAndWait();
-            loadSubs(dateFrom.getValue(), dateTo.getValue());
+
         } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα",
+                    "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 

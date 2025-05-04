@@ -319,6 +319,10 @@ public class TaskListController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Προσθήκη Εργασίας");
+
+            dialog.initModality(Modality.NONE);  // <-- Εδώ γίνεται η κύρια αλλαγή
+            dialog.initOwner(null);  // Προαιρετικό για καλύτερη εμφάνιση
+
             AddTaskController controller = loader.getController();
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
@@ -335,6 +339,9 @@ public class TaskListController implements Initializable {
             });
 
             dialog.showAndWait();
+
+            dialog.setOnHidden(e -> loadTasks());
+
             loadTasks();
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
@@ -354,27 +361,35 @@ public class TaskListController implements Initializable {
         }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Επεξεργασία Εργασίας");
-            AddTaskController controller = loader.getController();
+            DialogPane dialogPane = loader.load();
 
-            // Ορισμός δεδομένων για επεξεργασία
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(dialogPane);
+            dialog.setTitle("Επεξεργασία Εργασίας");
+
+            AddTaskController controller = loader.getController();
             controller.setTaskForEdit(selectedTasks);
+
+            // Προσθήκη κουμπιών OK και Cancel
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                // Εκτελούμε το handleSaveAppointment
                 boolean success = controller.handleSaveTask();
-
                 if (!success) {
-                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                    event.consume();
+                    event.consume(); // Εμποδίζει το κλείσιμο αν η αποθήκευση αποτύχει
                 }
             });
+
+            // Ορισμός συμπεριφοράς όταν κλείσει το παράθυρο
+            dialog.setOnHidden(e -> {
+                loadTasks();  // Ανανέωση μόνο όταν κλείσει
+            });
+
+            dialog.initModality(Modality.NONE);  // Επιτρέπει επιστροφή στο κύριο παράθυρο
+            dialog.initOwner(null);
             dialog.showAndWait();
-            loadTasks();
+
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -471,6 +486,8 @@ public class TaskListController implements Initializable {
                 }
             });
 
+            dialog.initModality(Modality.NONE);  // <-- Εδώ γίνεται η κύρια αλλαγή
+            dialog.initOwner(null);  // Προαιρετικό για καλύτερη εμφάνιση
             dialog.showAndWait();
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));

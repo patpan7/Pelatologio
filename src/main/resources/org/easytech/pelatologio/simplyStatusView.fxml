@@ -12,12 +12,12 @@
             <center>
                 <VBox spacing="10">
                     <HBox alignment="CENTER_LEFT">
-                        <Label styleClass="normal-label" text="Φίλτρα μόνο:">
+                        <Label styleClass="normal-label" text="Φίλτρα χωρίς:">
                             <HBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
                         </Label>
-                        <JFXCheckBox fx:id="stockCheckbox" styleClass="normal-label" text="Stock">
+                        <JFXCheckBox fx:id="stockCheckbox" styleClass="normal-label" text="Μόνο Stock">
                             <HBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
@@ -43,7 +43,7 @@
                             </HBox.margin>
                         </JFXCheckBox>
                         <Separator HBox.hgrow="ALWAYS" />
-                        <JFXButton fx:id="btnRefresh" buttonType="RAISED" mnemonicParsing="false" styleClass="click-button" onMouseClicked="#refresh" text="">
+                        <JFXButton fx:id="btnRefresh" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#refresh" styleClass="click-button" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/refresh.png" />
@@ -59,9 +59,8 @@
                     </HBox>
                     <HBox alignment="CENTER_LEFT">
                         <VBox.margin>
-                            <Insets />
+                            <Insets left="10.0" right="10.0" />
                         </VBox.margin>
-                        <Separator orientation="VERTICAL" />
                         <JFXCheckBox fx:id="deliveredCheckBox" styleClass="normal-label" text="Παράδωση">
                             <HBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
@@ -77,16 +76,18 @@
                                 <Insets left="10.0" right="10.0" />
                             </HBox.margin>
                         </Label>
-                        <ComboBox fx:id="yearsFilter" editable="true" prefHeight="51.0" prefWidth="344.0">
+                        <ComboBox fx:id="yearsFilter" editable="true" prefHeight="51.0">
                             <HBox.margin>
                                 <Insets left="10.0" right="10.0" />
                             </HBox.margin>
                         </ComboBox>
+                        <Label fx:id="countLabel" styleClass="normal-label" text="Label" />
                     </HBox>
                     <TableView fx:id="statusTable" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID" />
                             <TableColumn fx:id="customerColumn" minWidth="-1.0" prefWidth="-1.0" text="Πελάτης" />
+                            <TableColumn fx:id="usernameColumn" minWidth="-1.0" prefWidth="-1.0" text="e-mail" />
                             <TableColumn fx:id="registerColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Εγγραφή" />
                             <TableColumn fx:id="authColumn" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" text="Εξουσιοδότηση" />
                             <TableColumn fx:id="acceptColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Αποδοχή" />

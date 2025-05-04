@@ -11,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
@@ -95,8 +96,15 @@ public class OrdersSupViewController {
                             event.consume();
                         }
                     });
-                    dialog.showAndWait();
-                    loadOrders(supplier.getId());
+                    dialog.initModality(Modality.NONE);
+                    dialog.initOwner(null);
+                    dialog.show();
+
+                    dialog.setOnHidden(e -> {
+                        if (dialog.getResult() == ButtonType.OK) {
+                            loadOrders(supplier.getId());
+                        }
+                    });
                 } catch (IOException e) {
                     Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
                 }
@@ -146,8 +154,15 @@ public class OrdersSupViewController {
                 }
             });
 
-            dialog.showAndWait();
-            loadOrders(supplier.getId());
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadOrders(supplier.getId());
+                }
+            });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -185,8 +200,17 @@ public class OrdersSupViewController {
                     event.consume();
                 }
             });
-            dialog.showAndWait();
-            loadOrders(supplier.getId());
+
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadOrders(supplier.getId());
+                }
+            });
+
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }

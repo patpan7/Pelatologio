@@ -14,6 +14,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
@@ -192,8 +193,15 @@ public class OffersController implements Initializable {
                 }
             });
 
-            dialog.showAndWait();
-            loadOffers();
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadOffers();
+                }
+            });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -230,8 +238,15 @@ public class OffersController implements Initializable {
                     event.consume();
                 }
             });
-            dialog.showAndWait();
-            loadOffers();
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadOffers();
+                }
+            });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -296,7 +311,10 @@ public class OffersController implements Initializable {
                 }
             });
 
-            dialog.showAndWait();
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
         }

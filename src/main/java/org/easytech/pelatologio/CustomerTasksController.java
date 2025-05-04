@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
@@ -175,8 +176,15 @@ public class CustomerTasksController {
                 }
             });
 
-            dialog.showAndWait();
-            loadTasks(customer.getCode());
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadTasks(customer.getCode());
+                }
+            });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -215,8 +223,15 @@ public class CustomerTasksController {
                     event.consume();
                 }
             });
-            dialog.showAndWait();
-            loadTasks(customer.getCode());
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadTasks(customer.getCode());
+                }
+            });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -272,7 +287,10 @@ public class CustomerTasksController {
                 }
             });
 
-            dialog.showAndWait();
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }

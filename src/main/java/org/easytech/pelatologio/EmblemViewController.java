@@ -13,6 +13,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.openqa.selenium.By;
@@ -21,6 +22,9 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class EmblemViewController {
+    private static final String WARNING_TITLE = "Προσοχή";
+    private static final String SELECT_LOGIN_MSG = "Παρακαλώ επιλέξτε ένα login.";
+
     @FXML
     public Button btnEmblem, btnEmblemRegister;
     @FXML
@@ -108,9 +112,15 @@ public class EmblemViewController {
                 }
             });
 
-            dialog.showAndWait();
-            // Ανανέωση του πίνακα logins
-            loadLoginsForCustomer(customer.getCode());
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadLoginsForCustomer(customer.getCode());
+                }
+            });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
 
@@ -118,19 +128,8 @@ public class EmblemViewController {
     }
 
     public void handleDeleteLogin(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
 
         // Εμφάνιση παραθύρου επιβεβαίωσης
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -150,19 +149,8 @@ public class EmblemViewController {
     }
 
     public void handleEditLogin(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("editLogin.fxml"));
@@ -174,55 +162,40 @@ public class EmblemViewController {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(dialogPane);
             dialog.setTitle("Επεξεργασία Login");
+            // Προσθήκη των παρακάτω 2 γραμμών
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            Optional<ButtonType> result = dialog.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                Logins updatedLogin = editController.getUpdatedLogin();
+            // Αλλαγή σε show() και χρήση setOnHidden
+            dialog.show();
 
-                // Ενημέρωση της βάσης
-                DBHelper dbHelper = new DBHelper();
-                dbHelper.updateLogin(updatedLogin);
-
-                // Ενημέρωση του πίνακα
-                loginTable.refresh();
-            }
+            // Μετακίνηση της λογικής στο OnHidden
+            dialog.setOnHidden(e -> {
+                ButtonType result = dialog.getResult();
+                if (result != null && result == ButtonType.OK) {
+                    Logins updatedLogin = editController.getUpdatedLogin();
+                    new DBHelper().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
+                    Platform.runLater(() -> loginTable.refresh());
+                }
+            });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
     public void handleLabel(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
         LabelPrintHelper.printLoginLabel(selectedLogin,customer,"Στοιχεία "+selectedLogin.getTag());
     }
 
     public void handleCopy(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
         String msg ="Στοιχεία εισόδου" + selectedLogin.getTag() +
                 "\nΕπωνυμία: "+customer.getName()+
                 "\nΑΦΜ: "+customer.getAfm()+
@@ -234,19 +207,9 @@ public class EmblemViewController {
     }
 
     public void handleAddTask(ActionEvent evt) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
         try {
             // Φόρτωση του FXML για προσθήκη ραντεβού
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
@@ -271,7 +234,9 @@ public class EmblemViewController {
                 }
             });
 
-            dialog.showAndWait();
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
@@ -279,19 +244,9 @@ public class EmblemViewController {
 
 
     public void handleAddSub(ActionEvent evt) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
         try {
             // Φόρτωση του FXML για προσθήκη ραντεβού
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
@@ -318,16 +273,20 @@ public class EmblemViewController {
                 }
             });
 
-            dialog.showAndWait();
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
     public void emblemOpen(MouseEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
         if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
-            if (selectedLogin != null) {
+
                 String msg = "Νέος Πελάτης Emblem" +
                         "\nΕπωνυμία: " + customer.getName() +
                         "\nΑΦΜ: " + customer.getAfm() +
@@ -343,29 +302,7 @@ public class EmblemViewController {
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
                 notifications.showInformation();
-            } else {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-            }
         } else {
-            if (selectedLogin == null) {
-                // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-                Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
-                            .title("Προσοχή")
-                            .text("Παρακαλώ επιλέξτε ένα login.")
-                            .graphic(null)
-                            .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();
-                });
-                return;
-            }
             try {
                 LoginAutomator loginAutomation = new LoginAutomator(true);
                 loginAutomation.openAndFillLoginForm(
@@ -383,16 +320,9 @@ public class EmblemViewController {
     }
 
     public void registerEmblemOpen(ActionEvent actionEvent) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Παρακαλώ επιλέξτε ένα login.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
         try {
             LoginAutomator loginAutomation = new LoginAutomator(true);
             loginAutomation.openAndFillLoginRegisterEmblem(
@@ -438,5 +368,24 @@ public class EmblemViewController {
         tooltip.setShowDelay(Duration.seconds(0.3));
         tooltip.setText(text);
         button.setTooltip(tooltip);
+    }
+
+
+    private Logins checkSelectedLogin() {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            showErrorNotification(WARNING_TITLE, SELECT_LOGIN_MSG);
+        }
+        return selectedLogin;
+    }
+
+    private void showErrorNotification(String title, String message) {
+        Notifications.create()
+                .title(title)
+                .text(message)
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT)
+                .showError();
     }
 }

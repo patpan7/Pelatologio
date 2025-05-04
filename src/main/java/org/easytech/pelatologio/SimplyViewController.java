@@ -16,18 +16,23 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
-
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 public class SimplyViewController {
+    private static final String WARNING_TITLE = "Προσοχή";
+    private static final String SELECT_LOGIN_MSG = "Παρακαλώ επιλέξτε ένα login.";
+
     @FXML
     public Button btnSimplyPOS, btnSimplyCash, btnSimplyRest, btnSimplyPOSRegister, btnSimplyCloudRegister;
     @FXML
@@ -45,133 +50,180 @@ public class SimplyViewController {
     @FXML
     private TableColumn<Logins, String> tagColumn;
 
-
-    Customer customer;
-
+    private Customer customer;
     private ObservableList<Logins> loginList;
+    private DBHelper dbHelper;
+    private boolean isInitializing = false;
 
     @FXML
     public void initialize() {
-        DBHelper dbHelper = new DBHelper();
+        dbHelper = new DBHelper();
+        isInitializing = true;
+
+        setupTooltips();
+        setupTable();
+        setupCheckboxListeners();
+        setupBidirectionalBinding();
+
+        isInitializing = false;
+    }
+
+    private void setupTooltips() {
         setTooltip(btnSimplyPOS, "1) Είσοδος στο Simply POS με επιλεγμένο κωδικό\n2) Αντιγραφή στοιχείων για επιλεγμένο κωδικό");
         setTooltip(btnSimplyCash, "1) Είσοδος στο Simply Cash με επιλεγμένο κωδικό\n2α) Αποστολή στοιχείων για επιλεγμένο κωδικό σε Simply \n2β) Αντιγραφή στοιχείων για επιλεγμένου κωδικού");
         setTooltip(btnSimplyRest, "1) Είσοδος στο Simply Rest με επιλεγμένο κωδικό\n2α) Αποστολή στοιχείων για επιλεγμένο κωδικό σε Simply \n2β) Αντιγραφή στοιχείων για επιλεγμένου κωδικού");
         setTooltip(btnSimplyPOSRegister, "Εγγραφή στο Simply POS");
-        setTooltip(btnSimplyCloudRegister,"Εγγραφή Simply Cash/Rest");
+        setTooltip(btnSimplyCloudRegister, "Εγγραφή Simply Cash/Rest");
+    }
 
+    private void setupTable() {
         progressBox.setVisible(false);
-
         loginList = FXCollections.observableArrayList();
-        // Ρύθμιση στήλης username
+
         usernameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
-        // Ρύθμιση στήλης username
         passwordColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPassword()));
-        // Ρύθμιση στήλης tag
         tagColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTag()));
 
         loginTable.setItems(loginList);
 
         loginTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2){
+            if (event.getClickCount() == 2) {
                 handleEditLogin(null);
             }
-            if (event.getClickCount() == 1){
-                DBHelper dbhelper = new DBHelper();
-                Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-                progressBox.setVisible(selectedLogin.getTag().contains("Cash") || selectedLogin.getTag().contains("Rest"));
-                cbStock.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "stock"));
-                cbRegister.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "register"));
-                cbAuth.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "auth"));
-                cbAccept.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "accept"));
-                cbMail.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "mail"));
-                cbParam.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "param"));
-                cbMydata.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "mydata"));
-                cbDelivered.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "delivered"));
-                cbPaid.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "paid"));
+            if (event.getClickCount() == 1) {
+                updateUIWithSelectedLogin();
             }
         });
+    }
 
-        ChangeListener<Boolean> listener = (obs, oldVal, newVal) -> {
-            Logins selected = loginTable.getSelectionModel().getSelectedItem();
-            if (selected != null) {
-                CheckBox source = (CheckBox) ((ReadOnlyBooleanProperty) obs).getBean();
-                String columnName = getColumnNameForCheckbox(source);
+    private void setupCheckboxListeners() {
+        Map<JFXCheckBox, String> checkboxMap = Map.of(
+                cbStock, "stock",
+                cbRegister, "register",
+                cbAuth, "auth",
+                cbAccept, "accept",
+                cbMail, "mail",
+                cbParam, "param",
+                cbMydata, "mydata",
+                cbDelivered, "delivered",
+                cbPaid, "paid"
+        );
 
-                try {
-                    dbHelper.updateSimplyStatus(selected.getId(), columnName, newVal);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+        checkboxMap.forEach((checkbox, columnName) -> {
+            checkbox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                if (isInitializing) return;
+
+                Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+                if (selectedLogin != null) {
+                    try {
+                        dbHelper.updateSimplyStatus(selectedLogin.getId(), columnName, newVal);
+
+                        // Special handling for register checkbox
+                        if (checkbox == cbRegister && newVal && !isInitializing) {
+                            registercloudOpen(new ActionEvent());
+                        } // Special handling for mail checkbox
+                        else if (checkbox == cbMail && newVal && !isInitializing) {
+                            handleSendEmailForSelectedLogin();
+                        }
+                    } catch (SQLException e) {
+                        showErrorNotification("Σφάλμα", "Προέκυψε σφάλμα κατά την ενημέρωση της βάσης.");
+                    }
                 }
-            }
-        };
-
-        cbStock.selectedProperty().addListener(listener);
-        cbRegister.selectedProperty().addListener(listener);
-        cbAuth.selectedProperty().addListener(listener);
-        cbAccept.selectedProperty().addListener(listener);
-        cbMail.selectedProperty().addListener(listener);
-        cbParam.selectedProperty().addListener(listener);
-        cbMydata.selectedProperty().addListener(listener);
-        cbDelivered.selectedProperty().addListener(listener);
-        cbPaid.selectedProperty().addListener(listener);
+            });
+        });
 
         cbContractDuration.setOnAction(event -> {
             Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
             String selectedYear = cbContractDuration.getValue();
-            if (selectedYear != null && !selectedYear.isEmpty()) {
+            if (selectedLogin != null && selectedYear != null && !selectedYear.isEmpty()) {
                 dbHelper.updateSimplyStatusYears(selectedLogin.getId(), selectedYear);
-
             }
         });
-
-
-    }
-    private String getColumnNameForCheckbox(CheckBox checkbox) {
-        if (checkbox == cbStock) return "stock";
-        if (checkbox == cbRegister) return "register";
-        if (checkbox == cbAuth) return "auth";
-        if (checkbox == cbAccept) return "accept";
-        if (checkbox == cbMail) return "mail";
-        if (checkbox == cbParam) return "param";
-        if (checkbox == cbMydata) return "mydata";
-        if (checkbox == cbDelivered) return "delivered";
-        if (checkbox == cbPaid) return "paid";
-        return "";
     }
 
+    private void handleSendEmailForSelectedLogin() {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) return;
 
-    // Μέθοδος για τη φόρτωση των logins από τη βάση
+        if (selectedLogin.getTag().contains("Cash")) {
+            sendSimplyServiceEmail("Cash", selectedLogin);
+        } else if (selectedLogin.getTag().contains("Rest")) {
+            sendSimplyServiceEmail("Rest", selectedLogin);
+        } else {
+            sendSimplyPosEmail(selectedLogin);
+        }
+    }
+
+    private void sendSimplyServiceEmail(String serviceType, Logins login) {
+        String subject = "Νέος Πελάτης Simply " + serviceType;
+        String msg = "<b>Νέος Πελάτης Simply " + serviceType + "</b>" +
+                "<br><b>Επωνυμία:</b> " + customer.getName() +
+                "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
+                "<br><b>E-mail:</b> " + login.getUsername() +
+                "<br><b>Κωδικός:</b> " + login.getPassword() +
+                "<br><b>Κινητό:</b> " + customer.getMobile() +
+                "<br>Έχει κάνει αποδοχή σύμβασης και εξουσιοδότηση" +
+                "<br>";
+        sendEmail(subject, msg);
+    }
+
+    private void sendSimplyPosEmail(Logins login) {
+        String subject = "Νέος Πελάτης Simply POS";
+        String msg = "Νέος Πελάτης Simply POS" +
+                "\nΕπωνυμία: " + customer.getName() +
+                "\nΑΦΜ: " + customer.getAfm() +
+                "\nEmail: " + login.getUsername() +
+                "\nΚωδικός: " + login.getPassword() +
+                "\nΚινητό: " + customer.getMobile() +
+                "\n";
+        sendEmail(subject, msg);
+    }
+
+    private void setupBidirectionalBinding() {
+        // Bidirectional binding between register checkbox and register button
+        btnSimplyCloudRegister.setOnAction(event -> {
+            if (!isInitializing) {
+                cbRegister.setSelected(true);
+            }
+        });
+    }
+
+    private void updateUIWithSelectedLogin() {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin != null) {
+            progressBox.setVisible(selectedLogin.getTag().contains("Cash") || selectedLogin.getTag().contains("Rest"));
+
+            isInitializing = true;
+            try {
+                cbStock.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "stock"));
+                cbRegister.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "register"));
+                cbAuth.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "auth"));
+                cbAccept.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "accept"));
+                cbMail.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "mail"));
+                cbParam.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "param"));
+                cbMydata.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "mydata"));
+                cbDelivered.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "delivered"));
+                cbPaid.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "paid"));
+                cbContractDuration.setValue(dbHelper.getSimplyYears(selectedLogin.getId()));
+            } finally {
+                isInitializing = false;
+            }
+        }
+    }
+
     public void loadLoginsForCustomer(int customerId) {
         loginList.clear();
-        // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
-        // Προσθήκη των logins στη λίστα
-        DBHelper dbHelper = new DBHelper();
-        loginList.addAll(dbHelper.getLogins(customerId,2));
+        loginList.addAll(dbHelper.getLogins(customerId, 2));
 
-        if (loginTable.getItems().size() == 1) {
+        if (!loginList.isEmpty()) {
             loginTable.getSelectionModel().select(0);
-            Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-            progressBox.setVisible(selectedLogin.getTag().contains("Cash") || selectedLogin.getTag().contains("Rest"));
-            DBHelper dbhelper = new DBHelper();
-            progressBox.setVisible(selectedLogin.getTag().contains("Cash") || selectedLogin.getTag().contains("Rest"));
-            cbStock.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "stock"));
-            cbRegister.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "register"));
-            cbAuth.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "auth"));
-            cbAccept.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "accept"));
-            cbMail.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "mail"));
-            cbParam.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "param"));
-            cbMydata.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "mydata"));
-            cbDelivered.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "delivered"));
-            cbPaid.setSelected(dbhelper.getSimpyStatus(selectedLogin.getId(), "paid"));
-            cbContractDuration.setValue(dbhelper.getSimplyYears(selectedLogin.getId()));
-
+            updateUIWithSelectedLogin();
         }
     }
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
-        //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
-        loadLoginsForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
+        loadLoginsForCustomer(customer.getCode());
     }
 
     public void handleAddLogin(ActionEvent event) {
@@ -180,52 +232,46 @@ public class SimplyViewController {
             DialogPane dialogPane = loader.load();
 
             AddLoginController addLoginController = loader.getController();
-            addLoginController.setCustomer(customer); // Ορίζει τον πελάτη
+            addLoginController.setCustomer(customer);
             addLoginController.setUsername(customer.getEmail());
 
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(dialogPane);
             dialog.setTitle("Προσθήκη Νέου Login");
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            // Όταν ο χρήστης πατά το OK, θα καλέσει τη μέθοδο για αποθήκευση
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.addEventFilter(ActionEvent.ACTION, e -> {
                 if (!addLoginController.validateInputs()) {
-                    e.consume(); // Εμποδίζει το κλείσιμο του dialog
-                }
-                else {
-                    // Εάν οι εισαγωγές είναι έγκυρες, συνεχίστε με την αποθήκευση
-                    addLoginController.handleSaveLogin(event,2);
+                    e.consume();
                 }
             });
 
+            dialog.setOnHidden(e -> {
+                loadLoginsForCustomer(customer.getCode());
+            });
+
+            dialog.setResultConverter(buttonType -> {
+                if (buttonType == ButtonType.OK) {
+                    addLoginController.handleSaveLogin(event, 2);
+                }
+                return null;
+            });
+
+            dialog.initModality(Modality.NONE);  // <-- Εδώ γίνεται η κύρια αλλαγή
+            dialog.initOwner(null);  // Προαιρετικό για καλύτερη εμφάνιση
             dialog.showAndWait();
-            // Ανανέωση του πίνακα logins
-            loadLoginsForCustomer(customer.getCode());
 
         } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
-
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα",
+                    "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
     public void handleDeleteLogin(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
 
-        // Εμφάνιση παραθύρου επιβεβαίωσης
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Επιβεβαίωση Διαγραφής");
         alert.setHeaderText(null);
@@ -233,29 +279,14 @@ public class SimplyViewController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // Διαγραφή από τη βάση
-            DBHelper dbHelper = new DBHelper();
             dbHelper.deleteLogin(selectedLogin.getId());
-
-            // Διαγραφή από τη λίστα και ενημέρωση του πίνακα
             loginTable.getItems().remove(selectedLogin);
         }
     }
 
     public void handleEditLogin(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("editLogin.fxml"));
@@ -267,103 +298,77 @@ public class SimplyViewController {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(dialogPane);
             dialog.setTitle("Επεξεργασία Login");
+
+            // Προσθήκη των παρακάτω 2 γραμμών
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            Optional<ButtonType> result = dialog.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                Logins updatedLogin = editController.getUpdatedLogin();
+            // Αλλαγή σε show() και χρήση setOnHidden
+            dialog.show();
 
-                // Ενημέρωση της βάσης
-                DBHelper dbHelper = new DBHelper();
-                dbHelper.updateLogin(updatedLogin);
+            // Μετακίνηση της λογικής στο OnHidden
+            dialog.setOnHidden(e -> {
+                ButtonType result = dialog.getResult();
+                if (result != null && result == ButtonType.OK) {
+                    Logins updatedLogin = editController.getUpdatedLogin();
+                    new DBHelper().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
+                    Platform.runLater(() -> loginTable.refresh());
+                }
+            });
 
-                // Ενημέρωση του πίνακα
-                loginTable.refresh();
-            }
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
     public void handleLabel(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
-        LabelPrintHelper.printLoginLabel(selectedLogin,customer,"Στοιχεία Simply "+selectedLogin.getTag());
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
+        LabelPrintHelper.printLoginLabel(selectedLogin, customer, "Στοιχεία Simply " + selectedLogin.getTag());
     }
 
     public void handleCopy(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
-        String msg ="Στοιχεία εισόδου" + selectedLogin.getTag() +
-                "\nΕπωνυμία: "+customer.getName()+
-                "\nΑΦΜ: "+customer.getAfm()+
-                "\nEmail: "+selectedLogin.getUsername()+
-                "\nΚωδικός: "+selectedLogin.getPassword()+
-                "\nΚινητό: "+customer.getMobile()+
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
+        String msg = "Στοιχεία εισόδου " + selectedLogin.getTag() +
+                "\nΕπωνυμία: " + customer.getName() +
+                "\nΑΦΜ: " + customer.getAfm() +
+                "\nEmail: " + selectedLogin.getUsername() +
+                "\nΚωδικός: " + selectedLogin.getPassword() +
+                "\nΚινητό: " + customer.getMobile() +
                 "\n";
         copyTextToClipboard(msg);
     }
 
     public void handleAddTask(ActionEvent evt) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
         try {
-            // Φόρτωση του FXML για προσθήκη ραντεβού
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Προσθήκη Εργασίας");
+
             AddTaskController controller = loader.getController();
-            controller.setTaskTitle("Simply "+ selectedLogin.getTag() +": "+ customer.getName());
+            controller.setTaskTitle("Simply " + selectedLogin.getTag() + ": " + customer.getName());
             controller.setCustomerName(customer.getName());
             controller.setCustomerId(customer.getCode());
+
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                // Εκτελούμε το handleSaveAppointment
-                boolean success = controller.handleSaveTask();
-
-                if (!success) {
-                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                if (!controller.handleSaveTask()) {
                     event.consume();
                 }
             });
-
+            dialog.initModality(Modality.NONE);  // <-- Εδώ γίνεται η κύρια αλλαγή
+            dialog.initOwner(null);  // Προαιρετικό για καλύτερη εμφάνιση
             dialog.showAndWait();
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
@@ -371,45 +376,33 @@ public class SimplyViewController {
     }
 
     public void handleAddSub(ActionEvent evt) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
         try {
-            // Φόρτωση του FXML για προσθήκη ραντεβού
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Προσθήκη Εργασίας");
+
             AddSubController controller = loader.getController();
-            controller.setSubTitle("Simply "+ selectedLogin.getTag());
+            controller.setSubTitle("Simply " + selectedLogin.getTag());
             controller.setCustomerName(customer.getName());
             controller.setCustomerId(customer.getCode());
             controller.setNote(selectedLogin.getUsername());
             controller.lock();
+
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
             okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                // Εκτελούμε το handleSaveAppointment
-                boolean success = controller.handleSaveSub();
-
-                if (!success) {
-                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                if (!controller.handleSaveSub()) {
                     event.consume();
                 }
             });
 
+            dialog.initModality(Modality.NONE);  // <-- Εδώ γίνεται η κύρια αλλαγή
+            dialog.initOwner(null);  // Προαιρετικό για καλύτερη εμφάνιση
             dialog.showAndWait();
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
@@ -417,46 +410,20 @@ public class SimplyViewController {
     }
 
     public void simplyposOpen(MouseEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
-            if (selectedLogin != null) {
-                String msg ="Νέος Πελάτης Simply POS" +
-                        "\nΕπωνυμία: "+customer.getName()+
-                        "\nΑΦΜ: "+customer.getAfm()+
-                        "\nEmail: "+selectedLogin.getUsername()+
-                        "\nΚωδικός: "+selectedLogin.getPassword()+
-                        "\nΚινητό: "+customer.getMobile()+
-                        "\n";
-                copyTextToClipboard(msg);
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showInformation();
-            } else {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-            }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
+        if (event.getButton() == MouseButton.SECONDARY) {
+            String msg = "Νέος Πελάτης Simply POS" +
+                    "\nΕπωνυμία: " + customer.getName() +
+                    "\nΑΦΜ: " + customer.getAfm() +
+                    "\nEmail: " + selectedLogin.getUsername() +
+                    "\nΚωδικός: " + selectedLogin.getPassword() +
+                    "\nΚινητό: " + customer.getMobile() +
+                    "\n";
+            copyTextToClipboard(msg);
+            showInfoNotification("Αντιγραφή", "Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.");
         } else {
-            if (selectedLogin == null) {
-                // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-                Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
-                            .title("Προσοχή")
-                            .text("Παρακαλώ επιλέξτε ένα login.")
-                            .graphic(null)
-                            .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();});
-                return;
-            }
             try {
                 LoginAutomator loginAutomation = new LoginAutomator(true);
                 loginAutomation.openAndFillLoginForm(
@@ -474,80 +441,12 @@ public class SimplyViewController {
     }
 
     public void simplycashOpen(MouseEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
 
-        if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
-            if (selectedLogin != null) {
-                // Δημιουργία παραθύρου διαλόγου για επιλογή
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Επιλογή Ενέργειας");
-                alert.setHeaderText("Επιλέξτε μια ενέργεια");
-                alert.setContentText("Θέλετε να αποστείλετε email ή να αντιγράψετε;");
-
-                // Προσθήκη κουμπιών επιλογής
-                ButtonType buttonEmail = new ButtonType("Αποστολή Εγγραφής");
-                ButtonType buttonCopy = new ButtonType("Αντιγραφή");
-                ButtonType buttonRenew = new ButtonType("Αποστολή Ανανέωσης");
-                ButtonType buttonCancel = new ButtonType("Ακύρωση", ButtonType.CANCEL.getButtonData());
-
-                alert.getButtonTypes().setAll(buttonEmail, buttonCopy, buttonCancel);
-
-                // Λήψη επιλογής χρήστη
-                alert.showAndWait().ifPresent(choice -> {
-                    if (choice == buttonEmail) {
-                        String msg ="<b>Νέος Πελάτης Simply Cash</b>" +
-                                "<br><b>Επωνυμία:</b> " + customer.getName() +
-                                "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
-                                "<br><b>E-mai:</b> " + selectedLogin.getUsername() +
-                                "<br><b>Κωδικός:</b> "+selectedLogin.getPassword()+
-                                "<br><b>Κινητό:</b> "+customer.getMobile()+
-                                "<br>Έχει κάνει αποδοχή σύμβασης και εξουσιοδότηση" +
-                                "<br>";
-                        sendEmail("Νέος Πελάτης Simply Cash", msg);
-                        cbMail.setSelected(true);
-                    } else if (choice == buttonCopy) {
-                        String msg ="Νέος Πελάτης Simply Cash" +
-                                "\nΕπωνυμία: "+customer.getName()+
-                                "\nΑΦΜ: "+customer.getAfm()+
-                                "\nE-mai: "+selectedLogin.getUsername()+
-                                "\nΚωδικός: "+selectedLogin.getPassword()+
-                                "\nΚινητό: "+customer.getMobile()+
-                                "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
-                        copyTextToClipboard(msg);
-                    } else if (choice == buttonRenew) {
-                        String msg ="<b>Ανανέωση Πελάτη Simply Cash</b>" +
-                                "<br><b>Επωνυμία:</b> " + customer.getName() +
-                                "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
-                                "<br><b>E-mai:</b> " + selectedLogin.getUsername() +
-                                "<br><b>Κωδικός:</b> "+selectedLogin.getPassword()+
-                                "<br><b>Κινητό:</b> "+customer.getMobile()+
-                                "<br>";
-                        sendEmail("Ανανέωση Πελάτη Simply Cash", msg);
-                        cbMail.setSelected(true);
-                    }
-                });
-            } else {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-            }
-        } else { // Left-click for regular functionality
-            if (selectedLogin == null) {
-                Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
-                            .title("Προσοχή")
-                            .text("Παρακαλώ επιλέξτε ένα login.")
-                            .graphic(null)
-                            .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();});
-                return;
-            }
-
+        if (event.getButton() == MouseButton.SECONDARY) {
+            handleSimplyServiceOptions("Cash", selectedLogin);
+        } else {
             try {
                 LoginAutomator loginAutomation = new LoginAutomator(true);
                 loginAutomation.openAndFillLoginForm(
@@ -565,79 +464,12 @@ public class SimplyViewController {
     }
 
     public void simplyrestOpen(MouseEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
 
-        if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
-            if (selectedLogin != null) {
-                // Δημιουργία παραθύρου διαλόγου για επιλογή
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Επιλογή Ενέργειας");
-                alert.setHeaderText("Επιλέξτε μια ενέργεια");
-                alert.setContentText("Θέλετε να αποστείλετε email ή να αντιγράψετε;");
-
-                // Προσθήκη κουμπιών επιλογής
-                ButtonType buttonEmail = new ButtonType("Αποστολή Εγγραφής");
-                ButtonType buttonCopy = new ButtonType("Αντιγραφή");
-                ButtonType buttonRenew = new ButtonType("Αποστολή Ανανέωσης");
-                ButtonType buttonCancel = new ButtonType("Ακύρωση", ButtonType.CANCEL.getButtonData());
-
-                alert.getButtonTypes().setAll(buttonEmail, buttonCopy, buttonCancel);
-
-                // Λήψη επιλογής χρήστη
-                alert.showAndWait().ifPresent(choice -> {
-                    if (choice == buttonEmail) {
-                        String msg ="<b>Νέος Πελάτης Simply Rest</b>" +
-                                "<br><b>Επωνυμία:</b> " + customer.getName() +
-                                "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
-                                "<br><b>E-mai:</b> " + selectedLogin.getUsername() +
-                                "<br><b>Κωδικός:</b> "+selectedLogin.getPassword()+
-                                "<br><b>Κινητό:</b> "+customer.getMobile()+
-                                "<br>Έχει κάνει αποδοχή σύμβασης και εξουσιοδότηση" +
-                                "<br>";
-                        sendEmail("Νέος Πελάτης Simply Rest", msg);
-                        cbMail.setSelected(true);
-                    } else if (choice == buttonCopy) {
-                        String msg ="Νέος Πελάτης Simply Rest" +
-                                "\nΕπωνυμία: "+customer.getName()+
-                                "\nΑΦΜ: "+customer.getAfm()+
-                                "\nEmail: "+selectedLogin.getUsername()+
-                                "\nΚωδικός: "+selectedLogin.getPassword()+
-                                "\nΚινητό: "+customer.getMobile()+
-                                "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
-                        copyTextToClipboard(msg);
-                    } else if (choice == buttonRenew) {
-                        String msg ="<b>Ανανέωση Πελάτη Simply Rest</b>" +
-                                "<br><b>Επωνυμία:</b> " + customer.getName() +
-                                "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
-                                "<br><b>E-mai:</b> " + selectedLogin.getUsername() +
-                                "<br><b>Κωδικός:</b> "+selectedLogin.getPassword()+
-                                "<br><b>Κινητό:</b> "+customer.getMobile()+
-                                "<br>";
-                        sendEmail("Ανανέωση Πελάτη Simply Rest", msg);
-                    }
-                });
-            } else {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-            }
-        } else if (event.getButton() == MouseButton.PRIMARY) { // Left-click for regular functionality
-            if (selectedLogin == null) {
-                Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
-                            .title("Προσοχή")
-                            .text("Παρακαλώ επιλέξτε ένα login.")
-                            .graphic(null)
-                            .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();});
-                return;
-            }
-
+        if (event.getButton() == MouseButton.SECONDARY) {
+            handleSimplyServiceOptions("Rest", selectedLogin);
+        } else {
             try {
                 LoginAutomator loginAutomation = new LoginAutomator(true);
                 loginAutomation.openAndFillLoginForm(
@@ -652,7 +484,46 @@ public class SimplyViewController {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα Simply Rest.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
+    }
 
+    private void handleSimplyServiceOptions(String serviceName, Logins selectedLogin) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Επιλογή Ενέργειας");
+        alert.setHeaderText("Επιλέξτε μια ενέργεια");
+        alert.setContentText("Θέλετε να αποστείλετε email ή να αντιγράψετε;");
+
+        ButtonType buttonEmail = new ButtonType("Αποστολή Εγγραφής");
+        ButtonType buttonCopy = new ButtonType("Αντιγραφή");
+        ButtonType buttonRenew = new ButtonType("Αποστολή Ανανέωσης");
+        ButtonType buttonCancel = new ButtonType("Ακύρωση", ButtonType.CANCEL.getButtonData());
+
+        alert.getButtonTypes().setAll(buttonEmail, buttonCopy, buttonRenew, buttonCancel);
+
+        alert.showAndWait().ifPresent(choice -> {
+            if (choice == buttonEmail) {
+                handleSendEmailForSelectedLogin();
+                cbMail.setSelected(true);
+            } else if (choice == buttonCopy) {
+                String msg = "Νέος Πελάτης Simply " + serviceName +
+                        "\nΕπωνυμία: " + customer.getName() +
+                        "\nΑΦΜ: " + customer.getAfm() +
+                        "\nE-mail: " + selectedLogin.getUsername() +
+                        "\nΚωδικός: " + selectedLogin.getPassword() +
+                        "\nΚινητό: " + customer.getMobile() +
+                        "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
+                copyTextToClipboard(msg);
+            } else if (choice == buttonRenew) {
+                String msg = "<b>Ανανέωση Πελάτη Simply " + serviceName + "</b>" +
+                        "<br><b>Επωνυμία:</b> " + customer.getName() +
+                        "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
+                        "<br><b>E-mail:</b> " + selectedLogin.getUsername() +
+                        "<br><b>Κωδικός:</b> " + selectedLogin.getPassword() +
+                        "<br><b>Κινητό:</b> " + customer.getMobile() +
+                        "<br>";
+                sendEmail("Ανανέωση Πελάτη Simply " + serviceName, msg);
+                cbMail.setSelected(true);
+            }
+        });
     }
 
     public void registerposOpen(ActionEvent actionEvent) {
@@ -672,16 +543,9 @@ public class SimplyViewController {
     }
 
     public void registercloudOpen(ActionEvent actionEvent) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Παρακαλώ επιλέξτε ένα login.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
         try {
             LoginAutomator loginAutomation = new LoginAutomator(true);
             loginAutomation.openAndFillLoginRegisterCloud(
@@ -695,36 +559,65 @@ public class SimplyViewController {
                     selectedLogin
             );
             cbRegister.setSelected(true);
+            String price = "200";
+            int category = 1;
+            if (cbContractDuration.getSelectionModel().getSelectedIndex() == 0 && selectedLogin.getTag().contains("Cash"))
+                price = "130";
+            else if (cbContractDuration.getSelectionModel().getSelectedIndex() == 0 && selectedLogin.getTag().contains("Rest")){
+                price = "260";
+                category = 2;
+            }
+            LocalDate date = LocalDate.now().plusYears(cbContractDuration.getSelectionModel().getSelectedIndex()+1);
+            Subscription newSub = new Subscription(0, selectedLogin.getTag(), date, customer.getCode(),category, price, selectedLogin.getUsername(), "Όχι");
+            dbHelper.saveSub(newSub);
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα Simply Cloud.", e.getMessage(), Alert.AlertType.ERROR));
-
         }
     }
 
-    // Μέθοδος αποστολής email
+    private Logins checkSelectedLogin() {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            showErrorNotification(WARNING_TITLE, SELECT_LOGIN_MSG);
+        }
+        return selectedLogin;
+    }
+
     private void sendEmail(String subject, String msg) {
-        // Κώδικας για αποστολή email
-        EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
+        EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"),
+                AppSettings.loadSetting("smtpport"),
+                AppSettings.loadSetting("email"),
+                AppSettings.loadSetting("emailPass"));
         emailSender.sendEmail(AppSettings.loadSetting("simplyRegisterMail"), subject, msg);
     }
 
-    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
     private void copyTextToClipboard(String msg) {
-        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
         Clipboard clipboard = Clipboard.getSystemClipboard();
         ClipboardContent content = new ClipboardContent();
-        content.putString(msg);  // Replace with the desired text
+        content.putString(msg);
         clipboard.setContent(content);
-        //showAlert("Copied to Clipboard", msg);
-        Notifications notifications = Notifications.create()
-                .title("Αντιγραφή στο πρόχειρο")
-                .text(msg)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
-        notifications.showInformation();
+        showInfoNotification("Αντιγραφή", "Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.");
     }
 
+    private void showInfoNotification(String title, String message) {
+        Notifications.create()
+                .title(title)
+                .text(message)
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT)
+                .showInformation();
+    }
+
+    private void showErrorNotification(String title, String message) {
+        Notifications.create()
+                .title(title)
+                .text(message)
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT)
+                .showError();
+    }
 
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();

@@ -13,20 +13,17 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.util.Optional;
 
 public class MyposViewController {
+    private static final String WARNING_TITLE = "Προσοχή";
+    private static final String SELECT_LOGIN_MSG = "Παρακαλώ επιλέξτε ένα login.";
     @FXML
     private Label customerLabel;
 
@@ -68,7 +65,7 @@ public class MyposViewController {
         loginTable.setItems(loginList);
 
         loginTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2){
+            if (event.getClickCount() == 2) {
                 handleEditLogin(null);
             }
         });
@@ -80,10 +77,11 @@ public class MyposViewController {
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
-        loginList.addAll(dbHelper.getLogins(customerId,1));
+        loginList.addAll(dbHelper.getLogins(customerId, 1));
         if (loginTable.getItems().size() == 1)
             loginTable.getSelectionModel().select(0);
     }
+
     public void handleAddLogin(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addLogin.fxml"));
@@ -103,16 +101,22 @@ public class MyposViewController {
             okButton.addEventFilter(ActionEvent.ACTION, e -> {
                 if (!addLoginController.validateInputs()) {
                     e.consume(); // Εμποδίζει το κλείσιμο του dialog
-                }
-                else {
+                } else {
                     // Εάν οι εισαγωγές είναι έγκυρες, συνεχίστε με την αποθήκευση
-                    addLoginController.handleSaveLogin(event,1);
+                    addLoginController.handleSaveLogin(event, 1);
                 }
             });
 
-            dialog.showAndWait();
-            // Ανανέωση του πίνακα logins
-            loadLoginsForCustomer(customer.getCode());
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadLoginsForCustomer(customer.getCode());
+                }
+            });
+
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
 
@@ -120,19 +124,8 @@ public class MyposViewController {
     }
 
     public void handleDeleteLogin(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
 
         // Εμφάνιση παραθύρου επιβεβαίωσης
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -152,20 +145,8 @@ public class MyposViewController {
     }
 
     public void handleEditLogin(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        System.out.println(selectedLogin.getPhone());
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("editLogin.fxml"));
@@ -177,81 +158,57 @@ public class MyposViewController {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(dialogPane);
             dialog.setTitle("Επεξεργασία Login");
+
+            // Προσθήκη των παρακάτω 2 γραμμών
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            Optional<ButtonType> result = dialog.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                Logins updatedLogin = editController.getUpdatedLogin();
+            // Αλλαγή σε show() και χρήση setOnHidden
+            dialog.show();
 
-                // Ενημέρωση της βάσης
-                DBHelper dbHelper = new DBHelper();
-                dbHelper.updateLogin(updatedLogin);
+            // Μετακίνηση της λογικής στο OnHidden
+            dialog.setOnHidden(e -> {
+                ButtonType result = dialog.getResult();
+                if (result != null && result == ButtonType.OK) {
+                    Logins updatedLogin = editController.getUpdatedLogin();
+                    new DBHelper().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
+                    Platform.runLater(() -> loginTable.refresh());
+                }
+            });
 
-                // Ενημέρωση του πίνακα
-                loginTable.refresh();
-            }
         } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την ενημέρωση.", e.getMessage(), Alert.AlertType.ERROR));
-
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
     public void handleLabel(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
-        LabelPrintHelper.printLoginLabel(selectedLogin,customer,"Στοιχεία myPOS");
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
+        LabelPrintHelper.printLoginLabel(selectedLogin, customer, "Στοιχεία myPOS");
     }
 
 
     public void handleCopy(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
-        String msg ="Στοιχεία εισόδου" + selectedLogin.getTag() +
-                "\nΕπωνυμία: "+customer.getName()+
-                "\nΑΦΜ: "+customer.getAfm()+
-                "\nEmail: "+selectedLogin.getUsername()+
-                "\nΚωδικός: "+selectedLogin.getPassword()+
-                "\nΚινητό: "+customer.getMobile()+
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
+        String msg = "Στοιχεία εισόδου" + selectedLogin.getTag() +
+                "\nΕπωνυμία: " + customer.getName() +
+                "\nΑΦΜ: " + customer.getAfm() +
+                "\nEmail: " + selectedLogin.getUsername() +
+                "\nΚωδικός: " + selectedLogin.getPassword() +
+                "\nΚινητό: " + customer.getMobile() +
                 "\n";
         copyTextToClipboard(msg);
     }
 
     public void handleAddTask(ActionEvent evt) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
         try {
             // Φόρτωση του FXML για προσθήκη ραντεβού
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
@@ -259,7 +216,7 @@ public class MyposViewController {
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Προσθήκη Εργασίας");
             AddTaskController controller = loader.getController();
-            controller.setTaskTitle("myPOS: "+ customer.getName());
+            controller.setTaskTitle("myPOS: " + customer.getName());
             controller.setCustomerName(customer.getName());
             controller.setCustomerId(customer.getCode());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -276,7 +233,10 @@ public class MyposViewController {
                 }
             });
 
-            dialog.showAndWait();
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
 
@@ -290,20 +250,9 @@ public class MyposViewController {
     }
 
     public void myposloginOpen(ActionEvent event) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
 
-        if (selectedLogin == null) {
-            // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
         try {
             LoginAutomator loginAutomation = new LoginAutomator(true);
             loginAutomation.openAndFillLoginForm(
@@ -322,12 +271,12 @@ public class MyposViewController {
     }
 
     public void myposregisterOpen(MouseEvent event) throws IOException {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        String myposRegister = AppSettings.loadSetting("myposlink");
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
 
         if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
             if (selectedLogin != null) {
-                String msg ="Στοιχεία myPOS" +
+                String msg = "Στοιχεία myPOS" +
                         "\nΕπωνυμία: " + customer.getName() +
                         "\nΑΦΜ: " + customer.getAfm() +
                         "\nEmail: " + selectedLogin.getUsername() +
@@ -356,55 +305,20 @@ public class MyposViewController {
         } else if (event.getButton() == MouseButton.PRIMARY) {
             // Left-click for regular functionality
             LoginAutomator loginAutomation = new LoginAutomator(true);
-                //loginAutomation.openPage(myposRegister);
-                loginAutomation.openAndFillRegistermyPOSForm(
-                        AppSettings.loadSetting("myposlink"),
-                        selectedLogin.getUsername(),
-                        selectedLogin.getPassword(),
-                        selectedLogin.getPhone(),
-                        By.cssSelector("[data-testid='enroll_credentials_email']"),
-                        By.cssSelector("[data-testid='enroll_credentials_password']"),
-                        By.cssSelector("[data-testid='enroll_credentials_phone_number']")
-                );
-//            WebDriver driver = new ChromeDriver();
-//
-//            try {
-//                driver.get("https://merchant.mypos.com/el/onboarding?ref=1006179#/");
-//
-//                WebDriverWait wait = new WebDriverWait(driver, java.time.Duration.ofSeconds(5));
-//
-//                // Πεδίο email
-//                WebElement email = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[data-testid='enroll_credentials_email']")));
-//                // Πεδίο password
-//                WebElement password = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[data-testid='enroll_credentials_password']")));
-//                // Πεδίο κινητού
-//                WebElement phone = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[data-testid='enroll_credentials_phone_number']")));
-//
-//                email.click();
-//                email.sendKeys(selectedLogin.getUsername());
-//
-//                password.click();
-//                password.sendKeys(selectedLogin.getPassword());
-//
-//                phone.click();
-//                phone.sendKeys(selectedLogin.getPhone());
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-            if (selectedLogin == null) {
-                Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
-                            .title("Προσοχή")
-                            .text("Παρακαλώ επιλέξτε ένα login.")
-                            .graphic(null)
-                            .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();});
-                return;
-            }
+            //loginAutomation.openPage(myposRegister);
+            loginAutomation.openAndFillRegistermyPOSForm(
+                    AppSettings.loadSetting("myposlink"),
+                    selectedLogin.getUsername(),
+                    selectedLogin.getPassword(),
+                    selectedLogin.getPhone(),
+                    By.cssSelector("[data-testid='enroll_credentials_email']"),
+                    By.cssSelector("[data-testid='enroll_credentials_password']"),
+                    By.cssSelector("[data-testid='enroll_credentials_phone_number']")
+            );
+
         }
     }    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
+
     private void copyTextToClipboard(String msg) {
         // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
         Clipboard clipboard = Clipboard.getSystemClipboard();
@@ -426,5 +340,23 @@ public class MyposViewController {
         tooltip.setShowDelay(Duration.seconds(0.3));
         tooltip.setText(text);
         button.setTooltip(tooltip);
+    }
+
+    private Logins checkSelectedLogin() {
+        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
+        if (selectedLogin == null) {
+            showErrorNotification(WARNING_TITLE, SELECT_LOGIN_MSG);
+        }
+        return selectedLogin;
+    }
+
+    private void showErrorNotification(String title, String message) {
+        Notifications.create()
+                .title(title)
+                .text(message)
+                .graphic(null)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT)
+                .showError();
     }
 }

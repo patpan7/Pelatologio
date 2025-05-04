@@ -349,7 +349,7 @@ public class DBHelper {
     }
 
 
-    public void updateLogin(Logins updatedLogin) {
+    public boolean updateLogin(Logins updatedLogin) {
         String query = "UPDATE CustomerLogins SET username = ?, password = ?, tag = ?, phone = ? WHERE LoginID = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -360,10 +360,14 @@ public class DBHelper {
             pstmt.setString(4, updatedLogin.getPhone());
             pstmt.setInt(5, updatedLogin.getId());
             pstmt.executeUpdate();
+            if( pstmt.executeUpdate() > 0) {
+                return true;
+            }
             closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public void deleteLogin(int id) {
@@ -2852,12 +2856,12 @@ public class DBHelper {
                 boolean mydata = resultSet.getBoolean("mydata");
                 boolean delivered = resultSet.getBoolean("delivered");
                 boolean paid = resultSet.getBoolean("paid");
-                String yeras = resultSet.getString("years");
+                String years = resultSet.getString("years");
                 String username = resultSet.getString("Username");
                 String customerName = resultSet.getString("CustomerName");
                 int customerCode = resultSet.getInt("CustomerCode");
 
-                SimplyStatus status = new SimplyStatus(id,appLoginId,stock, register,auth,accept, mail,param,mydata,delivered,paid,yeras,customerCode, customerName, username);
+                SimplyStatus status = new SimplyStatus(id,appLoginId,stock, register,auth,accept, mail,param,mydata,delivered,paid,years,customerCode, customerName, username);
                 statuses.add(status);
             }
             closeConnection(conn);

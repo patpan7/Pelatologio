@@ -331,8 +331,15 @@ public class OrdersListController implements Initializable {
                     }
                 });
 
-                dialog.showAndWait();
-                loadOrders();
+                dialog.initModality(Modality.NONE);
+                dialog.initOwner(null);
+                dialog.show();
+
+                dialog.setOnHidden(e -> {
+                    if (dialog.getResult() == ButtonType.OK) {
+                        loadOrders();
+                    }
+                });
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
             }
@@ -370,8 +377,16 @@ public class OrdersListController implements Initializable {
                     event.consume();
                 }
             });
-            dialog.showAndWait();
-            loadOrders();
+
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
+
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadOrders();
+                }
+            });
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }

@@ -478,7 +478,7 @@ public class MainMenuController implements Initializable {
 
 
             // Δημιουργία νέου tab
-            Tab newTab = new Tab("Συμβόλαια");
+            Tab newTab = new Tab("Simply");
             newTab.setContent(simplyStatusContent);
 
             // Προσθήκη του tab στο TabPane
