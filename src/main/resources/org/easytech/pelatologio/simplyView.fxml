@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.*?>
 
 <HBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SimplyViewController">
-    <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+    <VBox alignment="TOP_CENTER" styleClass="card" HBox.hgrow="ALWAYS">
         <HBox.margin>
             <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
         </HBox.margin>
@@ -54,7 +54,7 @@
             </VBox.margin>
         </JFXButton>
     </VBox>
-    <VBox alignment="TOP_CENTER" prefWidth="300.0" HBox.hgrow="NEVER">
+    <VBox alignment="TOP_CENTER" prefWidth="300.0" styleClass="card" HBox.hgrow="NEVER">
         <HBox.margin>
             <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
         </HBox.margin>
@@ -97,7 +97,7 @@
         </JFXButton>
         <VBox fx:id="progressBox">
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                <Insets />
             </VBox.margin>
             <Label styleClass="normal-label" text="Πρόοδος" VBox.vgrow="ALWAYS">
                 <VBox.margin>

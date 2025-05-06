@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import com.microsoft.playwright.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -11,6 +12,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Dialog;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
@@ -391,22 +393,15 @@ public class ErganiViewController {
             return;
         }
         try {
-            LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openAndFillLoginFormErgani(
-                    "https://myaccount.epsilonnet.gr/Identity/Account/Login?product=8fd59003-5af4-4ca7-6fbd-08dace2c8999",
-                    selectedLogin.getUsername(),
-                    selectedLogin.getPassword(),
-                    By.id("Input_Email"),
-                    By.id("Input_Password"),
-                    By.id("btnLogin")
-            );
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα EpsilonNet.", e.getMessage(), Alert.AlertType.ERROR));
-        } catch (InterruptedException e) {
+            Playwright playwright = Playwright.create();
+            Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+            BrowserContext context = browser.newContext();
+            Page page = context.newPage();
+            page.navigate("https://myaccount.epsilonnet.gr/Identity/Account/Login?product=8fd59003-5af4-4ca7-6fbd-08dace2c8999");
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
     // Μέθοδος αποστολής email
     private void sendEmail(String subject, String msg) {
         // Κώδικας για αποστολή email

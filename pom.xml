@@ -204,7 +204,22 @@
             <version>3.41.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>driver-bundle</artifactId>
+            <version>1.52.0</version>
+        </dependency>
 
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>driver</artifactId>
+            <version>1.52.0</version>
+        </dependency>
+        <dependency>
+        <groupId>com.microsoft.playwright</groupId>
+        <artifactId>playwright</artifactId>
+        <version>1.51.0</version>
+        </dependency>
     </dependencies>
 
     <build>

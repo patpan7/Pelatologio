@@ -29,6 +29,7 @@ module org.easytech.pelatologio {
     requires org.apache.httpcomponents.core5.httpcore5;
     requires jdk.httpserver;
     requires asterisk.java;
+    requires playwright;
 
     opens org.easytech.pelatologio to javafx.fxml;
     exports org.easytech.pelatologio;

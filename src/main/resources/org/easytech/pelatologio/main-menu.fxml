@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" prefHeight="810.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
+<StackPane fx:id="stackPane" prefHeight="830.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" styleClass="pane">
         <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
             <center>
@@ -180,7 +180,7 @@
                            <JFXButton fx:id="btnSimplyStatus" buttonType="RAISED" contentDisplay="TOP" layoutX="399.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onMouseClicked="#simplyClick" styleClass="click-button" text="Simply" textAlignment="CENTER">
                               <graphic>
                                   <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                      <Image url="@icons/simply1.png"/>
+                                      <Image url="@icons/simply1.png" />
                                   </ImageView>
                               </graphic>
                            </JFXButton>
@@ -201,7 +201,7 @@
                                 <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                 </HBox.margin>
-                                <Label styleClass="normal-label" text="Για παραγγελία" textAlignment="CENTER">
+                                <Label styleClass="normal-label" text="Για παραγγελία" textAlignment="CENTER" underline="true">
                                     <VBox.margin>
                                         <Insets bottom="3.0" />
                                     </VBox.margin>
@@ -211,13 +211,13 @@
                                         <Insets />
                                     </VBox.margin>
                                 </ListView>
-                                <Label layoutX="38.0" layoutY="10.0" styleClass="normal-label" text="Αναμονη παραλαβής" textAlignment="CENTER" wrapText="true">
+                                <Label layoutX="38.0" layoutY="10.0" styleClass="normal-label" text="Αναμονη παραλαβής" textAlignment="CENTER" underline="true" wrapText="true">
                                     <VBox.margin>
                                         <Insets bottom="3.0" />
                                     </VBox.margin>
                                 </Label>
                                 <ListView fx:id="pendingOrdersList" layoutX="15.0" layoutY="42.0" onMouseClicked="#handlePendingOrderSelection" prefHeight="190.0" styleClass="list-view1" VBox.vgrow="ALWAYS" />
-                                <Label layoutX="10.0" layoutY="247.0" styleClass="normal-label" text="Προς παράδωση" textAlignment="CENTER" wrapText="true">
+                                <Label layoutX="10.0" layoutY="247.0" styleClass="normal-label" text="Προς παράδωση" textAlignment="CENTER" underline="true" wrapText="true">
                                     <VBox.margin>
                                         <Insets bottom="3.0" />
                                     </VBox.margin>

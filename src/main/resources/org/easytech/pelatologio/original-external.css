@@ -82,115 +82,48 @@
 /*------------------Buttons----------------*/
 .click-button {
     -fx-background-color: -fx-background;
-    -fx-background-radius: 8px;
+    -fx-background-radius: 50;
     -fx-font-size: 20px;
     -fx-border-color: -fx-border;
-    -fx-border-radius: 8px;
+    -fx-border-radius: 50;
     -fx-border-width: 1;
     -fx-text-fill: black;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 6, 0, 0, 2);
 }
 
 .click-button:hover {
     -fx-background-color: -fx-hover;
     -fx-text-fill: white;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 8, 0, 0, 3);
-    -fx-translate-y: -1px;
 }
 
 .click-button:pressed {
-    -fx-background-radius: 8px;
+    -fx-background-radius: 50;
     -fx-font-size: 20px;
     -fx-border-color: -fx-border;
     -fx-text-fill: white;
     -fx-rotate: 1;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 1);
 }
 
 /*------------------TextFields----------------*/
 .text-field {
-    -fx-background-color: white;
-    -fx-border-color: #B6CCFE;
-    -fx-border-width: 1.5px;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
+    -fx-background-color: #a9a9a9, white, white;
+    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
     -fx-font-size: 24px;
     -fx-prompt-text-fill: gray;
-    -fx-padding: 8px 12px;
-    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);
 }
 
 .text-field:focused {
     -fx-background-color: #a9a9a9, white, white;
     -fx-font-size: 24px;
-    -fx-border-width: 3px;
     -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
-    -fx-prompt-translate-y: -30%;
+    -fx-prompt-translate-y: -25%;
 }
 
 /*------------------TextArea----------------*/
 .text-area {
-    -fx-background-color: white;
-    -fx-border-color: #B6CCFE;
-    -fx-border-width: 1.5px;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
+    -fx-background-color: #a9a9a9, white, white;
+    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
     -fx-font-size: 24px;
     -fx-prompt-text-fill: gray;
-    -fx-padding: 8px 12px;
-    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);
-}
-
-/*------------------ComboBox----------------*/
-.combo-box {
-    -fx-border-width: 1.5px;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
-    -fx-font-size: 24px;
-    -fx-prompt-text-fill: gray;
-    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);
-}
-
-.combo-box:focused {
-    -fx-border-color: #1D4E89;
-    -fx-effect: dropshadow(three-pass-box, rgba(42,111,151,0.15), 6, 0, 0, 2);
-}
-
-/* Το κουμπί dropdown */
-.combo-box .arrow-button {
-    -fx-background-color: transparent;
-    -fx-background-radius: 0 6px 6px 0;
-}
-
-.combo-box .arrow-button:hover {
-    -fx-background-color: #CBD5E1;
-}
-
-/* Το βέλος */
-.combo-box .arrow {
-    -fx-shape: "M0,0 L4,4 L8,0 Z"; /* τριγωνικό βέλος */
-    -fx-background-color: #E2E8F0;
-}
-
-/* Τα αντικείμενα της λίστας */
-.combo-box-popup .list-view {
-    -fx-background-color: white;
-    -fx-border-color: #B6CCFE;
-    -fx-border-radius: 6px;
-}
-
-.combo-box-popup .list-cell {
-    -fx-padding: 8px 12px;
-    -fx-font-size: 14px;
-}
-
-.combo-box-popup .list-cell:hover {
-    -fx-background-color: #F8FAFC;
-}
-
-.combo-box-popup .list-cell:selected {
-    -fx-background-color: #1D4E89;
-    -fx-text-fill: white;
 }
 
 /*------------------Labels----------------*/
@@ -361,11 +294,10 @@
     -fx-background-color: transparent;
     -fx-font-size: 18px;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 6, 0, 0, 2);
 }
 
 .list-cell {
-    -fx-border-color: #F1F5F9;
+    -fx-border-color: #d3d3d3; /* Χρώμα ορίου */
     -fx-border-width: 0 0 1px 0; /* Μόνο κάτω όριο */
     -fx-padding: 5px;
     -fx-font-size: 16px;
@@ -387,12 +319,3 @@
     -fx-font-size: 14px;  /* Μέγεθος τίτλου Entry */
 }
 
-.card {
-    -fx-padding: 8px;
-    -fx-border-color: #ced4da;
-    -fx-border-width: 1px;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0.1, 0, 2);
-
-}
