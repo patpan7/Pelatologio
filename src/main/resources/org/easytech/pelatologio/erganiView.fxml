@@ -61,6 +61,14 @@
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </JFXButton>
-        <JFXButton fx:id="btnErganiRegister1" buttonType="RAISED" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onAction="#loginErgani" prefWidth="277.0" styleClass="click-button" text="Είσοδος Εργάνη" />
+        <JFXButton fx:id="btnErganiLogin" buttonType="RAISED" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onAction="#loginErgani" prefWidth="277.0" styleClass="click-button" text="Αντιγραφή Συνδέσμου">
+         <VBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </VBox.margin></JFXButton>
+      <JFXButton fx:id="btnErganiOffer" buttonType="RAISED" layoutX="24.0" layoutY="68.0" mnemonicParsing="false" onAction="#erganiOffer" prefWidth="277.0" styleClass="click-button" text="Προσφορά">
+         <VBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </VBox.margin>
+      </JFXButton>
     </VBox>
 </HBox>

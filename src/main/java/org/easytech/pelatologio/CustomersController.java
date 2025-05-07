@@ -135,6 +135,7 @@ public class CustomersController implements Initializable {
                 btnMypos.setStyle("-fx-border-color: #005599;");
                 btnSimply.setStyle("-fx-border-color: #005599;");
                 btnEmblem.setStyle("-fx-border-color: #005599;");
+                btnErgani.setStyle("-fx-border-color: #005599;");
                 // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
 
                 if (dbHelper.hasApp(selectedCustomer.getCode(), 1)) {
@@ -560,42 +561,6 @@ public class CustomersController implements Initializable {
         }
     }
 
-    public void customerNewAppointment(ActionEvent actionEvent) {
-        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-        if (selectedCustomer != null) {
-            try {
-                // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Προσθήκη Ραντεβού");
-
-                AddTaskController controller = loader.getController();
-
-                // Προ-συμπλήρωση πελάτη
-                controller.setCustomerId(selectedCustomer.getCode());
-                controller.setCustomerName(selectedCustomer.getName());
-
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
-                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                    // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveTask();
-
-                    if (!success) {
-                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                        event.consume();
-                    }
-                });
-
-                dialog.showAndWait();
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
-            }
-        }
-    }
 
     public void customerNewTask(ActionEvent actionEvent) {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
@@ -1149,5 +1114,10 @@ public class CustomersController implements Initializable {
 
     public void showInactive(MouseEvent mouseEvent) {
         filteredData.setPredicate(customer -> !customer.getActive());
+    }
+
+    public void unlock(ActionEvent event) {
+        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        dbHelper.customerUnlock(selectedCustomer.getCode());
     }
 }

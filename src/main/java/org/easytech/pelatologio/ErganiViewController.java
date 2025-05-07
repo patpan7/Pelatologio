@@ -1,6 +1,5 @@
 package org.easytech.pelatologio;
 
-import com.microsoft.playwright.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -12,18 +11,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.Dialog;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
-import javafx.util.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 import org.controlsfx.control.Notifications;
-import org.openqa.selenium.By;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -33,7 +26,7 @@ public class ErganiViewController {
     private static final String SELECT_LOGIN_MSG = "Παρακαλώ επιλέξτε ένα login.";
 
     @FXML
-    public Button btnErganiRegister;
+    public Button btnErganiRegister, btnErganiLogin, btnErganiOffer;
     @FXML
     private TableView<Logins> loginTable;
 
@@ -53,6 +46,7 @@ public class ErganiViewController {
     @FXML
     public void initialize() {
         setTooltip(btnErganiRegister, "Εγγραφή πελάτη στο Ergani");
+        setTooltip(btnErganiLogin, "Πρόσβαση στο Ergani");
 
         loginList = FXCollections.observableArrayList();
         // Ρύθμιση στήλης username
@@ -393,11 +387,10 @@ public class ErganiViewController {
             return;
         }
         try {
-            Playwright playwright = Playwright.create();
-            Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
-            BrowserContext context = browser.newContext();
-            Page page = context.newPage();
-            page.navigate("https://myaccount.epsilonnet.gr/Identity/Account/Login?product=8fd59003-5af4-4ca7-6fbd-08dace2c8999");
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString("https://myaccount.epsilonnet.gr/Identity/Account/Login?product=8fd59003-5af4-4ca7-6fbd-08dace2c8999");
+            clipboard.setContent(content);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -449,4 +442,125 @@ public class ErganiViewController {
                 .position(Pos.TOP_RIGHT)
                 .showError();
     }
+
+    public void erganiOffer(ActionEvent actionEvent) {
+//        Logins selectedLogin = checkSelectedLogin();
+//        DBHelper dbHelper = new DBHelper();
+//        Customer customer = dbHelper.getSelectedCustomer(selectedLogin.getCustomerId());
+//        if (selectedLogin == null) {
+//            return;
+//        }
+//        // GUI σε νέο παράθυρο
+//        Stage popupStage = new Stage();
+//        popupStage.initModality(Modality.APPLICATION_MODAL);
+//        popupStage.setTitle("Δημιουργία Προσφοράς");
+//
+//        Map<String, Double> services = Map.of(
+//                "Epsilon Smart Ergnani\n" +
+//                        "Accounting Edition\n" +
+//                        "1-2 Υπάλληλοι\n", 110.0,
+//                "Epsilon Smart Ergnani\n" +
+//                        "Accounting Edition\n" +
+//                        "3-5 Υπάλληλοι\n", 135.0,
+//                "Epsilon Smart Ergnani\n" +
+//                        "Accounting Edition\n" +
+//                        "6-20 Υπάλληλοι\n", 190.0,
+//                "Epsilon Smart Ergnani\n" +
+//                        "Accounting Edition\n" +
+//                        "21-50 Υπάλληλοι\n", 250.0
+//        );
+//
+//        ComboBox<String> serviceBox = new ComboBox<>();
+//        serviceBox.getItems().addAll(services.keySet());
+//        serviceBox.setValue("Epsilon Smart Ergnani\n" +
+//                "Accounting Edition\n" +
+//                "1-2 Υπάλληλοι\n");
+//
+//        CheckBox cbEntrance = new CheckBox("2η Είσοδος (+20€)");
+//        CheckBox cbTablet = new CheckBox("Tablet (+135€)");
+//        Button generateBtn = new Button("Δημιουργία");
+//
+//        generateBtn.setOnAction(e -> {
+//            try {
+//                CustomerFolderManager folderManager = new CustomerFolderManager();
+//                folderManager.createCustomerOfferFolder(customer.getName(), customer.getAfm());
+//
+//                String service = serviceBox.getValue();
+//                boolean extraEntrance = cbEntrance.isSelected();
+//                boolean withTablet = cbTablet.isSelected();
+//
+//                FileChooser chooser = new FileChooser();
+//                chooser.setTitle("Αποθήκευση Προσφοράς");
+//                chooser.setInitialDirectory(folderManager.createCustomerOfferFolder(customer.getName(), customer.getAfm()));
+//                chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("DOCX", "*.docx"));
+//                File saveFile = chooser.showSaveDialog(popupStage);
+//                if (saveFile == null) return;
+//
+//                double basePrice = services.get(service);
+//                double total = basePrice + (extraEntrance ? 20 : 0) + (withTablet ? 135 : 0);
+//
+//                // 🔐 Λύση για το "zip bomb"
+//                ZipSecureFile.setMinInflateRatio(0.001);
+//
+//                FileInputStream fis = new FileInputStream(AppSettings.loadSetting("datafolder") + "\\Templates\\EPSILON PROSFORA.docx");
+//                XWPFDocument doc = new XWPFDocument(fis);
+//
+//                Map<String, String> values = Map.of(
+//                        "{CLIENT_NAME}", customer.getName(),
+//                        "{SERVICE_NAME}", service,
+//                        "{SERVICE_PRICE}", String.format("%.2f", basePrice) + "€",
+//                        "{SECOND_ENTRANCE}", extraEntrance ? "2η είσοδος: 20€" : "",
+//                        "{TABLET}", withTablet ? "Tablet: 135€" : "",
+//                        "{TOTAL}", String.format("%.2f", total) + "€"
+//                );
+//
+//                replacePlaceholders(doc, values);
+//
+//                List<XWPFParagraph> toRemove = doc.getParagraphs().stream()
+//                        .filter(p -> p.getText().contains("{SECOND_ENTRANCE}") || p.getText().contains("{TABLET}"))
+//                        .collect(Collectors.toList());
+//
+//                toRemove.forEach(p -> doc.removeBodyElement(doc.getPosOfParagraph(p)));
+//
+//                try (FileOutputStream out = new FileOutputStream(saveFile)) {
+//                    doc.write(out);
+//                }
+//
+////                // PDF conversion
+////                WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(saveFile);
+////                File pdfFile = new File(saveFile.getAbsolutePath().replace(".docx", ".pdf"));
+////                Docx4J.toPDF(wordMLPackage, new FileOutputStream(pdfFile));
+//
+//                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Η προσφορά δημιουργήθηκε!", ButtonType.OK);
+//                alert.showAndWait();
+//                popupStage.close();
+//
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//                new Alert(Alert.AlertType.ERROR, "Σφάλμα: " + ex.getMessage(), ButtonType.OK).showAndWait();
+//            }
+//        });
+//
+//        VBox layout = new VBox(10, new Label("Επιλέξτε Υπηρεσία:"), serviceBox, cbEntrance, cbTablet, generateBtn);
+//        layout.setPadding(new Insets(15));
+//        popupStage.setScene(new Scene(layout, 350, 250));
+//        popupStage.show();
+    }
+
+//    private void replacePlaceholders(XWPFDocument doc, Map<String, String> values) {
+//        for (XWPFParagraph para : doc.getParagraphs()) {
+//            for (XWPFRun run : para.getRuns()) {
+//                String text = run.getText(0);
+//                if (text != null) {
+//                    for (Map.Entry<String, String> entry : values.entrySet()) {
+//                        if (text.contains(entry.getKey())) {
+//                            text = text.replace(entry.getKey(), entry.getValue());
+//                            run.setText(text, 0);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+
 }

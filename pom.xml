@@ -204,22 +204,86 @@
             <version>3.41.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.microsoft.playwright</groupId>
-            <artifactId>driver-bundle</artifactId>
-            <version>1.52.0</version>
-        </dependency>
+<!--        &lt;!&ndash; Βασικό POI API &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi</artifactId>-->
+<!--            <version>5.4.0</version>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.microsoft.playwright</groupId>
-            <artifactId>driver</artifactId>
-            <version>1.52.0</version>
-        </dependency>
-        <dependency>
-        <groupId>com.microsoft.playwright</groupId>
-        <artifactId>playwright</artifactId>
-        <version>1.51.0</version>
-        </dependency>
+<!--        &lt;!&ndash; Υποστήριξη για OOXML (XWPF, .docx, .xlsx) &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi-ooxml</artifactId>-->
+<!--            <version>5.4.0</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>xml-apis</groupId>-->
+<!--                    <artifactId>xml-apis</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash; Πλήρη schemas (χρειάζονται για αποφυγή NoClassDefFoundError) &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi-ooxml-full</artifactId>-->
+<!--            <version>5.4.0</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; Άλλες χρήσιμες εξαρτήσεις που ανέφερες &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.docx4j</groupId>-->
+<!--            <artifactId>docx4j</artifactId>-->
+<!--            <version>6.1.2</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.apache.xmlgraphics</groupId>-->
+<!--                    <artifactId>*</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-lang3</artifactId>-->
+<!--            <version>3.12.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-core</artifactId>-->
+<!--            <version>2.20.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-api</artifactId>-->
+<!--            <version>2.20.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>xml-apis</groupId>-->
+<!--            <artifactId>xml-apis</artifactId>-->
+<!--            <version>1.4.01</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>xalan</groupId>-->
+<!--            <artifactId>xalan</artifactId>-->
+<!--            <version>2.7.3</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>xml-apis</groupId>-->
+<!--                    <artifactId>xml-apis</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>xalan</groupId>-->
+<!--            <artifactId>serializer</artifactId>-->
+<!--            <version>2.7.1</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.xmlgraphics</groupId>-->
+<!--            <artifactId>xmlgraphics-commons</artifactId>-->
+<!--            <version>2.11</version>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>

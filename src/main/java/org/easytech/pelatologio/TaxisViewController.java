@@ -89,7 +89,7 @@ public class TaxisViewController {
             var controller = (AddLoginController)loader.getController();
 
             controller.setCustomer(customer);
-            controller.setUsername(customer.getEmail());
+            //controller.setUsername(customer.getEmail());
 
             var dialog = createDialog(dialogPane, "Προσθήκη Νέου Login Taxis");
 

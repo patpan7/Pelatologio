@@ -24,6 +24,7 @@ import org.openqa.selenium.By;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Map;
@@ -545,7 +546,6 @@ public class SimplyViewController {
     public void registercloudOpen(ActionEvent actionEvent) {
         Logins selectedLogin = checkSelectedLogin();
         if (selectedLogin == null) return;
-
         try {
             LoginAutomator loginAutomation = new LoginAutomator(true);
             loginAutomation.openAndFillLoginRegisterCloud(
@@ -558,6 +558,7 @@ public class SimplyViewController {
                     customer,
                     selectedLogin
             );
+
             cbRegister.setSelected(true);
             String price = "200";
             int category = 1;
