@@ -371,12 +371,20 @@ public class DBHelper {
     }
 
     public void deleteLogin(int id) {
-        String query = "DELETE FROM CustomerLogins WHERE LoginID = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        String query1 = "DELETE FROM SimplySetupProgress WHERE app_login_id = ?";
+        String query2 = "DELETE FROM CustomerLogins WHERE LoginID = ?";
+        try (Connection conn = getConnection()){
+            try (
+                PreparedStatement pstmt1 = conn.prepareStatement(query1);
+                PreparedStatement pstmt2 = conn.prepareStatement(query2);
 
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
+            ){
+                pstmt1.setInt(1, id);
+                pstmt1.executeUpdate();
+                pstmt2.setInt(1, id);
+                pstmt2.executeUpdate();
+
+            }
             closeConnection(conn);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -630,15 +638,22 @@ public class DBHelper {
     }
 
     public void customerDelete(int code) {
-        String query = "DELETE FROM CustomerAddresses WHERE CustomerID = ?";
-        String query2 = "DELETE FROM CustomerLogins WHERE CustomerID = ?";
-        String query3 = "DELETE FROM Customers WHERE code = ?";
-        String query4 = "UPDATE Devices set customerId = 0 WHERE customerId = ?";
+        String deleteProgress = "DELETE FROM SimplySetupProgress WHERE app_login_id IN (SELECT id FROM CustomerLogins WHERE CustomerID = ?)";
+        String deleteAddresses = "DELETE FROM CustomerAddresses WHERE CustomerID = ?";
+        String deleteLogins = "DELETE FROM CustomerLogins WHERE CustomerID = ?";
+        String deleteCustomer = "DELETE FROM Customers WHERE code = ?";
+        String releaseDevices = "UPDATE Devices SET customerId = 0 WHERE customerId = ?";
+
         try (Connection conn = getConnection()) {
-            try (PreparedStatement pstmt1 = conn.prepareStatement(query);
-                 PreparedStatement pstmt2 = conn.prepareStatement(query2);
-                 PreparedStatement pstmt3 = conn.prepareStatement(query3);
-                 PreparedStatement pstmt4 = conn.prepareStatement(query4)) {
+            try (
+                    PreparedStatement pstmt0 = conn.prepareStatement(deleteProgress);
+                    PreparedStatement pstmt1 = conn.prepareStatement(deleteAddresses);
+                    PreparedStatement pstmt2 = conn.prepareStatement(deleteLogins);
+                    PreparedStatement pstmt3 = conn.prepareStatement(deleteCustomer);
+                    PreparedStatement pstmt4 = conn.prepareStatement(releaseDevices)
+            ) {
+                pstmt0.setInt(1, code);
+                pstmt0.executeUpdate();
 
                 pstmt1.setInt(1, code);
                 pstmt1.executeUpdate();
@@ -657,6 +672,7 @@ public class DBHelper {
             e.printStackTrace();
         }
     }
+
 
     public Customer getSelectedCustomer(int customerId) {
         String query = "SELECT * FROM customers WHERE code = ?";
