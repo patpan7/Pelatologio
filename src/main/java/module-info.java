@@ -35,4 +35,32 @@ module org.easytech.pelatologio {
 
     opens org.easytech.pelatologio to javafx.fxml;
     exports org.easytech.pelatologio;
+    exports org.easytech.pelatologio.models;
+    opens org.easytech.pelatologio.models to javafx.fxml;
+    exports org.easytech.pelatologio.helper;
+    opens org.easytech.pelatologio.helper to javafx.fxml;
+    exports org.easytech.pelatologio.accountants;
+    opens org.easytech.pelatologio.accountants to javafx.fxml;
+    exports org.easytech.pelatologio.customers;
+    opens org.easytech.pelatologio.customers to javafx.fxml;
+    exports org.easytech.pelatologio.devices;
+    opens org.easytech.pelatologio.devices to javafx.fxml;
+    exports org.easytech.pelatologio.items;
+    opens org.easytech.pelatologio.items to javafx.fxml;
+    exports org.easytech.pelatologio.logins;
+    opens org.easytech.pelatologio.logins to javafx.fxml;
+    exports org.easytech.pelatologio.offers;
+    opens org.easytech.pelatologio.offers to javafx.fxml;
+    exports org.easytech.pelatologio.orders;
+    opens org.easytech.pelatologio.orders to javafx.fxml;
+    exports org.easytech.pelatologio.subs;
+    opens org.easytech.pelatologio.subs to javafx.fxml;
+    exports org.easytech.pelatologio.suppliers;
+    opens org.easytech.pelatologio.suppliers to javafx.fxml;
+    exports org.easytech.pelatologio.tasks;
+    opens org.easytech.pelatologio.tasks to javafx.fxml;
+    exports org.easytech.pelatologio.applications;
+    opens org.easytech.pelatologio.applications to javafx.fxml;
+    exports org.easytech.pelatologio.settings;
+    opens org.easytech.pelatologio.settings to javafx.fxml;
 }

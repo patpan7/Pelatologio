@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <DialogPane prefHeight="700.0" prefWidth="600.0" styleClass="pane" xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EmailDialogController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.helper.EmailDialogController">
     <content>
         <VBox spacing="10" styleClass="pane" stylesheets="@external.css">
             <padding>

@@ -7,7 +7,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddOrderController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.orders.AddOrderController">
     <content>
         <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
             <VBox alignment="TOP_CENTER">

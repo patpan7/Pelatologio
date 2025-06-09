@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CustomerAccViewController">
+<VBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.customers.CustomerAccViewController">
     <HBox alignment="TOP_CENTER" styleClass="card" VBox.vgrow="ALWAYS">
         <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
             <HBox.margin>

@@ -6,7 +6,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddSupplierController">
+<VBox styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.suppliers.AddSupplierController">
     <TabPane fx:id="tabPane">
         <Tab closable="false" text="Στοιχεία Προμηθευτή">
             <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="pane">
