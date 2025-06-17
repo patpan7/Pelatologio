@@ -4,7 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.settings.AppSettings;
+import org.easytech.pelatologio.AppSettings;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;

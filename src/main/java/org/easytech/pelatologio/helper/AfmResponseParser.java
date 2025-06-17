@@ -47,6 +47,12 @@ public class AfmResponseParser {
         }
     }
 
+    public static boolean isFormerProfessional(String responseXml) {
+        String status = getXPathValue(responseXml, "//firm_flag_descr");
+        return status != null && status.trim().equalsIgnoreCase("ΠΡΩΗΝ ΕΠΙΤΗΔΕΥΜΑΤΙΑΣ");
+    }
+
+
     public static String getXPathValue(Document document, XPath xpath, String expression) throws Exception {
         XPathExpression expr = xpath.compile(expression);
         Node node = (Node) expr.evaluate(document, XPathConstants.NODE);

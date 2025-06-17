@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import java.lang.*?>
 <DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.logins.EditLoginController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EditLoginController">
     <content>
         <VBox alignment="CENTER">
             <Label styleClass="normal-label" text="Επεξεργασία Login"/>

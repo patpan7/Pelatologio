@@ -1,6 +1,6 @@
 package org.easytech.pelatologio.helper;
 
-import org.easytech.pelatologio.settings.AppSettings;
+import org.easytech.pelatologio.AppSettings;
 
 import java.awt.Desktop;
 import java.io.File;

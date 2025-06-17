@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css"
            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="org.easytech.pelatologio.settings.SettingsController">
+           fx:controller="org.easytech.pelatologio.SettingsController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" styleClass="pane">
         <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
 
@@ -89,16 +89,10 @@
                                     <TextField fx:id="tfDataFolder" text="" GridPane.columnIndex="1"
                                                GridPane.rowIndex="7"/>
                                     <Button contentDisplay="TOP" layoutX="634.0" layoutY="167.0" minHeight="100.0"
-                                            minWidth="220.0" mnemonicParsing="false" onAction="#syncClick"
-                                            styleClass="click-button" text="Megasoft Sync" textAlignment="CENTER"
-                                            GridPane.columnIndex="1" GridPane.rowIndex="9">
-                                        <graphic>
-                                            <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true"
-                                                       preserveRatio="true">
-                                                <Image url="@icons/megasoft.png"/>
-                                            </ImageView>
-                                        </graphic>
-                                    </Button>
+                                            minWidth="220.0" mnemonicParsing="false" onAction="#deactivateCustomers"
+                                            styleClass="click-button" text="Απενεργοποίηση πελατών"
+                                            textAlignment="CENTER"
+                                            GridPane.columnIndex="1" GridPane.rowIndex="9"/>
                                     <Label layoutX="312.0" layoutY="453.0" styleClass="normal-label" text="Fanvil IP"
                                            GridPane.rowIndex="8"/>
                                     <TextField fx:id="tfFanvilIp" layoutX="569.0" layoutY="445.0" text=""

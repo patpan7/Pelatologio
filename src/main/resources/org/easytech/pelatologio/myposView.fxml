@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.applications.MyposViewController">
+<HBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MyposViewController">
     <VBox alignment="TOP_CENTER" styleClass="card" HBox.hgrow="ALWAYS">
         <HBox.margin>
             <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />

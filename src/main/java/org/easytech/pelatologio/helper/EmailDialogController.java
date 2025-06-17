@@ -9,7 +9,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.settings.AppSettings;
+import org.easytech.pelatologio.AppSettings;
 import org.easytech.pelatologio.models.Customer;
 
 import java.io.File;

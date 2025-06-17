@@ -18,7 +18,6 @@ import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.helper.Logger;
 import org.easytech.pelatologio.models.Offer;
 import org.easytech.pelatologio.models.Tasks;
-import org.easytech.pelatologio.settings.AppSettings;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

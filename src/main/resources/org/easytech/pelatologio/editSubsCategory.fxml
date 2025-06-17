@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 <DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.subs.EditSubsCategoryController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EditSubsCategoryController">
     <content>
         <VBox alignment="CENTER">
             <Label styleClass="normal-label" text="Επεξεργασία Κατηγορίας Εργασίας"/>

@@ -4,11 +4,13 @@ public class Supplier {
     private int id;
     private String name;
     private String title;
+    private String afm;
     private String phone;
     private String mobile;
     private String contact;
     private String email;
     private String site;
+    private String notes;
 
     public Supplier(int id, String name, String title, String phone, String mobile, String contact, String email, String site) {
         this.id = id;
@@ -49,6 +51,14 @@ public class Supplier {
         this.title = title;
     }
 
+    public String getAfm() {
+        return afm;
+    }
+
+    public void setAfm(String afm) {
+        this.afm = afm;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -87,6 +97,14 @@ public class Supplier {
 
     public void setSite(String site) {
         this.site = site;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     @Override

@@ -6,7 +6,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.offers.AddOfferController">
+<DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddOfferController">
     <content>
         <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
             <VBox alignment="TOP_CENTER">

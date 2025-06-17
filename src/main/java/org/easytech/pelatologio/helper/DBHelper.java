@@ -1,6 +1,6 @@
 package org.easytech.pelatologio.helper;
 
-import org.easytech.pelatologio.settings.AppSettings;
+import org.easytech.pelatologio.AppSettings;
 import org.easytech.pelatologio.models.*;
 
 import java.sql.*;
@@ -2922,5 +2922,18 @@ public class DBHelper {
             // μπορείς να εμφανίσεις και alert αν θέλεις
         }
         return null; // ή "1" ως default αν θέλεις
+    }
+
+    public void deactivateCustomer(Customer customer) {
+        String sql = "UPDATE Customers SET isActive = 0 WHERE code = ?";
+        try {
+            Connection conn = getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, customer.getCode());
+            stmt.executeUpdate();
+            closeConnection(conn);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

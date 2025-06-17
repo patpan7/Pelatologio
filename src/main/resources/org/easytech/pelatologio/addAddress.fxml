@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.customers.AddAddressController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddAddressController">
     <content>
         <VBox alignment="CENTER">
             <Label styleClass="normal-label" text="Προσθήκη Νέας διεύθυνσης"/>

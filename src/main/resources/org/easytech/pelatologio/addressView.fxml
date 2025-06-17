@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <DialogPane prefHeight="800.0" prefWidth="1100.0" styleClass="pane" stylesheets="@external.css"
             xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.easytech.pelatologio.customers.AddressViewController">
+            fx:controller="org.easytech.pelatologio.AddressViewController">
     <content>
         <VBox alignment="TOP_CENTER">
             <Label fx:id="customerLabel" styleClass="header-label" text="Όνομα Πελάτη: [Όνομα Πελάτη]"
