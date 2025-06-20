@@ -14,7 +14,6 @@ import javafx.scene.input.ClipboardContent;
 import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.EmailDialogController;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;

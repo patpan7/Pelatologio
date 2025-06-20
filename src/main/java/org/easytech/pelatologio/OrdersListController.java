@@ -133,7 +133,7 @@ public class OrdersListController implements Initializable {
 
         DBHelper dbHelper = new DBHelper();
         List<Supplier> suppliers = dbHelper.getSuppliersFromOrders();
-        supplierFilterComboBox.getItems().add(new Supplier(-1, "Όλα","","","","","",""));
+        supplierFilterComboBox.getItems().add(new Supplier(-1, "Όλα","","","","","","","","",""));
         supplierFilterComboBox.getItems().addAll(suppliers);
         supplierFilterComboBox.getSelectionModel().selectFirst();
         supplierFilterComboBox.setConverter(new StringConverter<>() {

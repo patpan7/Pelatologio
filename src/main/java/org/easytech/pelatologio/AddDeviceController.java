@@ -376,10 +376,10 @@ public class AddDeviceController {
             }
             String description;
             String rate = rateField.getEditor().getText().trim();
-            if (rate.isEmpty())
-                description = descriptionField.getText();
-            else
+            if (!rate.isEmpty() && descriptionField.getText() == null || descriptionField.getText().isEmpty())
                 description = "TID: " + descriptionField.getText();
+            else
+                description = descriptionField.getText();
 
             // Επιλογή πελάτη
             Object value = customerComboBox.getValue();

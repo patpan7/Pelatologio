@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -14,7 +15,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
@@ -36,7 +40,7 @@ public class AddSupplierController {
     @FXML
     private AnchorPane ordersContainer;
     @FXML
-    private TextField tfName, tfTitle,tfAfm, tfPhone, tfMobile, tfContact, tfEmail, tfSite;
+    private TextField tfName, tfTitle,tfAfm, tfPhone, tfMobile, tfContact, tfEmail, tfEmail2, tfSite;
     @FXML
     private ProgressIndicator progressIndicator;
     @FXML
@@ -131,6 +135,8 @@ public class AddSupplierController {
         // Ανάθεση emailContextMenu στο tfEmail
         tfEmail.setContextMenu(emailContextMenu);
         tfEmail.setOnContextMenuRequested(e -> currentTextField = tfEmail);
+        tfEmail2.setContextMenu(emailContextMenu);
+        tfEmail2.setOnContextMenuRequested(e -> currentTextField = tfEmail2);
 
         // Ενέργειες για τα copy, paste, clear items στο βασικό contextMenu
         copyItem.setOnAction(e -> copyText());
@@ -277,6 +283,7 @@ public class AddSupplierController {
         tfMobile.setText(supplier.getMobile());
         tfContact.setText(supplier.getContact());
         tfEmail.setText(supplier.getEmail());
+        tfEmail2.setText(supplier.getEmail2());
         tfSite.setText(supplier.getSite());
         taNotes.setText(supplier.getNotes());
 
@@ -313,10 +320,13 @@ public class AddSupplierController {
         String name = tfName.getText();
         String title = tfTitle.getText() != null ? tfTitle.getText() : "";
         String phone = (tfPhone.getText() != null ? tfPhone.getText() : "");
+        String afm = (tfAfm.getText() != null ? tfAfm.getText() : "");
         String mobile = (tfMobile.getText() != null ? tfMobile.getText() : "");
         String contact = (tfContact.getText() != null ? tfContact.getText() : "");
         String email = (tfEmail.getText() != null ? tfEmail.getText() : "");
+        String email2 = (tfEmail2.getText() != null ? tfEmail2.getText() : "");
         String site = (tfSite.getText() != null ? tfSite.getText() : "");
+        String notes = (taNotes.getText() != null ? taNotes.getText() : "");
         if (mobile.startsWith("+30"))
             mobile = mobile.substring(3);
         if (phone.startsWith("+30"))
@@ -328,10 +338,10 @@ public class AddSupplierController {
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         int supplierId;
-        supplierId = dbHelper.insertSupplier(name, title, phone, mobile, contact, email, site);
+        supplierId = dbHelper.insertSupplier(name, title, afm, phone, mobile, contact, email, email2, site, notes);
         // Εμφάνιση επιτυχίας
         if (supplierId > 0) {
-            Supplier newSupplier = new Supplier(supplierId, name, title, phone, mobile, contact, email, site);
+            Supplier newSupplier = new Supplier(supplierId, name, title, afm, phone, mobile, contact, email, email2, site, notes);
 
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -364,11 +374,14 @@ public class AddSupplierController {
 
         String name = tfName.getText();
         String title = tfTitle.getText() != null ? tfTitle.getText() : "";
+        String afm = (tfAfm.getText() != null ? tfAfm.getText() : "");
         String phone = (tfPhone.getText() != null ? tfPhone.getText() : "");
         String mobile = (tfMobile.getText() != null ? tfMobile.getText() : "");
         String contact = (tfContact.getText() != null ? tfContact.getText() : "");
         String email = (tfEmail.getText() != null ? tfEmail.getText() : "");
+        String email2 = (tfEmail2.getText() != null ? tfEmail2.getText() : "");
         String site = (tfSite.getText() != null ? tfSite.getText() : "");
+        String notes = (taNotes.getText() != null ? taNotes.getText() : "");
 
         if (mobile.startsWith("+30"))
             mobile = mobile.substring(3);
@@ -377,7 +390,7 @@ public class AddSupplierController {
         mobile = mobile.replaceAll("\\s+", "");
         phone = phone.replaceAll("\\s+", "");
 
-        dbHelper.updateSupplier(code, name, title, phone, mobile, contact, email, site);
+        dbHelper.updateSupplier(code, name, title, afm, phone, mobile, contact, email, email2, site, notes);
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
         Notifications notifications = Notifications.create()
                 .title("Επιτυχία")
@@ -481,5 +494,47 @@ public class AddSupplierController {
                 notifications.showError();
             });
         }
+    }
+
+    @FXML
+    private void handleMouseClick(MouseEvent event) {
+        // Έλεγχος για διπλό κλικ
+        if (event.getClickCount() == 2) {
+            openNotesDialog(taNotes.getText());
+        }
+    }
+
+    private void openNotesDialog(String currentNotes) {
+        // Ο κώδικας για το παράθυρο διαλόγου, όπως περιγράφεται
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("Επεξεργασία Περιγραφής");
+
+        TextArea expandedTextArea = new TextArea(currentNotes);
+        expandedTextArea.setWrapText(true);
+        expandedTextArea.setPrefSize(400, 300);
+        expandedTextArea.setStyle("-fx-font-size: 24px;");
+        if (currentNotes != null && !currentNotes.isEmpty()) {
+            expandedTextArea.setText(currentNotes);
+            expandedTextArea.positionCaret(currentNotes.length());
+        } else {
+            expandedTextArea.setText(""); // Βεβαιωθείτε ότι το TextArea είναι κενό
+            expandedTextArea.positionCaret(0); // Τοποθετήστε τον κέρσορα στην αρχή
+        }
+
+        Button btnOk = new Button("OK");
+        btnOk.setPrefWidth(100);
+        btnOk.setOnAction(event -> {
+            taNotes.setText(expandedTextArea.getText()); // Ενημέρωση του αρχικού TextArea
+            dialogStage.close();
+        });
+
+        VBox vbox = new VBox(10, expandedTextArea, btnOk);
+        vbox.setAlignment(Pos.CENTER);
+        //vbox.setPadding(new Insets(10));
+
+        Scene scene = new Scene(vbox);
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();
     }
 }

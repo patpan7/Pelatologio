@@ -9,18 +9,22 @@ public class Supplier {
     private String mobile;
     private String contact;
     private String email;
+    private String email2;
     private String site;
     private String notes;
 
-    public Supplier(int id, String name, String title, String phone, String mobile, String contact, String email, String site) {
+    public Supplier(int id, String name, String title, String afm, String phone, String mobile, String contact, String email,String email2, String site, String notes) {
         this.id = id;
         this.name = name;
         this.title = title;
+        this.afm = afm;
         this.phone = phone;
         this.mobile = mobile;
         this.contact = contact;
         this.email = email;
+        this.email2 = email2;
         this.site = site;
+        this.notes = notes;
     }
 
     public Supplier() {
@@ -89,6 +93,14 @@ public class Supplier {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getEmail2() {
+        return email2;
+    }
+
+    public void setEmail2(String email2) {
+        this.email2 = email2;
     }
 
     public String getSite() {

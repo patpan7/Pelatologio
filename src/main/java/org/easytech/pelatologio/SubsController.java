@@ -21,7 +21,6 @@ import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.DBHelper;
-import org.easytech.pelatologio.helper.EmailDialogController;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.SubsCategory;
 import org.easytech.pelatologio.models.Subscription;

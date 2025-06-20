@@ -1,4 +1,4 @@
-package org.easytech.pelatologio.helper;
+package org.easytech.pelatologio;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
@@ -9,7 +9,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.AppSettings;
+import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CustomerFolderManager;
+import org.easytech.pelatologio.helper.EmailSender;
 import org.easytech.pelatologio.models.Customer;
 
 import java.io.File;

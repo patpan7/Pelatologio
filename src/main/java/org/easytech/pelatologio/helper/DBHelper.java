@@ -2127,12 +2127,15 @@ public class DBHelper {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String title = rs.getString("title");
+                String afm = rs.getString("afm");
                 String phone = rs.getString("phone");
                 String mobile = rs.getString("mobile");
                 String contact = rs.getString("contact");
                 String email = rs.getString("email");
+                String email2 = rs.getString("email2");
                 String site = rs.getNString("site");
-                Supplier supplier = new Supplier(id, name, title, phone, mobile, contact, email, site);
+                String notes = rs.getString("notes");
+                Supplier supplier = new Supplier(id, name, title, afm, phone, mobile, contact, email, email2, site, notes);
                 suppliers.add(supplier);
             }
             closeConnection(conn);
@@ -2142,20 +2145,23 @@ public class DBHelper {
         return suppliers;
     }
 
-    public int insertSupplier(String name, String title, String phone, String mobile, String contact, String email, String site) {
-        String insertQuery = "INSERT INTO Suppliers (name, title, phone, mobile, email, contact, site) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public int insertSupplier(String name, String title, String afm, String phone, String mobile, String contact, String email, String email2, String site, String notes) {
+        String insertQuery = "INSERT INTO Suppliers (name, title, afm, phone, mobile, email, email2, contact, site, notes) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int newCustomerId = -1; // Default value for error handling
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, name);
             pstmt.setString(2, title);
-            pstmt.setString(3, phone);
-            pstmt.setString(4, mobile);
-            pstmt.setString(5, contact);
-            pstmt.setString(6, email);
-            pstmt.setString(7, site);
+            pstmt.setString(3, afm);
+            pstmt.setString(4, phone);
+            pstmt.setString(5, mobile);
+            pstmt.setString(6, contact);
+            pstmt.setString(7, email);
+            pstmt.setString(8, email2);
+            pstmt.setString(9, site);
+            pstmt.setString(10, notes);
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -2176,19 +2182,22 @@ public class DBHelper {
         return newCustomerId; // Επιστρέφει το CustomerID ή -1 αν υπήρξε σφάλμα
     }
 
-    public void updateSupplier(int code, String name, String title, String phone, String mobile, String contact, String email, String site) {
-        String sql = "UPDATE suppliers SET name = ?, title = ?, phone = ?, mobile = ?, contact = ?, email = ?, site = ? WHERE id = ?";
+    public void updateSupplier(int code, String name, String title, String afm, String phone, String mobile, String contact, String email, String email2, String site, String notes) {
+        String sql = "UPDATE suppliers SET name = ?, title = ?, afm = ?, phone = ?, mobile = ?, contact = ?, email = ?, email2 = ?, site = ?, notes = ? WHERE id = ?";
 
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, name);
             pstmt.setString(2, title);
-            pstmt.setString(3, phone);
-            pstmt.setString(4, mobile);
-            pstmt.setString(5, contact);
-            pstmt.setString(6, email);
-            pstmt.setString(7, site);
-            pstmt.setInt(8, code);
+            pstmt.setString(3, afm);
+            pstmt.setString(4, phone);
+            pstmt.setString(5, mobile);
+            pstmt.setString(6, contact);
+            pstmt.setString(7, email);
+            pstmt.setString(8, email2);
+            pstmt.setString(9, site);
+            pstmt.setString(10, notes);
+            pstmt.setInt(11, code);
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -2215,11 +2224,14 @@ public class DBHelper {
                 data.setId(resultSet.getInt("id"));
                 data.setName(resultSet.getString("name"));
                 data.setTitle(resultSet.getString("title"));
+                data.setAfm(resultSet.getString("afm"));
                 data.setPhone(resultSet.getString("phone"));
                 data.setMobile(resultSet.getString("mobile"));
                 data.setMobile(resultSet.getString("contact"));
                 data.setEmail(resultSet.getString("email"));
+                data.setEmail2(resultSet.getString("email2"));
                 data.setMobile(resultSet.getString("site"));
+                data.setNotes(resultSet.getString("notes"));
             }
             closeConnection(conn);
             return data;
@@ -2398,12 +2410,15 @@ public class DBHelper {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String title = rs.getString("title");
+                String afm = rs.getString("afm");
                 String phone = rs.getString("phone");
                 String mobile = rs.getString("mobile");
                 String contact = rs.getString("contact");
                 String email = rs.getString("email");
+                String email2 = rs.getString("email2");
                 String site = rs.getNString("site");
-                Supplier supplier = new Supplier(id, name, title, phone, mobile, contact, email, site);
+                String notes = rs.getString("notes");
+                Supplier supplier = new Supplier(id, name, title, afm, phone, mobile, contact, email, email2, site, notes);
                 suppliers.add(supplier);
             }
             closeConnection(conn);
