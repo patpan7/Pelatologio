@@ -4,8 +4,11 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -22,6 +25,7 @@ import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Device;
 import org.easytech.pelatologio.models.Item;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -548,6 +552,47 @@ public class AddDeviceController {
         } catch (Exception e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Υπήρξε πρόβλημα με την αποθήκευση της συσκευής.", e.getMessage(), Alert.AlertType.ERROR));
             return false;
+        }
+    }
+
+    public void showCustomer(ActionEvent evt) {
+        DBHelper dbHelper = new DBHelper();
+
+        Customer selectedCustomer = dbHelper.getSelectedCustomer(device.getCustomerId());
+        if (selectedCustomer.getCode() == 0) {
+            System.out.println("No customer selected.");
+            return;
+        }
+        try {
+            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+            if (res.equals("unlocked")) {
+                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
+                Parent root = loader.load();
+
+                Stage stage = new Stage();
+                stage.setTitle("Λεπτομέρειες Πελάτη");
+                stage.setScene(new Scene(root));
+                stage.initModality(Modality.APPLICATION_MODAL); // Κλειδώνει το parent window αν το θες σαν dialog
+
+                AddCustomerController controller = loader.getController();
+
+                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+                controller.setCustomerData(selectedCustomer);
+
+                stage.show();
+                stage.setOnCloseRequest(event -> {
+                    System.out.println("Το παράθυρο κλείνει!");
+                    dbHelper.customerUnlock(selectedCustomer.getCode());
+                });
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText(res);
+                alert.showAndWait();
+            }
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εμφάνιση του πελάτη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
