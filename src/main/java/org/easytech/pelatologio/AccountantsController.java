@@ -433,6 +433,7 @@ public class AccountantsController implements Initializable {
         if (event.getButton() == MouseButton.PRIMARY) {
             filterField.setText("");
             accountantTable.getSelectionModel().clearSelection();
+            filterField.requestFocus();
         } else if (event.getButton() == MouseButton.SECONDARY) {
             Accountant selectedAccountant = accountantTable.getSelectionModel().getSelectedItem();
             dbHelper.customerUnlock(selectedAccountant.getId());

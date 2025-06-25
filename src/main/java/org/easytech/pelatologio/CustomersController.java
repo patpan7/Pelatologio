@@ -306,7 +306,11 @@ public class CustomersController implements Initializable {
                         || (customer.getMobile() != null && (customer.getMobile().contains(search1) || customer.getMobile().contains(search2)))
                         || (customer.getAfm() != null && (customer.getAfm().contains(search1) || customer.getAfm().contains(search2)))
                         || (customer.getManager() != null && (customer.getManager().toUpperCase().contains(search1) || customer.getManager().toUpperCase().contains(search2)))
-                        || (customer.getTown() != null && (customer.getTown().toUpperCase().contains(search1) || customer.getTown().toUpperCase().contains(search2)));
+                        || (customer.getManagerPhone() != null && (customer.getManagerPhone().toUpperCase().contains(search1) || customer.getManagerPhone().toUpperCase().contains(search2)))
+                        || (customer.getEmail() != null && (customer.getEmail().toUpperCase().contains(search1) || customer.getEmail().toUpperCase().contains(search2)))
+                        || (customer.getEmail2() != null && (customer.getEmail2().toUpperCase().contains(search1) || customer.getEmail2().toUpperCase().contains(search2)))
+                        || (customer.getTown() != null && (customer.getTown().toUpperCase().contains(search1) || customer.getTown().toUpperCase().contains(search2)))
+                        || (customer.getAddress() != null && (customer.getAddress().toUpperCase().contains(search1) || customer.getAddress().toUpperCase().contains(search2)));
             }
 
             if (selectedFilters.contains("Όνομα") && customer.getName() != null && (customer.getName().toUpperCase().contains(search1) || customer.getName().toUpperCase().contains(search2))) {
@@ -1097,6 +1101,7 @@ public class CustomersController implements Initializable {
             btnMypos.setStyle("-fx-border-color: #005599;");
             btnSimply.setStyle("-fx-border-color: #005599;");
             btnEmblem.setStyle("-fx-border-color: #005599;");
+            filterField.requestFocus();
         } else if (event.getButton() == MouseButton.SECONDARY) {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
             dbHelper.customerUnlock(selectedCustomer.getCode());

@@ -311,6 +311,7 @@ public class DeviceController implements Initializable {
     public void clean(ActionEvent actionEvent) {
         filterField.setText("");
         devicesTable.getSelectionModel().clearSelection();
+        filterField.requestFocus();
     }
 
 }

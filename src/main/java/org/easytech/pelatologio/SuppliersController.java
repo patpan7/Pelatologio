@@ -412,6 +412,7 @@ public class SuppliersController implements Initializable {
         if (event.getButton() == MouseButton.PRIMARY) {
             filterField.setText("");
             supplierTable.getSelectionModel().clearSelection();
+            filterField.requestFocus();
         } else if (event.getButton() == MouseButton.SECONDARY) {
             Supplier selectedSupplier = supplierTable.getSelectionModel().getSelectedItem();
             dbHelper.customerUnlock(selectedSupplier.getId());
