@@ -143,7 +143,7 @@
                                             </ImageView>
                                         </graphic>
                                     </JFXButton>
-                                    <JFXButton fx:id="btnDevices" buttonType="RAISED" contentDisplay="TOP" layoutX="269.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#devicesClick" styleClass="click-button" text="Συσεκυές" textAlignment="CENTER">
+                                    <JFXButton fx:id="btnDevices" buttonType="RAISED" contentDisplay="TOP" layoutX="269.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#devicesClick" styleClass="click-button" text="Συσκευές" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                                 <Image url="@icons/device.png" />
@@ -187,7 +187,7 @@
                                 </HBox>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false">
-                                    <Label fx:id="version" alignment="CENTER" text="v 2.8.15" VBox.vgrow="NEVER">
+                                    <Label fx:id="version" alignment="CENTER" text="v 2.9.0" VBox.vgrow="NEVER">
                                         <VBox.margin>
                                             <Insets bottom="5.0" right="20.0" />
                                         </VBox.margin>
@@ -211,13 +211,13 @@
                                         <Insets />
                                     </VBox.margin>
                                 </ListView>
-                                <Label layoutX="38.0" layoutY="10.0" styleClass="normal-label" text="Αναμονη παραλαβής" textAlignment="CENTER" underline="true" wrapText="true">
+                                <Label layoutX="38.0" layoutY="10.0" styleClass="normal-label" text="Αναμονή παραλαβής" textAlignment="CENTER" underline="true" wrapText="true">
                                     <VBox.margin>
                                         <Insets bottom="3.0" />
                                     </VBox.margin>
                                 </Label>
                                 <ListView fx:id="pendingOrdersList" layoutX="15.0" layoutY="42.0" onMouseClicked="#handlePendingOrderSelection" prefHeight="190.0" styleClass="list-view1" VBox.vgrow="ALWAYS" />
-                                <Label layoutX="10.0" layoutY="247.0" styleClass="normal-label" text="Προς παράδωση" textAlignment="CENTER" underline="true" wrapText="true">
+                                <Label layoutX="10.0" layoutY="247.0" styleClass="normal-label" text="Προς παράδοση" textAlignment="CENTER" underline="true" wrapText="true">
                                     <VBox.margin>
                                         <Insets bottom="3.0" />
                                     </VBox.margin>
@@ -250,7 +250,7 @@
                         <HBox.margin>
                             <Insets />
                         </HBox.margin>
-                        <Label fx:id="lbAppUser" styleClass="normal-label" text="Xειριστή: " HBox.hgrow="ALWAYS" />
+                        <Label fx:id="lbAppUser" styleClass="normal-label" text="Χειριστή: " HBox.hgrow="ALWAYS" />
                     </HBox>
                 </HBox>
             </top>

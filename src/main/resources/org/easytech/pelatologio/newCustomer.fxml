@@ -313,6 +313,11 @@
                 <AnchorPane fx:id="erganiContainer" styleClass="pane" />
             </ScrollPane>
         </Tab>
+        <Tab fx:id="tabPelatologio" closable="false" text="Πελατολόγιο">
+            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
+                <AnchorPane fx:id="pelatologioContainer" styleClass="pane" />
+            </ScrollPane>
+        </Tab>
         <Tab fx:id="tabDevices" closable="false" text="Συσκευές">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
                 <AnchorPane fx:id="devicesContainer" styleClass="pane" />

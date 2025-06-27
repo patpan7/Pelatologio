@@ -49,9 +49,9 @@ public class AddCustomerController {
     @FXML
     private TabPane tabPane;
     @FXML
-    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, devicesContainer, tasksContainer, subsContainer, offersContainer, ordersContainer, notesContainer;
+    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, pelatologioContainer, devicesContainer, tasksContainer, subsContainer, offersContainer, ordersContainer, notesContainer;
     @FXML
-    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabDevices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabNotes;
+    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabPelatologio, tabDevices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabNotes;
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone, tfBalance;
     @FXML
@@ -84,6 +84,7 @@ public class AddCustomerController {
     private SimplyViewController simplyViewController;
     private EmblemViewController emblemViewController;
     private ErganiViewController erganiViewController;
+    private PelatologioViewController pelatologioViewController;
     private CustomerDevicesController customerDevicesController;
     private CustomerTasksController customerTasksController;
     private CustomerSubsController customerSubsController;
@@ -159,6 +160,15 @@ public class AddCustomerController {
             AnchorPane.setBottomAnchor(erganiContent, 0.0);
             AnchorPane.setLeftAnchor(erganiContent, 0.0);
             AnchorPane.setRightAnchor(erganiContent, 0.0);
+
+            FXMLLoader loaderPelatologio = new FXMLLoader(getClass().getResource("pelatologioView.fxml"));
+            Parent pelatologioContent = loaderPelatologio.load();
+            pelatologioViewController = loaderPelatologio.getController(); // Πάρε τον controller
+            pelatologioContainer.getChildren().setAll(pelatologioContent);
+            AnchorPane.setTopAnchor(pelatologioContent, 0.0);
+            AnchorPane.setBottomAnchor(pelatologioContent, 0.0);
+            AnchorPane.setLeftAnchor(pelatologioContent, 0.0);
+            AnchorPane.setRightAnchor(pelatologioContent, 0.0);
 
             FXMLLoader loaderDevices = new FXMLLoader(getClass().getResource("customerDevicesView.fxml"));
             Parent devicesContent = loaderDevices.load();
@@ -239,6 +249,7 @@ public class AddCustomerController {
         tabMypos.setDisable(true);
         tabSimply.setDisable(true);
         tabEmblem.setDisable(true);
+        tabPelatologio.setDisable(true);
         tabErgani.setDisable(true);
         tabDevices.setDisable(true);
         tabTasks.setDisable(true);
@@ -604,6 +615,11 @@ public class AddCustomerController {
         } else {
             System.out.println("erganiViewController δεν είναι ακόμα έτοιμος.");
         }
+        if (pelatologioViewController != null) {
+            pelatologioViewController.setCustomer(customer);
+        } else {
+            System.out.println("pelatologioViewController δεν είναι ακόμα έτοιμος.");
+        }
         if (customerDevicesController != null) {
             customerDevicesController.setCustomer(customer);
         } else {
@@ -652,6 +668,7 @@ public class AddCustomerController {
         tabSimply.setDisable(false);
         tabEmblem.setDisable(false);
         tabErgani.setDisable(false);
+        tabPelatologio.setDisable(false);
         tabDevices.setDisable(false);
         tabTasks.setDisable(false);
         tabSubs.setDisable(false);
@@ -745,6 +762,7 @@ public class AddCustomerController {
         simplyViewController.setCustomer(customer);
         emblemViewController.setCustomer(customer);
         erganiViewController.setCustomer(customer);
+        pelatologioViewController.setCustomer(customer);
         customerDevicesController.setCustomer(customer);
         customerTasksController.setCustomer(customer);
         customerSubsController.setCustomer(customer);
@@ -880,6 +898,9 @@ public class AddCustomerController {
         }
         if (dbHelper.hasApp(customer.getCode(), 5)) {
             tabErgani.getStyleClass().add("tabHas");
+        }
+        if (dbHelper.hasApp(customer.getCode(), 6)) {
+            tabPelatologio.getStyleClass().add("tabHas");
         }
         if (dbHelper.hasDevice(customer.getCode())) {
             tabDevices.getStyleClass().add("tabHas");
