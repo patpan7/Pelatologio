@@ -1,5 +1,8 @@
 package org.easytech.pelatologio.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Customer {
 
     int code;
@@ -25,6 +28,7 @@ public class Customer {
     String balance;
     String balanceReason;
     Boolean isActive;
+    private List<Integer> apps = new ArrayList<>();
 
     public Customer() {
 
@@ -228,6 +232,18 @@ public class Customer {
 
     public void setActive(Boolean active) {
         isActive = active;
+    }
+
+    public List<Integer> getApps() {
+        return apps;
+    }
+
+    public void setApps(List<Integer> apps) {
+        this.apps = apps;
+    }
+
+    public boolean hasApp(int appId) {
+        return apps.contains(appId);
     }
 
     @Override

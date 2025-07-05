@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class DBHelper {
@@ -78,6 +80,21 @@ public class DBHelper {
                 data.setActive(resultSet.getBoolean("isActive"));
 
                 dataList.add(data);
+            }
+            query = "SELECT CustomerID, ApplicationID FROM CustomerLogins";  // Προσαρμόζεις στα δικά σου δεδομένα
+            PreparedStatement ps = conn.prepareStatement(query);
+            resultSet = ps.executeQuery();
+
+            Map<Integer, List<Integer>> appMap = new HashMap<>();
+            while (resultSet.next()) {
+                int customerId = resultSet.getInt("CustomerID");
+                int appId = resultSet.getInt("ApplicationID");
+                appMap.computeIfAbsent(customerId, k -> new ArrayList<>()).add(appId);
+            }
+            for (Customer c : dataList) {
+                if (appMap.containsKey(c.getCode())) {
+                    c.setApps(appMap.get(c.getCode()));
+                }
             }
             closeConnection(conn);
         } catch (Exception e) {
@@ -2398,7 +2415,7 @@ public class DBHelper {
 
     public List<Supplier> getSuppliersFromOrders() {
         List<Supplier> suppliers = new ArrayList<>();
-        String query = "SELECT DISTINCT s.id, s.name, s.title, s.phone, s.mobile, s.contact, s.email, s.site  " +
+        String query = "SELECT DISTINCT s.id, s.name, s.title,s.afm, s.phone, s.mobile, s.contact, s.email,s.email2, s.site, s.notes " +
                 "FROM Suppliers s " +
                 "JOIN Orders o ON s.id = o.supplierId " +
                 "ORDER BY s.name;";

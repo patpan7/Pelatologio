@@ -3,6 +3,7 @@ package org.easytech.pelatologio;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -253,58 +254,48 @@ public class OrdersListController implements Initializable {
     }
 
     private void updateOrdersTable() {
-        // Ξεκινάμε με όλες τις εργασίες
-        ObservableList<Order> filteredOrders = FXCollections.observableArrayList(allOrders);
+        FilteredList<Order> filteredOrders = new FilteredList<>(allOrders);
 
-        // Φιλτράρισμα βάσει ολοκλήρωσης
-        if (!showAllCheckbox.isSelected()) {
-            filteredOrders = filteredOrders.filtered(order -> {
-                boolean matches = true;
+        filteredOrders.setPredicate(order -> {
+            boolean matches = true;
 
-                if (showPendingCheckbox.isSelected()) {
-                    matches = !order.getCompleted(); // Εμφανίζει μόνο τις μη ολοκληρωμένες παραγγελίες
-                }
-                if (showCompletedCheckbox.isSelected()) {
-                    matches = order.getCompleted() && !order.getReceived() && !order.getDelivered();
-                    // Ολοκληρωμένες που δεν έχουν παραληφθεί ή παραδοθεί
-                }
-                if (showReceivedCheckbox.isSelected()) {
-                    matches = order.getCompleted() && order.getReceived() && !order.getDelivered();
-                    // Ολοκληρωμένες και παραληφθείσες, αλλά όχι παραδοθείσες
-                }
+            if (showPendingCheckbox.isSelected()) {
+                matches = !order.getCompleted();
+            }
+            if (showCompletedCheckbox.isSelected()) {
+                matches = order.getCompleted() && !order.getReceived() && !order.getDelivered();
+            }
+            if (showReceivedCheckbox.isSelected()) {
+                matches = order.getCompleted() && order.getReceived() && !order.getDelivered();
+            }
 
-                return matches;
-            });
-        }
+            if (showWithCustomerCheckbox.isSelected() && order.getCustomerId() == 0) {
+                return false;
+            }
+            if (showWithoutCustomerCheckbox.isSelected() && order.getCustomerId() != 0) {
+                return false;
+            }
+            if (showWithSupplierCheckbox.isSelected() && order.getSupplierId() == 0) {
+                return false;
+            }
+            if (showWithoutSupplierCheckbox.isSelected() && order.getSupplierId() != 0) {
+                return false;
+            }
+            if (showErgentCheckBox.isSelected() && !order.getErgent()) {
+                return false;
+            }
+            if (showWaitCheckBox.isSelected() && !order.getWait()) {
+                return false;
+            }
+            if (!showWaitCheckBox.isSelected() && order.getWait()) {
+                return false;
+            }
 
-        // Φιλτράρισμα βάσει πελάτη
-        if (showWithCustomerCheckbox.isSelected()) {
-            filteredOrders.removeIf(order -> order.getCustomerId() == 0);
-        }
-        if (showWithoutCustomerCheckbox.isSelected()) {
-            filteredOrders.removeIf(order -> order.getCustomerId() != 0);
-        }
+            return matches;
+        });
 
-        // Φιλτράρισμα βάσει προμηθευτή
-        if (showWithSupplierCheckbox.isSelected()) {
-            filteredOrders.removeIf(order -> order.getSupplierId() == 0);
-        }
-        if (showWithoutSupplierCheckbox.isSelected()) {
-            filteredOrders.removeIf(order -> order.getSupplierId() != 0);
-        }
-
-        if (showErgentCheckBox.isSelected()) {
-            filteredOrders.removeIf(order -> !order.getErgent());
-        }
-        if (showWaitCheckBox.isSelected()) {
-            filteredOrders.removeIf(order -> !order.getWait());
-        } else {
-            filteredOrders.removeIf(order -> order.getWait());
-        }
-
-
-        // Ανανεώνουμε τα δεδομένα του πίνακα
         ordersTable.setItems(filteredOrders);
+
     }
 
 

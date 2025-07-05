@@ -1,6 +1,7 @@
 package org.easytech.pelatologio;
 
 import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPopup;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -28,6 +29,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
+import org.easytech.pelatologio.models.AppItem;
 import org.easytech.pelatologio.models.Customer;
 import org.openqa.selenium.By;
 
@@ -54,7 +56,10 @@ public class CustomersController implements Initializable {
     @FXML
     TextField filterField;
     @FXML
+    JFXComboBox<AppItem> appComboBox;
+    @FXML
     Button btnTaxis, btnMypos, btnSimply, btnEmblem, btnErgani, btnData, openFileButton;
+    private Integer activeAppFilter = null; // null σημαίνει κανένα φίλτρο εφαρμογής
 
     ObservableList<Customer> observableList;
     FilteredList<Customer> filteredData;
@@ -108,6 +113,21 @@ public class CustomersController implements Initializable {
             } else
                 popup.show(filterButton, JFXPopup.PopupVPosition.TOP, JFXPopup.PopupHPosition.LEFT, 0,50);
         });
+
+        ObservableList<AppItem> apps = FXCollections.observableArrayList(
+                new AppItem(0, "Όλες"),
+                new AppItem(1, "myPOS"),
+                new AppItem(2, "Simply"),
+                new AppItem(3, "Taxis"),
+                new AppItem(4, "Emblem"),
+                new AppItem(5, "Εργάνη"),
+                new AppItem(6, "Πελατολόγιο")
+        );
+
+        appComboBox.setItems(apps);
+        appComboBox.getSelectionModel().selectFirst();  // Default επιλογή "Όλες οι Εφαρμογές"
+        appComboBox.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters(filterField.getText()));
+
 
 
         dbHelper = new DBHelper();
@@ -274,6 +294,14 @@ public class CustomersController implements Initializable {
                 return false;
             }
 
+            // ✅ Φίλτρο εφαρμογής
+            AppItem selectedApp = appComboBox.getSelectionModel().getSelectedItem();
+            int selectedAppId = selectedApp != null ? selectedApp.getId() : 0;
+            if (selectedAppId != 0 && !customer.hasApp(selectedAppId)) {
+                return false;
+            }
+
+
             if (filterValue == null || filterValue.isEmpty()) {
                 return true;
             }
@@ -341,6 +369,15 @@ public class CustomersController implements Initializable {
         });
     }
 
+    public void filterByApp(int appId) {
+        this.activeAppFilter = appId;
+        applyFilters(filterField.getText());
+    }
+
+    public void clearAppFilter() {
+        this.activeAppFilter = null;
+        applyFilters(filterField.getText());
+    }
 
     public void customerAddNew(ActionEvent actionEvent) throws IOException {
         try {
