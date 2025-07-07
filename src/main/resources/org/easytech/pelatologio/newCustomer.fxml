@@ -318,6 +318,11 @@
                 <AnchorPane fx:id="pelatologioContainer" styleClass="pane" />
             </ScrollPane>
         </Tab>
+        <Tab fx:id="tabNinepos" closable="false" text="NinePOS">
+            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
+                <AnchorPane fx:id="nineposContainer" styleClass="pane" />
+            </ScrollPane>
+        </Tab>
         <Tab fx:id="tabDevices" closable="false" text="Συσκευές">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
                 <AnchorPane fx:id="devicesContainer" styleClass="pane" />

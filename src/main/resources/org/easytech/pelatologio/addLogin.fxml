@@ -36,6 +36,7 @@
                         <String fx:value="Emblem"/>
                         <String fx:value="Εργάνη"/>
                         <String fx:value="Πελατολόγιο"/>
+                        <String fx:value="NinePOS"/>
                     </FXCollections>
                 </items>
 

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.NineposViewController">
+    <VBox alignment="TOP_CENTER" styleClass="card" HBox.hgrow="ALWAYS">
+        <HBox.margin>
+            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+        </HBox.margin>
+        <TableView fx:id="loginTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="usernameColumn" text="Username" />
+                <TableColumn fx:id="passwordColumn" text="Password" />
+                <TableColumn fx:id="tagColumn" text="Tag" />
+            </columns>
+            <contextMenu>
+                <ContextMenu>
+                    <items>
+                        <MenuItem onAction="#handleEditLogin" styleClass="menu-item" text="Επεξεργασία" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddLogin" styleClass="menu-item" text="Προσθήκη" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteLogin" styleClass="menu-item" text="Διαγραφή" />
+                        <SeparatorMenuItem />
+                        <MenuItem mnemonicParsing="false" onAction="#handleLabel" styleClass="menu-item" text="Ετικέτα" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleCopy" styleClass="menu-item" text="Αντιγραφή Login" />
+                        <SeparatorMenuItem />
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddTask" styleClass="menu-item" text="Προσθήκη εργασίας" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddSub" styleClass="menu-item" text="Προσθήκη Συμβολαίου" />
+                    </items>
+                </ContextMenu>
+            </contextMenu>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+        </TableView>
+        <JFXButton fx:id="addLoginButton" buttonType="RAISED" onAction="#handleAddLogin" prefWidth="277.0" styleClass="click-button" text="Προσθήκη Νέου Login">
+            <VBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </VBox.margin>
+        </JFXButton>
+        <JFXButton fx:id="editButton" buttonType="RAISED" onAction="#handleEditLogin" prefWidth="277.0" styleClass="click-button" text="Επεξεργασία">
+            <VBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </VBox.margin>
+        </JFXButton>
+        <JFXButton fx:id="deleteButton" buttonType="RAISED" onAction="#handleDeleteLogin" prefWidth="277.0" styleClass="click-button" text="Διαγραφή">
+            <VBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </VBox.margin>
+        </JFXButton>
+    </VBox>
+    <VBox alignment="TOP_CENTER" styleClass="card" HBox.hgrow="NEVER">
+        <HBox.margin>
+            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+        </HBox.margin>
+        <JFXButton fx:id="btnNinepos" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#nineposOpen" prefWidth="277.0" styleClass="click-button" text="ninePOS">
+            <VBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </VBox.margin>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnNineposRegister" buttonType="RAISED" mnemonicParsing="false" onAction="#registerNineposOpen" prefWidth="277.0" styleClass="click-button" text="Εγγραφή ninePOS">
+            <VBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </VBox.margin>
+        </JFXButton>
+    </VBox>
+</HBox>

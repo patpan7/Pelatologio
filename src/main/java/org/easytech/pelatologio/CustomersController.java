@@ -121,7 +121,8 @@ public class CustomersController implements Initializable {
                 new AppItem(3, "Taxis"),
                 new AppItem(4, "Emblem"),
                 new AppItem(5, "Εργάνη"),
-                new AppItem(6, "Πελατολόγιο")
+                new AppItem(6, "Πελατολόγιο"),
+                new AppItem(7, "NinePOS")
         );
 
         appComboBox.setItems(apps);
