@@ -657,6 +657,23 @@ public class DBHelper {
         }
     }
 
+    public boolean hasInvoices(String afm) {
+        String query = "SELECT COUNT(*) FROM  [MEGASOFT].[dbo].[E2_Emp016_25] WHERE AfmPel = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, afm);
+            pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            closeConnection(conn);
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void customerDelete(int code) {
         String deleteProgress = "DELETE FROM SimplySetupProgress WHERE app_login_id IN (SELECT id FROM CustomerLogins WHERE CustomerID = ?)";
         String deleteAddresses = "DELETE FROM CustomerAddresses WHERE CustomerID = ?";
@@ -2968,4 +2985,42 @@ public class DBHelper {
             throw new RuntimeException(e);
         }
     }
+
+    public List<Invoice> getInvoices(String afmPel) {
+        List<Invoice> invoices = new ArrayList<>();
+        String sql = "SELECT DatePar, PerigrafhPar, SeiraPar, ArPar, SynTeliko, PerPlhromis, Parat1 " +
+                "FROM MEGASOFT.dbo.E2_Emp016_25 " +
+                "WHERE PelProm = 1 AND AfmPel = ? " +
+                "ORDER BY DatePar DESC, ArPar DESC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, afmPel);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Date sqlDate = rs.getDate("DatePar");
+                String date = (sqlDate != null) ? String.valueOf(sqlDate.toLocalDate()) : null;
+
+                String description = rs.getString("PerigrafhPar");
+                String series = rs.getString("SeiraPar");
+                String number = rs.getString("ArPar");
+                String total = rs.getString("SynTeliko");
+                String paid = rs.getString("PerPlhromis");
+                String note = rs.getString("Parat1");
+
+                String seriesAndNumber = (series != null ? series : "") + " " + number;
+
+                Invoice invoice = new Invoice(date, description, seriesAndNumber, total, paid, note);
+                invoices.add(invoice);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // ή log
+        }
+
+        return invoices;
+    }
+
 }

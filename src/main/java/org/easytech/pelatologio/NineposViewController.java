@@ -29,7 +29,7 @@ public class NineposViewController {
     private static final String SELECT_LOGIN_MSG = "Παρακαλώ επιλέξτε ένα login.";
 
     @FXML
-    public Button btnNinepos, btnNineposRegister;
+    public Button btnNinepos, btnNineposRegister, btnNineposNew;
     @FXML
     private Label customerLabel;
 
@@ -51,7 +51,8 @@ public class NineposViewController {
 
     @FXML
     public void initialize() {
-        setTooltip(btnNinepos, "1) Είσοδος στο Πελατολόγιο με επιλεγμένο κωδικό\n2) Αντιγραφή στοιχείων για επιλεγμένο κωδικό");
+        setTooltip(btnNinepos, "1) Είσοδος στο NinePOS με επιλεγμένο κωδικό\n2) Αντιγραφή στοιχείων για επιλεγμένο κωδικό");
+        setTooltip(btnNineposNew, "Είσοδος στο νέο Backoffice NinePOS με επιλεγμένο κωδικό");
         setTooltip(btnNineposRegister, "Εγγραφή πελάτη στο Πελατολόγιο");
 
         loginList = FXCollections.observableArrayList();
@@ -320,6 +321,25 @@ public class NineposViewController {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
+    }
+
+    public void nineposNewOpen(MouseEvent event) {
+        Logins selectedLogin = checkSelectedLogin();
+        if (selectedLogin == null) return;
+
+        try {
+            LoginAutomator loginAutomation = new LoginAutomator(true);
+            loginAutomation.openAndFillLoginForm(
+                    "https://admin.ninepos.com/login",
+                    selectedLogin.getUsername(),
+                    selectedLogin.getPassword(),
+                    By.id("Username"),
+                    By.id("Password"),
+                    By.xpath("//button[text()='Σύνδεση']")
+            );
+            } catch (IOException e) {
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+            }
     }
 
     public void registerNineposOpen(ActionEvent actionEvent) {

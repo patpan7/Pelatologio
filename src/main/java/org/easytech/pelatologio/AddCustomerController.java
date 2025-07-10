@@ -49,9 +49,9 @@ public class AddCustomerController {
     @FXML
     private TabPane tabPane;
     @FXML
-    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, pelatologioContainer, nineposContainer, devicesContainer, tasksContainer, subsContainer, offersContainer, ordersContainer, notesContainer;
+    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, pelatologioContainer, nineposContainer, devicesContainer, invoicesContainer, tasksContainer, subsContainer, offersContainer, ordersContainer, notesContainer;
     @FXML
-    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabPelatologio, tabNinepos, tabDevices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabNotes;
+    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabPelatologio, tabNinepos, tabDevices, tabInvoices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabNotes;
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone, tfBalance;
     @FXML
@@ -87,6 +87,7 @@ public class AddCustomerController {
     private PelatologioViewController pelatologioViewController;
     private NineposViewController nineposViewController;
     private CustomerDevicesController customerDevicesController;
+    private InvoicesViewController invoicesViewController;
     private CustomerTasksController customerTasksController;
     private CustomerSubsController customerSubsController;
     private CustomerOffersController customerOffersController;
@@ -189,6 +190,15 @@ public class AddCustomerController {
             AnchorPane.setLeftAnchor(devicesContent, 0.0);
             AnchorPane.setRightAnchor(devicesContent, 0.0);
 
+            FXMLLoader loaderInvoices = new FXMLLoader(getClass().getResource("invoicesView.fxml"));
+            Parent invoicesContent = loaderInvoices.load();
+            invoicesViewController = loaderInvoices.getController(); // Πάρε τον controller
+            invoicesContainer.getChildren().setAll(invoicesContent);
+            AnchorPane.setTopAnchor(invoicesContent, 0.0);
+            AnchorPane.setBottomAnchor(invoicesContent, 0.0);
+            AnchorPane.setLeftAnchor(invoicesContent, 0.0);
+            AnchorPane.setRightAnchor(invoicesContent, 0.0);
+
             FXMLLoader loaderTasks = new FXMLLoader(getClass().getResource("customerTasksView.fxml"));
             Parent tasksContent = loaderTasks.load();
             customerTasksController = loaderTasks.getController();// Πάρε τον controller
@@ -263,6 +273,7 @@ public class AddCustomerController {
         tabNinepos.setDisable(true);
         tabErgani.setDisable(true);
         tabDevices.setDisable(true);
+        tabInvoices.setDisable(true);
         tabTasks.setDisable(true);
         tabSubs.setDisable(true);
         tabOffers.setDisable(true);
@@ -641,6 +652,11 @@ public class AddCustomerController {
         } else {
             System.out.println("customerDevicesController δεν είναι ακόμα έτοιμος.");
         }
+        if (invoicesViewController != null) {
+            invoicesViewController.setCustomer(customer);
+        } else {
+            System.out.println("invoicesViewController δεν είναι ακόμα έτοιμος.");
+        }
         if (customerTasksController != null) {
             customerTasksController.setCustomer(customer);
         } else {
@@ -687,6 +703,7 @@ public class AddCustomerController {
         tabPelatologio.setDisable(false);
         tabNinepos.setDisable(false);
         tabDevices.setDisable(false);
+        tabInvoices.setDisable(false);
         tabTasks.setDisable(false);
         tabSubs.setDisable(false);
         tabOffers.setDisable(false);
@@ -782,6 +799,7 @@ public class AddCustomerController {
         pelatologioViewController.setCustomer(customer);
         nineposViewController.setCustomer(customer);
         customerDevicesController.setCustomer(customer);
+        invoicesViewController.setCustomer(customer);
         customerTasksController.setCustomer(customer);
         customerSubsController.setCustomer(customer);
         customerOffersController.setCustomer(customer);
@@ -925,6 +943,9 @@ public class AddCustomerController {
         }
         if (dbHelper.hasDevice(customer.getCode())) {
             tabDevices.getStyleClass().add("tabHas");
+        }
+        if (dbHelper.hasInvoices(customer.getAfm())) {
+            tabInvoices.getStyleClass().add("tabHas");
         }
         if (dbHelper.hasTask(customer.getCode())) {
             tabTasks.getStyleClass().add("tabHas");

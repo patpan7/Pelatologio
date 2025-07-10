@@ -328,6 +328,11 @@
                 <AnchorPane fx:id="devicesContainer" styleClass="pane" />
             </ScrollPane>
         </Tab>
+        <Tab fx:id="tabInvoices" closable="false" text="Τιμολόγια">
+            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
+                <AnchorPane fx:id="invoicesContainer" styleClass="pane" />
+            </ScrollPane>
+        </Tab>
         <Tab fx:id="tabTasks" closable="false" text="Εργασίες">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
                 <AnchorPane fx:id="tasksContainer" styleClass="pane" />

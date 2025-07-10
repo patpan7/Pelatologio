@@ -64,6 +64,14 @@
                 <Cursor fx:constant="HAND" />
             </cursor>
         </JFXButton>
+        <JFXButton fx:id="btnNineposNew" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#nineposNewOpen" prefWidth="277.0" styleClass="click-button" text="ninePOS New">
+            <VBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </VBox.margin>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+        </JFXButton>
         <JFXButton fx:id="btnNineposRegister" buttonType="RAISED" mnemonicParsing="false" onAction="#registerNineposOpen" prefWidth="277.0" styleClass="click-button" text="Εγγραφή ninePOS">
             <VBox.margin>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
