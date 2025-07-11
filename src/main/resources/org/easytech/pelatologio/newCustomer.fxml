@@ -277,6 +277,8 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </TextField>
+                  <Label fx:id="lblBlanceMega" layoutX="47.0" layoutY="392.0" styleClass="normal-label" text="Υπολ. Megasoft" />
+                  <TextField fx:id="tfBalanceMega" layoutX="15.0" layoutY="424.0" prefWidth="180.0" />
                   <JFXCheckBox fx:id="checkboxActive" mnemonicParsing="false" styleClass="normal-label" text="Ενεργός">
                      <VBox.margin>
                         <Insets top="30.0" />

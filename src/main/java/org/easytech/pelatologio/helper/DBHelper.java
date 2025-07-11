@@ -3023,4 +3023,26 @@ public class DBHelper {
         return invoices;
     }
 
+    public String getMegasoftBalance(String afmPel) {
+        String balance = "";
+
+        String sql = "SELECT ypol " +
+                "FROM MEGASOFT.dbo.E2_Emp001_25 " +
+                "WHERE Afm = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, afmPel);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                balance = rs.getString("ypol");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // ή log
+        }
+
+        return balance;
+    }
 }

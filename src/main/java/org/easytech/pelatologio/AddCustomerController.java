@@ -53,7 +53,7 @@ public class AddCustomerController {
     @FXML
     private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabPelatologio, tabNinepos, tabDevices, tabInvoices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabNotes;
     @FXML
-    private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone, tfBalance;
+    private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone, tfBalance, tfBalanceMega;
     @FXML
     private ComboBox<String> tfRecommendation;
     @FXML
@@ -73,11 +73,13 @@ public class AddCustomerController {
     @FXML
     Button btnAddToMegasoft, btnData, btnLabel, btnCopy, btnTask, btnAcs;
     @FXML
-    private Label lblBlance;
+    private Label lblBlance, lblBlanceMega;
     @FXML
     public JFXCheckBox checkboxActive;
     @FXML
     Button btnPhone1, btnPhone2, btnMobile, btnPhoneManager, btnAccPhone, btnAccMobile;
+
+    DBHelper dbHelper;
 
     private TaxisViewController taxisViewController;
     private MyposViewController myposViewController;
@@ -262,6 +264,9 @@ public class AddCustomerController {
         tfBalance.setDisable(true);
         tfBalance.setVisible(false);
         lblBlance.setVisible(false);
+        tfBalanceMega.setDisable(true);
+        tfBalanceMega.setVisible(false);
+        lblBlanceMega.setVisible(false);
         checkboxActive.setVisible(false);
         checkboxActive.setDisable(true);
         btnTask.setVisible(false);
@@ -385,7 +390,7 @@ public class AddCustomerController {
                 sendTestEmail(tfAccEmail);
             }
         });
-        DBHelper dbHelper = new DBHelper();
+        dbHelper = new DBHelper();
         List<Accountant> accountants = dbHelper.getAccountants();
         accountants.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         filteredAccountants = new FilteredList<>(FXCollections.observableArrayList(accountants));
@@ -596,6 +601,7 @@ public class AddCustomerController {
         tfAccEmail1.setText(customer.getAccEmail1());
         tfBalance.setText(customer.getBalance());
         taBalanceReason.setText(customer.getBalanceReason());
+        tfBalanceMega.setText(dbHelper.getMegasoftBalance(customer.getAfm()));
         setupFieldListeners();
         this.hasUnsavedChanges = false;
         updateTabTitle("");
@@ -693,6 +699,9 @@ public class AddCustomerController {
         tfBalance.setDisable(false);
         tfBalance.setVisible(true);
         lblBlance.setVisible(true);
+        tfBalanceMega.setDisable(false);
+        tfBalanceMega.setVisible(true);
+        lblBlanceMega.setVisible(true);
         checkboxActive.setVisible(true);
         checkboxActive.setDisable(false);
         tabTaxis.setDisable(false);
