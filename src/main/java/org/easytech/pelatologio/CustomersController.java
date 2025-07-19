@@ -158,19 +158,19 @@ public class CustomersController implements Initializable {
                 btnErgani.setStyle("-fx-border-color: #005599;");
                 // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
 
-                if (dbHelper.hasApp(selectedCustomer.getCode(), 1)) {
+                if (selectedCustomer.hasApp(1)) {
                     btnMypos.setStyle("-fx-border-color: #FF0000;");
                 }
-                if (dbHelper.hasApp(selectedCustomer.getCode(), 2)) {
+                if (selectedCustomer.hasApp(2)) {
                     btnSimply.setStyle("-fx-border-color: #FF0000;");
                 }
-                if (dbHelper.hasApp(selectedCustomer.getCode(), 3)) {
+                if (selectedCustomer.hasApp(3)) {
                     btnTaxis.setStyle("-fx-border-color: #FF0000;");
                 }
-                if (dbHelper.hasApp(selectedCustomer.getCode(), 4)) {
+                if (selectedCustomer.hasApp(4)) {
                     btnEmblem.setStyle("-fx-border-color: #FF0000;");
                 }
-                if (dbHelper.hasApp(selectedCustomer.getCode(), 5)) {
+                if (selectedCustomer.hasApp(5)) {
                     btnErgani.setStyle("-fx-border-color: #FF0000;");
                 }
             }
@@ -274,7 +274,7 @@ public class CustomersController implements Initializable {
         DBHelper dbHelper = new DBHelper();
         List<Customer> customers;
         try {
-            customers = dbHelper.getCustomers();
+            customers = DBHelper.getCustomerDao().getCustomers();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -428,14 +428,16 @@ public class CustomersController implements Initializable {
 
     public void customerUpdate(ActionEvent actionEvent) throws IOException {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        if (selectedCustomer == null) return; // Προστασία από null
+        DBHelper.getCustomerDao().getCustomerDetails(selectedCustomer); // Lazy loading των λεπτομερειών
         try {
-            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+            String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
             if (res.equals("unlocked")) {
-                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                 // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
                 for (Tab tab : mainTabPane.getTabs()) {
                     if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
-                        mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                        mainTabPane.getSelectionModel().select(tab);
                         return;
                     }
                 }
@@ -453,30 +455,39 @@ public class CustomersController implements Initializable {
                 AddCustomerController controller = loader.getController();
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
                 controller.setMainTabPane(mainTabPane, customerTab);
-                controller.setCustomerData(selectedCustomer);
+                controller.setCustomerForEdit(selectedCustomer);
 
                 // Προσθήκη του tab στο TabPane
                 mainTabPane.getTabs().add(customerTab);
-                mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
+                mainTabPane.getSelectionModel().select(customerTab);
 
                 customerTab.setOnCloseRequest(event -> {
-                    dbHelper.customerUnlock(selectedCustomer.getCode());
-                    controller.handleTabCloseRequest();
+                    DBHelper.getCustomerDao().customerUnlock(selectedCustomer.getCode());
+                    if (!controller.handleTabCloseRequest()) {
+                        event.consume();
+                    }
                 });
 
                 customerTab.setOnClosed(event -> {
-                    refreshTableData(); // Ανανεώνει τη λίστα πελατών
-                    filteredData = new FilteredList<>(observableList, b -> true);
-
-                    filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-                        applyFilters(newValue);
-                    });
-
-                    applyFilters(filterField.getText());
-
-                    SortedList<Customer> sortedData = new SortedList<>(filteredData);
-                    sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
-                    customerTable.setItems(sortedData);
+                    Customer updatedCustomer = controller.getUpdatedCustomer();
+                    if (updatedCustomer != null) {
+                        // Βρες τον index του παλιού πελάτη στη λίστα
+                        int index = -1;
+                        for (int i = 0; i < observableList.size(); i++) {
+                            if (observableList.get(i).getCode() == updatedCustomer.getCode()) {
+                                index = i;
+                                break;
+                            }
+                        }
+                        // Αν βρέθηκε, αντικατάστησέ τον
+                        if (index != -1) {
+                            observableList.set(index, updatedCustomer);
+                        } else {
+                            // Αν δεν βρεθεί (π.χ. νέος πελάτης), απλά πρόσθεσέ τον
+                            observableList.add(0, updatedCustomer);
+                        }
+                    }
+                    // Δεν χρειάζεται πλέον η full refresh, ο πίνακας θα ανανεωθεί αυτόματα.
                 });
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -505,12 +516,14 @@ public class CustomersController implements Initializable {
         sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
         customerTable.setItems(sortedData);
         // Έλεγχος αν υπάρχει ήδη ανοικτό tab για τον συγκεκριμένο πελάτη
-        Customer selectedCustomer = dbHelper.getSelectedCustomer(customerId);
+        Customer selectedCustomer = DBHelper.getCustomerDao().getSelectedCustomer(customerId);
+        if (selectedCustomer == null) return;
+        DBHelper.getCustomerDao().getCustomerDetails(selectedCustomer); // Lazy Loading
         System.out.println("selectedCustomer: " + selectedCustomer);
         try {
-            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+            String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
             if (res.equals("unlocked")) {
-                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                 // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
                 for (Tab tab : mainTabPane.getTabs()) {
                     if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
@@ -529,7 +542,7 @@ public class CustomersController implements Initializable {
 
                 AddCustomerController controller = loader.getController();
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setCustomerData(selectedCustomer);
+                controller.setCustomerForEdit(selectedCustomer);
                 controller.setMainTabPane(mainTabPane, customerTab);
                 // Προσθήκη του tab στο TabPane
                 Platform.runLater(() -> {
@@ -539,7 +552,7 @@ public class CustomersController implements Initializable {
                 });
 
                 customerTab.setOnCloseRequest(event -> {
-                    dbHelper.customerUnlock(selectedCustomer.getCode());
+                    DBHelper.getCustomerDao().customerUnlock(selectedCustomer.getCode());
 
                 });
 
@@ -597,7 +610,7 @@ public class CustomersController implements Initializable {
         alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε τον πελάτη " + selectedCustomer.getName() + ";");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            dbHelper.customerDelete(selectedCustomer.getCode());
+            DBHelper.getCustomerDao().customerDelete(selectedCustomer.getCode());
             refreshTableData();
         }
     }
@@ -778,10 +791,11 @@ public class CustomersController implements Initializable {
                 notifications.showError();
                 return;
             }
+            DBHelper.getCustomerDao().getCustomerDetails(selectedCustomer); // Lazy Loading
             try {
-                String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                 if (res.equals("unlocked")) {
-                    dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                    DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                     // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
                     for (Tab tab : mainTabPane.getTabs()) {
                         if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
@@ -802,7 +816,7 @@ public class CustomersController implements Initializable {
 
                     AddCustomerController controller = loader.getController();
                     // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                    controller.setCustomerData(selectedCustomer);
+                    controller.setCustomerForEdit(selectedCustomer);
 
                     // Προσθήκη του tab στο TabPane
                     mainTabPane.getTabs().add(customerTab);
@@ -845,10 +859,11 @@ public class CustomersController implements Initializable {
                 notifications.showError();
                 return;
             }
+            DBHelper.getCustomerDao().getCustomerDetails(selectedCustomer); // Lazy Loading
             try {
-                String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                 if (res.equals("unlocked")) {
-                    dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                    DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                     // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
                     for (Tab tab : mainTabPane.getTabs()) {
                         if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
@@ -869,7 +884,7 @@ public class CustomersController implements Initializable {
 
                     AddCustomerController controller = loader.getController();
                     // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                    controller.setCustomerData(selectedCustomer);
+                    controller.setCustomerForEdit(selectedCustomer);
 
                     // Προσθήκη του tab στο TabPane
                     mainTabPane.getTabs().add(customerTab);
@@ -913,10 +928,11 @@ public class CustomersController implements Initializable {
                 notifications.showError();
                 return;
             }
+            DBHelper.getCustomerDao().getCustomerDetails(selectedCustomer); // Lazy Loading
             try {
-                String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                 if (res.equals("unlocked")) {
-                    dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                    DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                     // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
                     for (Tab tab : mainTabPane.getTabs()) {
                         if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
@@ -937,7 +953,7 @@ public class CustomersController implements Initializable {
 
                     AddCustomerController controller = loader.getController();
                     // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                    controller.setCustomerData(selectedCustomer);
+                    controller.setCustomerForEdit(selectedCustomer);
 
                     // Προσθήκη του tab στο TabPane
                     mainTabPane.getTabs().add(customerTab);
@@ -980,10 +996,11 @@ public class CustomersController implements Initializable {
                 notifications.showError();
                 return;
             }
+            DBHelper.getCustomerDao().getCustomerDetails(selectedCustomer); // Lazy Loading
             try {
-                String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                 if (res.equals("unlocked")) {
-                    dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                    DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                     // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
                     for (Tab tab : mainTabPane.getTabs()) {
                         if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
@@ -1004,7 +1021,7 @@ public class CustomersController implements Initializable {
 
                     AddCustomerController controller = loader.getController();
                     // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                    controller.setCustomerData(selectedCustomer);
+                    controller.setCustomerForEdit(selectedCustomer);
 
                     // Προσθήκη του tab στο TabPane
                     mainTabPane.getTabs().add(customerTab);
@@ -1036,9 +1053,9 @@ public class CustomersController implements Initializable {
             return;
         }
         try {
-            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+            String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
             if (res.equals("unlocked")) {
-                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                 // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
                 for (Tab tab : mainTabPane.getTabs()) {
                     if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
@@ -1059,7 +1076,7 @@ public class CustomersController implements Initializable {
 
                 AddCustomerController controller = loader.getController();
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setCustomerData(selectedCustomer);
+                controller.setCustomerForEdit(selectedCustomer);
 
                 // Προσθήκη του tab στο TabPane
                 mainTabPane.getTabs().add(customerTab);
@@ -1142,7 +1159,7 @@ public class CustomersController implements Initializable {
             filterField.requestFocus();
         } else if (event.getButton() == MouseButton.SECONDARY) {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-            dbHelper.customerUnlock(selectedCustomer.getCode());
+            DBHelper.getCustomerDao().customerUnlock(selectedCustomer.getCode());
         }
     }
 
@@ -1160,6 +1177,6 @@ public class CustomersController implements Initializable {
 
     public void unlock(ActionEvent event) {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-        dbHelper.customerUnlock(selectedCustomer.getCode());
+        DBHelper.getCustomerDao().customerUnlock(selectedCustomer.getCode());
     }
 }

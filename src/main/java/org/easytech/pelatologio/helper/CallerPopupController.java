@@ -6,6 +6,10 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.easytech.pelatologio.AppSettings;
+import org.easytech.pelatologio.models.CallLog;
+
+import java.util.function.Consumer;
 
 public class CallerPopupController {
     @FXML private Label callerNumberLabel;
@@ -13,7 +17,10 @@ public class CallerPopupController {
     @FXML private Button closeButton;
 
     private String callerNumber;
+    private String customerName;
+    private int customerId;
     private Stage stage;
+    private Consumer<Integer> openCustomerCallback;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -32,28 +39,40 @@ public class CallerPopupController {
         });
     }
 
-
     @FXML
     private void initialize() {
         openCustomerButton.setOnAction(e -> handleOpenCustomer());
         closeButton.setOnAction(e -> stage.close());
     }
+
     // Αρχικοποίηση δεδομένων από τον κύριο controller
-    public void initData(String callerNumber) {
+    public void initData(String callerNumber, String customerName, int customerId) {
         this.callerNumber = callerNumber;
-        callerNumberLabel.setText("Αριθμός: " + callerNumber);
+        this.customerName = customerName;
+        this.customerId = customerId;
+
+        if (customerName != null && !customerName.isEmpty() && !customerName.equals("Άγνωστο")) {
+            callerNumberLabel.setText("Κλήση από: " + customerName + " (" + callerNumber + ")");
+        } else {
+            callerNumberLabel.setText("Κλήση από: " + callerNumber);
+        }
+
+        openCustomerButton.setDisable(customerId == -1);
+    }
+
+    public void setOpenCustomerCallback(Consumer<Integer> callback) {
+        this.openCustomerCallback = callback;
     }
 
     @FXML
     public void handleOpenCustomer() {
-        // Κλείσιμο του popup και επιστροφή επιλογής
-        ((Stage) callerNumberLabel.getScene().getWindow()).close();
-        openCustomerDetails(callerNumber);
-    }
-
-    private void openCustomerDetails(String phoneNumber) {
-        // Σύνδεση με τη βάση δεδομένων ή άλλο controller
-        System.out.println("Αναζήτηση πελάτη με τηλέφωνο: " + phoneNumber);
-        // ... υλοποίηση ...
+        // Κλείσιμο του popup
+        if (stage != null) {
+            stage.close();
+        }
+        // Επιστροφή επιλογής στον κύριο controller
+        if (openCustomerCallback != null && customerId != -1) {
+            openCustomerCallback.accept(customerId);
+        }
     }
 }

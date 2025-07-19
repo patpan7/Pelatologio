@@ -220,7 +220,7 @@ public class AddAccountantController {
             progressIndicator.setVisible(true);
 
             // Δημιουργία και αποστολή email σε ξεχωριστό thread για να μην κολλήσει το UI
-            new Thread(() -> {
+            Thread emailThread = new Thread(() -> {
                 try {
                     String subject = "Δοκιμή Email";
                     String body = "Δοκιμή email.";
@@ -245,7 +245,9 @@ public class AddAccountantController {
                     });
                     Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
                 }
-            }).start(); // Ξεκινάμε το thread για την αποστολή του email
+            });
+            emailThread.setDaemon(true);
+            emailThread.start(); // Ξεκινάμε το thread για την αποστολή του email
         } else {
             //showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο email.");
             Notifications notifications = Notifications.create()
@@ -313,7 +315,7 @@ public class AddAccountantController {
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         int accountantId;
-        accountantId = dbHelper.insertAccountant(name, phone, mobile, email, erganiEmail);
+        accountantId = DBHelper.getAccountantDao().insertAccountant(name, phone, mobile, email, erganiEmail);
         // Εμφάνιση επιτυχίας
         if (accountantId > 0) {
             Accountant newAccountant = new Accountant(accountantId, name, phone, mobile, email, erganiEmail);
@@ -360,7 +362,7 @@ public class AddAccountantController {
         mobile = mobile.replaceAll("\\s+", "");
         phone = phone.replaceAll("\\s+", "");
 
-        dbHelper.updateAccountant(code, name, phone, mobile, email, erganiEmail);
+        DBHelper.getAccountantDao().updateAccountant(code, name, phone, mobile, email, erganiEmail);
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
         Notifications notifications = Notifications.create()
                 .title("Επιτυχία")

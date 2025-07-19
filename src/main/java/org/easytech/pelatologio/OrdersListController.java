@@ -133,7 +133,7 @@ public class OrdersListController implements Initializable {
         configureSingleSelectionCheckBoxes(checkBoxes4);
 
         DBHelper dbHelper = new DBHelper();
-        List<Supplier> suppliers = dbHelper.getSuppliersFromOrders();
+        List<Supplier> suppliers = DBHelper.getSupplierDao().getSuppliersFromOrders();
         supplierFilterComboBox.getItems().add(new Supplier(-1, "Όλα","","","","","","","","",""));
         supplierFilterComboBox.getItems().addAll(suppliers);
         supplierFilterComboBox.getSelectionModel().selectFirst();
@@ -218,7 +218,7 @@ public class OrdersListController implements Initializable {
         }
 
         DBHelper dbHelper = new DBHelper();
-        if (dbHelper.completeOrder(selectedOrder.getId(), complete)) {
+        if (DBHelper.getOrderDao().completeOrder(selectedOrder.getId(), complete)) {
             System.out.println("Order completion status updated.");
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -248,7 +248,7 @@ public class OrdersListController implements Initializable {
         List<TableColumn<Order, ?>> sortOrder = new ArrayList<>(ordersTable.getSortOrder());
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
-        allOrders.setAll(dbHelper.getAllOrders());
+        allOrders.setAll(DBHelper.getOrderDao().getAllOrders());
         updateOrdersTable();
         ordersTable.getSortOrder().setAll(sortOrder);
     }
@@ -400,8 +400,7 @@ public class OrdersListController implements Initializable {
         alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την παραγγελία " + selectedOrder.getTitle() + ";" );
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteOrder(selectedOrder.getId());
+            DBHelper.getOrderDao().deleteOrder(selectedOrder.getId());
             loadOrders();
         }
     }

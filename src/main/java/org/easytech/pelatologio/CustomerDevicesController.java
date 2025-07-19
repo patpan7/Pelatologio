@@ -65,7 +65,7 @@ public class CustomerDevicesController {
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
-        devicesList.addAll(dbHelper.getCustomerDevices(customerId));
+        devicesList.addAll(DBHelper.getDeviceDao().getCustomerDevices(customerId));
 
     }
     public void handleAddDevice(ActionEvent event) {
@@ -132,7 +132,7 @@ public class CustomerDevicesController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Διαγραφή από τη βάση
             DBHelper dbHelper = new DBHelper();
-            if (dbHelper.recoverDevice(selectedDevice.getId())) {
+            if (DBHelper.getDeviceDao().recoverDevice(selectedDevice.getId())) {
                 Platform.runLater(() -> {
                     Notifications notifications = Notifications.create()
                             .title("Προσοχή")

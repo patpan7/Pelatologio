@@ -338,7 +338,7 @@ public class AddSupplierController {
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         int supplierId;
-        supplierId = dbHelper.insertSupplier(name, title, afm, phone, mobile, contact, email, email2, site, notes);
+        supplierId = DBHelper.getSupplierDao().insertSupplier(name, title, afm, phone, mobile, contact, email, email2, site, notes);
         // Εμφάνιση επιτυχίας
         if (supplierId > 0) {
             Supplier newSupplier = new Supplier(supplierId, name, title, afm, phone, mobile, contact, email, email2, site, notes);
@@ -390,7 +390,7 @@ public class AddSupplierController {
         mobile = mobile.replaceAll("\\s+", "");
         phone = phone.replaceAll("\\s+", "");
 
-        dbHelper.updateSupplier(code, name, title, afm, phone, mobile, contact, email, email2, site, notes);
+        DBHelper.getSupplierDao().updateSupplier(code, name, title, afm, phone, mobile, contact, email, email2, site, notes);
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
         Notifications notifications = Notifications.create()
                 .title("Επιτυχία")

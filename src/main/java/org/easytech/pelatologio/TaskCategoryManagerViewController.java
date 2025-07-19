@@ -52,7 +52,7 @@ public class TaskCategoryManagerViewController {
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
-        categoriesList.addAll(dbHelper.getAllTaskCategory());
+        categoriesList.addAll(DBHelper.getTaskDao().getAllTaskCategory());
         if (taskCategoryTable.getItems().size() == 1)
             taskCategoryTable.getSelectionModel().select(0);
     }
@@ -111,7 +111,7 @@ public class TaskCategoryManagerViewController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Διαγραφή από τη βάση
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteTaskCategory(selectedCategory.getId());
+            DBHelper.getTaskDao().deleteTaskCategory(selectedCategory.getId());
 
             // Διαγραφή από τη λίστα και ενημέρωση του πίνακα
             taskCategoryTable.getItems().remove(selectedCategory);
@@ -151,7 +151,7 @@ public class TaskCategoryManagerViewController {
 
                 // Ενημέρωση της βάσης
                 DBHelper dbHelper = new DBHelper();
-                dbHelper.updateTaskCategory(updatedTaskCategory);
+                DBHelper.getTaskDao().updateTaskCategory(updatedTaskCategory);
 
                 // Ενημέρωση του πίνακα
                 taskCategoryTable.refresh();

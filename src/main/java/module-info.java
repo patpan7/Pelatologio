@@ -29,11 +29,14 @@ module org.easytech.pelatologio {
     requires org.apache.httpcomponents.core5.httpcore5;
     requires jdk.httpserver;
     requires asterisk.java;
+    requires com.zaxxer.hikari;
+    requires jain.sip.ri;
 //    requires org.apache.poi.ooxml.schemas;
 //    requires docx4j;
 //    requires org.apache.poi.ooxml;
 
     opens org.easytech.pelatologio to javafx.fxml;
+    opens org.easytech.pelatologio.helper to javafx.fxml;
     exports org.easytech.pelatologio;
     exports org.easytech.pelatologio.models;
     exports org.easytech.pelatologio.helper;

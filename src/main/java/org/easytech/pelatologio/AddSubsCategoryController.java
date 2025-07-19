@@ -75,7 +75,7 @@ public class AddSubsCategoryController {
 
         if (!name.isEmpty()) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.saveSubsCategory(newSubsCategory); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
+            DBHelper.getSubscriptionDao().saveSubsCategory(newSubsCategory); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
 
             // Κλείσιμο του διαλόγου
             Dialog<ButtonType> dialog = new Dialog<>();

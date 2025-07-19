@@ -69,7 +69,7 @@ public class AddressViewController {
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
-        customerAddressList.addAll(dbHelper.getCustomerAddresses(customerId));
+        customerAddressList.addAll(DBHelper.getAddressDao().getCustomerAddresses(customerId));
         if (addressTable.getItems().size() == 1)
             addressTable.getSelectionModel().select(0);
     }
@@ -127,7 +127,7 @@ public class AddressViewController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Διαγραφή από τη βάση
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteAddress(selectedCustomerAddress.getAddressId());
+            DBHelper.getAddressDao().deleteAddress(selectedCustomerAddress.getAddressId());
 
             // Διαγραφή από τη λίστα και ενημέρωση του πίνακα
             addressTable.getItems().remove(selectedCustomerAddress);
@@ -167,7 +167,7 @@ public class AddressViewController {
 
                 // Ενημέρωση της βάσης
                 DBHelper dbHelper = new DBHelper();
-                dbHelper.updateAddress(updatedCustomerAddress);
+                DBHelper.getAddressDao().updateAddress(updatedCustomerAddress);
 
                 // Ενημέρωση του πίνακα
                 addressTable.refresh();

@@ -131,7 +131,7 @@ public class AccountantsController implements Initializable {
     private List<Accountant> fetchDataFromMySQL() throws SQLException {
         DBHelper dbHelper = new DBHelper();
         List<Accountant> accountants;
-        accountants = dbHelper.getAccountants();
+        accountants = DBHelper.getAccountantDao().getAccountants();
         return accountants;
     }
 
@@ -246,7 +246,7 @@ public class AccountantsController implements Initializable {
             mainTabPane.getSelectionModel().select(accountantTab); // Επιλογή του νέου tab
 
             accountantTab.setOnCloseRequest(event -> {
-                dbHelper.customerUnlock(selectedAccountant.getId());
+                DBHelper.getCustomerDao().customerUnlock(selectedAccountant.getId());
             });
 
             accountantTab.setOnClosed(event -> {
@@ -283,7 +283,7 @@ public class AccountantsController implements Initializable {
         sortedData.comparatorProperty().bind(accountantTable.comparatorProperty());
         accountantTable.setItems(sortedData);
         // Έλεγχος αν υπάρχει ήδη ανοικτό tab για τον συγκεκριμένο πελάτη
-        Accountant selectedAccountant = dbHelper.getSelectedAccountant(accountantId);
+        Accountant selectedAccountant = DBHelper.getAccountantDao().getSelectedAccountant(accountantId);
         System.out.println("selectedCustomer: " + selectedAccountant);
         try {
             // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
@@ -314,7 +314,7 @@ public class AccountantsController implements Initializable {
             });
 
             accountantTab.setOnCloseRequest(event -> {
-                dbHelper.customerUnlock(selectedAccountant.getId());
+                DBHelper.getCustomerDao().customerUnlock(selectedAccountant.getId());
 
             });
 
@@ -436,7 +436,7 @@ public class AccountantsController implements Initializable {
             filterField.requestFocus();
         } else if (event.getButton() == MouseButton.SECONDARY) {
             Accountant selectedAccountant = accountantTable.getSelectionModel().getSelectedItem();
-            dbHelper.customerUnlock(selectedAccountant.getId());
+            DBHelper.getCustomerDao().customerUnlock(selectedAccountant.getId());
         }
     }
 

@@ -147,7 +147,7 @@ public class OffersController implements Initializable {
         List<TableColumn<Offer, ?>> sortOrder = new ArrayList<>(offersTable.getSortOrder());
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
-        allOffers.setAll(dbHelper.getAllOffers());
+        allOffers.setAll(DBHelper.getOfferDao().getAllOffers());
         updateOffersTable();
         offersTable.getSortOrder().setAll(sortOrder);
     }
@@ -272,7 +272,7 @@ public class OffersController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteOffer(selectedOffer.getId());
+            DBHelper.getOfferDao().deleteOffer(selectedOffer.getId());
             loadOffers();
         }
     }
@@ -366,7 +366,7 @@ public class OffersController implements Initializable {
         }
         try {
             DBHelper dbHelper = new DBHelper();
-            Customer customer = dbHelper.getSelectedCustomer(selectedOffer.getCustomerId());
+            Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedOffer.getCustomerId());
             String email = customer.getEmail();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
             Dialog<ButtonType> dialog = new Dialog<>();
@@ -399,7 +399,7 @@ public class OffersController implements Initializable {
             dialog.setOnCloseRequest(evt -> {
                 if (controller.isSended) {
                     // Εκτελούμε το handleSendEmail
-                    dbHelper.updateOfferSent(selectedOffer.getId());
+                    DBHelper.getOfferDao().updateOfferSent(selectedOffer.getId());
                     loadOffers();
                 }
             });
@@ -436,7 +436,7 @@ public class OffersController implements Initializable {
         }
 
         DBHelper dbHelper = new DBHelper();
-        if (dbHelper.updateOfferArchived(selectedOffer.getId())) {
+        if (DBHelper.getOfferDao().updateOfferArchived(selectedOffer.getId())) {
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Ενημέρωση")
@@ -475,7 +475,7 @@ public class OffersController implements Initializable {
         }
 
         DBHelper dbHelper = new DBHelper();
-        if (dbHelper.updateOfferStatusManual(selectedOffer.getId(), ans)) {
+        if (DBHelper.getOfferDao().updateOfferStatusManual(selectedOffer.getId(), ans)) {
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Ενημέρωση")

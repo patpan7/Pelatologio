@@ -116,18 +116,14 @@ public class SimplyViewController {
 
                 Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
                 if (selectedLogin != null) {
-                    try {
-                        dbHelper.updateSimplyStatus(selectedLogin.getId(), columnName, newVal);
+                    DBHelper.getSimplyStatusDao().updateSimplyStatus(selectedLogin.getId(), columnName, newVal);
 
-                        // Special handling for register checkbox
-                        if (checkbox == cbRegister && newVal && !isInitializing) {
-                            registercloudOpen(new ActionEvent());
-                        } // Special handling for mail checkbox
-                        else if (checkbox == cbMail && newVal && !isInitializing) {
-                            handleSendEmailForSelectedLogin();
-                        }
-                    } catch (SQLException e) {
-                        showErrorNotification("Σφάλμα", "Προέκυψε σφάλμα κατά την ενημέρωση της βάσης.");
+                    // Special handling for register checkbox
+                    if (checkbox == cbRegister && newVal && !isInitializing) {
+                        registercloudOpen(new ActionEvent());
+                    } // Special handling for mail checkbox
+                    else if (checkbox == cbMail && newVal && !isInitializing) {
+                        handleSendEmailForSelectedLogin();
                     }
                 }
             });
@@ -137,7 +133,7 @@ public class SimplyViewController {
             Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
             String selectedYear = cbContractDuration.getValue();
             if (selectedLogin != null && selectedYear != null && !selectedYear.isEmpty()) {
-                dbHelper.updateSimplyStatusYears(selectedLogin.getId(), selectedYear);
+                DBHelper.getSimplyStatusDao().updateSimplyStatusYears(selectedLogin.getId(), selectedYear);
             }
         });
     }
@@ -196,16 +192,16 @@ public class SimplyViewController {
 
             isInitializing = true;
             try {
-                cbStock.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "stock"));
-                cbRegister.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "register"));
-                cbAuth.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "auth"));
-                cbAccept.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "accept"));
-                cbMail.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "mail"));
-                cbParam.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "param"));
-                cbMydata.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "mydata"));
-                cbDelivered.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "delivered"));
-                cbPaid.setSelected(dbHelper.getSimpyStatus(selectedLogin.getId(), "paid"));
-                cbContractDuration.setValue(dbHelper.getSimplyYears(selectedLogin.getId()));
+                cbStock.setSelected(DBHelper.getSimplyStatusDao().getSimpyStatus(selectedLogin.getId(), "stock"));
+                cbRegister.setSelected(DBHelper.getSimplyStatusDao().getSimpyStatus(selectedLogin.getId(), "register"));
+                cbAuth.setSelected(DBHelper.getSimplyStatusDao().getSimpyStatus(selectedLogin.getId(), "auth"));
+                cbAccept.setSelected(DBHelper.getSimplyStatusDao().getSimpyStatus(selectedLogin.getId(), "accept"));
+                cbMail.setSelected(DBHelper.getSimplyStatusDao().getSimpyStatus(selectedLogin.getId(), "mail"));
+                cbParam.setSelected(DBHelper.getSimplyStatusDao().getSimpyStatus(selectedLogin.getId(), "param"));
+                cbMydata.setSelected(DBHelper.getSimplyStatusDao().getSimpyStatus(selectedLogin.getId(), "mydata"));
+                cbDelivered.setSelected(DBHelper.getSimplyStatusDao().getSimpyStatus(selectedLogin.getId(), "delivered"));
+                cbPaid.setSelected(DBHelper.getSimplyStatusDao().getSimpyStatus(selectedLogin.getId(), "paid"));
+                cbContractDuration.setValue(String.valueOf(DBHelper.getSimplyStatusDao().getSimplyYears(selectedLogin.getId())));
             } finally {
                 isInitializing = false;
             }
@@ -214,7 +210,7 @@ public class SimplyViewController {
 
     public void loadLoginsForCustomer(int customerId) {
         loginList.clear();
-        loginList.addAll(dbHelper.getLogins(customerId, 2));
+        loginList.addAll(DBHelper.getLoginDao().getLogins(customerId, 2));
 
         if (!loginList.isEmpty()) {
             loginTable.getSelectionModel().select(0);
@@ -280,7 +276,7 @@ public class SimplyViewController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            dbHelper.deleteLogin(selectedLogin.getId());
+            DBHelper.getLoginDao().deleteLogin(selectedLogin.getId());
             loginTable.getItems().remove(selectedLogin);
         }
     }
@@ -314,7 +310,7 @@ public class SimplyViewController {
                 ButtonType result = dialog.getResult();
                 if (result != null && result == ButtonType.OK) {
                     Logins updatedLogin = editController.getUpdatedLogin();
-                    new DBHelper().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
+                    new DBHelper().getLoginDao().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
                     Platform.runLater(() -> loginTable.refresh());
                 }
             });
@@ -570,7 +566,7 @@ public class SimplyViewController {
             }
             LocalDate date = LocalDate.now().plusYears(cbContractDuration.getSelectionModel().getSelectedIndex()+1);
             Subscription newSub = new Subscription(0, selectedLogin.getTag(), date, customer.getCode(),category, price, selectedLogin.getUsername(), "Όχι");
-            dbHelper.saveSub(newSub);
+            DBHelper.getSubscriptionDao().saveSub(newSub);
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα Simply Cloud.", e.getMessage(), Alert.AlertType.ERROR));
         }

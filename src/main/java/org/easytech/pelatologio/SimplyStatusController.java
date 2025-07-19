@@ -96,12 +96,7 @@ public class SimplyStatusController implements Initializable {
 
             // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
-                try {
-                    dbHelper.updateSimplyStatus(data.getApp_login_id(), "register", true); // Ενημέρωση στη βάση
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    // Optional: Add user feedback or logging here if needed
-                }
+                DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "register", true); // Ενημέρωση στη βάση
             });
             return property;
         });
@@ -112,12 +107,7 @@ public class SimplyStatusController implements Initializable {
 
             // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
-                try {
-                    dbHelper.updateSimplyStatus(data.getApp_login_id(), "auth", true); // Ενημέρωση στη βάση
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    // Optional: Add user feedback or logging here if needed
-                }
+                DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "auth", true); // Ενημέρωση στη βάση
             });
             return property;
         });
@@ -128,12 +118,7 @@ public class SimplyStatusController implements Initializable {
 
             // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
-                try {
-                    dbHelper.updateSimplyStatus(data.getApp_login_id(), "accept", true); // Ενημέρωση στη βάση
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    // Optional: Add user feedback or logging here if needed
-                }
+                DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "accept", true); // Ενημέρωση στη βάση
             });
             return property;
         });
@@ -144,12 +129,7 @@ public class SimplyStatusController implements Initializable {
 
             // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
-                try {
-                    dbHelper.updateSimplyStatus(data.getApp_login_id(), "mail", true); // Ενημέρωση στη βάση
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    // Optional: Add user feedback or logging here if needed
-                }
+                DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "mail", true); // Ενημέρωση στη βάση
             });
             return property;
         });
@@ -160,12 +140,7 @@ public class SimplyStatusController implements Initializable {
 
             // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
-                try {
-                    dbHelper.updateSimplyStatus(data.getApp_login_id(), "param", true); // Ενημέρωση στη βάση
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    // Optional: Add user feedback or logging here if needed
-                }
+                DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "param", true); // Ενημέρωση στη βάση
             });
             return property;
         });
@@ -176,12 +151,7 @@ public class SimplyStatusController implements Initializable {
 
             // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
-                try {
-                    dbHelper.updateSimplyStatus(data.getApp_login_id(), "mydata", true); // Ενημέρωση στη βάση
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    // Optional: Add user feedback or logging here if needed
-                }
+                DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "mydata", true); // Ενημέρωση στη βάση
             });
             return property;
         });
@@ -192,12 +162,7 @@ public class SimplyStatusController implements Initializable {
 
             // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
-                try {
-                    dbHelper.updateSimplyStatus(data.getApp_login_id(), "delivered", true); // Ενημέρωση στη βάση
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    // Optional: Add user feedback or logging here if needed
-                }
+                DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "delivered", true); // Ενημέρωση στη βάση
             });
             return property;
         });
@@ -208,12 +173,7 @@ public class SimplyStatusController implements Initializable {
 
             // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
-                try {
-                    dbHelper.updateSimplyStatus(data.getApp_login_id(), "paid", true); // Ενημέρωση στη βάση
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    // Optional: Add user feedback or logging here if needed
-                }
+                DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "paid", true); // Ενημέρωση στη βάση
             });
             return property;
         });
@@ -224,12 +184,7 @@ public class SimplyStatusController implements Initializable {
 
             // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
-                try {
-                    dbHelper.updateSimplyStatus(data.getApp_login_id(), "stock", true); // Ενημέρωση στη βάση
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    // Optional: Add user feedback or logging here if needed
-                }
+                DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "stock", true); // Ενημέρωση στη βάση
             });
             return property;
         });
@@ -296,7 +251,7 @@ public class SimplyStatusController implements Initializable {
 
         statusTable.setOnMouseClicked(event -> {
             SimplyStatus selectedSimplyStatus = statusTable.getSelectionModel().getSelectedItem();
-            Customer selectedCustomer = dbHelper.getSelectedCustomer(selectedSimplyStatus.getCustId());
+            Customer selectedCustomer = DBHelper.getCustomerDao().getSelectedCustomer(selectedSimplyStatus.getCustId());
             if (event.getClickCount() == 2) { // Έλεγχος για δύο κλικ
 
                 // Έλεγχος αν υπάρχει επιλεγμένο προϊόν
@@ -313,9 +268,9 @@ public class SimplyStatusController implements Initializable {
                         return;
                     }
                     try {
-                        String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                        String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                         if (res.equals("unlocked")) {
-                            dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                            DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                             // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
                             for (Tab tab : mainTabPane.getTabs()) {
                                 if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
@@ -336,7 +291,7 @@ public class SimplyStatusController implements Initializable {
 
                             AddCustomerController controller = loader.getController();
                             // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                            controller.setCustomerData(selectedCustomer);
+                            controller.setCustomerForEdit(selectedCustomer);
 
                             // Προσθήκη του tab στο TabPane
                             mainTabPane.getTabs().add(customerTab);
@@ -398,7 +353,7 @@ public class SimplyStatusController implements Initializable {
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
         List<TableColumn<SimplyStatus, ?>> sortOrder = new ArrayList<>(statusTable.getSortOrder());
-        allSimplyStatus.setAll(dbHelper.getAllSimplyStatus());
+        allSimplyStatus.setAll(DBHelper.getSimplyStatusDao().getAllSimplyStatus());
         updateStatusTable();
         statusTable.getSortOrder().setAll(sortOrder);
     }

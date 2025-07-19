@@ -89,7 +89,7 @@ public class AddAddressController {
 
         if (!address.isEmpty() && !town.isEmpty()&& !postcode.isEmpty() && !store.isEmpty()) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.addAddress(customer.getCode(), newCustomerAddress); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
+            DBHelper.getAddressDao().addAddress(customer.getCode(), newCustomerAddress); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
 
             // Κλείσιμο του διαλόγου
             Dialog<ButtonType> dialog = new Dialog<>();

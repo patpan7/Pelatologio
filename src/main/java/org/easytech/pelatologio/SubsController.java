@@ -148,7 +148,7 @@ public class SubsController implements Initializable {
         });
 
         DBHelper dbHelper = new DBHelper();
-        List<SubsCategory> categories = dbHelper.getAllSubsCategory();
+        List<SubsCategory> categories = DBHelper.getSubscriptionDao().getAllSubsCategory();
         categoryFilterComboBox.getItems().add(new SubsCategory(0, "Όλες"));
         categoryFilterComboBox.getItems().addAll(categories);
         categoryFilterComboBox.getSelectionModel().selectFirst();
@@ -198,7 +198,7 @@ public class SubsController implements Initializable {
         List<TableColumn<Subscription, ?>> sortOrder = new ArrayList<>(subsTable.getSortOrder());
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
-        allSubs.setAll(dbHelper.getAllSubs(from, to));
+        allSubs.setAll(DBHelper.getSubscriptionDao().getAllSubs(from, to));
         updateTaskTable();
         subsTable.getSortOrder().setAll(sortOrder);
     }
@@ -309,7 +309,7 @@ public class SubsController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteSub(selectedSub.getId());
+            DBHelper.getSubscriptionDao().deleteSub(selectedSub.getId());
             loadSubs(dateFrom.getValue(), dateTo.getValue());
         }
     }
@@ -336,7 +336,7 @@ public class SubsController implements Initializable {
         result.ifPresent(selected -> {
             int yearsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", ""));
             DBHelper dbHelper = new DBHelper();
-            dbHelper.renewSub(selectedSub.getId(), yearsToAdd);
+            DBHelper.getSubscriptionDao().renewSub(selectedSub.getId(), yearsToAdd);
             loadSubs(dateFrom.getValue(), dateTo.getValue());
         });
     }
@@ -383,7 +383,7 @@ public class SubsController implements Initializable {
             return;
         }
         DBHelper dbHelper = new DBHelper();
-        Customer customer = dbHelper.getSelectedCustomer(selectedSub.getCustomerId());
+        Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedSub.getCustomerId());
         String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" +
                 "<br>Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "." +
                 "<br>Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν." +
@@ -425,7 +425,7 @@ public class SubsController implements Initializable {
             dialog.setOnCloseRequest(evt -> {
                 if (controller.isSended) {
                     // Εκτελούμε το handleSendEmail
-                    dbHelper.updateSubSent(selectedSub.getId());
+                    DBHelper.getSubscriptionDao().updateSubSent(selectedSub.getId());
                     loadSubs(dateFrom.getValue(), dateTo.getValue());
                 }
             });

@@ -75,7 +75,7 @@ public class AddTaskCategoryController {
 
         if (!name.isEmpty()) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.saveTaskCategory(newTaskCategory); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
+            DBHelper.getTaskDao().saveTaskCategory(newTaskCategory); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
 
             // Κλείσιμο του διαλόγου
             Dialog<ButtonType> dialog = new Dialog<>();

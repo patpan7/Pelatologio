@@ -54,7 +54,7 @@ public class InvoicesViewController {
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
-        invoceList.addAll(dbHelper.getInvoices(afm));
+        invoceList.addAll(DBHelper.getInvoiceDao().getInvoices(afm));
         if (table.getItems().size() == 1)
             table.getSelectionModel().select(0);
     }

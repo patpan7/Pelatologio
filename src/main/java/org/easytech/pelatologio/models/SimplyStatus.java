@@ -36,6 +36,9 @@ public class SimplyStatus {
         this.custMail = custMail;
     }
 
+    public SimplyStatus() {
+    }
+
     public int getId() {
         return id;
     }

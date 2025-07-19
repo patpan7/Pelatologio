@@ -123,7 +123,7 @@ public class PrismaWinAutomation {
             }
             waitForImageAndClick(screen, "note.png", 10);
             DBHelper dbHelper = new DBHelper();
-            List<Logins> myposLogins = dbHelper.getLogins(customer.getCode(), 1);
+            List<Logins> myposLogins = DBHelper.getLoginDao().getLogins(customer.getCode(), 1);
             if (!myposLogins.isEmpty()) {
                 for (Logins login : myposLogins) {
                     String loginstr = "\n\nmyPOS"+
@@ -133,7 +133,7 @@ public class PrismaWinAutomation {
                     waitForImageAndPaste(screen, "note2.png", loginstr, 10);
                 }
             }
-            List<Logins> simplyLogins = dbHelper.getLogins(customer.getCode(), 2);
+            List<Logins> simplyLogins = DBHelper.getLoginDao().getLogins(customer.getCode(), 2);
             if (!simplyLogins.isEmpty()) {
                 for (Logins login : simplyLogins) {
                     System.out.println(login.getTag());
@@ -144,7 +144,7 @@ public class PrismaWinAutomation {
                     waitForImageAndPaste(screen, "note2.png", loginstr, 10);
                 }
             }
-            List<Logins> emblemLogins = dbHelper.getLogins(customer.getCode(), 4);
+            List<Logins> emblemLogins = DBHelper.getLoginDao().getLogins(customer.getCode(), 4);
             if (!emblemLogins.isEmpty()) {
                 for (Logins login : emblemLogins) {
                     String loginstr = "\n\nEmblem"+

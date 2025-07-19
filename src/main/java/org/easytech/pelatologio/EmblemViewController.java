@@ -78,7 +78,7 @@ public class EmblemViewController {
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
-        loginList.addAll(dbHelper.getLogins(customerId,4));
+        loginList.addAll(DBHelper.getLoginDao().getLogins(customerId,4));
         if (loginTable.getItems().size() == 1)
             loginTable.getSelectionModel().select(0);
     }
@@ -144,7 +144,7 @@ public class EmblemViewController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Διαγραφή από τη βάση
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteLogin(selectedLogin.getId());
+            DBHelper.getLoginDao().deleteLogin(selectedLogin.getId());
 
             // Διαγραφή από τη λίστα και ενημέρωση του πίνακα
             loginTable.getItems().remove(selectedLogin);
@@ -179,7 +179,7 @@ public class EmblemViewController {
                 ButtonType result = dialog.getResult();
                 if (result != null && result == ButtonType.OK) {
                     Logins updatedLogin = editController.getUpdatedLogin();
-                    new DBHelper().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
+                    new DBHelper().getLoginDao().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
                     Platform.runLater(() -> loginTable.refresh());
                 }
             });

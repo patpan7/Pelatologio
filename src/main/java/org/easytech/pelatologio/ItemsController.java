@@ -94,7 +94,7 @@ public class ItemsController implements Initializable {
     private List<Item> fetchDataFromMySQL() throws SQLException {
         List<Item> items;
         try {
-            items = dbHelper.getItems();
+            items = DBHelper.getItemDao().getItems();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -212,7 +212,7 @@ public class ItemsController implements Initializable {
 
                 // Προσθήκη listener για το κλείσιμο του παραθύρου
                 dialog.setOnHidden(event -> {
-                    dbHelper.customerUnlock(selectedItem.getId());
+                    DBHelper.getCustomerDao().customerUnlock(selectedItem.getId());
                 });
 
                 // Add a key listener to save when Enter is pressed

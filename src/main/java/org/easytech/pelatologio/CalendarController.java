@@ -59,8 +59,8 @@ public class CalendarController {
     private void loadEvents() {
         // Φόρτωση όλων των συμβάντων από τη βάση
         dbHelper = new DBHelper();
-        customCalendars = dbHelper.getAllTaskCategory();
-        appointments = dbHelper.getAllTasks();
+        customCalendars = DBHelper.getTaskDao().getAllTaskCategory();
+        appointments = DBHelper.getTaskDao().getAllTasks();
         updateCalendar();
     }
 
@@ -177,7 +177,7 @@ public class CalendarController {
                 appointment.setDueDate(newInterval.getStartDate());
 
                 // Ενημέρωση της βάσης
-                boolean success = dbHelper.updateTask(appointment);
+                boolean success = DBHelper.getTaskDao().updateTask(appointment);
 
                 if (!success) {
                     Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Σφάλμα κατά την ενημέρωση του ραντεβού στη βάση.");

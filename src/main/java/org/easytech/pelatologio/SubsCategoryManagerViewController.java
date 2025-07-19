@@ -52,7 +52,7 @@ public class SubsCategoryManagerViewController {
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
-        categoriesList.addAll(dbHelper.getAllSubsCategory());
+        categoriesList.addAll(DBHelper.getSubscriptionDao().getAllSubsCategory());
         if (subsCategoryTable.getItems().size() == 1)
             subsCategoryTable.getSelectionModel().select(0);
     }
@@ -111,7 +111,7 @@ public class SubsCategoryManagerViewController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Διαγραφή από τη βάση
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteSubsCategory(selectedCategory.getId());
+            DBHelper.getSubscriptionDao().deleteSubsCategory(selectedCategory.getId());
 
             // Διαγραφή από τη λίστα και ενημέρωση του πίνακα
             subsCategoryTable.getItems().remove(selectedCategory);
@@ -151,7 +151,7 @@ public class SubsCategoryManagerViewController {
 
                 // Ενημέρωση της βάσης
                 DBHelper dbHelper = new DBHelper();
-                dbHelper.updateSubsCategory(updatedSubsCategory);
+                DBHelper.getSubscriptionDao().updateSubsCategory(updatedSubsCategory);
 
                 // Ενημέρωση του πίνακα
                 subsCategoryTable.refresh();

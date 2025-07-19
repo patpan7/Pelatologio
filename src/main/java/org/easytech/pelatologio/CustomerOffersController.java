@@ -144,7 +144,7 @@ public class CustomerOffersController {
         allOffers.clear();
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
-        allOffers.setAll(dbHelper.getAllCustomerOffers(customerCode));
+        allOffers.setAll(DBHelper.getOfferDao().getAllCustomerOffers(customerCode));
     }
 
 
@@ -253,7 +253,7 @@ public class CustomerOffersController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteOffer(selectedOffer.getId());
+            DBHelper.getOfferDao().deleteOffer(selectedOffer.getId());
             loadOffers(customer.getCode());
         }
     }
@@ -389,7 +389,7 @@ public class CustomerOffersController {
                 if (controller.isSended) {
                     // Εκτελούμε το handleSendEmail
                     DBHelper dbHelper = new DBHelper();
-                    dbHelper.updateOfferSent(selectedOffer.getId());
+                    DBHelper.getOfferDao().updateOfferSent(selectedOffer.getId());
                     loadOffers(customer.getCode());
                 }
             });
@@ -425,7 +425,7 @@ public class CustomerOffersController {
         }
 
         DBHelper dbHelper = new DBHelper();
-        if (dbHelper.updateOfferStatusManual(selectedOffer.getId(), ans)) {
+        if (DBHelper.getOfferDao().updateOfferStatusManual(selectedOffer.getId(), ans)) {
             System.out.println("Task completion status updated.");
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()

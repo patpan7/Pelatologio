@@ -80,7 +80,7 @@ public class TaxisViewController {
     public void loadLoginsForCustomer(int customerId) {
         loginList.clear();
         DBHelper dbHelper = new DBHelper();
-        loginList.addAll(dbHelper.getLogins(customerId, 3));
+        loginList.addAll(DBHelper.getLoginDao().getLogins(customerId, 3));
         if (loginTable.getItems().size() == 1) {
             loginTable.getSelectionModel().select(0);
         }
@@ -131,7 +131,7 @@ public class TaxisViewController {
         alert.setContentText("Είστε σίγουροι ότι θέλετε να διαγράψετε το επιλεγμένο login;");
 
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-            new DBHelper().deleteLogin(selectedLogin.getId());
+            DBHelper.getLoginDao().deleteLogin(selectedLogin.getId());
             loginTable.getItems().remove(selectedLogin);
         }
     }
@@ -156,7 +156,7 @@ public class TaxisViewController {
             dialog.setResultConverter(buttonType -> {
                 if (buttonType == ButtonType.OK) {
                     try {
-                        if (!new DBHelper().updateLogin(controller.getUpdatedLogin())) {
+                        if (!new DBHelper().getLoginDao().updateLogin(controller.getUpdatedLogin())) {
                             showErrorDialog("Αποτυχία ενημέρωσης", "Η ενημέρωση του login απέτυχε.");
                         }
                     } catch (Exception e) {

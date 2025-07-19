@@ -8,12 +8,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AsteriskAMIClient;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.helper.Logger;
 import org.easytech.pelatologio.models.Offer;
@@ -26,10 +27,7 @@ import java.util.Optional;
 
 public class MainMenu extends Application {
 
-    private AsteriskAMIClient amiClient;
-
-    @Override
-    public void start(Stage stage) throws IOException {
+    @Override    public void start(Stage stage) throws IOException {
         String username = AppSettings.loadSetting("appuser") != null ? AppSettings.loadSetting("appuser") : "";
         if (username == null || username.isEmpty()) {
             // Prompt user for username if not set
@@ -53,17 +51,10 @@ public class MainMenu extends Application {
         // Ξεκινά το polling αφού φορτωθεί η εφαρμογή
         startPolling();
         startAppointmentReminder();
-//        try {
-//            amiClient = new AsteriskAMIClient("192.168.1.20", "admin", "password");
-//            amiClient.connect();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         stage.setOnCloseRequest(event -> {
             // Save settings before closing
-            DBHelper dbHelper = new DBHelper();
-            dbHelper.customerUnlockAll(AppSettings.loadSetting("appuser"));
-            //amiClient.disconnect();
+            DBHelper.getCustomerDao().customerUnlockAll(AppSettings.loadSetting("appuser"));
+            DBHelper.closeDataSource();
         });
 
     }
@@ -90,8 +81,7 @@ public class MainMenu extends Application {
                         .hideAfter(Duration.seconds(10))
                         .position(Pos.TOP_RIGHT);
                 notifications.showInformation();});
-            DBHelper dbHelper = new DBHelper();
-            dbHelper.updateOfferStatus(offer.getId(), offer.getStatus());
+            DBHelper.getOfferDao().updateOfferStatus(offer.getId(), offer.getStatus());
             // Ενημέρωσε το TableView ή όποιο στοιχείο UI χρησιμοποιείς
         }
     }
@@ -104,9 +94,8 @@ public class MainMenu extends Application {
                 return new Task<>() {
                     @Override
                     protected List<Offer> call() {
-                        DBHelper dbHelper = new DBHelper();
                         //System.out.println("Έλεγχος για ενημερώσεις..." + lastCheck);
-                        return dbHelper.getUpdatedOffers(lastCheck);
+                        return DBHelper.getOfferDao().getUpdatedOffers(lastCheck);
                     }
                 };
             }
@@ -132,8 +121,7 @@ public class MainMenu extends Application {
                 return new Task<>() {
                     @Override
                     protected List<Tasks> call() {
-                        DBHelper dbHelper = new DBHelper();
-                        return dbHelper.getUpcomingAppointments(LocalDateTime.now());
+                        return DBHelper.getTaskDao().getUpcomingAppointments(LocalDateTime.now());
                     }
                 };
             }
@@ -185,8 +173,7 @@ public class MainMenu extends Application {
     }
 
     private static void snoozeAppointment(Tasks appointment) {
-        DBHelper dbHelper = new DBHelper();
-        dbHelper.snoozeAppointment(appointment.getId());
+        DBHelper.getTaskDao().snoozeAppointment(appointment.getId());
         Notifications.create()
                 .title("Αναβολή Ραντεβού")
                 .text("Το ραντεβού '" + appointment.getTitle() + "' ενημερώθηκε.")
@@ -195,9 +182,7 @@ public class MainMenu extends Application {
                 .showInformation();
     }
 
-
     public static void main(String[] args) {
-        // Εκκίνηση της καταγραφής κονσόλας
         Logger.initLogging();
         launch();
     }

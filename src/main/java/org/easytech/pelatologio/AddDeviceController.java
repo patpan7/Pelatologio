@@ -117,12 +117,12 @@ public class AddDeviceController {
         DBHelper dbHelper = new DBHelper();
 
         // Φόρτωση πελατών
-        List<Customer> customers = dbHelper.getCustomers();
+        List<Customer> customers = DBHelper.getCustomerDao().getCustomers();
         filteredCustomers = new FilteredList<>(FXCollections.observableArrayList(customers));
         customerComboBox.setItems(filteredCustomers);
         customerComboBox.setEditable(true);
         // Φόρτωση ειδών
-        List<Item> items = dbHelper.getItems();
+        List<Item> items = DBHelper.getItemDao().getItems();
         filteredItems = new FilteredList<>(FXCollections.observableArrayList(items));
         itemComboBox.setItems(filteredItems);
         itemComboBox.setEditable(true);
@@ -177,7 +177,7 @@ public class AddDeviceController {
         });
 
         rateList.clear();
-        rateList.addAll(dbHelper.getRates());
+        rateList.addAll(DBHelper.getDeviceDao().getRates());
         rateField.setItems(rateList);
     }
 
@@ -426,7 +426,7 @@ public class AddDeviceController {
                 // Έλεγχος μοναδικότητας του σειριακού αριθμού
                 List<String> invalidSerials = new ArrayList<>();
                 for (String serial : serialNumbers) {
-                    if (!dbHelper.isSerialUnique(serial)) {
+                    if (!DBHelper.getDeviceDao().isSerialUnique(serial)) {
                         Platform.runLater(() -> {
                             Notifications notifications = Notifications.create()
                                     .title("Σφάλμα")
@@ -450,7 +450,7 @@ public class AddDeviceController {
                 // Δημιουργία νέας συσκευής
                 for (String serial : serialNumbers) {
                     Device newDevice = new Device(0, serial, description, rate, itemId, selectedCustomer != null ? selectedCustomer.getCode() : 0);
-                    if (dbHelper.saveDevice(newDevice)) {
+                    if (DBHelper.getDeviceDao().saveDevice(newDevice)) {
                         Platform.runLater(() -> {
                             Notifications notifications = Notifications.create()
                                     .title("Επιτυχία")
@@ -471,7 +471,7 @@ public class AddDeviceController {
                 device.setItemId(itemId);
                 int customerId = selectedCustomer != null ? selectedCustomer.getCode() : 0;
                 device.setCustomerId(customerId);
-                dbHelper.updateDevice(device);
+                DBHelper.getDeviceDao().updateDevice(device);
             }
 
             return true;
@@ -500,7 +500,7 @@ public class AddDeviceController {
             // Έλεγχος μοναδικότητας του σειριακού αριθμού
             List<String> invalidSerials = new ArrayList<>();
             for (String serial : serialNumbers) {
-                if (dbHelper.isSerialAssigned(serial, customerId)) {
+                if (DBHelper.getDeviceDao().isSerialAssigned(serial, customerId)) {
                     Platform.runLater(() -> {
                         Notifications notifications = Notifications.create()
                                 .title("Σφάλμα")
@@ -512,7 +512,7 @@ public class AddDeviceController {
                     });
                     invalidSerials.add(serial);
                 }
-                if (dbHelper.isSerialUnique(serial)) {
+                if (DBHelper.getDeviceDao().isSerialUnique(serial)) {
                     Platform.runLater(() -> {
                         Notifications notifications = Notifications.create()
                                 .title("Σφάλμα")
@@ -535,7 +535,7 @@ public class AddDeviceController {
 
             // Δημιουργία νέας συσκευής
             for (String serial : serialNumbers) {
-                if (dbHelper.assignDevice(serial, customerId)) {
+                if (DBHelper.getDeviceDao().assignDevice(serial, customerId)) {
                     Platform.runLater(() -> {
                         Notifications notifications = Notifications.create()
                                 .title("Επιτυχία")
@@ -558,15 +558,15 @@ public class AddDeviceController {
     public void showCustomer(ActionEvent evt) {
         DBHelper dbHelper = new DBHelper();
 
-        Customer selectedCustomer = dbHelper.getSelectedCustomer(device.getCustomerId());
+        Customer selectedCustomer = DBHelper.getCustomerDao().getSelectedCustomer(device.getCustomerId());
         if (selectedCustomer.getCode() == 0) {
             System.out.println("No customer selected.");
             return;
         }
         try {
-            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+            String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
             if (res.equals("unlocked")) {
-                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
                 Parent root = loader.load();
 
@@ -578,12 +578,12 @@ public class AddDeviceController {
                 AddCustomerController controller = loader.getController();
 
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setCustomerData(selectedCustomer);
+                controller.setCustomerForEdit(selectedCustomer);
 
                 stage.show();
                 stage.setOnCloseRequest(event -> {
                     System.out.println("Το παράθυρο κλείνει!");
-                    dbHelper.customerUnlock(selectedCustomer.getCode());
+                    DBHelper.getCustomerDao().customerUnlock(selectedCustomer.getCode());
                 });
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);

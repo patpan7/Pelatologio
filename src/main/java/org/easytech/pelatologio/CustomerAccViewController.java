@@ -57,9 +57,9 @@ public class CustomerAccViewController {
                     return;
                 }
                 try {
-                    String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                    String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                     if (res.equals("unlocked")) {
-                        dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                        DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
                         Parent root = loader.load();
 
@@ -71,12 +71,12 @@ public class CustomerAccViewController {
                         AddCustomerController controller = loader.getController();
 
                         // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                        controller.setCustomerData(selectedCustomer);
+                        controller.setCustomerForEdit(selectedCustomer);
 
                         stage.show();
                         stage.setOnCloseRequest(evt -> {
                             System.out.println("Το παράθυρο κλείνει!");
-                            dbHelper.customerUnlock(selectedCustomer.getCode());
+                            DBHelper.getCustomerDao().customerUnlock(selectedCustomer.getCode());
                         });
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -97,7 +97,7 @@ public class CustomerAccViewController {
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
-        customersList.addAll(dbHelper.getCustomersByAcc(accId));
+        customersList.addAll(DBHelper.getCustomerDao().getCustomersByAcc(accId));
     }
 
     public void setAccountnat(Accountant accountant) {
@@ -106,6 +106,6 @@ public class CustomerAccViewController {
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
-        customersList.addAll(dbHelper.getCustomersByAcc(accountant.getId()));
+        customersList.addAll(DBHelper.getCustomerDao().getCustomersByAcc(accountant.getId()));
     }
 }

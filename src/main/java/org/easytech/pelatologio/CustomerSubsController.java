@@ -122,7 +122,7 @@ public class CustomerSubsController {
         allSubs.clear();
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
-        allSubs.setAll(dbHelper.getAllCustomerSubs(customerCode));
+        allSubs.setAll(DBHelper.getSubscriptionDao().getAllCustomerSubs(customerCode));
     }
 
 
@@ -230,7 +230,7 @@ public class CustomerSubsController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteSub(selectedSub.getId());
+            DBHelper.getSubscriptionDao().deleteSub(selectedSub.getId());
             loadSubs(customer.getCode());
         }
     }
@@ -257,7 +257,7 @@ public class CustomerSubsController {
         result.ifPresent(selected -> {
             int yearsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", ""));
             DBHelper dbHelper = new DBHelper();
-            dbHelper.renewSub(selectedSub.getId(), yearsToAdd);
+            DBHelper.getSubscriptionDao().renewSub(selectedSub.getId(), yearsToAdd);
             loadSubs(customer.getCode());
         });
     }
@@ -289,7 +289,7 @@ public class CustomerSubsController {
             return;
         }
         DBHelper dbHelper = new DBHelper();
-        Customer customer = dbHelper.getSelectedCustomer(selectedSub.getCustomerId());
+        Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedSub.getCustomerId());
         String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" +
                 "<br>Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "." +
                 "<br>Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν." +
@@ -331,7 +331,7 @@ public class CustomerSubsController {
             dialog.setOnCloseRequest(evt -> {
                 if (controller.isSended) {
                     // Εκτελούμε το handleSendEmail
-                    dbHelper.updateSubSent(selectedSub.getId());
+                    DBHelper.getSubscriptionDao().updateSubSent(selectedSub.getId());
                     loadSubs(customer.getCode());
                 }
             });

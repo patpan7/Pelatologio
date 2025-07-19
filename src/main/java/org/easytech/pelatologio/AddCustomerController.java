@@ -30,6 +30,7 @@ import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Accountant;
+import org.easytech.pelatologio.models.CallLog;
 import org.easytech.pelatologio.models.Customer;
 
 import java.awt.*;
@@ -77,7 +78,7 @@ public class AddCustomerController {
     @FXML
     public JFXCheckBox checkboxActive;
     @FXML
-    Button btnPhone1, btnPhone2, btnMobile, btnPhoneManager, btnAccPhone, btnAccMobile;
+    Button btnPhone1, btnPhone2, btnMobile, btnPhoneManager, btnAccPhone, btnAccMobile, startCallLogButton;
 
     DBHelper dbHelper;
 
@@ -104,6 +105,7 @@ public class AddCustomerController {
     private ObservableList<String> recommendationList = FXCollections.observableArrayList();
     private FilteredList<String> filteredRecommendations;
     private CustomersController customersController;
+    private Consumer<String> originateCallCallback;
 
     // Θα περάσουμε το TabPane από τον MainMenuController
     public void setMainTabPane(TabPane mainTabPane, Tab myTab) {
@@ -114,6 +116,10 @@ public class AddCustomerController {
 
     public void setCustomersController(CustomersController controller) {
         this.customersController = controller;
+    }
+
+    public void setOriginateCallCallback(Consumer<String> callback) {
+        this.originateCallCallback = callback;
     }
 
 
@@ -274,9 +280,9 @@ public class AddCustomerController {
         tabMypos.setDisable(true);
         tabSimply.setDisable(true);
         tabEmblem.setDisable(true);
+        tabErgani.setDisable(true);
         tabPelatologio.setDisable(true);
         tabNinepos.setDisable(true);
-        tabErgani.setDisable(true);
         tabDevices.setDisable(true);
         tabInvoices.setDisable(true);
         tabTasks.setDisable(true);
@@ -346,18 +352,17 @@ public class AddCustomerController {
         btnAccEmail.setOnAction(this::showEmailDialog);
         btnAccEmail1.setOnAction(this::showEmailDialog);
 
-        btnPhone1.setUserData(tfPhone1);
-        btnPhone1.setOnAction(PhoneCall::callHandle);
+        btnPhone1.setOnAction(e -> handlePhoneCall(tfPhone1.getText()));
         btnPhone2.setUserData(tfPhone2);
-        btnPhone2.setOnAction(PhoneCall::callHandle);
+        btnPhone2.setOnAction(e -> handlePhoneCall(tfPhone2.getText()));
         btnMobile.setUserData(tfMobile);
-        btnMobile.setOnAction(PhoneCall::callHandle);
+        btnMobile.setOnAction(e -> handlePhoneCall(tfMobile.getText()));
         btnPhoneManager.setUserData(tfManagerPhone);
-        btnPhoneManager.setOnAction(PhoneCall::callHandle);
+        btnPhoneManager.setOnAction(e -> handlePhoneCall(tfManagerPhone.getText()));
         btnAccPhone.setUserData(tfAccPhone);
-        btnAccPhone.setOnAction(PhoneCall::callHandle);
+        btnAccPhone.setOnAction(e -> handlePhoneCall(tfAccPhone.getText()));
         btnAccMobile.setUserData(tfAccMobile);
-        btnAccMobile.setOnAction(PhoneCall::callHandle);
+        btnAccMobile.setOnAction(e -> handlePhoneCall(tfAccMobile.getText()));
 
 
         // Ενέργειες για τα copy, paste, clear items στο βασικό contextMenu
@@ -391,7 +396,7 @@ public class AddCustomerController {
             }
         });
         dbHelper = new DBHelper();
-        List<Accountant> accountants = dbHelper.getAccountants();
+        List<Accountant> accountants = DBHelper.getAccountantDao().getAccountants();
         accountants.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         filteredAccountants = new FilteredList<>(FXCollections.observableArrayList(accountants));
         //accountantsList.clear();
@@ -427,7 +432,7 @@ public class AddCustomerController {
         });
         setupComboBoxFilter(tfAccName, filteredAccountants);
         recommendationList.clear();
-        recommendationList.addAll(dbHelper.getRecomedations());
+        recommendationList.addAll(DBHelper.getCustomerDao().getRecomedations());
 //        tfRecommendation.setItems(recommendationList);
         filteredRecommendations = new FilteredList<>(recommendationList);
         tfRecommendation.setItems(filteredRecommendations);
@@ -440,6 +445,41 @@ public class AddCustomerController {
             this.hasUnsavedChanges = false;
             updateTabTitle("");
         });
+
+        // Check for active call and show button if necessary
+        if (ActiveCallState.isCallActive()) {
+            startCallLogButton.setVisible(true);
+            startCallLogButton.setOnAction(e -> handleStartCallLogging());
+        }
+    }
+
+    private void handleStartCallLogging() {
+        try {
+            // Create a new call log entry
+            CallLog newCall = new CallLog(ActiveCallState.getCurrentCallerId(), customer.getName(), "INCOMING", java.time.LocalDateTime.now(), customer.getCode());
+            newCall.setAppUser(AppSettings.loadSetting("appuser"));
+            DBHelper.getCallLogDao().insertCallLog(newCall);
+
+            // Open the notes window
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/easytech/pelatologio/call_notes.fxml"));
+            Parent root = loader.load();
+            CallNotesController controller = loader.getController();
+
+            Stage stage = new Stage();
+            stage.setTitle("Σημειώσεις Κλήσης");
+            stage.setScene(new Scene(root));
+
+            controller.initialize(stage, newCall, customer);
+
+            stage.show();
+
+            // Hide the button after starting the log
+            startCallLogButton.setVisible(false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertDialogHelper.showDialog("Σφάλμα", "Αδυναμία έναρξης καταγραφής κλήσης.", e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
@@ -541,7 +581,7 @@ public class AddCustomerController {
             progressIndicator.setVisible(true);
 
             // Δημιουργία και αποστολή email σε ξεχωριστό thread για να μην κολλήσει το UI
-            new Thread(() -> {
+            Thread emailThread = new Thread(() -> {
                 try {
                     String subject = "Δοκιμή Email";
                     String body = "Δοκιμή email.";
@@ -566,7 +606,9 @@ public class AddCustomerController {
                     });
                     Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
                 }
-            }).start(); // Ξεκινάμε το thread για την αποστολή του email
+            });
+            emailThread.setDaemon(true);
+            emailThread.start(); // Ξεκινάμε το thread για την αποστολή του email
         } else {
             //showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο email.");
             Notifications notifications = Notifications.create()
@@ -580,7 +622,7 @@ public class AddCustomerController {
     }
 
 
-    public void setCustomerData(Customer customer) {
+    public void setCustomerForEdit(Customer customer) {
         // Ρύθμιση των πεδίων με τα υπάρχοντα στοιχεία του πελάτη
         tfName.setText(customer.getName());
         tfTitle.setText(customer.getTitle());
@@ -601,7 +643,7 @@ public class AddCustomerController {
         tfAccEmail1.setText(customer.getAccEmail1());
         tfBalance.setText(customer.getBalance());
         taBalanceReason.setText(customer.getBalanceReason());
-        tfBalanceMega.setText(dbHelper.getMegasoftBalance(customer.getAfm()));
+        tfBalanceMega.setText(DBHelper.getMegasoftDao().getMegasoftBalance(customer.getAfm()));
         setupFieldListeners();
         this.hasUnsavedChanges = false;
         updateTabTitle("");
@@ -655,32 +697,38 @@ public class AddCustomerController {
         }
         if (customerDevicesController != null) {
             customerDevicesController.setCustomer(customer);
-        } else {
+        }
+        else {
             System.out.println("customerDevicesController δεν είναι ακόμα έτοιμος.");
         }
         if (invoicesViewController != null) {
             invoicesViewController.setCustomer(customer);
-        } else {
+        }
+        else {
             System.out.println("invoicesViewController δεν είναι ακόμα έτοιμος.");
         }
         if (customerTasksController != null) {
             customerTasksController.setCustomer(customer);
-        } else {
+        }
+        else {
             System.out.println("customerTasksController δεν είναι ακόμα έτοιμος.");
         }
         if (customerSubsController != null) {
             customerSubsController.setCustomer(customer);
-        } else {
+        }
+        else {
             System.out.println("customerSubsController δεν είναι ακόμα έτοιμος.");
         }
         if (customerOffersController != null) {
             customerOffersController.setCustomer(customer);
-        } else {
+        }
+        else {
             System.out.println("customerOffersController δεν είναι ακόμα έτοιμος.");
         }
         if (customerOrdersController != null) {
             customerOrdersController.setCustomer(customer);
-        } else {
+        }
+        else {
             System.out.println("customerOrdersController δεν είναι ακόμα έτοιμος.");
         }
 
@@ -819,7 +867,7 @@ public class AddCustomerController {
     private void setRecommendation() {
         DBHelper dbHelper = new DBHelper();
         recommendationList.clear();
-        recommendationList.addAll(dbHelper.getRecomedations());
+        recommendationList.addAll(DBHelper.getCustomerDao().getRecomedations());
         filteredRecommendations = new FilteredList<>(recommendationList);
         tfRecommendation.setItems(filteredRecommendations);
         //tfRecommendation.setItems(recommendationList);
@@ -879,7 +927,7 @@ public class AddCustomerController {
 
     private void setAccountant() {
         DBHelper dbHelper = new DBHelper();
-        List<Accountant> accountants = dbHelper.getAccountants();
+        List<Accountant> accountants = DBHelper.getAccountantDao().getAccountants();
         accountants.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         filteredAccountants = new FilteredList<>(FXCollections.observableArrayList(accountants));
         tfAccName.setItems(filteredAccountants);
@@ -926,49 +974,49 @@ public class AddCustomerController {
 
     private void hasTabs() {
         DBHelper dbHelper = new DBHelper();
-        if (dbHelper.hasSubAddress(customer.getCode())) {
+        if (DBHelper.getCustomerDao().hasSubAddress(customer.getCode())) {
             btnAddressAdd.setStyle("-fx-border-color: #FF0000;");
         }
-        if (dbHelper.hasApp(customer.getCode(), 1)) {
+        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 1)) {
             tabMypos.getStyleClass().add("tabHas");
         }
-        if (dbHelper.hasApp(customer.getCode(), 2)) {
+        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 2)) {
             tabSimply.getStyleClass().add("tabHas");
         }
-        if (dbHelper.hasApp(customer.getCode(), 3)) {
+        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 3)) {
             tabTaxis.getStyleClass().add("tabHas");
         }
-        if (dbHelper.hasApp(customer.getCode(), 4)) {
+        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 4)) {
             tabEmblem.getStyleClass().add("tabHas");
         }
-        if (dbHelper.hasApp(customer.getCode(), 5)) {
+        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 5)) {
             tabErgani.getStyleClass().add("tabHas");
         }
-        if (dbHelper.hasApp(customer.getCode(), 6)) {
+        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 6)) {
             tabPelatologio.getStyleClass().add("tabHas");
         }
-        if (dbHelper.hasApp(customer.getCode(), 7)) {
+        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 7)) {
             tabNinepos.getStyleClass().add("tabHas");
         }
-        if (dbHelper.hasDevice(customer.getCode())) {
+        if (DBHelper.getCustomerDao().hasDevice(customer.getCode())) {
             tabDevices.getStyleClass().add("tabHas");
         }
-        if (dbHelper.hasInvoices(customer.getAfm())) {
+        if (DBHelper.getCustomerDao().hasInvoices(customer.getAfm())) {
             tabInvoices.getStyleClass().add("tabHas");
         }
-        if (dbHelper.hasTask(customer.getCode())) {
+        if (DBHelper.getCustomerDao().hasTask(customer.getCode())) {
             tabTasks.getStyleClass().add("tabHas");
         }
-        if (dbHelper.hasSub(customer.getCode())) {
+        if (DBHelper.getCustomerDao().hasSub(customer.getCode())) {
             tabSubs.getStyleClass().add("tabHas");
         }
-        if (dbHelper.hasOffer(customer.getCode())) {
+        if (DBHelper.getCustomerDao().hasOffer(customer.getCode())) {
             tabOffers.getStyleClass().add("tabHas");
         }
         if (customer.getAccId() != 0) {
             tabAccountant.getStyleClass().add("tabHas");
         }
-        if (dbHelper.hasOrders(customer.getCode())) {
+        if (DBHelper.getCustomerDao().hasOrders(customer.getCode())) {
             tabOrders.getStyleClass().add("tabHas");
         }
         if (!customer.getNotes().isEmpty()) {
@@ -1019,7 +1067,7 @@ public class AddCustomerController {
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         int customerId;
-        if (dbHelper.isAfmExists(afm)) {
+        if (DBHelper.getCustomerDao().isAfmExists(afm)) {
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -1031,7 +1079,7 @@ public class AddCustomerController {
             });
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
-            customerId = dbHelper.insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason);
+            customerId = DBHelper.getCustomerDao().insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason);
             // Εμφάνιση επιτυχίας
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -1054,6 +1102,10 @@ public class AddCustomerController {
         }
     }
 
+
+    public Customer getUpdatedCustomer() {
+        return this.customer;
+    }
 
     void updateCustomer() {
         DBHelper dbHelper = new DBHelper();
@@ -1122,7 +1174,7 @@ public class AddCustomerController {
         customer.setPhone2(phone2);
         customer.setManagerPhone(managerPhone);
 
-        dbHelper.updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason, isActive);
+        DBHelper.getCustomerDao().updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason, isActive);
 
         String accName = tfAccName.getValue() != null ? tfAccName.getValue().toString() : "";
         String accPhone = tfAccPhone.getText();
@@ -1136,7 +1188,7 @@ public class AddCustomerController {
         String accEmail = tfAccEmail.getText();
         String accErganiEmail = tfAccErganiEmail.getText();
 
-        dbHelper.updateAccountant(accId, accName, accPhone, accMobile, accEmail, accErganiEmail);
+        DBHelper.getAccountantDao().updateAccountant(accId, accName, accPhone, accMobile, accEmail, accErganiEmail);
 
         Notifications notifications = Notifications.create()
                 .title("Επιτυχία")
@@ -1308,6 +1360,20 @@ public class AddCustomerController {
         tfAccName.getSelectionModel().select(newAccountant); // Επιλογή
     }
 
+    private void handlePhoneCall(String phoneNumber) {
+        if (originateCallCallback != null && phoneNumber != null && !phoneNumber.isEmpty()) {
+            originateCallCallback.accept(phoneNumber);
+        } else {
+            Notifications notifications = Notifications.create()
+                    .title("Προσοχή")
+                    .text("Δεν υπάρχει αριθμός τηλεφώνου για κλήση.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showWarning();
+        }
+    }
+
     @FXML
     private void handleMouseClick(MouseEvent event) {
         // Έλεγχος για διπλό κλικ
@@ -1352,7 +1418,7 @@ public class AddCustomerController {
 
     public void addMegasoft(ActionEvent event) {
         DBHelper dbHelper = new DBHelper();
-        if (dbHelper.isAfmExistsMegasoft(customer.getAfm()))
+        if (DBHelper.getCustomerDao().isAfmExistsMegasoft(customer.getAfm()))
             PrismaWinAutomation.showCustomer(customer);
         else
             PrismaWinAutomation.addCustomer(customer);
@@ -1488,7 +1554,7 @@ public class AddCustomerController {
             String tracking = pair.getKey();
             LocalDate date = pair.getValue();
             DBHelper dbHelper = new DBHelper();
-            dbHelper.saveTrackingNumber(tracking, date, customer.getCode());
+            DBHelper.getTrackingDao().saveTrackingNumber(tracking, date, customer.getCode());
         });
     }
 
@@ -1496,7 +1562,7 @@ public class AddCustomerController {
         ListView<String> listView = new ListView<>();
         DBHelper dbHelper = new DBHelper();
         int customerId = customer.getCode();
-        List<String> trackingNumbers = dbHelper.getTrackingNumbers(customerId);
+        List<String> trackingNumbers = DBHelper.getTrackingDao().getTrackingNumbers(customerId);
         listView.getItems().addAll(trackingNumbers);
         // Διπλό κλικ -> Αντιγραφή
         listView.setOnMouseClicked(event -> {
@@ -1577,7 +1643,7 @@ public class AddCustomerController {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Μη Αποθηκευμένες Αλλαγές");
             alert.setHeaderText("Υπάρχουν μη αποθηκευμένες αλλαγές!");
-            alert.setContentText("Τι θέλετε να κάνετε;");
+            alert.setContentText("Τι θέλετε να κάνετε?");
 
             ButtonType saveButton = new ButtonType("Αποθήκευση");
             ButtonType discardButton = new ButtonType("Απόρριψη");
@@ -1599,8 +1665,8 @@ public class AddCustomerController {
         return true;
     }
 
-    //    private void closeCurrentTab() {
-//        if (handleTabCloseRequest()) {
+    //    private void closeCurrentTab(){
+//        if (handleTabCloseRequest()){
 //            Platform.runLater(() -> {
 //                Tab currentTab = mainTabPane.getSelectionModel().getSelectedItem();
 //                mainTabPane.getTabs().remove(currentTab);

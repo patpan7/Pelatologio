@@ -114,7 +114,7 @@ public class AddOfferController {
     public void initialize() throws SQLException {
         // Φόρτωση πελατών
         DBHelper dbHelper = new DBHelper();
-        List<Customer> customers = dbHelper.getCustomers();
+        List<Customer> customers = DBHelper.getCustomerDao().getCustomers();
         filteredCustomers = new FilteredList<>(FXCollections.observableArrayList(customers));
         //customerComboBox.getItems().addAll(filteredCustomers); // Προσθήκη αντικειμένων Customer
         customerComboBox.setItems(filteredCustomers);
@@ -279,7 +279,7 @@ public class AddOfferController {
             if (offer == null) {
                 //Δημιουργία νέας εργασίας
                 Offer newOffer = new Offer(0, offerDate, description, hours, status, selectedCustomer.getCode(), null, null, paths, "Όχι",false);
-                dbHelper.saveOffer(newOffer);
+                DBHelper.getOfferDao().saveOffer(newOffer);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
                 offer.setOfferDate(offerDate);
@@ -289,7 +289,7 @@ public class AddOfferController {
                 offer.setCustomerId(selectedCustomer.getCode());
                 offer.setPaths(paths);
                 offer.setArchived(isArchived.isSelected());
-                dbHelper.updateOffer(offer);
+                DBHelper.getOfferDao().updateOffer(offer);
             }
 
             Platform.runLater(() -> {
@@ -354,14 +354,14 @@ public class AddOfferController {
     public void showCustomer(ActionEvent evt) {
         DBHelper dbHelper = new DBHelper();
 
-        Customer selectedCustomer = dbHelper.getSelectedCustomer(offer.getCustomerId());
+        Customer selectedCustomer = DBHelper.getCustomerDao().getSelectedCustomer(offer.getCustomerId());
         if (selectedCustomer.getCode() == 0) {
             return;
         }
         try {
-            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+            String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
             if (res.equals("unlocked")) {
-                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
                 Parent root = loader.load();
 
@@ -373,12 +373,12 @@ public class AddOfferController {
                 AddCustomerController controller = loader.getController();
 
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setCustomerData(selectedCustomer);
+                controller.setCustomerForEdit(selectedCustomer);
 
                 stage.show();
                 stage.setOnCloseRequest(event -> {
                     System.out.println("Το παράθυρο κλείνει!");
-                    dbHelper.customerUnlock(selectedCustomer.getCode());
+                    DBHelper.getCustomerDao().customerUnlock(selectedCustomer.getCode());
                 });
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);

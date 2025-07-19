@@ -96,6 +96,14 @@ public class SettingsController implements Initializable {
     @FXML
     private TextField tfFanvilIp;
 
+    // SIP Settings
+    @FXML private TextField tfSipUser;
+    @FXML private TextField tfSipPassword;
+    @FXML private TextField tfSipDomain;
+    @FXML private TextField tfSipPort;
+    @FXML private TextField tfLocalIpAddress;
+    @FXML private TextField tfSipTransport;
+
 
 
 
@@ -144,6 +152,14 @@ public class SettingsController implements Initializable {
         tfEmblemRegisterMail.setText(getSettingOrEmpty("emblemRegisterMail"));
         taSignature.setText(getSettingOrEmpty("signature"));
         tfErganiRegisterMail.setText(getSettingOrEmpty("erganiRegisterMail"));
+
+        // Load SIP settings
+        tfSipUser.setText(getSettingOrEmpty("sipUser"));
+        tfSipPassword.setText(getSettingOrEmpty("sipPassword"));
+        tfSipDomain.setText(getSettingOrEmpty("sipDomain"));
+        tfSipPort.setText(getSettingOrEmpty("sipPort"));
+        tfLocalIpAddress.setText(getSettingOrEmpty("localIpAddress"));
+        tfSipTransport.setText(getSettingOrEmpty("sipTransport"));
     }
 
     private String getSettingOrEmpty(String key) {
@@ -191,6 +207,15 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("emblemPass", tfEmblemPass.getText());
         AppSettings.saveSetting("emblemRegisterMail", tfEmblemRegisterMail.getText());
         AppSettings.saveSetting("erganiRegisterMail", tfErganiRegisterMail.getText());
+
+        // Save SIP settings
+        AppSettings.saveSetting("sipUser", tfSipUser.getText());
+        AppSettings.saveSetting("sipPassword", tfSipPassword.getText());
+        AppSettings.saveSetting("sipDomain", tfSipDomain.getText());
+        AppSettings.saveSetting("sipPort", tfSipPort.getText());
+        AppSettings.saveSetting("localIpAddress", tfLocalIpAddress.getText());
+        AppSettings.saveSetting("sipTransport", tfSipTransport.getText());
+
         if (rbChrome.isSelected()) {
             AppSettings.saveSetting("browser", "chrome");
         } else if (rbFirefox.isSelected()) {
@@ -210,7 +235,7 @@ public class SettingsController implements Initializable {
 
     public void syncClick(ActionEvent event) {
         DBHelper dbHelper = new DBHelper();
-        dbHelper.syncMegasoft();
+        DBHelper.getMegasoftDao().syncMegasoft();
     }
 
     public void deactivateCustomers(ActionEvent event) {
@@ -219,7 +244,7 @@ public class SettingsController implements Initializable {
             protected Void call() throws SQLException {
                 DBHelper dbHelper = new DBHelper();
                 AfmLookupService lookupService = new AfmLookupService();
-                List<Customer> customers = dbHelper.getCustomers(); // Υλοποίησέ τη με SQL ή DAO
+                List<Customer> customers = DBHelper.getCustomerDao().getCustomers(); // Υλοποίησέ τη με SQL ή DAO
 
                 int total = customers.size();
                 int count = 0;
@@ -229,7 +254,7 @@ public class SettingsController implements Initializable {
                         String responseXml = lookupService.callAadeService(customer.getAfm());
 
                         if (AfmResponseParser.isFormerProfessional(responseXml)) {
-                            dbHelper.deactivateCustomer(customer); // Υλοποίησε SQL update: π.χ. SET active = 0
+                            DBHelper.getCustomerDao().deactivateCustomer(customer); // Υλοποίησε SQL update: π.χ. SET active = 0
                             System.out.println("ΑΦΜ " + customer.getAfm() + " έγινε ανενεργό (ΠΡΩΗΝ ΕΠΑΓΓΕΛΜΑΤΙΑΣ)");
                         } else {
                             System.out.println("ΑΦΜ " + customer.getAfm() + " παραμένει ενεργό");

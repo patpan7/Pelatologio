@@ -77,7 +77,7 @@ public class TaskListController implements Initializable {
             property.addListener((obs, oldValue, newValue) -> {
                 task.setCalendar(newValue);
                 DBHelper dbHelper = new DBHelper();
-                dbHelper.updateTaskCalendar(task); // Ενημέρωση στη βάση
+                DBHelper.getTaskDao().updateTaskCalendar(task); // Ενημέρωση στη βάση
             });
 
             return property;
@@ -155,7 +155,7 @@ public class TaskListController implements Initializable {
         configureSingleSelectionCheckBoxes(checkBoxes3);
 
         DBHelper dbHelper = new DBHelper();
-        List<TaskCategory> categories = dbHelper.getAllTaskCategory();
+        List<TaskCategory> categories = DBHelper.getTaskDao().getAllTaskCategory();
         categoryFilterComboBox.getItems().add(new TaskCategory(0, "Όλες"));
         categoryFilterComboBox.getItems().addAll(categories);
         categoryFilterComboBox.getSelectionModel().selectFirst();
@@ -238,7 +238,7 @@ public class TaskListController implements Initializable {
         }
 
         DBHelper dbHelper = new DBHelper();
-        if (dbHelper.completeTask(selectedTasks.getId(), complete)) {
+        if (DBHelper.getTaskDao().completeTask(selectedTasks.getId(), complete)) {
             System.out.println("Task completion status updated.");
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -269,7 +269,7 @@ public class TaskListController implements Initializable {
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
         List<TableColumn<Tasks, ?>> sortOrder = new ArrayList<>(taskTable.getSortOrder());
-        allTasks.setAll(dbHelper.getAllTasks());
+        allTasks.setAll(DBHelper.getTaskDao().getAllTasks());
         updateTaskTable();
         taskTable.getSortOrder().setAll(sortOrder);
     }
@@ -417,7 +417,7 @@ public class TaskListController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteTask(selectedTasks.getId());
+            DBHelper.getTaskDao().deleteTask(selectedTasks.getId());
             loadTasks();
         }
     }
@@ -473,7 +473,7 @@ public class TaskListController implements Initializable {
             dialog.setTitle("Προσθήκη Προσφοράς");
             AddOfferController controller = loader.getController();
             DBHelper dbHelper = new DBHelper();
-            Customer customer = dbHelper.getSelectedCustomer(selectedTasks.getCustomerId());
+            Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedTasks.getCustomerId());
             controller.setCustomer(customer);
             controller.setCustomerName(customer.getName());
             controller.lock();

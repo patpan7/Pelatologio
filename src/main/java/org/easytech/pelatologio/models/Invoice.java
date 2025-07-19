@@ -18,6 +18,10 @@ public class Invoice {
         this.par = par;
     }
 
+    public Invoice() {
+
+    }
+
     public String getDate() {
         return date;
     }

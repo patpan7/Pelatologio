@@ -97,8 +97,8 @@ public class DeviceController implements Initializable {
         List<Item> items = null;
         List<String> rates = null;
         try {
-            items = dbHelper.getItems();
-            rates = dbHelper.getRates();
+            items = DBHelper.getItemDao().getItems();
+            rates = DBHelper.getDeviceDao().getRates();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -155,7 +155,7 @@ public class DeviceController implements Initializable {
         List<TableColumn<Device, ?>> sortOrder = new ArrayList<>(devicesTable.getSortOrder());
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
-        allDevices.setAll(dbHelper.getAllDevices());
+        allDevices.setAll(DBHelper.getDeviceDao().getAllDevices());
         updateDevicesTable();
         devicesTable.getSortOrder().setAll(sortOrder);
     }
@@ -286,7 +286,7 @@ public class DeviceController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
-            boolean deleted = dbHelper.deleteDevice(selectedDevice.getId());
+            boolean deleted = DBHelper.getDeviceDao().deleteDevice(selectedDevice.getId());
             if (deleted) {
                 Platform.runLater(() -> {
                     Notifications notifications = Notifications.create()

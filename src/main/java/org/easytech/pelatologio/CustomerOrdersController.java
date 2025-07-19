@@ -234,7 +234,7 @@ public class CustomerOrdersController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteOrder(selectedOrder.getId());
+            DBHelper.getOrderDao().deleteOrder(selectedOrder.getId());
             loadOrders(customer.getCode());
         }
     }
@@ -261,7 +261,7 @@ public class CustomerOrdersController {
             return;
         }
         DBHelper dbHelper = new DBHelper();
-        if (dbHelper.completeOrder(selectedOrder.getId(), complete)) {
+        if (DBHelper.getOrderDao().completeOrder(selectedOrder.getId(), complete)) {
             System.out.println("Order completion status updated.");
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -287,7 +287,7 @@ public class CustomerOrdersController {
 
     private void loadOrders(int id) {
         DBHelper dbHelper = new DBHelper();
-        allOrders.setAll(dbHelper.getAllOrdersCust(id));
+        allOrders.setAll(DBHelper.getOrderDao().getAllOrdersCust(id));
     }
 
     public void setCustomer(Customer customer) {

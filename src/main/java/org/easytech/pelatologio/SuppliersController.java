@@ -122,9 +122,8 @@ public class SuppliersController implements Initializable {
     }
 
     private List<Supplier> fetchDataFromMySQL() throws SQLException {
-        DBHelper dbHelper = new DBHelper();
         List<Supplier> suppliers;
-        suppliers = dbHelper.getSuppliers();
+        suppliers = DBHelper.getSupplierDao().getSuppliers();
         return suppliers;
     }
 
@@ -268,7 +267,7 @@ public class SuppliersController implements Initializable {
         sortedData.comparatorProperty().bind(supplierTable.comparatorProperty());
         supplierTable.setItems(sortedData);
         // Έλεγχος αν υπάρχει ήδη ανοικτό tab για τον συγκεκριμένο πελάτη
-        Supplier selectedSupplier = dbHelper.getSelectedSupplier(supplierId);
+        Supplier selectedSupplier = DBHelper.getSupplierDao().getSelectedSupplier(supplierId);
         try {
             // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
             for (Tab tab : mainTabPane.getTabs()) {
@@ -415,7 +414,7 @@ public class SuppliersController implements Initializable {
             filterField.requestFocus();
         } else if (event.getButton() == MouseButton.SECONDARY) {
             Supplier selectedSupplier = supplierTable.getSelectionModel().getSelectedItem();
-            dbHelper.customerUnlock(selectedSupplier.getId());
+            DBHelper.getCustomerDao().customerUnlock(selectedSupplier.getId());
         }
     }
 

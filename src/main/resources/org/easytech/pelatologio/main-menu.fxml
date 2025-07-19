@@ -7,14 +7,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" prefHeight="830.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
+<StackPane fx:id="stackPane" prefHeight="900.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" styleClass="pane">
         <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
             <center>
                 <TabPane fx:id="mainTabPane" BorderPane.alignment="CENTER">
                     <Tab fx:id="mainTab" closable="false" text="Κεντρικό menu">
                         <HBox alignment="TOP_CENTER">
-                            <VBox prefWidth="200.0">
+                            <VBox prefWidth="200.0" HBox.hgrow="SOMETIMES">
                                 <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </HBox.margin>
@@ -33,6 +33,18 @@
                                 <Label fx:id="lbMypos" layoutX="10.0" layoutY="10.0" styleClass="normal-label" text="Πελάτες myPOS: 1" wrapText="true" />
                         <Separator orientation="VERTICAL" prefHeight="200.0" visible="false" VBox.vgrow="ALWAYS" />
 
+                                <!-- Ρυθμίσεις Συστήματος -->
+                                <JFXButton fx:id="btnSettings" buttonType="RAISED" mnemonicParsing="false" onAction="#settingsClick" styleClass="click-button" text="Ρυθμίσεις" textAlignment="CENTER">
+                                    <graphic>
+                                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                            <Image url="@icons/settings.png" />
+                                        </ImageView>
+                                    </graphic>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                                </JFXButton>
+
                                 <JFXButton buttonType="RAISED" layoutX="1050.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleRefreshButton" styleClass="click-button" text="Ανανέωση">
                                     <graphic>
                                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -44,7 +56,7 @@
                                     </HBox.margin>
                                 </JFXButton>
                             </VBox>
-                            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                            <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                                 <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                 </HBox.margin>
@@ -170,20 +182,20 @@
                                             </ImageView>
                                         </graphic>
                                     </JFXButton>
-                                    <JFXButton fx:id="btnSettings" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#settingsClick" styleClass="click-button" text="Ρυθμίσεις" textAlignment="CENTER">
+                                    <JFXButton fx:id="btnSimplyStatus" buttonType="RAISED" contentDisplay="TOP" layoutX="399.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onMouseClicked="#simplyClick" styleClass="click-button" text="Simply" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                                <Image url="@icons/settings.png" />
+                                                <Image url="@icons/simply1.png" />
                                             </ImageView>
                                         </graphic>
                                     </JFXButton>
-                           <JFXButton fx:id="btnSimplyStatus" buttonType="RAISED" contentDisplay="TOP" layoutX="399.0" layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onMouseClicked="#simplyClick" styleClass="click-button" text="Simply" textAlignment="CENTER">
-                              <graphic>
-                                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                      <Image url="@icons/simply1.png" />
-                                  </ImageView>
-                              </graphic>
-                           </JFXButton>
+                                    <JFXButton fx:id="btnCallHistory" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#callHistoryClick" styleClass="click-button" text="Ιστορικό Κλήσεων" textAlignment="CENTER">
+                                        <graphic>
+                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                <Image url="@icons/phone.png" />
+                                            </ImageView>
+                                        </graphic>
+                                    </JFXButton>
                                 </HBox>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false">
@@ -197,7 +209,7 @@
                                     </Label>
                                 </VBox>
                             </VBox>
-                            <VBox alignment="TOP_CENTER" prefWidth="200.0">
+                            <VBox prefWidth="200.0" HBox.hgrow="SOMETIMES">
                                 <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                 </HBox.margin>
@@ -256,4 +268,5 @@
             </top>
         </BorderPane>
     </ScrollPane>
+    <ProgressIndicator fx:id="loadingIndicator" visible="false" />
 </StackPane>

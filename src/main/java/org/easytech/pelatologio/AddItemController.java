@@ -146,7 +146,7 @@ public class AddItemController {
         DBHelper dbHelper = new DBHelper();
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
-        if (dbHelper.isItemExists(name)) {
+        if (DBHelper.getItemDao().isItemExists(name)) {
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
@@ -157,7 +157,7 @@ public class AddItemController {
                 notifications.showError();});
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
-            int itemId = dbHelper.insertItem(name, description);
+            int itemId = DBHelper.getItemDao().insertItem(name, description);
             if (itemId != -1) {
                 // Εμφάνιση επιτυχίας
                 Platform.runLater(() -> {
@@ -190,7 +190,7 @@ public class AddItemController {
         DBHelper dbHelper = new DBHelper();
 
 
-        dbHelper.updateItem(code, name, description);
+        DBHelper.getItemDao().updateItem(code, name, description);
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
         Notifications notifications = Notifications.create()
                 .title("Επιτυχία")

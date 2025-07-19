@@ -15,7 +15,9 @@
 /*------------------tableView----------------*/
 .table-view {
     -fx-background-color: transparent;
-    -fx-border-color: -fx-border;
+    -fx-border-color: #D0D0D0; /* Softer border color */
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
 }
 
 .table-view .column-header {
@@ -76,13 +78,13 @@
     -fx-border-radius: 8px;
     -fx-border-width: 1;
     -fx-text-fill: black;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 6, 0, 0, 2);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 4, 0, 0, 1);
 }
 
 .click-button:hover {
     -fx-background-color: -fx-hover;
     -fx-text-fill: white;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 8, 0, 0, 3);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 6, 0, 0, 2);
     -fx-translate-y: -1px;
 }
 
@@ -377,11 +379,10 @@
 }
 
 .card {
-    -fx-padding: 8px;
-    -fx-border-color: #ced4da;
+    -fx-padding: 10px;
+    -fx-border-color: #E0E0E0;
     -fx-border-width: 1px;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0.1, 0, 2);
-
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 6, 0, 0, 1);
 }

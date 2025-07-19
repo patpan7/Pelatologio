@@ -120,7 +120,7 @@ public class CustomerTasksController {
         }
 
         DBHelper dbHelper = new DBHelper();
-        if (dbHelper.completeTask(selectedTasks.getId(), complete)) {
+        if (DBHelper.getTaskDao().completeTask(selectedTasks.getId(), complete)) {
             System.out.println("Task completion status updated.");
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -150,7 +150,7 @@ public class CustomerTasksController {
         allTasks.clear();
         // Φόρτωση όλων των εργασιών από τη βάση
         DBHelper dbHelper = new DBHelper();
-        allTasks.setAll(dbHelper.getAllCustomerTasks(customerCode));
+        allTasks.setAll(DBHelper.getTaskDao().getAllCustomerTasks(customerCode));
     }
 
 
@@ -258,7 +258,7 @@ public class CustomerTasksController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
-            dbHelper.deleteTask(selectedTasks.getId());
+            DBHelper.getTaskDao().deleteTask(selectedTasks.getId());
             loadTasks(customer.getCode());
         }
     }

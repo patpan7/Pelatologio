@@ -114,7 +114,7 @@ public class AddOrderController {
     public void initialize() throws SQLException {
         // Φόρτωση πελατών
         DBHelper dbHelper = new DBHelper();
-        List<Customer> customers = dbHelper.getCustomers();
+        List<Customer> customers = DBHelper.getCustomerDao().getCustomers();
         filteredCustomers = new FilteredList<>(FXCollections.observableArrayList(customers));
         customerComboBox.setItems(filteredCustomers);
         customerComboBox.setEditable(true);
@@ -134,7 +134,7 @@ public class AddOrderController {
             }
         });
 
-        List<Supplier> suppliers = dbHelper.getSuppliers();
+        List<Supplier> suppliers = DBHelper.getSupplierDao().getSuppliers();
         filteredSuppliers = new FilteredList<>(FXCollections.observableArrayList(suppliers));
         supplierComboBox.setItems(filteredSuppliers);
         supplierComboBox.setEditable(true);
@@ -314,7 +314,7 @@ public class AddOrderController {
                 newOrder.setWait(isWait);
 
                 //Tasks newTasks = new Tasks(0, title, description, date, false, category, selectedCustomer != null ? selectedCustomer.getCode() : 0, isErgent, isWait);
-                dbHelper.saveOrder(newOrder);
+                DBHelper.getOrderDao().saveOrder(newOrder);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
                 order.setTitle(title);
@@ -329,7 +329,7 @@ public class AddOrderController {
                 order.setCompleted(isCompleted);
                 order.setReceived(isReceived);
                 order.setDelivered(isDelivered);
-                dbHelper.updateOrder(order);
+                DBHelper.getOrderDao().updateOrder(order);
             }
 
             Platform.runLater(() -> {
@@ -394,14 +394,14 @@ public class AddOrderController {
     public void showCustomer(ActionEvent evt) {
         DBHelper dbHelper = new DBHelper();
 
-        Customer selectedCustomer = dbHelper.getSelectedCustomer(order.getCustomerId());
+        Customer selectedCustomer = DBHelper.getCustomerDao().getSelectedCustomer(order.getCustomerId());
         if (selectedCustomer.getCode() == 0) {
             return;
         }
         try {
-            String res = dbHelper.checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+            String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
             if (res.equals("unlocked")) {
-                dbHelper.customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
+                DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
                 Parent root = loader.load();
 
@@ -413,12 +413,12 @@ public class AddOrderController {
                 AddCustomerController controller = loader.getController();
 
                 // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setCustomerData(selectedCustomer);
+                controller.setCustomerForEdit(selectedCustomer);
 
                 stage.show();
                 stage.setOnCloseRequest(event -> {
                     System.out.println("Το παράθυρο κλείνει!");
-                    dbHelper.customerUnlock(selectedCustomer.getCode());
+                    DBHelper.getCustomerDao().customerUnlock(selectedCustomer.getCode());
                 });
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -434,7 +434,7 @@ public class AddOrderController {
     public void showSupplier(ActionEvent evt) {
         DBHelper dbHelper = new DBHelper();
 
-        Supplier selectedSupplier = dbHelper.getSelectedSupplier(order.getSupplierId());
+        Supplier selectedSupplier = DBHelper.getSupplierDao().getSelectedSupplier(order.getSupplierId());
         if (selectedSupplier.getId() == 0) {
             return;
         }
