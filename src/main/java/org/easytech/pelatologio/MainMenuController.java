@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MainMenuController implements Initializable {
@@ -54,6 +55,8 @@ public class MainMenuController implements Initializable {
 
     private CustomerDao customerDao;
     private SipClient sipClient;
+    @FXML
+    private Button btnSimulateCall;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -645,6 +648,21 @@ public class MainMenuController implements Initializable {
         } else {
             AlertDialogHelper.showDialog("Σφάλμα", "Το SIP Client δεν έχει αρχικοποιηθεί.", "", Alert.AlertType.WARNING);
         }
+    }
+
+    @FXML
+    private void simulateCall() {
+        TextInputDialog dialog = new TextInputDialog("2101234567");
+        dialog.setTitle("Simulate Incoming Call");
+        dialog.setHeaderText("Enter a phone number to simulate an incoming call from.");
+        dialog.setContentText("Phone Number:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(phoneNumber -> {
+            if (sipClient != null) {
+                sipClient.simulateIncomingCall(phoneNumber);
+            }
+        });
     }
 }
 

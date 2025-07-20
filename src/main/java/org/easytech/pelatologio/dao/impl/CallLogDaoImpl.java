@@ -56,6 +56,33 @@ public class CallLogDaoImpl implements CallLogDao {
     }
 
     @Override
+    public List<CallLog> getCallLogs() throws SQLException {
+        List<CallLog> callLogs = new ArrayList<>();
+        String sql = "SELECT * FROM CallLogs ORDER BY startTime DESC";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    CallLog callLog = new CallLog();
+                    callLog.setId(rs.getInt("id"));
+                    callLog.setCallerNumber(rs.getString("callerNumber"));
+                    callLog.setCallerName(rs.getString("callerName"));
+                    callLog.setCallType(rs.getString("callType"));
+                    callLog.setStartTime(rs.getTimestamp("startTime").toLocalDateTime());
+                    if (rs.getTimestamp("endTime") != null) {
+                        callLog.setEndTime(rs.getTimestamp("endTime").toLocalDateTime());
+                    }
+                    callLog.setDurationSeconds(rs.getLong("durationSeconds"));
+                    callLog.setCustomerId(rs.getInt("customerId"));
+                    callLog.setNotes(rs.getString("notes"));
+                    callLogs.add(callLog);
+                }
+            }
+        }
+        return callLogs;
+    }
+
+    @Override
     public List<CallLog> getCallLogsByCustomerId(int customerId) throws SQLException {
         List<CallLog> callLogs = new ArrayList<>();
         String sql = "SELECT * FROM CallLogs WHERE customerId = ? ORDER BY startTime DESC";

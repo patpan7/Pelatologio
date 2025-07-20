@@ -3,12 +3,13 @@ package org.easytech.pelatologio.helper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import org.easytech.pelatologio.AppSettings;
-import org.easytech.pelatologio.models.CallLog;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class CallerPopupController {
@@ -22,21 +23,37 @@ public class CallerPopupController {
     private Stage stage;
     private Consumer<Integer> openCustomerCallback;
 
+    private static final List<Stage> openPopups = new ArrayList<>();
+    private static final double POPUP_SPACING = 10.0;
+
     public void setStage(Stage stage) {
         this.stage = stage;
-        positionWindowBottomRight();
+        this.stage.setOnHidden(event -> {
+            openPopups.remove(this.stage);
+            repositionPopups();
+        });
     }
 
-    private void positionWindowBottomRight() {
+    private void positionWindow() {
         Platform.runLater(() -> {
             Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            double popupHeight = stage.getHeight();
+            double yPosition = screenBounds.getMaxY() - popupHeight - openPopups.size() * (popupHeight + POPUP_SPACING);
 
-            double x = screenBounds.getMaxX() - stage.getWidth() - 20; // 20px απόσταση από τη δεξιά άκρη
-            double y = screenBounds.getMaxY() - stage.getHeight() - 20; // 20px απόσταση από την κάτω άκρη
-
-            stage.setX(x);
-            stage.setY(y);
+            stage.setX(screenBounds.getMaxX() - stage.getWidth() - POPUP_SPACING);
+            stage.setY(yPosition);
+            stage.show();
+            openPopups.add(stage);
         });
+    }
+
+    private static void repositionPopups() {
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        for (int i = 0; i < openPopups.size(); i++) {
+            Stage s = openPopups.get(i);
+            double newY = screenBounds.getMaxY() - s.getHeight() - i * (s.getHeight() + POPUP_SPACING);
+            s.setY(newY);
+        }
     }
 
     @FXML
@@ -58,6 +75,7 @@ public class CallerPopupController {
         }
 
         openCustomerButton.setDisable(customerId == -1);
+        positionWindow();
     }
 
     public void setOpenCustomerCallback(Consumer<Integer> callback) {

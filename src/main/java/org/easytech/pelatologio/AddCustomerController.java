@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -37,10 +38,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
@@ -50,9 +49,9 @@ public class AddCustomerController {
     @FXML
     private TabPane tabPane;
     @FXML
-    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, pelatologioContainer, nineposContainer, devicesContainer, invoicesContainer, tasksContainer, subsContainer, offersContainer, ordersContainer, notesContainer;
+    private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, pelatologioContainer, nineposContainer, devicesContainer, invoicesContainer, tasksContainer, subsContainer, offersContainer, ordersContainer, callLogContainer, notesContainer;
     @FXML
-    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabPelatologio, tabNinepos, tabDevices, tabInvoices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabNotes;
+    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabPelatologio, tabNinepos, tabDevices, tabInvoices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabCallLog, tabNotes;
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone, tfBalance, tfBalanceMega;
     @FXML
@@ -80,7 +79,6 @@ public class AddCustomerController {
     @FXML
     Button btnPhone1, btnPhone2, btnMobile, btnPhoneManager, btnAccPhone, btnAccMobile, startCallLogButton;
 
-    DBHelper dbHelper;
 
     private TaxisViewController taxisViewController;
     private MyposViewController myposViewController;
@@ -95,6 +93,12 @@ public class AddCustomerController {
     private CustomerSubsController customerSubsController;
     private CustomerOffersController customerOffersController;
     private CustomerOrdersController customerOrdersController;
+    private CustomerCallLogController customerCallLogController;
+
+    private final Map<Tab, String> tabToFxml = new HashMap<>();
+    private final Map<Tab, AnchorPane> tabToContainer = new HashMap<>();
+    private final Set<Tab> loadedTabs = new HashSet<>();
+
 
     int code = 0;
     private boolean hasUnsavedChanges = false; // Νέο flag για παρακολούθηση αλλαγών
@@ -125,133 +129,17 @@ public class AddCustomerController {
 
     public void initialize() {
         Platform.runLater(() -> tabPane.requestFocus());
-        try {
-            FXMLLoader loaderTaxis = new FXMLLoader(getClass().getResource("taxisView.fxml"));
-            Parent taxisContent = loaderTaxis.load();
-            taxisViewController = loaderTaxis.getController(); // Πάρε τον controller
-            taxisContainer.getChildren().setAll(taxisContent);
-            AnchorPane.setTopAnchor(taxisContent, 0.0);
-            AnchorPane.setBottomAnchor(taxisContent, 0.0);
-            AnchorPane.setLeftAnchor(taxisContent, 0.0);
-            AnchorPane.setRightAnchor(taxisContent, 0.0);
-
-            FXMLLoader loaderMypos = new FXMLLoader(getClass().getResource("myposView.fxml"));
-            Parent myposContent = loaderMypos.load();
-            myposViewController = loaderMypos.getController(); // Πάρε τον controller
-            myposContainer.getChildren().setAll(myposContent);
-            AnchorPane.setTopAnchor(myposContent, 0.0);
-            AnchorPane.setBottomAnchor(myposContent, 0.0);
-            AnchorPane.setLeftAnchor(myposContent, 0.0);
-            AnchorPane.setRightAnchor(myposContent, 0.0);
-
-            FXMLLoader loaderSimply = new FXMLLoader(getClass().getResource("simplyView.fxml"));
-            Parent simplyContent = loaderSimply.load();
-            simplyViewController = loaderSimply.getController(); // Πάρε τον controller
-            simplyContainer.getChildren().setAll(simplyContent);
-            AnchorPane.setTopAnchor(simplyContent, 0.0);
-            AnchorPane.setBottomAnchor(simplyContent, 0.0);
-            AnchorPane.setLeftAnchor(simplyContent, 0.0);
-            AnchorPane.setRightAnchor(simplyContent, 0.0);
-
-            FXMLLoader loaderEmblem = new FXMLLoader(getClass().getResource("emblemView.fxml"));
-            Parent emblemContent = loaderEmblem.load();
-            emblemViewController = loaderEmblem.getController(); // Πάρε τον controller
-            emblemContainer.getChildren().setAll(emblemContent);
-            AnchorPane.setTopAnchor(emblemContent, 0.0);
-            AnchorPane.setBottomAnchor(emblemContent, 0.0);
-            AnchorPane.setLeftAnchor(emblemContent, 0.0);
-            AnchorPane.setRightAnchor(emblemContent, 0.0);
-
-            FXMLLoader loaderErgani = new FXMLLoader(getClass().getResource("erganiView.fxml"));
-            Parent erganiContent = loaderErgani.load();
-            erganiViewController = loaderErgani.getController(); // Πάρε τον controller
-            erganiContainer.getChildren().setAll(erganiContent);
-            AnchorPane.setTopAnchor(erganiContent, 0.0);
-            AnchorPane.setBottomAnchor(erganiContent, 0.0);
-            AnchorPane.setLeftAnchor(erganiContent, 0.0);
-            AnchorPane.setRightAnchor(erganiContent, 0.0);
-
-            FXMLLoader loaderPelatologio = new FXMLLoader(getClass().getResource("pelatologioView.fxml"));
-            Parent pelatologioContent = loaderPelatologio.load();
-            pelatologioViewController = loaderPelatologio.getController(); // Πάρε τον controller
-            pelatologioContainer.getChildren().setAll(pelatologioContent);
-            AnchorPane.setTopAnchor(pelatologioContent, 0.0);
-            AnchorPane.setBottomAnchor(pelatologioContent, 0.0);
-            AnchorPane.setLeftAnchor(pelatologioContent, 0.0);
-            AnchorPane.setRightAnchor(pelatologioContent, 0.0);
-
-            FXMLLoader loaderNinepos = new FXMLLoader(getClass().getResource("nineposView.fxml"));
-            Parent nineposContent = loaderNinepos.load();
-            nineposViewController = loaderNinepos.getController(); // Πάρε τον controller
-            nineposContainer.getChildren().setAll(nineposContent);
-            AnchorPane.setTopAnchor(nineposContent, 0.0);
-            AnchorPane.setBottomAnchor(nineposContent, 0.0);
-            AnchorPane.setLeftAnchor(nineposContent, 0.0);
-            AnchorPane.setRightAnchor(nineposContent, 0.0);
-
-            FXMLLoader loaderDevices = new FXMLLoader(getClass().getResource("customerDevicesView.fxml"));
-            Parent devicesContent = loaderDevices.load();
-            customerDevicesController = loaderDevices.getController(); // Πάρε τον controller
-            devicesContainer.getChildren().setAll(devicesContent);
-            AnchorPane.setTopAnchor(devicesContent, 0.0);
-            AnchorPane.setBottomAnchor(devicesContent, 0.0);
-            AnchorPane.setLeftAnchor(devicesContent, 0.0);
-            AnchorPane.setRightAnchor(devicesContent, 0.0);
-
-            FXMLLoader loaderInvoices = new FXMLLoader(getClass().getResource("invoicesView.fxml"));
-            Parent invoicesContent = loaderInvoices.load();
-            invoicesViewController = loaderInvoices.getController(); // Πάρε τον controller
-            invoicesContainer.getChildren().setAll(invoicesContent);
-            AnchorPane.setTopAnchor(invoicesContent, 0.0);
-            AnchorPane.setBottomAnchor(invoicesContent, 0.0);
-            AnchorPane.setLeftAnchor(invoicesContent, 0.0);
-            AnchorPane.setRightAnchor(invoicesContent, 0.0);
-
-            FXMLLoader loaderTasks = new FXMLLoader(getClass().getResource("customerTasksView.fxml"));
-            Parent tasksContent = loaderTasks.load();
-            customerTasksController = loaderTasks.getController();// Πάρε τον controller
-            tasksContainer.getChildren().setAll(tasksContent);
-            AnchorPane.setTopAnchor(tasksContent, 0.0);
-            AnchorPane.setBottomAnchor(tasksContent, 0.0);
-            AnchorPane.setLeftAnchor(tasksContent, 0.0);
-            AnchorPane.setRightAnchor(tasksContent, 0.0);
-
-            FXMLLoader loaderSubs = new FXMLLoader(getClass().getResource("customerSubsView.fxml"));
-            Parent subsContent = loaderSubs.load();
-            customerSubsController = loaderSubs.getController();// Πάρε τον controller
-            subsContainer.getChildren().setAll(subsContent);
-            AnchorPane.setTopAnchor(subsContent, 0.0);
-            AnchorPane.setBottomAnchor(subsContent, 0.0);
-            AnchorPane.setLeftAnchor(subsContent, 0.0);
-            AnchorPane.setRightAnchor(subsContent, 0.0);
-
-            FXMLLoader loaderOffers = new FXMLLoader(getClass().getResource("customerOffersView.fxml"));
-            Parent offersContent = loaderOffers.load();
-            customerOffersController = loaderOffers.getController();// Πάρε τον controller
-            offersContainer.getChildren().setAll(offersContent);
-            AnchorPane.setTopAnchor(offersContent, 0.0);
-            AnchorPane.setBottomAnchor(offersContent, 0.0);
-            AnchorPane.setLeftAnchor(offersContent, 0.0);
-            AnchorPane.setRightAnchor(offersContent, 0.0);
-
-            FXMLLoader loaderOrders = new FXMLLoader(getClass().getResource("ordersCustView.fxml"));
-            Parent ordersContent = loaderOrders.load();
-            customerOrdersController = loaderOrders.getController();// Πάρε τον controller
-            ordersContainer.getChildren().setAll(ordersContent);
-            AnchorPane.setTopAnchor(ordersContent, 0.0);
-            AnchorPane.setBottomAnchor(ordersContent, 0.0);
-            AnchorPane.setLeftAnchor(ordersContent, 0.0);
-            AnchorPane.setRightAnchor(ordersContent, 0.0);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        setupTabs();
+        tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+            if (!loadedTabs.contains(newTab)) {
+                loadTabContent(newTab);
+            }
+        });
 
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
         setTooltip(btnLabel, "Εκτύπωση ετικέτας πελάτη");
         setTooltip(btnTask, "Προσθήκη νέας εργασίας");
         setTooltip(btnAddToMegasoft, "Προσθήκη πελάτη στο Megasoft");
-
 
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
         btnAddressAdd.setDisable(true);
@@ -364,7 +252,6 @@ public class AddCustomerController {
         btnAccMobile.setUserData(tfAccMobile);
         btnAccMobile.setOnAction(e -> handlePhoneCall(tfAccMobile.getText()));
 
-
         // Ενέργειες για τα copy, paste, clear items στο βασικό contextMenu
         copyItem.setOnAction(e -> copyText());
         pasteItem.setOnAction(e -> pasteText());
@@ -395,13 +282,9 @@ public class AddCustomerController {
                 sendTestEmail(tfAccEmail);
             }
         });
-        dbHelper = new DBHelper();
         List<Accountant> accountants = DBHelper.getAccountantDao().getAccountants();
         accountants.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         filteredAccountants = new FilteredList<>(FXCollections.observableArrayList(accountants));
-        //accountantsList.clear();
-        //accountantsList.addAll(dbHelper.getAccountants());
-        //filteredAccountants.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         tfAccName.setItems(filteredAccountants);
         tfAccName.setConverter(new StringConverter<Accountant>() {
             @Override
@@ -452,6 +335,122 @@ public class AddCustomerController {
             startCallLogButton.setOnAction(e -> handleStartCallLogging());
         }
     }
+
+    private void setupTabs() {
+        tabToFxml.put(tabTaxis, "taxisView.fxml");
+        tabToFxml.put(tabMypos, "myposView.fxml");
+        tabToFxml.put(tabSimply, "simplyView.fxml");
+        tabToFxml.put(tabEmblem, "emblemView.fxml");
+        tabToFxml.put(tabErgani, "erganiView.fxml");
+        tabToFxml.put(tabPelatologio, "pelatologioView.fxml");
+        tabToFxml.put(tabNinepos, "nineposView.fxml");
+        tabToFxml.put(tabDevices, "customerDevicesView.fxml");
+        tabToFxml.put(tabInvoices, "invoicesView.fxml");
+        tabToFxml.put(tabTasks, "customerTasksView.fxml");
+        tabToFxml.put(tabSubs, "customerSubsView.fxml");
+        tabToFxml.put(tabOffers, "customerOffersView.fxml");
+        tabToFxml.put(tabOrders, "ordersCustView.fxml");
+        tabToFxml.put(tabCallLog, "customerCallLogView.fxml");
+
+        tabToContainer.put(tabTaxis, taxisContainer);
+        tabToContainer.put(tabMypos, myposContainer);
+        tabToContainer.put(tabSimply, simplyContainer);
+        tabToContainer.put(tabEmblem, emblemContainer);
+        tabToContainer.put(tabErgani, erganiContainer);
+        tabToContainer.put(tabPelatologio, pelatologioContainer);
+        tabToContainer.put(tabNinepos, nineposContainer);
+        tabToContainer.put(tabDevices, devicesContainer);
+        tabToContainer.put(tabInvoices, invoicesContainer);
+        tabToContainer.put(tabTasks, tasksContainer);
+        tabToContainer.put(tabSubs, subsContainer);
+        tabToContainer.put(tabOffers, offersContainer);
+        tabToContainer.put(tabOrders, ordersContainer);
+        tabToContainer.put(tabCallLog, callLogContainer);
+    }
+
+    private void loadTabContent(Tab tab) {
+        String fxmlPath = tabToFxml.get(tab);
+        AnchorPane container = tabToContainer.get(tab);
+
+        if (fxmlPath == null || container == null) return;
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent content = loader.load();
+
+            Object controller = loader.getController();
+            switch (tab.getId()) {
+                case "tabTaxis" -> {
+                    taxisViewController = (TaxisViewController) controller;
+                    taxisViewController.setCustomer(customer);
+                }
+                case "tabMypos" -> {
+                    myposViewController = (MyposViewController) controller;
+                    myposViewController.setCustomer(customer);
+                }
+                case "tabSimply" -> {
+                    simplyViewController = (SimplyViewController) controller;
+                    simplyViewController.setCustomer(customer);
+                }
+                case "tabEmblem" -> {
+                    emblemViewController = (EmblemViewController) controller;
+                    emblemViewController.setCustomer(customer);
+                }
+                case "tabErgani" -> {
+                    erganiViewController = (ErganiViewController) controller;
+                    erganiViewController.setCustomer(customer);
+                }
+                case "tabPelatologio" -> {
+                    pelatologioViewController = (PelatologioViewController) controller;
+                    pelatologioViewController.setCustomer(customer);
+                }
+                case "tabNinepos" -> {
+                    nineposViewController = (NineposViewController) controller;
+                    nineposViewController.setCustomer(customer);
+                }
+                case "tabDevices" -> {
+                    customerDevicesController = (CustomerDevicesController) controller;
+                    customerDevicesController.setCustomer(customer);
+                }
+                case "tabInvoices" -> {
+                    invoicesViewController = (InvoicesViewController) controller;
+                    invoicesViewController.setCustomer(customer);
+                }
+                case "tabTasks" -> {
+                    customerTasksController = (CustomerTasksController) controller;
+                    customerTasksController.setCustomer(customer);
+                }
+                case "tabSubs" -> {
+                    customerSubsController = (CustomerSubsController) controller;
+                    customerSubsController.setCustomer(customer);
+                }
+                case "tabOffers" -> {
+                    customerOffersController = (CustomerOffersController) controller;
+                    customerOffersController.setCustomer(customer);
+                }
+                case "tabOrders" -> {
+                    customerOrdersController = (CustomerOrdersController) controller;
+                    customerOrdersController.setCustomer(customer);
+                }
+                case "tabCallLog" -> {
+                    customerCallLogController = (CustomerCallLogController) controller;
+                    customerCallLogController.setCustomer(customer);
+                }
+            }
+
+            container.getChildren().setAll(content);
+            AnchorPane.setTopAnchor(content, 0.0);
+            AnchorPane.setBottomAnchor(content, 0.0);
+            AnchorPane.setLeftAnchor(content, 0.0);
+            AnchorPane.setRightAnchor(content, 0.0);
+
+            loadedTabs.add(tab);
+        } catch (IOException e) {
+            e.printStackTrace();
+            container.getChildren().setAll(new Label("⚠️ Σφάλμα φόρτωσης FXML"));
+        }
+    }
+
 
     private void handleStartCallLogging() {
         try {
@@ -643,7 +642,7 @@ public class AddCustomerController {
         tfAccEmail1.setText(customer.getAccEmail1());
         tfBalance.setText(customer.getBalance());
         taBalanceReason.setText(customer.getBalanceReason());
-        tfBalanceMega.setText(DBHelper.getMegasoftDao().getMegasoftBalance(customer.getAfm()));
+        //tfBalanceMega.setText(DBHelper.getMegasoftDao().getMegasoftBalance(customer.getAfm()));
         setupFieldListeners();
         this.hasUnsavedChanges = false;
         updateTabTitle("");
@@ -660,77 +659,6 @@ public class AddCustomerController {
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = customer.getCode();
         this.customer = customer;
-        if (taxisViewController != null) {
-            taxisViewController.setCustomer(customer);
-        } else {
-            System.out.println("TaxisViewController δεν είναι ακόμα έτοιμος.");
-        }
-        if (myposViewController != null) {
-            myposViewController.setCustomer(customer);
-        } else {
-            System.out.println("myposViewController δεν είναι ακόμα έτοιμος.");
-        }
-        if (simplyViewController != null) {
-            simplyViewController.setCustomer(customer);
-        } else {
-            System.out.println("simplyViewController δεν είναι ακόμα έτοιμος.");
-        }
-        if (emblemViewController != null) {
-            emblemViewController.setCustomer(customer);
-        } else {
-            System.out.println("emblemViewController δεν είναι ακόμα έτοιμος.");
-        }
-        if (erganiViewController != null) {
-            erganiViewController.setCustomer(customer);
-        } else {
-            System.out.println("erganiViewController δεν είναι ακόμα έτοιμος.");
-        }
-        if (pelatologioViewController != null) {
-            pelatologioViewController.setCustomer(customer);
-        } else {
-            System.out.println("pelatologioViewController δεν είναι ακόμα έτοιμος.");
-        }
-        if (nineposViewController != null) {
-            nineposViewController.setCustomer(customer);
-        } else {
-            System.out.println("nineposViewController δεν είναι ακόμα έτοιμος.");
-        }
-        if (customerDevicesController != null) {
-            customerDevicesController.setCustomer(customer);
-        }
-        else {
-            System.out.println("customerDevicesController δεν είναι ακόμα έτοιμος.");
-        }
-        if (invoicesViewController != null) {
-            invoicesViewController.setCustomer(customer);
-        }
-        else {
-            System.out.println("invoicesViewController δεν είναι ακόμα έτοιμος.");
-        }
-        if (customerTasksController != null) {
-            customerTasksController.setCustomer(customer);
-        }
-        else {
-            System.out.println("customerTasksController δεν είναι ακόμα έτοιμος.");
-        }
-        if (customerSubsController != null) {
-            customerSubsController.setCustomer(customer);
-        }
-        else {
-            System.out.println("customerSubsController δεν είναι ακόμα έτοιμος.");
-        }
-        if (customerOffersController != null) {
-            customerOffersController.setCustomer(customer);
-        }
-        else {
-            System.out.println("customerOffersController δεν είναι ακόμα έτοιμος.");
-        }
-        if (customerOrdersController != null) {
-            customerOrdersController.setCustomer(customer);
-        }
-        else {
-            System.out.println("customerOrdersController δεν είναι ακόμα έτοιμος.");
-        }
 
         btnAddToMegasoft.setDisable(false);
         btnAddToMegasoft.setVisible(true);
@@ -861,6 +789,7 @@ public class AddCustomerController {
         customerSubsController.setCustomer(customer);
         customerOffersController.setCustomer(customer);
         customerOrdersController.setCustomer(customer);
+        customerCallLogController.setCustomer(customer);
 
     }
 
@@ -926,7 +855,6 @@ public class AddCustomerController {
 
 
     private void setAccountant() {
-        DBHelper dbHelper = new DBHelper();
         List<Accountant> accountants = DBHelper.getAccountantDao().getAccountants();
         accountants.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         filteredAccountants = new FilteredList<>(FXCollections.observableArrayList(accountants));
@@ -1001,9 +929,9 @@ public class AddCustomerController {
         if (DBHelper.getCustomerDao().hasDevice(customer.getCode())) {
             tabDevices.getStyleClass().add("tabHas");
         }
-        if (DBHelper.getCustomerDao().hasInvoices(customer.getAfm())) {
-            tabInvoices.getStyleClass().add("tabHas");
-        }
+//        if (DBHelper.getCustomerDao().hasInvoices(customer.getAfm())) {
+//            tabInvoices.getStyleClass().add("tabHas");
+//        }
         if (DBHelper.getCustomerDao().hasTask(customer.getCode())) {
             tabTasks.getStyleClass().add("tabHas");
         }
@@ -1022,7 +950,6 @@ public class AddCustomerController {
         if (!customer.getNotes().isEmpty()) {
             tabNotes.getStyleClass().add("tabHas");
         }
-
     }
 
     void addCustomer() {

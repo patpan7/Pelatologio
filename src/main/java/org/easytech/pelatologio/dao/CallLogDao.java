@@ -7,6 +7,7 @@ import java.util.List;
 public interface CallLogDao {
     void insertCallLog(CallLog callLog) throws SQLException;
     void updateCallLog(CallLog callLog) throws SQLException;
+    List<CallLog> getCallLogs() throws SQLException;
     List<CallLog> getCallLogsByCustomerId(int customerId) throws SQLException;
     // Add other methods as needed, e.g., updateCallLog, deleteCallLog
 }

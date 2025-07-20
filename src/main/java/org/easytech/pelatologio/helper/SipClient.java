@@ -412,5 +412,20 @@ public class SipClient implements SipListener {
         }
     }
 
-
+    /**
+     * Simulates an incoming call for debugging purposes.
+     * @param callerId The phone number of the simulated caller.
+     */
+    public void simulateIncomingCall(String callerId) {
+        System.out.println("--- SIMULATING INCOMING CALL from " + callerId + " ---");
+        if (onIncomingCallCallback != null) {
+            // Normalize callerId before sending to callback, same as in processRequest
+            String normalizedCallerId = callerId.replace("+", "").replace("-", "").replace(" ", "");
+            if (normalizedCallerId.startsWith("30")) {
+                normalizedCallerId = normalizedCallerId.substring(2);
+            }
+            ActiveCallState.setCurrentCallerId(normalizedCallerId);
+            onIncomingCallCallback.accept(normalizedCallerId);
+        }
+    }
 }

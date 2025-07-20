@@ -80,7 +80,7 @@ public class CallLogViewController implements Initializable {
     private void loadCallLogs() {
         try {
             masterData.clear();
-            masterData.addAll(callLogDao.getCallLogsByCustomerId(0)); // Load all call logs for now
+            masterData.addAll(callLogDao.getCallLogs()); // Load all call logs for now
         } catch (SQLException e) {
             e.printStackTrace();
             // Handle error

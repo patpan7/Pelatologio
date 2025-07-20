@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CustomerCallLogController">
+    <VBox alignment="TOP_CENTER" styleClass="card" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+        <TableView fx:id="callLogTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colStartTime" prefWidth="150.0" text="Έναρξη"/>
+                <TableColumn fx:id="colEndTime" prefWidth="150.0" text="Λήξη"/>
+                <TableColumn fx:id="colDuration" prefWidth="100.0" text="Διάρκεια (s)"/>
+                <TableColumn fx:id="colCallType" prefWidth="100.0" text="Τύπος"/>
+                <TableColumn fx:id="colCallerNumber" prefWidth="150.0" text="Αριθμός"/>
+                <TableColumn fx:id="colNotes" prefWidth="250.0" text="Σημειώσεις"/>
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+    </VBox>
+</VBox>
