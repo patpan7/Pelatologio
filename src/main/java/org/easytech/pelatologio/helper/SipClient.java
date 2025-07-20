@@ -1,53 +1,21 @@
 package org.easytech.pelatologio.helper;
 
-import gov.nist.javax.sip.SipStackImpl;
-
 import org.easytech.pelatologio.AppSettings;
 
 import javax.sip.*;
-import javax.sip.address.*;
+import javax.sip.address.Address;
+import javax.sip.address.AddressFactory;
+import javax.sip.address.SipURI;
 import javax.sip.header.*;
 import javax.sip.message.MessageFactory;
 import javax.sip.message.Request;
 import javax.sip.message.Response;
-import javax.sip.Dialog;
-import javax.sip.ClientTransaction;
-import javax.sip.ServerTransaction;
-import javax.sip.header.CSeqHeader;
-import javax.sip.header.FromHeader;
-import javax.sip.header.ToHeader;
-import javax.sip.header.ViaHeader;
-import javax.sip.header.CallIdHeader;
-import javax.sip.header.MaxForwardsHeader;
-import javax.sip.header.ContactHeader;
-import javax.sip.header.ContentTypeHeader;
-import javax.sip.header.WWWAuthenticateHeader;
-import javax.sip.header.AuthorizationHeader;
-import javax.sip.address.SipURI;
-import javax.sip.address.Address;
-import javax.sip.address.AddressFactory;
-import javax.sip.message.Request;
-import javax.sip.message.Response;
-import javax.sip.message.MessageFactory;
-import javax.sip.header.HeaderFactory;
-import javax.sip.SipFactory;
-import javax.sip.SipProvider;
-import javax.sip.SipStack;
-import javax.sip.ListeningPoint;
-import javax.sip.PeerUnavailableException;
-import javax.sip.TransportNotSupportedException;
-import javax.sip.InvalidArgumentException;
-import javax.sip.ObjectInUseException;
-import javax.sip.SipListener;
-import javax.sip.RequestEvent;
-import javax.sip.ResponseEvent;
-import javax.sip.TimeoutEvent;
-import javax.sip.IOExceptionEvent;
-import javax.sip.TransactionTerminatedEvent;
-import javax.sip.DialogTerminatedEvent;
-
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Properties;
+import java.util.TooManyListenersException;
 import java.util.function.Consumer;
 
 public class SipClient implements SipListener {
@@ -251,7 +219,7 @@ public class SipClient implements SipListener {
                             callerId = callerId.substring(2);
                         }
                     }
-                    ActiveCallState.setCurrentCallerId(callerId);
+                    ActiveCallState.setPendingCall(callerId);
                     onIncomingCallCallback.accept(callerId);
                 }
 
@@ -347,8 +315,7 @@ public class SipClient implements SipListener {
                     System.err.println("Failed to retry REGISTER with authentication: " + authEx.getMessage());
                     authEx.printStackTrace();
                 }
-            }
-            else {
+            } else {
                 System.err.println("Registration failed with status: " + response.getStatusCode());
             }
         } else if (cseq.getMethod().equals(Request.INVITE)) {
@@ -363,8 +330,7 @@ public class SipClient implements SipListener {
                     System.err.println("Error sending ACK: " + e.getMessage());
                     e.printStackTrace();
                 }
-            }
-            else if (response.getStatusCode() >= 300) {
+            } else if (response.getStatusCode() >= 300) {
                 System.err.println("Call failed with status: " + response.getStatusCode());
             }
         }
@@ -414,6 +380,7 @@ public class SipClient implements SipListener {
 
     /**
      * Simulates an incoming call for debugging purposes.
+     *
      * @param callerId The phone number of the simulated caller.
      */
     public void simulateIncomingCall(String callerId) {
@@ -424,7 +391,7 @@ public class SipClient implements SipListener {
             if (normalizedCallerId.startsWith("30")) {
                 normalizedCallerId = normalizedCallerId.substring(2);
             }
-            ActiveCallState.setCurrentCallerId(normalizedCallerId);
+            ActiveCallState.setPendingCall(normalizedCallerId);
             onIncomingCallCallback.accept(normalizedCallerId);
         }
     }

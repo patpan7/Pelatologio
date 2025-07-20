@@ -35,6 +35,8 @@ import org.easytech.pelatologio.models.CallLog;
 import org.easytech.pelatologio.models.Customer;
 
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -136,10 +138,20 @@ public class AddCustomerController {
             }
         });
 
-        setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
-        setTooltip(btnLabel, "Εκτύπωση ετικέτας πελάτη");
-        setTooltip(btnTask, "Προσθήκη νέας εργασίας");
-        setTooltip(btnAddToMegasoft, "Προσθήκη πελάτη στο Megasoft");
+        // Add a listener to the ActiveCallState
+        ActiveCallState.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if ("pendingCall".equals(evt.getPropertyName())) {
+                    Platform.runLater(() -> {
+                        updateCallLogButtonVisibility();
+                    });
+                }
+            }
+        });
+
+        // Initial check for call state
+        updateCallLogButtonVisibility();
 
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
         btnAddressAdd.setDisable(true);
@@ -330,9 +342,19 @@ public class AddCustomerController {
         });
 
         // Check for active call and show button if necessary
-        if (ActiveCallState.isCallActive()) {
+        if (ActiveCallState.hasPendingCall()) {
             startCallLogButton.setVisible(true);
             startCallLogButton.setOnAction(e -> handleStartCallLogging());
+        }
+    }
+
+    private void updateCallLogButtonVisibility() {
+        boolean callIsActive = ActiveCallState.hasPendingCall();
+        startCallLogButton.setVisible(callIsActive);
+        if (callIsActive) {
+            startCallLogButton.setOnAction(e -> handleStartCallLogging());
+        } else {
+            startCallLogButton.setOnAction(null);
         }
     }
 
@@ -455,9 +477,12 @@ public class AddCustomerController {
     private void handleStartCallLogging() {
         try {
             // Create a new call log entry
-            CallLog newCall = new CallLog(ActiveCallState.getCurrentCallerId(), customer.getName(), "INCOMING", java.time.LocalDateTime.now(), customer.getCode());
+            CallLog newCall = new CallLog(ActiveCallState.getPendingCallerId(), customer.getName(), "INCOMING", java.time.LocalDateTime.now(), customer.getCode());
             newCall.setAppUser(AppSettings.loadSetting("appuser"));
             DBHelper.getCallLogDao().insertCallLog(newCall);
+
+            // Clear the pending call state immediately after starting logging
+            ActiveCallState.clearPendingCall();
 
             // Open the notes window
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/easytech/pelatologio/call_notes.fxml"));
@@ -472,8 +497,8 @@ public class AddCustomerController {
 
             stage.show();
 
-            // Hide the button after starting the log
-            startCallLogButton.setVisible(false);
+            // The button visibility will be handled by the PropertyChangeListener
+            // startCallLogButton.setVisible(false); // This line is no longer needed
 
         } catch (Exception e) {
             e.printStackTrace();
