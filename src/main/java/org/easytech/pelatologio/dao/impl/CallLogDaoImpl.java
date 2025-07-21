@@ -44,13 +44,14 @@ public class CallLogDaoImpl implements CallLogDao {
 
     @Override
     public void updateCallLog(CallLog callLog) throws SQLException {
-        String sql = "UPDATE CallLogs SET endTime = ?, durationSeconds = ?, notes = ? WHERE id = ?";
+        String sql = "UPDATE CallLogs SET callType = ?, endTime = ?, durationSeconds = ?, notes = ? WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setTimestamp(1, Timestamp.valueOf(callLog.getEndTime()));
-            pstmt.setLong(2, callLog.getDurationSeconds());
-            pstmt.setString(3, callLog.getNotes());
-            pstmt.setInt(4, callLog.getId());
+            pstmt.setString(1, callLog.getCallType());
+            pstmt.setTimestamp(2, Timestamp.valueOf(callLog.getEndTime()));
+            pstmt.setLong(3, callLog.getDurationSeconds());
+            pstmt.setString(4, callLog.getNotes());
+            pstmt.setInt(5, callLog.getId());
             pstmt.executeUpdate();
         }
     }
@@ -108,5 +109,15 @@ public class CallLogDaoImpl implements CallLogDao {
             }
         }
         return callLogs;
+    }
+
+    @Override
+    public void deleteCallLog(int callLogId) throws SQLException {
+        String sql = "DELETE FROM CallLogs WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, callLogId);
+            pstmt.executeUpdate();
+        }
     }
 }

@@ -22,7 +22,7 @@ public class TrackingDaoImpl implements TrackingDao {
 
     @Override
     public void saveTrackingNumber(String tracking, LocalDate date, int customerId) {
-        String query = "INSERT INTO TrackingNumbers (trackingNumber, trackingDate, customerId) VALUES (?, ?, ?)";
+        String query = "INSERT INTO CourierTracking (tracking_number, date, customerId) VALUES (?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, tracking);
@@ -37,13 +37,14 @@ public class TrackingDaoImpl implements TrackingDao {
     @Override
     public List<String> getTrackingNumbers(int customerId) {
         List<String> trackingNumbers = new ArrayList<>();
-        String query = "SELECT trackingNumber FROM TrackingNumbers WHERE customerId = ? ORDER BY trackingDate DESC";
+        String query = "SELECT tracking_number, date FROM CourierTracking WHERE customerId = ? ORDER BY date DESC";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, customerId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    trackingNumbers.add(rs.getString("trackingNumber"));
+                    trackingNumbers.add("Αριθμός αποστολής: "+rs.getString("tracking_number") + " | Ημερομηνία: " + rs.getDate("date"));
+
                 }
             }
         } catch (SQLException e) {

@@ -119,4 +119,12 @@ public class CallLog {
                ", notes='" + notes + '\'' +
                '}';
     }
+
+    public String getType() {
+        return callType;
+    }
+
+    public void setType(String callType) {
+        this.callType = callType;
+    }
 }

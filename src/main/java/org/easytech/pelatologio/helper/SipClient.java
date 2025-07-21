@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.TooManyListenersException;
 import java.util.function.Consumer;
+import org.easytech.pelatologio.helper.ActiveCallState;
 
 public class SipClient implements SipListener {
 
@@ -238,6 +239,7 @@ public class SipClient implements SipListener {
                     serverTransaction = sipProvider.getNewServerTransaction(request);
                 }
                 serverTransaction.sendResponse(okResponse);
+                ActiveCallState.clearPendingCall();
                 // System.out.println("Received BYE, sent OK.");
             } catch (Exception e) {
                 System.err.println("Error processing BYE: " + e.getMessage());

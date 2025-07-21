@@ -4,25 +4,28 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 public class ActiveCallState {
-    private static String pendingCallerId = null;
+
+    private static String pendingCallNumber;
     private static final PropertyChangeSupport support = new PropertyChangeSupport(ActiveCallState.class);
 
-    public static String getPendingCallerId() {
-        return pendingCallerId;
+    public static boolean hasPendingCall() {
+        return pendingCallNumber != null;
     }
 
-    public static boolean hasPendingCall() {
-        return pendingCallerId != null;
+    public static String getPendingCallNumber() {
+        return pendingCallNumber;
     }
 
     public static void setPendingCall(String callerId) {
-        String oldCallerId = ActiveCallState.pendingCallerId;
-        ActiveCallState.pendingCallerId = callerId;
-        support.firePropertyChange("pendingCall", oldCallerId, callerId);
+        String oldNumber = pendingCallNumber;
+        pendingCallNumber = callerId;
+        support.firePropertyChange("pendingCallNumber", oldNumber, pendingCallNumber);
     }
-
+    
     public static void clearPendingCall() {
-        setPendingCall(null);
+        String oldNumber = pendingCallNumber;
+        pendingCallNumber = null;
+        support.firePropertyChange("pendingCallNumber", oldNumber, null);
     }
 
     public static void addPropertyChangeListener(PropertyChangeListener pcl) {

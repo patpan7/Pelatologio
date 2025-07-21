@@ -4,15 +4,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.easytech.pelatologio.dao.CallLogDao;
+import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CallNotesController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.CallLog;
+import org.easytech.pelatologio.models.Customer;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -75,6 +82,73 @@ public class CallLogViewController implements Initializable {
         });
 
         callLogTable.setItems(filteredData);
+
+        // Single-click to open call notes
+        callLogTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                CallLog selectedCall = callLogTable.getSelectionModel().getSelectedItem();
+                if (selectedCall != null) {
+                    openCallNotes(selectedCall);
+                }
+            }
+        });
+
+        // Right-click context menu for deletion
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem deleteItem = new MenuItem("Διαγραφή");
+        deleteItem.setOnAction(event -> {
+            CallLog selectedCall = callLogTable.getSelectionModel().getSelectedItem();
+            if (selectedCall != null) {
+                AlertDialogHelper.showDialog("Επιβεβαίωση Διαγραφής", "Είστε σίγουροι ότι θέλετε να διαγράψετε αυτήν την κλήση;", "Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.", Alert.AlertType.CONFIRMATION);
+                var alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Επιβεβαίωση Διαγραφής");
+                alert.setHeaderText(null);
+                alert.setContentText("Είστε σίγουροι ότι θέλετε να διαγράψετε το επιλεγμένο login;");
+
+                if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                    try {
+                        callLogDao.deleteCallLog(selectedCall.getId());
+                        loadCallLogs(); // Refresh table after deletion
+                        AlertDialogHelper.showDialog("Επιτυχία", "Η κλήση διαγράφηκε επιτυχώς.", null, Alert.AlertType.INFORMATION);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        AlertDialogHelper.showDialog("Σφάλμα Βάσης Δεδομένων", "Αδυναμία διαγραφής κλήσης.", e.getMessage(), Alert.AlertType.ERROR);
+                    }
+                }
+            }
+        });
+        contextMenu.getItems().add(deleteItem);
+        callLogTable.setContextMenu(contextMenu);
+    }
+
+    private void openCallNotes(CallLog selectedCall) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/easytech/pelatologio/call_notes.fxml"));
+            Parent root = loader.load();
+            CallNotesController controller = loader.getController();
+
+            // Fetch the customer for the selected call log
+            Customer customer = null;
+            if (selectedCall.getCustomerId() > 0) {
+                customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedCall.getCustomerId());
+            } else {
+                // If no customerId, create a dummy customer for display purposes
+                customer = new Customer();
+                customer.setName("Άγνωστος Πελάτης");
+            }
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Σημειώσεις Κλήσης");
+            stage.setScene(new Scene(root));
+            controller.initialize(stage, selectedCall, customer);
+            controller.setData();
+            stage.showAndWait();
+            loadCallLogs(); // Refresh table after notes are saved
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertDialogHelper.showDialog("Σφάλμα", "Αδυναμία φόρτωσης σημειώσεων κλήσης.", e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private void loadCallLogs() {

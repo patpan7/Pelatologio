@@ -137,22 +137,6 @@ public class AddCustomerController {
                 loadTabContent(newTab);
             }
         });
-
-        // Add a listener to the ActiveCallState
-        ActiveCallState.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if ("pendingCall".equals(evt.getPropertyName())) {
-                    Platform.runLater(() -> {
-                        updateCallLogButtonVisibility();
-                    });
-                }
-            }
-        });
-
-        // Initial check for call state
-        updateCallLogButtonVisibility();
-
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
         btnAddressAdd.setDisable(true);
         btnAddToMegasoft.setDisable(true);
@@ -348,15 +332,7 @@ public class AddCustomerController {
         }
     }
 
-    private void updateCallLogButtonVisibility() {
-        boolean callIsActive = ActiveCallState.hasPendingCall();
-        startCallLogButton.setVisible(callIsActive);
-        if (callIsActive) {
-            startCallLogButton.setOnAction(e -> handleStartCallLogging());
-        } else {
-            startCallLogButton.setOnAction(null);
-        }
-    }
+    
 
     private void setupTabs() {
         tabToFxml.put(tabTaxis, "taxisView.fxml");
@@ -476,13 +452,27 @@ public class AddCustomerController {
 
     private void handleStartCallLogging() {
         try {
+            String callerId = ""; // Default to empty
+            String callType = "MANUAL"; // Default to manual entry
+
+            // Check if there's an active call for this customer
+            String pendingCallNumber = ActiveCallState.getPendingCallNumber();
+            if (pendingCallNumber != null && customer != null) {
+                String phone1 = customer.getPhone1() != null ? customer.getPhone1().replaceAll("[^\\d]", "") : "";
+                String phone2 = customer.getPhone2() != null ? customer.getPhone2().replaceAll("[^\\d]", "") : "";
+                String mobile = customer.getMobile() != null ? customer.getMobile().replaceAll("[^\\d]", "") : "";
+
+                if (pendingCallNumber.equals(phone1) || pendingCallNumber.equals(phone2) || pendingCallNumber.equals(mobile)) {
+                    callerId = pendingCallNumber;
+                    callType = "INCOMING";
+                    ActiveCallState.clearPendingCall(); // Clear the state as we are now logging it
+                }
+            }
+
             // Create a new call log entry
-            CallLog newCall = new CallLog(ActiveCallState.getPendingCallerId(), customer.getName(), "INCOMING", java.time.LocalDateTime.now(), customer.getCode());
+            CallLog newCall = new CallLog(callerId, customer.getName(), callType, java.time.LocalDateTime.now(), customer.getCode());
             newCall.setAppUser(AppSettings.loadSetting("appuser"));
             DBHelper.getCallLogDao().insertCallLog(newCall);
-
-            // Clear the pending call state immediately after starting logging
-            ActiveCallState.clearPendingCall();
 
             // Open the notes window
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/easytech/pelatologio/call_notes.fxml"));
@@ -496,9 +486,6 @@ public class AddCustomerController {
             controller.initialize(stage, newCall, customer);
 
             stage.show();
-
-            // The button visibility will be handled by the PropertyChangeListener
-            // startCallLogButton.setVisible(false); // This line is no longer needed
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -667,8 +654,7 @@ public class AddCustomerController {
         tfAccEmail1.setText(customer.getAccEmail1());
         tfBalance.setText(customer.getBalance());
         taBalanceReason.setText(customer.getBalanceReason());
-        //tfBalanceMega.setText(DBHelper.getMegasoftDao().getMegasoftBalance(customer.getAfm()));
-        setupFieldListeners();
+        tfBalanceMega.setText(DBHelper.getMegasoftDao().getMegasoftBalance(customer.getAfm()));
         this.hasUnsavedChanges = false;
         updateTabTitle("");
 
@@ -677,6 +663,13 @@ public class AddCustomerController {
             checkboxActive.setSelected(true);
         else
             checkboxActive.setSelected(false);
+
+        // Add listeners after populating the fields
+        Platform.runLater(() -> {
+            setupFieldListeners();
+            this.hasUnsavedChanges = false; // Reset again after listeners are set
+            updateTabTitle("");
+        });
 
 
         btnAddressAdd.setDisable(false);
@@ -718,6 +711,9 @@ public class AddCustomerController {
         tabSubs.setDisable(false);
         tabOffers.setDisable(false);
         tabOrders.setDisable(false);
+
+        startCallLogButton.setVisible(true);
+        startCallLogButton.setOnAction(e -> handleStartCallLogging());
 
         hasTabs();
         setAccountant();
@@ -801,25 +797,9 @@ public class AddCustomerController {
         hasTabs();
         setAccountant();
         setRecommendation();
-        taxisViewController.setCustomer(customer);
-        myposViewController.setCustomer(customer);
-        simplyViewController.setCustomer(customer);
-        emblemViewController.setCustomer(customer);
-        erganiViewController.setCustomer(customer);
-        pelatologioViewController.setCustomer(customer);
-        nineposViewController.setCustomer(customer);
-        customerDevicesController.setCustomer(customer);
-        invoicesViewController.setCustomer(customer);
-        customerTasksController.setCustomer(customer);
-        customerSubsController.setCustomer(customer);
-        customerOffersController.setCustomer(customer);
-        customerOrdersController.setCustomer(customer);
-        customerCallLogController.setCustomer(customer);
-
     }
 
     private void setRecommendation() {
-        DBHelper dbHelper = new DBHelper();
         recommendationList.clear();
         recommendationList.addAll(DBHelper.getCustomerDao().getRecomedations());
         filteredRecommendations = new FilteredList<>(recommendationList);
@@ -926,7 +906,6 @@ public class AddCustomerController {
     }
 
     private void hasTabs() {
-        DBHelper dbHelper = new DBHelper();
         if (DBHelper.getCustomerDao().hasSubAddress(customer.getCode())) {
             btnAddressAdd.setStyle("-fx-border-color: #FF0000;");
         }
@@ -954,9 +933,9 @@ public class AddCustomerController {
         if (DBHelper.getCustomerDao().hasDevice(customer.getCode())) {
             tabDevices.getStyleClass().add("tabHas");
         }
-//        if (DBHelper.getCustomerDao().hasInvoices(customer.getAfm())) {
-//            tabInvoices.getStyleClass().add("tabHas");
-//        }
+        if (DBHelper.getCustomerDao().hasInvoices(customer.getAfm())) {
+            tabInvoices.getStyleClass().add("tabHas");
+        }
         if (DBHelper.getCustomerDao().hasTask(customer.getCode())) {
             tabTasks.getStyleClass().add("tabHas");
         }

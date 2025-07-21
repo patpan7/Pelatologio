@@ -9,5 +9,5 @@ public interface CallLogDao {
     void updateCallLog(CallLog callLog) throws SQLException;
     List<CallLog> getCallLogs() throws SQLException;
     List<CallLog> getCallLogsByCustomerId(int customerId) throws SQLException;
-    // Add other methods as needed, e.g., updateCallLog, deleteCallLog
+    void deleteCallLog(int callLogId) throws SQLException;
 }
