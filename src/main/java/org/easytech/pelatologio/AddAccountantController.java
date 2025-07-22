@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -152,9 +153,11 @@ public class AddAccountantController {
         });
 
         btnPhone.setUserData(tfPhone);
-        btnPhone.setOnAction(PhoneCall::callHandle);
+        setupPhoneButton(btnPhone, tfPhone);
+        //btnPhone.setOnAction(PhoneCall::callHandle);
         btnMobile.setUserData(tfMobile);
-        btnMobile.setOnAction(PhoneCall::callHandle);
+        setupPhoneButton(btnMobile, tfMobile);
+        //btnMobile.setOnAction(PhoneCall::callHandle);
     }
 
 
@@ -392,5 +395,15 @@ public class AddAccountantController {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }
+    }
+
+    private void setupPhoneButton(Button button, TextField textField) {
+        button.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                PhoneCall.callHandle(textField.getText());
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                PhoneCall.callHandle2(textField.getText());
+            }
+        });
     }
 }

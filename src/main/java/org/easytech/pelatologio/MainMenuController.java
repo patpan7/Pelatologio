@@ -634,17 +634,26 @@ public class MainMenuController implements Initializable {
 
     // Method to initiate an outgoing call using SIP
     public void originateCall(String phoneNumber) {
-        if (sipClient != null) {
-            try {
-                sipClient.makeCall(phoneNumber);
-                AlertDialogHelper.showDialog("Κλήση", "Εκκίνηση κλήσης προς: " + phoneNumber, "", Alert.AlertType.INFORMATION);
-            } catch (Exception e) {
-                AlertDialogHelper.showDialog("Σφάλμα Κλήσης", "Αδυναμία εκκίνησης κλήσης μέσω SIP.", e.getMessage(), Alert.AlertType.ERROR);
-            }
-        } else {
-            AlertDialogHelper.showDialog("Σφάλμα", "Το SIP Client δεν έχει αρχικοποιηθεί.", "", Alert.AlertType.WARNING);
+        try {
+            FanvilDialer.dial(phoneNumber);
+            AlertDialogHelper.showDialog("Κλήση", "Εκκίνηση κλήσης προς: " + phoneNumber, "", Alert.AlertType.INFORMATION);
+        } catch (Exception e) {
+            AlertDialogHelper.showDialog("Σφάλμα Κλήσης", "Αδυναμία εκκίνησης κλήσης.", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
+//    public void originateCall(String phoneNumber) {
+//        if (sipClient != null) {
+//            try {
+//                sipClient.makeCall(phoneNumber);
+//                AlertDialogHelper.showDialog("Κλήση", "Εκκίνηση κλήσης προς: " + phoneNumber, "", Alert.AlertType.INFORMATION);
+//            } catch (Exception e) {
+//                AlertDialogHelper.showDialog("Σφάλμα Κλήσης", "Αδυναμία εκκίνησης κλήσης μέσω SIP.", e.getMessage(), Alert.AlertType.ERROR);
+//            }
+//        } else {
+//            AlertDialogHelper.showDialog("Σφάλμα", "Το SIP Client δεν έχει αρχικοποιηθεί.", "", Alert.AlertType.WARNING);
+//        }
+//    }
 
     @FXML
     private void simulateCall() {

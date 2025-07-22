@@ -16,6 +16,8 @@ public class AppSettings {
     public String myposLink;
     public String SimplyUser;
     public String SimplyPass;
+    public String fanvilUser;
+    public String fanvilPass;
     private AppSettings() {
         init();
     }
@@ -31,6 +33,8 @@ public class AppSettings {
         myposLink = AppSettings.loadSetting("myposlink");
         SimplyUser = AppSettings.loadSetting("simplyUser");
         SimplyPass = AppSettings.loadSetting("simplyPass");
+        fanvilUser = AppSettings.loadSetting("fanvil.user");
+        fanvilPass = AppSettings.loadSetting("fanvil.pass");
     }
     public static void saveSetting(String key, String value) {
         Properties prop = new Properties();

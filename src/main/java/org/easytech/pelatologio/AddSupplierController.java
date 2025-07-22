@@ -15,6 +15,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -166,9 +167,11 @@ public class AddSupplierController {
         });
 
         btnPhone.setUserData(tfPhone);
-        btnPhone.setOnAction(PhoneCall::callHandle);
+        //btnPhone.setOnAction(PhoneCall::callHandle);
+        setupPhoneButton(btnPhone, tfPhone);
         btnMobile.setUserData(tfMobile);
-        btnMobile.setOnAction(PhoneCall::callHandle);
+        //btnMobile.setOnAction(PhoneCall::callHandle);
+        setupPhoneButton(btnMobile, tfMobile);
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
     }
 
@@ -536,5 +539,15 @@ public class AddSupplierController {
         Scene scene = new Scene(vbox);
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
+    }
+
+    private void setupPhoneButton(Button button, TextField textField) {
+        button.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                PhoneCall.callHandle(textField.getText());
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                PhoneCall.callHandle2(textField.getText());
+            }
+        });
     }
 }

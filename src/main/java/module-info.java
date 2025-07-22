@@ -31,6 +31,7 @@ module org.easytech.pelatologio {
     requires asterisk.java;
     requires com.zaxxer.hikari;
     requires jain.sip.ri;
+    requires java.net.http;
 //    requires org.apache.poi.ooxml.schemas;
 //    requires docx4j;
 //    requires org.apache.poi.ooxml;

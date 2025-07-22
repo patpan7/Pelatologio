@@ -16,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
@@ -59,11 +60,12 @@ public class CustomersController implements Initializable {
     JFXComboBox<AppItem> appComboBox;
     @FXML
     Button btnTaxis, btnMypos, btnSimply, btnEmblem, btnErgani, btnData, openFileButton;
+    @FXML
+    private Label customerCounterLabel; // The new counter label
     private Integer activeAppFilter = null; // null σημαίνει κανένα φίλτρο εφαρμογής
 
     ObservableList<Customer> observableList;
     FilteredList<Customer> filteredData;
-    DBHelper dbHelper;
     List<CheckBox> checkBoxes = new ArrayList<>();
     private TabPane mainTabPane;  // Θα το περάσουμε από τον MainMenuController
 
@@ -128,10 +130,6 @@ public class CustomersController implements Initializable {
         appComboBox.setItems(apps);
         appComboBox.getSelectionModel().selectFirst();  // Default επιλογή "Όλες οι Εφαρμογές"
         appComboBox.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters(filterField.getText()));
-
-
-
-        dbHelper = new DBHelper();
 
         // Δημιουργία και αρχικοποίηση των στηλών
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -256,6 +254,13 @@ public class CustomersController implements Initializable {
         SortedList<Customer> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(customerTable.comparatorProperty());
         customerTable.setItems(sortedData);
+
+        // Add a listener to the FilteredList to update the counter
+        filteredData.addListener((javafx.collections.ListChangeListener.Change<? extends Customer> c) -> {
+            updateCustomerCounter();
+        });
+
+        updateCustomerCounter(); // Initial count
     }
 
     private void refreshTableData() {
@@ -271,7 +276,6 @@ public class CustomersController implements Initializable {
     }
 
     private List<Customer> fetchDataFromMySQL() throws SQLException {
-        DBHelper dbHelper = new DBHelper();
         List<Customer> customers;
         try {
             customers = DBHelper.getCustomerDao().getCustomers();
@@ -428,77 +432,7 @@ public class CustomersController implements Initializable {
 
     public void customerUpdate(ActionEvent actionEvent) throws IOException {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-        if (selectedCustomer == null) return; // Προστασία από null
-        DBHelper.getCustomerDao().getCustomerDetails(selectedCustomer); // Lazy loading των λεπτομερειών
-        try {
-            String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-            if (res.equals("unlocked")) {
-                DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-                // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
-                for (Tab tab : mainTabPane.getTabs()) {
-                    if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
-                        mainTabPane.getSelectionModel().select(tab);
-                        return;
-                    }
-                }
-
-                // Δημιουργία νέου tab
-                Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
-                // Φόρτωση του FXML
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
-                Parent customerForm = loader.load();
-
-                // Δημιουργία νέου tab για την ενημέρωση του πελάτη
-                //Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
-                customerTab.setContent(customerForm);
-
-                AddCustomerController controller = loader.getController();
-                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setMainTabPane(mainTabPane, customerTab);
-                controller.setCustomerForEdit(selectedCustomer);
-
-                // Προσθήκη του tab στο TabPane
-                mainTabPane.getTabs().add(customerTab);
-                mainTabPane.getSelectionModel().select(customerTab);
-
-                customerTab.setOnCloseRequest(event -> {
-                    DBHelper.getCustomerDao().customerUnlock(selectedCustomer.getCode());
-                    if (!controller.handleTabCloseRequest()) {
-                        event.consume();
-                    }
-                });
-
-                customerTab.setOnClosed(event -> {
-                    Customer updatedCustomer = controller.getUpdatedCustomer();
-                    if (updatedCustomer != null) {
-                        // Βρες τον index του παλιού πελάτη στη λίστα
-                        int index = -1;
-                        for (int i = 0; i < observableList.size(); i++) {
-                            if (observableList.get(i).getCode() == updatedCustomer.getCode()) {
-                                index = i;
-                                break;
-                            }
-                        }
-                        // Αν βρέθηκε, αντικατάστησέ τον
-                        if (index != -1) {
-                            observableList.set(index, updatedCustomer);
-                        } else {
-                            // Αν δεν βρεθεί (π.χ. νέος πελάτης), απλά πρόσθεσέ τον
-                            observableList.add(0, updatedCustomer);
-                        }
-                    }
-                    // Δεν χρειάζεται πλέον η full refresh, ο πίνακας θα ανανεωθεί αυτόματα.
-                });
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Προσοχή");
-                alert.setContentText(res);
-                alert.showAndWait();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
-        }
+        openCustomerInTab(selectedCustomer, null); // null means no specific sub-tab
     }
 
     public void openCustomerTab(int customerId) {
@@ -781,56 +715,7 @@ public class CustomersController implements Initializable {
             }
         } else {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-            if (selectedCustomer == null) {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Δεν έχει επιλεγεί Πελάτης!")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(3))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-                return;
-            }
-            DBHelper.getCustomerDao().getCustomerDetails(selectedCustomer); // Lazy Loading
-            try {
-                String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-                if (res.equals("unlocked")) {
-                    DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-                    // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
-                    for (Tab tab : mainTabPane.getTabs()) {
-                        if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
-                            mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                            // Πάρε τον controller και άλλαξε tab στο "Taxis"
-                            AddCustomerController controller = (AddCustomerController) tab.getUserData();
-                            Platform.runLater(() -> controller.selectTaxisTab());
-                            return;
-                        }
-                    }
-                    // Φόρτωση του FXML
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
-                    Parent customerForm = loader.load();
-
-                    // Δημιουργία νέου tab για την ενημέρωση του πελάτη
-                    Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
-                    customerTab.setContent(customerForm);
-
-                    AddCustomerController controller = loader.getController();
-                    // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                    controller.setCustomerForEdit(selectedCustomer);
-
-                    // Προσθήκη του tab στο TabPane
-                    mainTabPane.getTabs().add(customerTab);
-                    mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
-                    Platform.runLater(() -> controller.selectTaxisTab());
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Προσοχή");
-                    alert.setContentText(res);
-                    alert.showAndWait();
-                }
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-            }
+            openCustomerInTab(selectedCustomer, "Taxis");
         }
     }
 
@@ -849,56 +734,7 @@ public class CustomersController implements Initializable {
             }
         } else {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-            if (selectedCustomer == null) {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Δεν έχει επιλεγεί Πελάτης!")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(3))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-                return;
-            }
-            DBHelper.getCustomerDao().getCustomerDetails(selectedCustomer); // Lazy Loading
-            try {
-                String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-                if (res.equals("unlocked")) {
-                    DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-                    // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
-                    for (Tab tab : mainTabPane.getTabs()) {
-                        if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
-                            mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                            // Πάρε τον controller και άλλαξε tab στο "myPOS"
-                            AddCustomerController controller = (AddCustomerController) tab.getUserData();
-                            Platform.runLater(() -> controller.selectMyPOSTab());
-                            return;
-                        }
-                    }
-                    // Φόρτωση του FXML
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
-                    Parent customerForm = loader.load();
-
-                    // Δημιουργία νέου tab για την ενημέρωση του πελάτη
-                    Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
-                    customerTab.setContent(customerForm);
-
-                    AddCustomerController controller = loader.getController();
-                    // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                    controller.setCustomerForEdit(selectedCustomer);
-
-                    // Προσθήκη του tab στο TabPane
-                    mainTabPane.getTabs().add(customerTab);
-                    mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
-                    Platform.runLater(() -> controller.selectMyPOSTab());
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Προσοχή");
-                    alert.setContentText(res);
-                    alert.showAndWait();
-                }
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-            }
+            openCustomerInTab(selectedCustomer, "myPOS");
         }
     }
 
@@ -918,56 +754,7 @@ public class CustomersController implements Initializable {
             }
         } else {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-            if (selectedCustomer == null) {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Δεν έχει επιλεγεί Πελάτης!")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(3))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-                return;
-            }
-            DBHelper.getCustomerDao().getCustomerDetails(selectedCustomer); // Lazy Loading
-            try {
-                String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-                if (res.equals("unlocked")) {
-                    DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-                    // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
-                    for (Tab tab : mainTabPane.getTabs()) {
-                        if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
-                            mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                            // Πάρε τον controller και άλλαξε tab στο "Simply"
-                            AddCustomerController controller = (AddCustomerController) tab.getUserData();
-                            Platform.runLater(() -> controller.selectSimplyTab());
-                            return;
-                        }
-                    }
-                    // Φόρτωση του FXML
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
-                    Parent customerForm = loader.load();
-
-                    // Δημιουργία νέου tab για την ενημέρωση του πελάτη
-                    Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
-                    customerTab.setContent(customerForm);
-
-                    AddCustomerController controller = loader.getController();
-                    // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                    controller.setCustomerForEdit(selectedCustomer);
-
-                    // Προσθήκη του tab στο TabPane
-                    mainTabPane.getTabs().add(customerTab);
-                    mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
-                    Platform.runLater(() -> controller.selectSimplyTab());
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Προσοχή");
-                    alert.setContentText(res);
-                    alert.showAndWait();
-                }
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-            }
+            openCustomerInTab(selectedCustomer, "Simply");
         }
     }
 
@@ -986,111 +773,13 @@ public class CustomersController implements Initializable {
             }
         } else {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-            if (selectedCustomer == null) {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Δεν έχει επιλεγεί Πελάτης!")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(3))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-                return;
-            }
-            DBHelper.getCustomerDao().getCustomerDetails(selectedCustomer); // Lazy Loading
-            try {
-                String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-                if (res.equals("unlocked")) {
-                    DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-                    // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
-                    for (Tab tab : mainTabPane.getTabs()) {
-                        if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
-                            mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                            // Πάρε τον controller και άλλαξε tab στο "Emblem"
-                            AddCustomerController controller = (AddCustomerController) tab.getUserData();
-                            Platform.runLater(() -> controller.selectEmbelmTab());
-                            return;
-                        }
-                    }
-                    // Φόρτωση του FXML
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
-                    Parent customerForm = loader.load();
-
-                    // Δημιουργία νέου tab για την ενημέρωση του πελάτη
-                    Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
-                    customerTab.setContent(customerForm);
-
-                    AddCustomerController controller = loader.getController();
-                    // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                    controller.setCustomerForEdit(selectedCustomer);
-
-                    // Προσθήκη του tab στο TabPane
-                    mainTabPane.getTabs().add(customerTab);
-                    mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
-                    Platform.runLater(() -> controller.selectEmbelmTab());
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Προσοχή");
-                    alert.setContentText(res);
-                    alert.showAndWait();
-                }
-
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-            }
+            openCustomerInTab(selectedCustomer, "Emblem");
         }
     }
 
     public void erganiClick(MouseEvent event) {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-        if (selectedCustomer == null) {
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Δεν έχει επιλεγεί Πελάτης!")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
-            return;
-        }
-        try {
-            String res = DBHelper.getCustomerDao().checkCustomerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-            if (res.equals("unlocked")) {
-                DBHelper.getCustomerDao().customerLock(selectedCustomer.getCode(), AppSettings.loadSetting("appuser"));
-                // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
-                for (Tab tab : mainTabPane.getTabs()) {
-                    if (tab.getText().equals(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)))) {
-                        mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
-                        // Πάρε τον controller και άλλαξε tab στο "Emblem"
-                        AddCustomerController controller = (AddCustomerController) tab.getUserData();
-                        Platform.runLater(() -> controller.selectErganiTab());
-                        return;
-                    }
-                }
-                // Φόρτωση του FXML
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
-                Parent customerForm = loader.load();
-
-                // Δημιουργία νέου tab για την ενημέρωση του πελάτη
-                Tab customerTab = new Tab(selectedCustomer.getName().substring(0, Math.min(selectedCustomer.getName().length(), 18)));
-                customerTab.setContent(customerForm);
-
-                AddCustomerController controller = loader.getController();
-                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setCustomerForEdit(selectedCustomer);
-
-                // Προσθήκη του tab στο TabPane
-                mainTabPane.getTabs().add(customerTab);
-                mainTabPane.getSelectionModel().select(customerTab); // Επιλογή του νέου tab
-                Platform.runLater(() -> controller.selectErganiTab());
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Προσοχή");
-                alert.setContentText(res);
-                alert.showAndWait();
-            }
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-        }
+        openCustomerInTab(selectedCustomer, "Ergani");
     }
 
     public void folderClick(ActionEvent event) {
@@ -1178,5 +867,125 @@ public class CustomersController implements Initializable {
     public void unlock(ActionEvent event) {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
         DBHelper.getCustomerDao().customerUnlock(selectedCustomer.getCode());
+    }
+
+    private void updateCustomerCounter() {
+        customerCounterLabel.setText("Πελάτες: " + filteredData.size());
+    }
+
+    /**
+     * Centralized method to open a customer's details in a new or existing tab.
+     * Handles locking, FXML loading, controller initialization, and optional sub-tab selection.
+     *
+     * @param customer The customer to open.
+     * @param tabToSelect The specific sub-tab to select upon opening (e.g., "Taxis", "myPOS"), or null.
+     */
+    private void openCustomerInTab(Customer customer, String tabToSelect) {
+        if (customer == null) {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Δεν έχει επιλεγεί Πελάτης!")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showError();
+            return;
+        }
+
+        DBHelper.getCustomerDao().getCustomerDetails(customer); // Lazy loading
+
+        try {
+            String lockResult = DBHelper.getCustomerDao().checkCustomerLock(customer.getCode(), AppSettings.loadSetting("appuser"));
+            if (!lockResult.equals("unlocked")) {
+                AlertDialogHelper.showDialog("Προσοχή", lockResult, "", Alert.AlertType.ERROR);
+                return;
+            }
+
+            DBHelper.getCustomerDao().customerLock(customer.getCode(), AppSettings.loadSetting("appuser"));
+
+            // Find existing tab by checking UserData for the customer's unique ID
+            for (Tab tab : mainTabPane.getTabs()) {
+                if (Integer.valueOf(customer.getCode()).equals(tab.getUserData())) {
+                    mainTabPane.getSelectionModel().select(tab);
+                    // If a specific sub-tab needs to be selected, find the controller and call the method
+                    if (tabToSelect != null && tab.getContent().getUserData() instanceof AddCustomerController) {
+                        AddCustomerController controller = (AddCustomerController) tab.getContent().getUserData();
+                        selectSubTab(controller, tabToSelect);
+                    }
+                    return; // Tab found and selected, exit the method
+                }
+            }
+
+            // If no tab found, create a new one
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
+            Parent customerForm = loader.load();
+            AddCustomerController controller = loader.getController();
+
+            String tabTitle = customer.getName().substring(0, Math.min(customer.getName().length(), 18));
+            Tab customerTab = new Tab(tabTitle);
+            customerTab.setUserData(customer.getCode()); // <-- Set the unique customer ID as user data
+            customerTab.setContent(customerForm);
+            customerForm.setUserData(controller); // Store controller for later access
+
+            controller.setMainTabPane(mainTabPane, customerTab);
+            controller.setCustomerForEdit(customer);
+
+            mainTabPane.getTabs().add(customerTab);
+            mainTabPane.getSelectionModel().select(customerTab);
+
+            // Select the specific sub-tab if requested
+            if (tabToSelect != null) {
+                selectSubTab(controller, tabToSelect);
+            }
+
+            customerTab.setOnCloseRequest(event -> {
+                DBHelper.getCustomerDao().customerUnlock(customer.getCode());
+                if (!controller.handleTabCloseRequest()) {
+                    event.consume();
+                }
+            });
+
+            customerTab.setOnClosed(event -> {
+                Customer updatedCustomer = controller.getUpdatedCustomer();
+                if (updatedCustomer != null) {
+                    int index = -1;
+                    for (int i = 0; i < observableList.size(); i++) {
+                        if (observableList.get(i).getCode() == updatedCustomer.getCode()) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (index != -1) {
+                        observableList.set(index, updatedCustomer);
+                    }
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα της καρτέλας πελάτη.", e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void selectSubTab(AddCustomerController controller, String tabName) {
+        Platform.runLater(() -> {
+            switch (tabName) {
+                case "Taxis":
+                    controller.selectTaxisTab();
+                    break;
+                case "myPOS":
+                    controller.selectMyPOSTab();
+                    break;
+                case "Simply":
+                    controller.selectSimplyTab();
+                    break;
+                case "Emblem":
+                    controller.selectEmbelmTab();
+                    break;
+                case "Ergani":
+                    controller.selectErganiTab();
+                    break;
+            }
+        });
     }
 }

@@ -236,17 +236,13 @@ public class AddCustomerController {
         btnAccEmail.setOnAction(this::showEmailDialog);
         btnAccEmail1.setOnAction(this::showEmailDialog);
 
-        btnPhone1.setOnAction(e -> handlePhoneCall(tfPhone1.getText()));
-        btnPhone2.setUserData(tfPhone2);
-        btnPhone2.setOnAction(e -> handlePhoneCall(tfPhone2.getText()));
-        btnMobile.setUserData(tfMobile);
-        btnMobile.setOnAction(e -> handlePhoneCall(tfMobile.getText()));
-        btnPhoneManager.setUserData(tfManagerPhone);
-        btnPhoneManager.setOnAction(e -> handlePhoneCall(tfManagerPhone.getText()));
-        btnAccPhone.setUserData(tfAccPhone);
-        btnAccPhone.setOnAction(e -> handlePhoneCall(tfAccPhone.getText()));
-        btnAccMobile.setUserData(tfAccMobile);
-        btnAccMobile.setOnAction(e -> handlePhoneCall(tfAccMobile.getText()));
+        // Setup phone buttons with left and right click actions
+        setupPhoneButton(btnPhone1, tfPhone1);
+        setupPhoneButton(btnPhone2, tfPhone2);
+        setupPhoneButton(btnMobile, tfMobile);
+        setupPhoneButton(btnPhoneManager, tfManagerPhone);
+        setupPhoneButton(btnAccPhone, tfAccPhone);
+        setupPhoneButton(btnAccMobile, tfAccMobile);
 
         // Ενέργειες για τα copy, paste, clear items στο βασικό contextMenu
         copyItem.setOnAction(e -> copyText());
@@ -332,7 +328,6 @@ public class AddCustomerController {
         }
     }
 
-    
 
     private void setupTabs() {
         tabToFxml.put(tabTaxis, "taxisView.fxml");
@@ -1291,19 +1286,6 @@ public class AddCustomerController {
         tfAccName.getSelectionModel().select(newAccountant); // Επιλογή
     }
 
-    private void handlePhoneCall(String phoneNumber) {
-        if (originateCallCallback != null && phoneNumber != null && !phoneNumber.isEmpty()) {
-            originateCallCallback.accept(phoneNumber);
-        } else {
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Δεν υπάρχει αριθμός τηλεφώνου για κλήση.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showWarning();
-        }
-    }
 
     @FXML
     private void handleMouseClick(MouseEvent event) {
@@ -1616,5 +1598,23 @@ public class AddCustomerController {
         if (mainTabPane != null && myTab != null) {
             Platform.runLater(() -> mainTabPane.getTabs().remove(myTab));
         }
+    }
+
+    /**
+     * Sets up a phone button to handle left and right clicks.
+     * Left-click triggers the primary call action.
+     * Right-click triggers the secondary call action.
+     *
+     * @param button    The button to set up.
+     * @param textField The text field containing the phone number.
+     */
+    private void setupPhoneButton(Button button, TextField textField) {
+        button.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                PhoneCall.callHandle(textField.getText());
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                PhoneCall.callHandle2(textField.getText());
+            }
+        });
     }
 }
