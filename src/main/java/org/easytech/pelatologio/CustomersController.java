@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
@@ -27,6 +28,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
@@ -46,7 +48,6 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 public class CustomersController implements Initializable {
-    @FXML
     public TableColumn nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn, balanceColumn;
     @FXML
     StackPane stackPane;
@@ -219,6 +220,30 @@ public class CustomersController implements Initializable {
             contextMenu.show(openFileButton, openFileButton.getScene().getWindow().getX() + buttonX,
                     openFileButton.getScene().getWindow().getY() + buttonY);
         });
+    }
+
+    @FXML
+    private void anydeskClick(MouseEvent event) {
+        if (event.getButton() == MouseButton.SECONDARY) {
+            try {
+                // This requires the path to anydesk.exe to be configured
+                // For now, we assume it's in a known location or in PATH
+                Runtime.getRuntime().exec("C:\\Pelatologio\\AnyDesk.exe ");
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Show alert: Anydesk not found
+            }
+        } else {
+            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+            if (selectedCustomer == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText("Δεν έχει επιλεγεί Πελάτης!");
+                Optional<ButtonType> result = alert.showAndWait();
+                return;
+            }
+            openAnydeskWindow(selectedCustomer);
+        }
     }
 
     // Μέθοδος για να πάρεις τα επιλεγμένα φίλτρα
@@ -812,6 +837,24 @@ public class CustomersController implements Initializable {
             Desktop.getDesktop().open(new File(folderPath));
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα φακέλου.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+
+    private void openAnydeskWindow(Customer customer) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("anydeskView.fxml"));
+            Parent root = loader.load();
+
+            AnydeskViewController controller = loader.getController();
+            controller.setCustomer(customer);
+
+            Stage stage = new Stage();
+            stage.setTitle("Anydesk IDs for " + customer.getName());
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle error
         }
     }
 

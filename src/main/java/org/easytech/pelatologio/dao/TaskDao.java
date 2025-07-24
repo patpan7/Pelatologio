@@ -22,4 +22,5 @@ public interface TaskDao {
     List<Tasks> getAllCustomerTasks(int customerCode);
     List<Tasks> getUpcomingAppointments(java.time.LocalDateTime dateTime);
     void snoozeAppointment(int id);
+    List<Tasks> getTodaysTasks();
 }

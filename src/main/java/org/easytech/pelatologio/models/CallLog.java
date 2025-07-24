@@ -13,6 +13,7 @@ public class CallLog {
     private int customerId;
     private String notes;
     private String appUser;
+    private String customerName;
 
     public CallLog() {
     }
@@ -105,19 +106,19 @@ public class CallLog {
         this.notes = notes;
     }
 
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
     @Override
     public String toString() {
-        return "CallLog{" +
-               "id=" + id +
-               ", callerNumber='" + callerNumber + '\'' +
-               ", callerName='" + callerName + '\'' +
-               ", callType='" + callType + '\'' +
-               ", startTime=" + startTime +
-               ", endTime=" + endTime +
-               ", durationSeconds=" + durationSeconds +
-               ", customerId=" + customerId +
-               ", notes='" + notes + '\'' +
-               '}';
+        String nameOrNumber = (customerName != null && !customerName.isEmpty()) ? customerName : callerNumber;
+        String time = (startTime != null) ? startTime.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM HH:mm")) : "N/A";
+        return String.format("[%s] %s - %s", callType, nameOrNumber, time);
     }
 
     public String getType() {

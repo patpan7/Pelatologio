@@ -20,7 +20,7 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </BorderPane.margin>
                <children>
-   
+
                           <!-- Μετρητής Πελατών -->
                        <Label fx:id="customerCounterLabel" text="Πελάτες: 0">
                      <VBox.margin>
@@ -28,17 +28,17 @@
                      </VBox.margin>
                        </Label>
                       <HBox alignment="CENTER_LEFT" spacing="10">
-      
+
                           <!-- Αναζήτηση -->
                           <TextField fx:id="filterField" prefWidth="280.0" promptText="Αναζήτηση..." />
-      
+
                           <!-- Κουμπί φίλτρου -->
                           <JFXButton fx:id="filterButton" buttonType="RAISED" minHeight="46.0" styleClass="click-button" text="Φίλτρο μόνο">
                               <HBox.margin>
                                   <Insets />
                               </HBox.margin>
                           </JFXButton>
-      
+
                           <!-- Κουμπί προσθήκης -->
                           <JFXButton buttonType="RAISED" mnemonicParsing="false" onAction="#customerAddNew" styleClass="click-button" text="Νέος Πελάτης">
                               <graphic>
@@ -50,7 +50,7 @@
                                   <Insets />
                               </HBox.margin>
                           </JFXButton>
-      
+
                           <!-- Καθαρισμός φίλτρων -->
                           <JFXButton fx:id="btnClean" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#clean" styleClass="click-button" text="">
                               <graphic>
@@ -62,9 +62,9 @@
                                   <Insets left="5.0" />
                               </HBox.margin>
                           </JFXButton>
-      
+
                           <Separator HBox.hgrow="ALWAYS" />
-      
+
                           <!-- Υπόλοιπο -->
                           <JFXButton fx:id="btnBalance" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#showBalance" styleClass="click-button" text="">
                               <graphic>
@@ -73,9 +73,9 @@
                                   </ImageView>
                               </graphic>
                           </JFXButton>
-      
+
                           <Separator HBox.hgrow="ALWAYS" />
-      
+
                           <!-- Ανενεργοί -->
                           <JFXButton fx:id="btnShowInactive" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#showInactive" styleClass="click-button" text="">
                               <graphic>
@@ -84,9 +84,9 @@
                                   </ImageView>
                               </graphic>
                           </JFXButton>
-      
+
                           <Separator HBox.hgrow="ALWAYS" />
-      
+
                           <!-- Ανανέωση -->
                           <JFXButton fx:id="btnRefresh" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#refresh" styleClass="click-button" text="">
                               <graphic>
@@ -98,7 +98,7 @@
                                   <Insets left="5.0" />
                               </HBox.margin>
                           </JFXButton>
-      
+
                           <!-- ComboBox εφαρμογής -->
                           <JFXComboBox fx:id="appComboBox" prefWidth="150.0" promptText="Επιλογή Εφαρμογής" />
                       </HBox>
@@ -151,58 +151,58 @@
                     <BorderPane.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </BorderPane.margin>
-
-                    <JFXButton fx:id="btnTaxis" buttonType="RAISED" onMouseClicked="#taxisClick" prefWidth="175.0" styleClass="click-button" text="Taxis">
+                    <JFXButton fx:id="btnTaxis" onMouseClicked="#taxisClick" prefWidth="130" styleClass="click-button" text="Taxis">
                         <graphic>
-                            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/gsis.png" />
                             </ImageView>
                         </graphic>
                     </JFXButton>
-
-                    <JFXButton fx:id="btnMypos" buttonType="RAISED" onMouseClicked="#myposClick" prefWidth="175.0" styleClass="click-button" text="myPOS">
+                    <JFXButton fx:id="btnMypos" onMouseClicked="#myposClick" prefWidth="130" styleClass="click-button" text="myPOS">
                         <graphic>
-                            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/mypos1.png" />
                             </ImageView>
                         </graphic>
                     </JFXButton>
-
-                    <JFXButton fx:id="btnSimply" buttonType="RAISED" onMouseClicked="#simplyClick" prefWidth="175.0" styleClass="click-button" text="Simply">
+                    <JFXButton fx:id="btnSimply" onMouseClicked="#simplyClick" prefWidth="130" styleClass="click-button" text="Simply">
                         <graphic>
-                            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/simply1.png" />
                             </ImageView>
                         </graphic>
                     </JFXButton>
-
-                    <JFXButton fx:id="btnEmblem" buttonType="RAISED" onMouseClicked="#emblemClick" prefWidth="175.0" styleClass="click-button" text="Emblem">
+                    <JFXButton fx:id="btnEmblem" onMouseClicked="#emblemClick" prefWidth="130" styleClass="click-button" text="Emblem">
                         <graphic>
-                            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/emblem.png" />
                             </ImageView>
                         </graphic>
                     </JFXButton>
-
-                    <JFXButton fx:id="btnErgani" buttonType="RAISED" onMouseClicked="#erganiClick" prefWidth="175.0" styleClass="click-button" text="Ergani">
+                    <JFXButton fx:id="btnErgani" onMouseClicked="#erganiClick" prefWidth="140.0" styleClass="click-button" text="Ergani">
                         <graphic>
-                            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/ergani.png" />
                             </ImageView>
                         </graphic>
                     </JFXButton>
-
-                    <JFXButton fx:id="btnData" buttonType="RAISED" onAction="#folderClick" prefWidth="175.0" styleClass="click-button" text="Data">
+                    <JFXButton fx:id="btnAnydesk" onMouseClicked="#anydeskClick" prefWidth="140.0" styleClass="click-button" text="Anydesk">
                         <graphic>
-                            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                                <Image url="@icons/anydesk.png" />
+                            </ImageView>
+                        </graphic>
+                    </JFXButton>
+                    <JFXButton fx:id="btnData" onAction="#folderClick" prefWidth="140.0" styleClass="click-button" text="Data">
+                        <graphic>
+                            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/folder.png" />
                             </ImageView>
                         </graphic>
                     </JFXButton>
-
-                    <JFXButton fx:id="openFileButton" buttonType="RAISED" prefWidth="175.0" styleClass="click-button" text="My Files">
+                    <JFXButton fx:id="openFileButton" prefWidth="140.0" styleClass="click-button" text="My Files">
                         <graphic>
-                            <ImageView fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/document.png" />
                             </ImageView>
                         </graphic>

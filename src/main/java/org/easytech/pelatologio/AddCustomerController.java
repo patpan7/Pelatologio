@@ -1034,8 +1034,6 @@ public class AddCustomerController {
     }
 
     void updateCustomer() {
-        DBHelper dbHelper = new DBHelper();
-
         String name = tfName.getText();
         customer.setName(name);
         String title = tfTitle.getText();
@@ -1616,5 +1614,27 @@ public class AddCustomerController {
                 PhoneCall.callHandle2(textField.getText());
             }
         });
+    }
+
+    public void anydesk(MouseEvent mouseEvent) {
+        openAnydeskWindow(customer);
+    }
+
+    private void openAnydeskWindow(Customer customer) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("anydeskView.fxml"));
+            Parent root = loader.load();
+
+            AnydeskViewController controller = loader.getController();
+            controller.setCustomer(customer);
+
+            Stage stage = new Stage();
+            stage.setTitle("Anydesk IDs for " + customer.getName());
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle error
+        }
     }
 }

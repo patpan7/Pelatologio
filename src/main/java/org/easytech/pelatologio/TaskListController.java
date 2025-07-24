@@ -76,7 +76,6 @@ public class TaskListController implements Initializable {
             // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
                 task.setCalendar(newValue);
-                DBHelper dbHelper = new DBHelper();
                 DBHelper.getTaskDao().updateTaskCalendar(task); // Ενημέρωση στη βάση
             });
 

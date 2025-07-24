@@ -120,4 +120,40 @@ public class CallLogDaoImpl implements CallLogDao {
             pstmt.executeUpdate();
         }
     }
+
+    @Override
+    public List<CallLog> getRecentCalls(int limit) {
+        List<CallLog> callLogs = new ArrayList<>();
+        String sql = "SELECT cl.id, cl.customerId, cl.callerNumber, cl.callerName, cl.callType, cl.startTime, cl.endTime, cl.durationSeconds, cl.notes, c.name AS customerName " +
+                     "FROM CallLogs cl " +
+                     "LEFT JOIN Customers c ON cl.customerId = c.code " +
+                     "ORDER BY cl.startTime DESC " +
+                     "OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, limit);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    CallLog callLog = new CallLog();
+                    callLog.setId(rs.getInt("id"));
+                    callLog.setCustomerId(rs.getInt("customerId"));
+                    callLog.setCallerNumber(rs.getString("callerNumber"));
+                    callLog.setCallerName(rs.getString("callerName"));
+                    callLog.setCallType(rs.getString("callType"));
+                    callLog.setStartTime(rs.getTimestamp("startTime").toLocalDateTime());
+                    if (rs.getTimestamp("endTime") != null) {
+                        callLog.setEndTime(rs.getTimestamp("endTime").toLocalDateTime());
+                    }
+                    callLog.setDurationSeconds(rs.getLong("durationSeconds"));
+                    callLog.setNotes(rs.getString("notes"));
+                    // Set customer name from join
+                    callLog.setCustomerName(rs.getString("customerName"));
+                    callLogs.add(callLog);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return callLogs;
+    }
 }

@@ -306,4 +306,43 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public List<Subscription> getExpiringSubscriptions(int days) {
+        List<Subscription> subs = new ArrayList<>();
+        String query = "SELECT s.id, s.title, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name  " +
+                "FROM Subscriptions s " +
+                "LEFT JOIN Customers c ON s.customerId = c.code " +
+                "LEFT JOIN SubsCategories i ON s.subCatId = i.id " +
+                "WHERE s.endDate BETWEEN GETDATE() AND DATEADD(day, ?, GETDATE()) " +
+                "ORDER BY s.endDate ASC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, days);
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String title = resultSet.getString("title");
+                    LocalDate endDate = resultSet.getDate("endDate").toLocalDate();
+                    Integer customerId = resultSet.getObject("customerId", Integer.class);
+                    Integer categoryId = resultSet.getObject("subCatId", Integer.class);
+                    String category = resultSet.getString("catName");
+                    String note = resultSet.getString("note");
+                    String price = resultSet.getString("price");
+                    String customerName = resultSet.getString("name");
+                    String sended = resultSet.getString("sended");
+
+                    Subscription sub = new Subscription(id, title, endDate, customerId, categoryId, price, note, sended);
+                    sub.setCustomerName(customerName);
+                    sub.setCategory(category);
+                    subs.add(sub);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return subs;
+    }
 }

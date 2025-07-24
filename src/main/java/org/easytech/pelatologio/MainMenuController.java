@@ -72,7 +72,8 @@ public class MainMenuController implements Initializable {
                         Customer customer = customerDao.getCustomerByPhoneNumber(callerId);
                         int customerId = (customer != null) ? customer.getCode() : -1;
                         String customerName = (customer != null) ? customer.getName() : "Άγνωστος";
-                        showCallerPopup(callerId, customerName, customerId);
+                        String customerTitle = (customer != null) ? customer.getTitle() : "";
+                        showCallerPopup(callerId, customerName, customerId, customerTitle);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -91,6 +92,7 @@ public class MainMenuController implements Initializable {
                 if (sipClient != null) {
                     try {
                         sipClient.stop();
+                        DBHelper.closeDataSource();
                         System.out.println("SIP Client stopped.");
                     } catch (Exception e) {
                         System.err.println("Error stopping SIP client: " + e.getMessage());
@@ -101,13 +103,13 @@ public class MainMenuController implements Initializable {
         });
     }
 
-    private void showCallerPopup(String callerNumber, String customerName, int customerId) {
+    private void showCallerPopup(String callerNumber, String customerName, int customerId, String customerTitle) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/easytech/pelatologio/caller_popup.fxml"));
             Parent root = loader.load();
             CallerPopupController controller = loader.getController();
 
-            controller.initData(callerNumber, customerName, customerId);
+            controller.initData(callerNumber, customerName, customerId, customerTitle);
             controller.setOpenCustomerCallback(this::openCustomerDetailsTabSimple);
 
             Stage stage = new Stage();
@@ -232,6 +234,8 @@ public class MainMenuController implements Initializable {
 
         Tab newTab = new Tab("Πελάτες");
         newTab.setContent(customersContent);
+        newTab.setUserData(customersController); // Store the controller here!
+        newTab.setUserData(customersController); // Store the controller here!
 
         mainTabPane.getTabs().add(newTab);
         mainTabPane.getSelectionModel().select(newTab);
@@ -363,7 +367,7 @@ public class MainMenuController implements Initializable {
     public void myDataStatusClick(ActionEvent event) {
         try {
             LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openPage("https://mydatacloud.gr/");
+            loginAutomation.openPage("https://status.mydatacloud.gr/");
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
 
@@ -478,6 +482,36 @@ public class MainMenuController implements Initializable {
         mainTabPane.getSelectionModel().select(newTab);
     }
 
+    @FXML
+    private void handleDashboardClick(ActionEvent event) {
+        try {
+            // Check if Dashboard tab already exists
+            for (Tab tab : mainTabPane.getTabs()) {
+                if (tab.getText().equals("Dashboard")) {
+                    mainTabPane.getSelectionModel().select(tab);
+                    return;
+                }
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
+            Parent dashboardRoot = loader.load();
+
+            DashboardController dashboardController = loader.getController();
+            dashboardController.setMainTabPane(mainTabPane); // Pass the mainTabPane
+            dashboardController.setOpenCustomerCallback(this::openCustomerDetailsTabSimple); // Pass the callback
+
+            Tab newTab = new Tab("Dashboard");
+            newTab.setContent(dashboardRoot);
+
+            mainTabPane.getTabs().add(newTab);
+            mainTabPane.getSelectionModel().select(newTab);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα του Dashboard.", e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
     public void callHistoryClick(ActionEvent e) throws IOException {
         for (Tab tab : mainTabPane.getTabs()) {
             if (tab.getText().equals("Ιστορικό Κλήσεων")) {
@@ -588,10 +622,16 @@ public class MainMenuController implements Initializable {
     }
 
     private void openWebPage(String url) {
+        LoginAutomator loginAutomator = null;
         try {
-            new LoginAutomator(true).openPage(url);
+            loginAutomator = new LoginAutomator(true);
+            loginAutomator.openPage(url);
         } catch (IOException e) {
             showErrorDialog("Σφάλμα κατά το άνοιγμα.", e.getMessage());
+        } finally {
+            if (loginAutomator != null) {
+                loginAutomator.close();
+            }
         }
     }
 
@@ -600,32 +640,51 @@ public class MainMenuController implements Initializable {
     }
 
     private void openCustomerDetailsTabSimple(int customerId) {
+        Customer customer = DBHelper.getCustomerDao().getCustomerByCode(customerId);
         try {
+            String lockResult = DBHelper.getCustomerDao().checkCustomerLock(customerId, AppSettings.loadSetting("appuser"));
+            if (!lockResult.equals("unlocked")) {
+                AlertDialogHelper.showDialog("Προσοχή", lockResult, "", Alert.AlertType.ERROR);
+                return;
+            }
+
+            DBHelper.getCustomerDao().customerLock(customerId, AppSettings.loadSetting("appuser"));
+
+// Find existing tab by checking UserData for the customer's unique ID
             for (Tab tab : mainTabPane.getTabs()) {
-                if (tab.getProperties().containsKey("customerId") && (int) tab.getProperties().get("customerId") == customerId) {
+                if (Integer.valueOf(customer.getCode()).equals(tab.getUserData())) {
                     mainTabPane.getSelectionModel().select(tab);
-                    return;
+                    // If a specific sub-tab needs to be selected, find the controller and call the method
+                    if (tab.getContent().getUserData() instanceof AddCustomerController) {
+                        AddCustomerController controller = (AddCustomerController) tab.getContent().getUserData();
+                    }
+                    return; // Tab found and selected, exit the method
                 }
             }
+// If no tab found, create a new one
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
+            Parent customerForm = loader.load();
+            AddCustomerController controller = loader.getController();
 
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("newCustomer.fxml"));
-            Parent customerContent = fxmlLoader.load();
-            AddCustomerController addCustomerController = fxmlLoader.getController();
-            addCustomerController.setOriginateCallCallback(this::originateCall);
+            String tabTitle = customer.getName().substring(0, Math.min(customer.getName().length(), 18));
+            Tab customerTab = new Tab(tabTitle);
+            customerTab.setUserData(customer.getCode()); // <-- Set the unique customer ID as user data
+            customerTab.setContent(customerForm);
+            customerForm.setUserData(controller); // Store controller for later access
 
-            if (customerId != -1) {
-                Customer customer = customerDao.getSelectedCustomer(customerId);
-                if (customer != null) {
-                    addCustomerController.setCustomerForEdit(customer);
+            controller.setMainTabPane(mainTabPane, customerTab);
+            controller.setCustomerForEdit(customer);
+
+            mainTabPane.getTabs().add(customerTab);
+            mainTabPane.getSelectionModel().select(customerTab);
+
+
+            customerTab.setOnCloseRequest(event -> {
+                DBHelper.getCustomerDao().customerUnlock(customer.getCode());
+                if (!controller.handleTabCloseRequest()) {
+                    event.consume();
                 }
-            }
-
-            Tab newTab = new Tab("Πελάτης: " + (customerId != -1 ? customerId : "Νέος"));
-            newTab.setContent(customerContent);
-            newTab.getProperties().put("customerId", customerId);
-
-            mainTabPane.getTabs().add(newTab);
-            mainTabPane.getSelectionModel().select(newTab);
+            });
 
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα των στοιχείων πελάτη.", e.getMessage(), Alert.AlertType.ERROR));

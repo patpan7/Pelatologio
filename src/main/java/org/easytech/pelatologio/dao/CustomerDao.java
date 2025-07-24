@@ -3,6 +3,7 @@ package org.easytech.pelatologio.dao;
 import org.easytech.pelatologio.models.Customer;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public interface CustomerDao {
     List<Customer> getCustomers() throws SQLException;
@@ -34,4 +35,9 @@ public interface CustomerDao {
     void deactivateCustomer(Customer customer);
 
     Customer getCustomerByPhoneNumber(String phoneNumber) throws SQLException;
+
+    Map<String, Integer> getNewCustomersPerMonth();
+    Map<String, Integer> getCustomersByRecommendation();
+
+    Customer getCustomerByCode(int customerId);
 }

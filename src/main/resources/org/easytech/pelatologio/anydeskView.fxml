@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AnydeskViewController">
+   <children>
+      <VBox layoutX="14.0" layoutY="14.0" prefHeight="372.0" prefWidth="572.0" spacing="10.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+         <children>
+            <Text fx:id="customerNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="Anydesk IDs for Customer:">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <TableView fx:id="anydeskTableView" prefHeight="200.0" prefWidth="572.0">
+              <columns>
+                <TableColumn fx:id="descriptionColumn" prefWidth="200.0" text="Description" />
+                <TableColumn fx:id="anydeskIdColumn" prefWidth="150.0" text="Anydesk ID" />
+                  <TableColumn fx:id="connectColumn" prefWidth="110.0" text="Connect" />
+                  <TableColumn fx:id="copyColumn" prefWidth="110.0" text="Copy" />
+              </columns>
+            </TableView>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                  <TextField fx:id="descriptionField" promptText="Description" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="anydeskIdField" promptText="Anydesk ID" HBox.hgrow="ALWAYS" />
+                  <JFXButton fx:id="addButton" buttonType="RAISED" mnemonicParsing="false" onAction="#handleAddButtonAction" styleClass="click-button" text="">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <Image url="@icons/add.png" />
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT">
+               <children>
+                  <JFXButton fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteButtonAction" style="-fx-background-color: #f44336;" styleClass="click-button" text="Delete Selected" textFill="WHITE" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</AnchorPane>

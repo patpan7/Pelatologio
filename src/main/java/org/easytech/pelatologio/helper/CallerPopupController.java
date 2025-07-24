@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 
 public class CallerPopupController {
     @FXML private Label callerNumberLabel;
+    @FXML private Label callerTitleLabel;
     @FXML private Button openCustomerButton;
     @FXML private Button closeButton;
 
@@ -63,13 +64,14 @@ public class CallerPopupController {
     }
 
     // Αρχικοποίηση δεδομένων από τον κύριο controller
-    public void initData(String callerNumber, String customerName, int customerId) {
+    public void initData(String callerNumber, String customerName, int customerId, String customerTitle) {
         this.callerNumber = callerNumber;
         this.customerName = customerName;
         this.customerId = customerId;
 
         if (customerName != null && !customerName.isEmpty() && !customerName.equals("Άγνωστο")) {
             callerNumberLabel.setText("Κλήση από: " + customerName + " (" + callerNumber + ")");
+            callerTitleLabel.setText(customerTitle);
         } else {
             callerNumberLabel.setText("Κλήση από: " + callerNumber);
         }

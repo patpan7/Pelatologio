@@ -257,7 +257,7 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </JFXButton>
-                        <JFXButton fx:id="startCallLogButton" buttonType="RAISED" prefWidth="180.0" styleClass="click-button" text="Έναρξη Καταγραφής Κλήσης" visible="false" wrapText="true" HBox.hgrow="ALWAYS">
+                        <JFXButton fx:id="startCallLogButton" buttonType="RAISED" prefWidth="180.0" styleClass="click-button" text="Καταγραφή Κλήσης" wrapText="true" HBox.hgrow="ALWAYS">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/online-support.png" />
@@ -266,7 +266,16 @@
                             <VBox.margin>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
-
+                        </JFXButton>
+                        <JFXButton fx:id="btnAnydesk" alignment="TOP_LEFT" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#anydesk" prefWidth="180.0" styleClass="click-button" text="Anydesk" wrapText="true" HBox.hgrow="ALWAYS">
+                            <graphic>
+                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@icons/anydesk.png" />
+                                </ImageView>
+                            </graphic>
+                            <VBox.margin>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                            </VBox.margin>
                         </JFXButton>
                         <ProgressIndicator fx:id="progressIndicator" progress="-1.0" visible="false" VBox.vgrow="ALWAYS" />
                         <Label fx:id="lblBlance" styleClass="normal-label" text="Υπόλοιπο" />

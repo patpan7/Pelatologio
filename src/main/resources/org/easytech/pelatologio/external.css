@@ -386,3 +386,65 @@
     -fx-background-radius: 8px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 6, 0, 0, 1);
 }
+
+/*------------------Charts----------------*/
+    .chart {
+        -fx-padding: 10px;
+        -fx-background-color: white;
+        -fx-border-color: #E0E0E0;
+        -fx-border-width: 1px;
+        -fx-border-radius: 8px;
+        -fx-background-radius: 8px;
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 6, 0, 0, 1);
+   }
+   .chart-content {
+   -fx-background-color: transparent;
+    }
+
+    .chart-plot-background {
+        -fx-background-color: transparent;
+    }
+
+    .chart-vertical-grid-lines, .chart-horizontal-grid-lines {
+        -fx-stroke: #f0f0f0; /* Πολύ απαλό γκρι */
+        -fx-stroke-width: 0.5;
+    }
+
+    .chart-series-bar {
+        -fx-bar-fill: -fx-primary; /* Χρησιμοποιούμε το κύριο μπλε της εφαρμογής */
+    }
+
+    /* Για το δεύτερο γράφημα, μπορούμε να δώσουμε ένα διαφορετικό χρώμα αν θέλουμε */
+    /* .chart[id="recommendationChart"] .chart-series-bar {
+        -fx-bar-fill: #4CAF50; // Ένα πράσινο
+    } */
+
+    .axis-label {
+        -fx-font-size: 14px;
+        -fx-fill: -fx-text;
+    }
+
+    .axis-tick-mark {
+        -fx-stroke: #cccccc;
+    }
+
+    .axis-tick-label {
+        -fx-font-size: 12px;
+        -fx-fill: -fx-text;
+    }
+
+    .chart-legend {
+        -fx-background-color: rgba(255, 255, 255, 0.8);
+        -fx-padding: 5px;
+        -fx-border-color: #E0E0E0;
+        -fx-border-width: 1px;
+        -fx-border-radius: 5px;
+    }
+
+    .chart-legend-item-symbol {
+        -fx-background-color: -fx-primary;
+    }
+
+    .chart-legend-item-text {
+        -fx-fill: -fx-text;
+   }

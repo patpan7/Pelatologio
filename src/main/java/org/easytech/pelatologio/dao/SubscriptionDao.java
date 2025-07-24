@@ -21,4 +21,5 @@ public interface SubscriptionDao {
     void deleteSub(int id);
     void renewSub(int id, int yearsToAdd);
     void updateSubSent(int id);
+    List<Subscription> getExpiringSubscriptions(int days);
 }

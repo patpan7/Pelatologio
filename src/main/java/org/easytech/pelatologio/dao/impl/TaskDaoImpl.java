@@ -360,4 +360,41 @@ public class TaskDaoImpl implements TaskDao {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public List<Tasks> getTodaysTasks() {
+        List<Tasks> tasks = new ArrayList<>();
+        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, t.is_ergent, t.is_wait, t.is_calendar, t.start_time, t.end_time, c.name " +
+                "FROM Tasks t " +
+                "LEFT JOIN Customers c ON t.customerId = c.code " +
+                "WHERE t.is_Completed = 0 AND CAST(t.dueDate AS DATE) = CAST(GETDATE() AS DATE)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet resultSet = stmt.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                LocalDate dueDate = resultSet.getDate("dueDate").toLocalDate();
+                boolean isCompleted = resultSet.getBoolean("is_Completed");
+                Integer customerId = resultSet.getObject("customerId", Integer.class);
+                String category = resultSet.getString("category");
+                String customerName = resultSet.getString("name");
+                Boolean isErgent = resultSet.getBoolean("is_ergent");
+                Boolean isWait = resultSet.getBoolean("is_wait");
+                Boolean isCalendar = resultSet.getBoolean("is_calendar");
+                LocalDateTime startTime = resultSet.getTimestamp("start_time") != null ? resultSet.getTimestamp("start_time").toLocalDateTime() : null;
+                LocalDateTime endTime = resultSet.getTimestamp("end_time") != null ? resultSet.getTimestamp("end_time").toLocalDateTime() : null;
+
+                Tasks task = new Tasks(id, title, description, dueDate, isCompleted, category, customerId, customerName, isErgent, isWait, isCalendar, startTime, endTime);
+                tasks.add(task);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return tasks;
+    }
 }

@@ -5,10 +5,7 @@ import org.easytech.pelatologio.dao.CustomerDao;
 import org.easytech.pelatologio.models.Customer;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CustomerDaoImpl implements CustomerDao {
 
@@ -655,5 +652,92 @@ public class CustomerDaoImpl implements CustomerDao {
             e.printStackTrace();
             throw e; // Re-throw the exception after logging
         }
+    }
+
+    @Override
+    public Map<String, Integer> getNewCustomersPerMonth() {
+        Map<String, Integer> monthlyData = new LinkedHashMap<>();
+        // Query for the last 12 months
+        String query = "SELECT FORMAT(created_at, 'yyyy-MM') AS month, COUNT(*) AS count " +
+                "FROM Customers " +
+                "WHERE created_at >= DATEADD(year, -1, GETDATE()) " +
+                "GROUP BY FORMAT(created_at, 'yyyy-MM') " +
+                "ORDER BY month;";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                monthlyData.put(rs.getString("month"), rs.getInt("count"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return monthlyData;
+    }
+
+    @Override
+    public Map<String, Integer> getCustomersByRecommendation() {
+        Map<String, Integer> recommendationData = new LinkedHashMap<>();
+        String query = "SELECT recommendation, COUNT(*) AS count " +
+                       "FROM Customers " +
+                       "WHERE recommendation IS NOT NULL AND recommendation <> '' " +
+                       "GROUP BY recommendation " +
+                       "ORDER BY recommendation;";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                recommendationData.put(rs.getString("recommendation"), rs.getInt("count"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return recommendationData;
+    }
+
+    @Override
+    public Customer getCustomerByCode(int customerId) {
+        Customer customer = null;
+        String query = "SELECT * FROM customers where code = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setInt(1, customerId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                customer = new Customer();
+                customer.setCode(resultSet.getInt("code"));
+                customer.setName(resultSet.getString("name"));
+                customer.setTitle(resultSet.getString("title"));
+                customer.setJob(resultSet.getString("job"));
+                customer.setAfm(resultSet.getString("afm"));
+                customer.setPhone1(resultSet.getString("phone1"));
+                customer.setPhone2(resultSet.getString("phone2"));
+                customer.setMobile(resultSet.getString("mobile"));
+                customer.setAddress(resultSet.getString("address"));
+                customer.setTown(resultSet.getString("town"));
+                customer.setPostcode(resultSet.getString("postcode"));
+                customer.setEmail(resultSet.getString("email"));
+                customer.setEmail2(resultSet.getString("email2"));
+                customer.setManager(resultSet.getString("manager"));
+                customer.setManagerPhone(resultSet.getString("managerPhone"));
+                customer.setNotes(resultSet.getString("notes") != null ? resultSet.getString("notes").trim() : "");
+                customer.setAccId(resultSet.getInt("accId"));
+                customer.setAccName1(resultSet.getString("accName1"));
+                customer.setAccEmail1(resultSet.getString("accEmail1"));
+                customer.setRecommendation(resultSet.getString("recommendation"));
+                customer.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
+                customer.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
+                customer.setActive(resultSet.getBoolean("isActive"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return customer;
     }
 }
