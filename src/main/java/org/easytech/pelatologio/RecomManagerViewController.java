@@ -12,34 +12,37 @@ import javafx.scene.control.*;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.dao.RecommendationDao;
 import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.models.Recommendation;
 import org.easytech.pelatologio.models.TaskCategory;
 
 import java.io.IOException;
 import java.util.Optional;
 
-public class TaskCategoryManagerViewController {
+public class RecomManagerViewController {
 
 
     @FXML
-    private TableView<TaskCategory> taskCategoryTable;
+    private TableView<Recommendation> recomTable;
 
     @FXML
-    private TableColumn<TaskCategory, String> taskCategoryColumn;
+    private TableColumn<Recommendation, String> recomColumn;
 
 
-    private ObservableList<TaskCategory> categoriesList;
+    private ObservableList<Recommendation> recomList;
+
 
     @FXML
     public void initialize() {
-        categoriesList = FXCollections.observableArrayList();
+        recomList = FXCollections.observableArrayList();
 
-        // Ρύθμιση στήλης Τηλέφωνο
-        taskCategoryColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+       // Ρύθμιση στήλης Τηλέφωνο
+        recomColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
 
-        taskCategoryTable.setItems(categoriesList);
+        recomTable.setItems(recomList);
 
-        taskCategoryTable.setOnMouseClicked(event -> {
+        recomTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2){
                 handleEdit(null);
             }
@@ -47,52 +50,52 @@ public class TaskCategoryManagerViewController {
     }
 
     // Μέθοδος για τη φόρτωση των logins από τη βάση
-    public void loadTaskCategories() {
-        categoriesList.clear();
+    public void loadRecommendations() {
+        recomList.clear();
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
-        categoriesList.addAll(DBHelper.getTaskDao().getAllTaskCategory());
-        if (taskCategoryTable.getItems().size() == 1)
-            taskCategoryTable.getSelectionModel().select(0);
+        recomList.addAll(DBHelper.getRecommendationDao().getRecommendations());
+        if (recomTable.getItems().size() == 1)
+            recomTable.getSelectionModel().select(0);
     }
 
 
     public void handleAdd(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("addTaskCategory.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addRecom.fxml"));
             DialogPane dialogPane = loader.load();
 
-            AddTaskCategoryController addTaskCategoryController = loader.getController();
+            AddRecomController addRecomController = loader.getController();
 
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(dialogPane);
-            dialog.setTitle("Προσθήκη Κατηγορίας");
+            dialog.setTitle("Προσθήκη σύστασης");
             dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
 
             // Όταν ο χρήστης πατά το OK, θα καλέσει τη μέθοδο για αποθήκευση
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton == ButtonType.OK) {
-                    addTaskCategoryController.handleSave(event);
+                    addRecomController.handleSave(event);
                 }
                 return null;
             });
 
             dialog.showAndWait();
             // Ανανέωση του πίνακα logins
-            loadTaskCategories();
+            loadRecommendations();
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
     public void handleDelete(ActionEvent event) {
-        TaskCategory selectedCategory = taskCategoryTable.getSelectionModel().getSelectedItem();
-        if (selectedCategory == null) {
+        Recommendation selectedRecom = recomTable.getSelectionModel().getSelectedItem();
+        if (selectedRecom == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
                         .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε κάποια κατηγορία προς διαγραφή.")
+                        .text("Παρακαλώ επιλέξτε κάποια σύσταση προς διαγραφή.")
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
@@ -104,21 +107,21 @@ public class TaskCategoryManagerViewController {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Επιβεβαίωση Διαγραφής");
         alert.setHeaderText(null);
-        alert.setContentText("Είστε σίγουροι ότι θέλετε να διαγράψετε την επιλεγμένη κατηγορία;");
+        alert.setContentText("Είστε σίγουροι ότι θέλετε να διαγράψετε την επιλεγμένη σύσταση;");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Διαγραφή από τη βάση
-            DBHelper.getTaskDao().deleteTaskCategory(selectedCategory.getId());
+            DBHelper.getRecommendationDao().deleteRecommendation(selectedRecom.getId());
 
             // Διαγραφή από τη λίστα και ενημέρωση του πίνακα
-            taskCategoryTable.getItems().remove(selectedCategory);
+            recomTable.getItems().remove(selectedRecom);
         }
     }
 
     public void handleEdit(ActionEvent event) {
-        TaskCategory selectedCategory = taskCategoryTable.getSelectionModel().getSelectedItem();
-        if (selectedCategory == null) {
+        Recommendation selectedRecom = recomTable.getSelectionModel().getSelectedItem();
+        if (selectedRecom == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -132,28 +135,28 @@ public class TaskCategoryManagerViewController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("editTaskCategory.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("editRecom.fxml"));
             DialogPane dialogPane = loader.load();
 
-            EditTaskCategoryController editController = loader.getController();
-            editController.setTaskCategory(selectedCategory);
+            EditRecomController editController = loader.getController();
+            editController.setRecommendation(selectedRecom);
 
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(dialogPane);
-            dialog.setTitle("Επεξεργασία κατηγορίας");
+            dialog.setTitle("Επεξεργασία Σύστασης");
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
             Optional<ButtonType> result = dialog.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                TaskCategory updatedTaskCategory = editController.getUpdatedTaskCategory();
+                Recommendation updatedRecommendation = editController.getUpdatedRecommendation();
 
                 // Ενημέρωση της βάσης
-                DBHelper dbHelper = new DBHelper();
-                DBHelper.getTaskDao().updateTaskCategory(updatedTaskCategory);
+                DBHelper.getRecommendationDao().updateRecommendation(updatedRecommendation);
 
                 // Ενημέρωση του πίνακα
-                taskCategoryTable.refresh();
+                recomTable.refresh();
             }
+
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }

@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import atlantafx.base.theme.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.ScheduledService;
@@ -27,7 +28,9 @@ import java.util.Optional;
 
 public class MainMenu extends Application {
 
-    @Override    public void start(Stage stage) throws IOException {
+    @Override
+    public void start(Stage stage) throws IOException {
+        //Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
         String username = AppSettings.loadSetting("appuser") != null ? AppSettings.loadSetting("appuser") : "";
         if (username == null || username.isEmpty()) {
             // Prompt user for username if not set
@@ -51,12 +54,6 @@ public class MainMenu extends Application {
         // Ξεκινά το polling αφού φορτωθεί η εφαρμογή
         startPolling();
         startAppointmentReminder();
-        stage.setOnCloseRequest(event -> {
-            // Save settings before closing
-            DBHelper.getCustomerDao().customerUnlockAll(AppSettings.loadSetting("appuser"));
-            DBHelper.closeDataSource();
-        });
-
     }
 
     private Optional<String> promptForUsername() {

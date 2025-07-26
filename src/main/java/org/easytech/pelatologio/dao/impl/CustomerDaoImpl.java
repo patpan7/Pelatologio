@@ -3,6 +3,7 @@ package org.easytech.pelatologio.dao.impl;
 import com.zaxxer.hikari.HikariDataSource;
 import org.easytech.pelatologio.dao.CustomerDao;
 import org.easytech.pelatologio.models.Customer;
+import org.easytech.pelatologio.models.Recommendation;
 
 import java.sql.*;
 import java.util.*;
@@ -49,10 +50,11 @@ public class CustomerDaoImpl implements CustomerDao {
                 data.setAccId(resultSet.getInt("accId"));
                 data.setAccName1(resultSet.getString("accName1"));
                 data.setAccEmail1(resultSet.getString("accEmail1"));
-                data.setRecommendation(resultSet.getString("recommendation"));
+                data.setRecommendation(resultSet.getInt("recommendation"));
                 data.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
                 data.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 data.setActive(resultSet.getBoolean("isActive"));
+                data.setJobTeam(resultSet.getInt("jobTeam"));
 
                 dataList.add(data);
             }
@@ -83,7 +85,7 @@ public class CustomerDaoImpl implements CustomerDao {
         // It was added during the refactoring. We can leave it as is or remove it.
         // For now, I will leave it.
         if (customer == null) return;
-        String query = "SELECT job, address, postcode, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation, balanceReason FROM customers WHERE code = ?";
+        String query = "SELECT job, address, postcode, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation, balanceReason, jobTeam FROM customers WHERE code = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
@@ -100,8 +102,9 @@ public class CustomerDaoImpl implements CustomerDao {
                     customer.setAccId(resultSet.getInt("accId"));
                     customer.setAccName1(resultSet.getString("accName1"));
                     customer.setAccEmail1(resultSet.getString("accEmail1"));
-                    customer.setRecommendation(resultSet.getString("recommendation"));
+                    customer.setRecommendation(resultSet.getInt("recommendation"));
                     customer.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
+                    customer.setJobTeam(resultSet.getInt("jobTeam"));
                 }
             }
         } catch (SQLException e) {
@@ -146,10 +149,10 @@ public class CustomerDaoImpl implements CustomerDao {
     @Override
     public int insertCustomer(String name, String title, String job, String afm, String phone1,
                               String phone2, String mobile, String address,
-                              String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, String recommendation, String balance, String balanceReason) {
+                              String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, int recommendation, String balance, String balanceReason, int jobTeam) {
         // Prepare the SQL query for inserting a new customer
-        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation, balance, balanceReason, isActive) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation, balance, balanceReason, isActive, jobTeam) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int newCustomerId = -1; // Default value for error handling
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -180,10 +183,11 @@ public class CustomerDaoImpl implements CustomerDao {
             }
             pstmt.setString(17, accName1);
             pstmt.setString(18, accEmail1);
-            pstmt.setString(19, recommendation);
+            pstmt.setInt(19, recommendation);
             pstmt.setString(20, balance);
             pstmt.setString(21, balanceReason);
             pstmt.setBoolean(22, true); // Ορισμός του isActive σε true
+            pstmt.setInt(23, jobTeam); // Ορισμός του jobTeam σε 0
 
 
             int rowsInserted = pstmt.executeUpdate();
@@ -205,9 +209,9 @@ public class CustomerDaoImpl implements CustomerDao {
     }
 
     @Override
-    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, String recommendation, String balance, String balanceReason, boolean isActive) {
+    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, int recommendation, String balance, String balanceReason, boolean isActive, int jobTeam) {
         String sql = "UPDATE customers SET name = ?, title = ?, job = ?,afm = ?, phone1 = ?, " +
-                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, email2 = ?,manager = ?, managerPhone = ?, notes = ?, accId = ?, accName1 = ?, accEmail1 = ?, recommendation = ?, balance = ?, balanceReason = ?, isActive = ? WHERE code = ?";
+                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, email2 = ?,manager = ?, managerPhone = ?, notes = ?, accId = ?, accName1 = ?, accEmail1 = ?, recommendation = ?, balance = ?, balanceReason = ?, isActive = ?, jobTeam = ? WHERE code = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -234,11 +238,12 @@ public class CustomerDaoImpl implements CustomerDao {
             }
             pstmt.setString(17, accName1);
             pstmt.setString(18, accEmail1);
-            pstmt.setString(19, recommendation);
+            pstmt.setInt(19, recommendation);
             pstmt.setString(20, balance);
             pstmt.setString(21, balanceReason);
             pstmt.setBoolean(22, isActive); // Ορισμός του isActive σε true
-            pstmt.setInt(23, code);
+            pstmt.setInt(23, jobTeam); // Ορισμός του jobTeam σε 0
+            pstmt.setInt(24, code);
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -377,10 +382,11 @@ public class CustomerDaoImpl implements CustomerDao {
                 data.setAccId(resultSet.getInt("accId"));
                 data.setAccName1(resultSet.getString("accName1"));
                 data.setAccEmail1(resultSet.getString("accEmail1"));
-                data.setRecommendation(resultSet.getString("recommendation"));
+                data.setRecommendation(resultSet.getInt("recommendation"));
                 data.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
                 data.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 data.setActive(resultSet.getBoolean("isActive"));
+                data.setJobTeam(resultSet.getInt("jobTeam"));
             }
             return data;
         } catch (SQLException e) {
@@ -555,9 +561,10 @@ public class CustomerDaoImpl implements CustomerDao {
                 data.setAccId(resultSet.getInt("accId"));
                 data.setAccName1(resultSet.getString("accName1"));
                 data.setAccEmail1(resultSet.getString("accEmail1"));
-                data.setRecommendation(resultSet.getString("recommendation"));
+                data.setRecommendation(resultSet.getInt("recommendation"));
                 data.setBalance(resultSet.getString("balance"));
                 data.setBalanceReason(resultSet.getString("balanceReason"));
+                data.setJobTeam(resultSet.getInt("jobTeam"));
                 customers.add(data);
             }
         } catch (SQLException e) {
@@ -567,14 +574,14 @@ public class CustomerDaoImpl implements CustomerDao {
     }
 
     @Override
-    public List<String> getRecomedations() {
-        List<String> recommendations = new ArrayList<>();
-        String query = "SELECT DISTINCT(recommendation) FROM Customers WHERE recommendation IS NOT NULL ORDER BY recommendation ASC";
+    public List<Recommendation> getRecomedations() {
+        List<Recommendation> recommendations = new ArrayList<>();
+        String query = "SELECT * FROM Recommendations WHERE ORDER BY name ASC";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
-                recommendations.add(resultSet.getString("recommendation"));
+                recommendations.add(new Recommendation(resultSet.getInt("id"), resultSet.getString("name")));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -642,7 +649,7 @@ public class CustomerDaoImpl implements CustomerDao {
                 data.setAccId(resultSet.getInt("accId"));
                 data.setAccName1(resultSet.getString("accName1"));
                 data.setAccEmail1(resultSet.getString("accEmail1"));
-                data.setRecommendation(resultSet.getString("recommendation"));
+                data.setRecommendation(resultSet.getInt("recommendation"));
                 data.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
                 data.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 data.setActive(resultSet.getBoolean("isActive"));
@@ -680,18 +687,19 @@ public class CustomerDaoImpl implements CustomerDao {
     @Override
     public Map<String, Integer> getCustomersByRecommendation() {
         Map<String, Integer> recommendationData = new LinkedHashMap<>();
-        String query = "SELECT recommendation, COUNT(*) AS count " +
-                       "FROM Customers " +
-                       "WHERE recommendation IS NOT NULL AND recommendation <> '' " +
-                       "GROUP BY recommendation " +
-                       "ORDER BY recommendation;";
+        String query = "SELECT R.name AS recommendation_name,  COUNT(*) AS count " +
+                "FROM Customers C " +
+                "JOIN Recommendations R ON C.recommendation = R.id " +
+                "WHERE C.recommendation <> 0 " +
+                "GROUP BY R.name " +
+                "ORDER BY R.name;";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                recommendationData.put(rs.getString("recommendation"), rs.getInt("count"));
+                recommendationData.put(rs.getString("recommendation_name"), rs.getInt("count"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -730,14 +738,59 @@ public class CustomerDaoImpl implements CustomerDao {
                 customer.setAccId(resultSet.getInt("accId"));
                 customer.setAccName1(resultSet.getString("accName1"));
                 customer.setAccEmail1(resultSet.getString("accEmail1"));
-                customer.setRecommendation(resultSet.getString("recommendation"));
+                customer.setRecommendation(resultSet.getInt("recommendation"));
                 customer.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
                 customer.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 customer.setActive(resultSet.getBoolean("isActive"));
+                customer.setJobTeam(resultSet.getInt("jobTeam"));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return customer;
+    }
+
+    @Override
+    public List<Customer> getCustomersWithBalance() {
+        List<Customer> customerList = new ArrayList<>();
+        Customer customer = null;
+        String query = "SELECT * FROM customers where balance <> ''";
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                customer = new Customer();
+                customer.setCode(resultSet.getInt("code"));
+                customer.setName(resultSet.getString("name"));
+                customer.setTitle(resultSet.getString("title"));
+                customer.setJob(resultSet.getString("job"));
+                customer.setAfm(resultSet.getString("afm"));
+                customer.setPhone1(resultSet.getString("phone1"));
+                customer.setPhone2(resultSet.getString("phone2"));
+                customer.setMobile(resultSet.getString("mobile"));
+                customer.setAddress(resultSet.getString("address"));
+                customer.setTown(resultSet.getString("town"));
+                customer.setPostcode(resultSet.getString("postcode"));
+                customer.setEmail(resultSet.getString("email"));
+                customer.setEmail2(resultSet.getString("email2"));
+                customer.setManager(resultSet.getString("manager"));
+                customer.setManagerPhone(resultSet.getString("managerPhone"));
+                customer.setNotes(resultSet.getString("notes") != null ? resultSet.getString("notes").trim() : "");
+                customer.setAccId(resultSet.getInt("accId"));
+                customer.setAccName1(resultSet.getString("accName1"));
+                customer.setAccEmail1(resultSet.getString("accEmail1"));
+                customer.setRecommendation(resultSet.getInt("recommendation"));
+                customer.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
+                customer.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
+                customer.setActive(resultSet.getBoolean("isActive"));
+                customer.setJobTeam(resultSet.getInt("jobTeam"));
+                customerList.add(customer);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return customerList;
     }
 }

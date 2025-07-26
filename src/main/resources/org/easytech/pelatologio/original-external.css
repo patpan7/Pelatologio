@@ -15,7 +15,9 @@
 /*------------------tableView----------------*/
 .table-view {
     -fx-background-color: transparent;
-    -fx-border-color: -fx-border;
+    -fx-border-color: #D0D0D0; /* Softer border color */
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
 }
 
 .table-view .column-header {
@@ -47,6 +49,10 @@
     -fx-text-fill: white;
 }
 
+.table-view .table-row-cell:hover {
+    -fx-background-color: derive(-fx-hover, 20%);
+}
+
 .table-row-cell:selected .text{
     -fx-fill: black;
     -fx-font-weight: bold;
@@ -62,68 +68,120 @@
     -fx-border-width: 0 0 0 0;
 }
 
-/*------------------ComboBox----------------*/
-.combo-box .list-cell {
-    -fx-background-color: transparent;
-    -fx-text-fill: -fx-text;
-    -fx-font-size: 20px;
-}
-
-.combo-box .list-cell:hover {
-    -fx-background-color: -fx-hover;
-    -fx-text-fill: black;
-}
-
-.combo-box .list-cell:selected {
-    -fx-background-color: -fx-selected;
-    -fx-text-fill: white;
-}
 
 /*------------------Buttons----------------*/
 .click-button {
     -fx-background-color: -fx-background;
-    -fx-background-radius: 50;
+    -fx-background-radius: 8px;
     -fx-font-size: 20px;
     -fx-border-color: -fx-border;
-    -fx-border-radius: 50;
+    -fx-border-radius: 8px;
     -fx-border-width: 1;
     -fx-text-fill: black;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 4, 0, 0, 1);
 }
 
 .click-button:hover {
     -fx-background-color: -fx-hover;
     -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 6, 0, 0, 2);
+    -fx-translate-y: -1px;
 }
 
 .click-button:pressed {
-    -fx-background-radius: 50;
+    -fx-background-radius: 8px;
     -fx-font-size: 20px;
     -fx-border-color: -fx-border;
     -fx-text-fill: white;
     -fx-rotate: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 1);
 }
 
 /*------------------TextFields----------------*/
 .text-field {
-    -fx-background-color: #a9a9a9, white, white;
-    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
+    -fx-background-color: white;
+    -fx-border-color: #B6CCFE;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
     -fx-font-size: 24px;
     -fx-prompt-text-fill: gray;
+    -fx-padding: 8px 12px;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);
 }
 
 .text-field:focused {
     -fx-background-color: #a9a9a9, white, white;
     -fx-font-size: 24px;
+    -fx-border-width: 3px;
     -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
-    -fx-prompt-translate-y: -25%;
+    -fx-prompt-translate-y: -30%;
 }
 
 /*------------------TextArea----------------*/
 .text-area {
-    -fx-background-color: #a9a9a9, white, white;
-    -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
+    -fx-background-color: white;
+    -fx-border-color: #B6CCFE;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
     -fx-font-size: 24px;
     -fx-prompt-text-fill: gray;
+    -fx-padding: 8px 12px;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);
+}
+
+/*------------------ComboBox----------------*/
+.combo-box {
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-size: 24px;
+    -fx-prompt-text-fill: gray;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);
+}
+
+.combo-box:focused {
+    -fx-border-color: #1D4E89;
+    -fx-effect: dropshadow(three-pass-box, rgba(42,111,151,0.15), 6, 0, 0, 2);
+}
+
+/* Το κουμπί dropdown */
+.combo-box .arrow-button {
+    -fx-background-color: #B6CCFE;
+    -fx-background-radius: 0 6px 6px 0;
+}
+
+.combo-box .arrow-button:hover {
+    -fx-background-color: #CBD5E1;
+}
+
+/* Το βέλος */
+.combo-box .arrow {
+    -fx-shape: "M0,0 L4,4 L8,0 Z"; /* τριγωνικό βέλος */
+    -fx-background-color: #0077cc;
+}
+
+/* Τα αντικείμενα της λίστας */
+.combo-box-popup .list-view {
+    -fx-background-color: white;
+    -fx-border-color: #B6CCFE;
+    -fx-border-radius: 6px;
+}
+
+.combo-box-popup .list-cell {
+    -fx-padding: 8px 12px;
+    -fx-font-size: 24px;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: -fx-hover;
+    -fx-text-fill: black;
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: -fx-selected;
+    -fx-text-fill: white;
 }
 
 /*------------------Labels----------------*/
@@ -294,10 +352,11 @@
     -fx-background-color: transparent;
     -fx-font-size: 18px;
     -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 6, 0, 0, 2);
 }
 
 .list-cell {
-    -fx-border-color: #d3d3d3; /* Χρώμα ορίου */
+    -fx-border-color: #F1F5F9;
     -fx-border-width: 0 0 1px 0; /* Μόνο κάτω όριο */
     -fx-padding: 5px;
     -fx-font-size: 16px;
@@ -319,3 +378,73 @@
     -fx-font-size: 14px;  /* Μέγεθος τίτλου Entry */
 }
 
+.card {
+    -fx-padding: 10px;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 6, 0, 0, 1);
+}
+
+/*------------------Charts----------------*/
+    .chart {
+        -fx-padding: 10px;
+        -fx-background-color: white;
+        -fx-border-color: #E0E0E0;
+        -fx-border-width: 1px;
+        -fx-border-radius: 8px;
+        -fx-background-radius: 8px;
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 6, 0, 0, 1);
+   }
+   .chart-content {
+   -fx-background-color: transparent;
+    }
+
+    .chart-plot-background {
+        -fx-background-color: transparent;
+    }
+
+    .chart-vertical-grid-lines, .chart-horizontal-grid-lines {
+        -fx-stroke: #f0f0f0; /* Πολύ απαλό γκρι */
+        -fx-stroke-width: 0.5;
+    }
+
+    .chart-series-bar {
+        -fx-bar-fill: -fx-primary; /* Χρησιμοποιούμε το κύριο μπλε της εφαρμογής */
+    }
+
+    /* Για το δεύτερο γράφημα, μπορούμε να δώσουμε ένα διαφορετικό χρώμα αν θέλουμε */
+    /* .chart[id="recommendationChart"] .chart-series-bar {
+        -fx-bar-fill: #4CAF50; // Ένα πράσινο
+    } */
+
+    .axis-label {
+        -fx-font-size: 14px;
+        -fx-fill: -fx-text;
+    }
+
+    .axis-tick-mark {
+        -fx-stroke: #cccccc;
+    }
+
+    .axis-tick-label {
+        -fx-font-size: 12px;
+        -fx-fill: -fx-text;
+    }
+
+    .chart-legend {
+        -fx-background-color: rgba(255, 255, 255, 0.8);
+        -fx-padding: 5px;
+        -fx-border-color: #E0E0E0;
+        -fx-border-width: 1px;
+        -fx-border-radius: 5px;
+    }
+
+    .chart-legend-item-symbol {
+        -fx-background-color: -fx-primary;
+    }
+
+    .chart-legend-item-text {
+        -fx-fill: -fx-text;
+   }

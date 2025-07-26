@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPopup;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -39,6 +40,7 @@ import org.openqa.selenium.By;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -48,7 +50,10 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 public class CustomersController implements Initializable {
-    public TableColumn nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn, balanceColumn;
+    @FXML
+    public TableColumn nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn;
+    @FXML
+    private TableColumn<Customer, BigDecimal> balanceColumn;
     @FXML
     StackPane stackPane;
     @FXML
@@ -141,8 +146,32 @@ public class CustomersController implements Initializable {
         mobileColumn.setCellValueFactory(new PropertyValueFactory<>("mobile"));
         townColumn.setCellValueFactory(new PropertyValueFactory<>("town"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balance"));
+        //balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balance"));
+        // Ορίζουμε το balanceColumn να κρατά BigDecimal, όχι String
+        balanceColumn.setCellValueFactory(cellData -> {
+            String balanceStr = cellData.getValue().getBalance();
+            balanceStr = balanceStr.replace(",", "."); // <-- αυτή η γραμμή είναι το κλειδί
 
+            try {
+                BigDecimal balance = new BigDecimal(balanceStr);
+                return new ReadOnlyObjectWrapper<>(balance);
+            } catch (NumberFormatException e) {
+                return new ReadOnlyObjectWrapper<>(BigDecimal.ZERO); // ή null, ανάλογα με τι προτιμάς
+            }
+        });
+
+        // Προαιρετικά: μορφοποίηση για εμφάνιση 2 δεκαδικών
+        balanceColumn.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(BigDecimal item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.compareTo(BigDecimal.ZERO) == 0) {
+                    setText(null); // Ή setText("") αν προτιμάς κενό κείμενο
+                } else {
+                    setText(String.format("%.2f", item));
+                }
+            }
+        });
         // Αρχικοποίηση πίνακα
         initializeTable();
 
@@ -391,9 +420,9 @@ public class CustomersController implements Initializable {
             if (selectedFilters.contains("Υπεύθυνος") && customer.getManager() != null && (customer.getManager().toUpperCase().contains(search1) || customer.getManager().toUpperCase().contains(search2))) {
                 return true;
             }
-            if (selectedFilters.contains("Σύσταση") && customer.getRecommendation() != null && (customer.getRecommendation().toUpperCase().contains(search1) || customer.getRecommendation().toUpperCase().contains(search2))) {
-                return true;
-            }
+//            if (selectedFilters.contains("Σύσταση") && customer.getRecommendation() != null && (customer.getRecommendation().toUpperCase().contains(search1) || customer.getRecommendation().toUpperCase().contains(search2))) {
+//                return true;
+//            }
 
             return false;
         });

@@ -361,8 +361,9 @@ public class SipClient implements SipListener {
     public void stop() throws ObjectInUseException {
         if (sipProvider != null) {
             sipProvider.removeSipListener(this);
-            sipStack.deleteListeningPoint(listeningPoint);
+            sipStack.deleteSipProvider(sipProvider);
             sipStack.stop();
+            sipStack = null;
         }
     }
 

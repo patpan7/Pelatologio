@@ -28,6 +28,8 @@ public class DBHelper {
     private static TrackingDao trackingDao;
     private static SimplyStatusDao simplyStatusDao;
     private static CallLogDao callLogDao;
+    private static RecommendationDao recommendationDao;
+    private static JobTeamDao jobTeamDao;
 
     static {
         try {
@@ -60,6 +62,8 @@ public class DBHelper {
             trackingDao = new TrackingDaoImpl(dataSource);
             simplyStatusDao = new SimplyStatusDaoImpl(dataSource);
             callLogDao = new CallLogDaoImpl(dataSource);
+            recommendationDao = new RecommendationDaoImpl(dataSource);
+            jobTeamDao = new JobTeamDaoImpl(dataSource);
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -129,6 +133,14 @@ public class DBHelper {
 
     public static CallLogDao getCallLogDao() {
         return callLogDao;
+    }
+
+    public static RecommendationDao getRecommendationDao() {
+        return recommendationDao;
+    }
+
+    public static JobTeamDao getJobTeamDao() {
+        return jobTeamDao;
     }
 
     // This method is no longer needed as DAOs handle their own connections

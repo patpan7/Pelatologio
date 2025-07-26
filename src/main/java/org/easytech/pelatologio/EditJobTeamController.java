@@ -6,15 +6,16 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import org.easytech.pelatologio.models.TaskCategory;
+import org.easytech.pelatologio.models.JobTeam;
+import org.easytech.pelatologio.models.Recommendation;
 
-public class EditTaskCategoryController {
+public class EditJobTeamController {
     @FXML
     private TextField nameField;
 
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
 
-    private TaskCategory taskCategory;
+    private JobTeam jobTeam;
 
     @FXML
     public void initialize() {
@@ -61,15 +62,15 @@ public class EditTaskCategoryController {
     }
 
     // Μέθοδος για να ρυθμίσεις το login προς επεξεργασία
-    public void setTaskCategory(TaskCategory calendars) {
-        this.taskCategory = calendars;
-        nameField.setText(calendars.getName());
+    public void setJobTeam(JobTeam jobTeam) {
+        this.jobTeam = jobTeam;
+        nameField.setText(jobTeam.getName());
 
     }
 
     // Επιστρέφει το επεξεργασμένο login
-    public TaskCategory getUpdatedTaskCategory() {
-        taskCategory.setName(nameField.getText());
-        return taskCategory;
+    public JobTeam getUpdatedJobTeam() {
+        jobTeam.setName(nameField.getText());
+        return jobTeam;
     }
 }

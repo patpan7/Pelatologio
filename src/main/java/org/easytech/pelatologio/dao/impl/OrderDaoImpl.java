@@ -89,13 +89,13 @@ public class OrderDaoImpl implements OrderDao {
             stmt.setString(1, newOrder.getTitle());
             stmt.setString(2, newOrder.getDescription());
             stmt.setDate(3, Date.valueOf(newOrder.getDueDate()));
-            stmt.setBoolean(4, newOrder.getCompleted());
+            stmt.setBoolean(4, newOrder.getCompleted() == null ? false : newOrder.getCompleted());
             stmt.setInt(5, newOrder.getCustomerId());
             stmt.setInt(6, newOrder.getSupplierId());
-            stmt.setBoolean(7, newOrder.getErgent());
-            stmt.setBoolean(8, newOrder.getWait());
-            stmt.setBoolean(9, newOrder.getReceived());
-            stmt.setBoolean(10, newOrder.getDelivered());
+            stmt.setBoolean(7, newOrder.getErgent() == null ? false : newOrder.getErgent());
+            stmt.setBoolean(8, newOrder.getWait() == null ? false : newOrder.getWait());
+            stmt.setBoolean(9, newOrder.getReceived() == null ? false : newOrder.getReceived());
+            stmt.setBoolean(10, newOrder.getDelivered() == null ? false : newOrder.getDelivered());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

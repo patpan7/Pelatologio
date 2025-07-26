@@ -236,7 +236,6 @@ public class TaskListController implements Initializable {
             return;
         }
 
-        DBHelper dbHelper = new DBHelper();
         if (DBHelper.getTaskDao().completeTask(selectedTasks.getId(), complete)) {
             System.out.println("Task completion status updated.");
             Platform.runLater(() -> {

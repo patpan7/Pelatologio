@@ -24,10 +24,11 @@ public class Customer {
     int accId;
     String accName1;
     String accEmail1;
-    String recommendation;
+    int recommendation;
     String balance;
     String balanceReason;
     Boolean isActive;
+    int jobTeam;
     private List<Integer> apps = new ArrayList<>();
 
     public Customer() {
@@ -202,11 +203,11 @@ public class Customer {
         this.accEmail1 = accEmail1;
     }
 
-    public String getRecommendation() {
+    public int getRecommendation() {
         return recommendation;
     }
 
-    public void setRecommendation(String recommendation) {
+    public void setRecommendation(int recommendation) {
         this.recommendation = recommendation;
     }
 
@@ -232,6 +233,14 @@ public class Customer {
 
     public void setActive(Boolean active) {
         isActive = active;
+    }
+
+    public int getJobTeam() {
+        return jobTeam;
+    }
+
+    public void setJobTeam(int jobTeam) {
+        this.jobTeam = jobTeam;
     }
 
     public List<Integer> getApps() {

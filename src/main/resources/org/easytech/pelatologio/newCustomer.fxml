@@ -34,6 +34,27 @@
                                 <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="540.0">
+                     <children>
+                        <Label minWidth="160.0" styleClass="normal-label" text="Ομάδα:" />
+                        <ComboBox fx:id="tfJobTeam" editable="true" maxWidth="1.7976931348623157E308" promptText="Ομάδα" HBox.hgrow="ALWAYS" />
+                        <JFXButton mnemonicParsing="false" onAction="#handleAddJobTeam" styleClass="click-button" text="Προσθήκη Ομάδας" HBox.hgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@icons/add.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </JFXButton>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </HBox>
                         <HBox alignment="CENTER_RIGHT">
                             <Label minWidth="160.0" styleClass="normal-label" text="ΑΦΜ:" />
                             <TextField fx:id="tfAfm" HBox.hgrow="ALWAYS" />
@@ -188,15 +209,25 @@
                                 <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT">
+                        <HBox alignment="CENTER_LEFT">
                             <Label minWidth="160.0" styleClass="normal-label" text="Σύσταση:" />
-                            <ComboBox fx:id="tfRecommendation" editable="true" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                            <ComboBox fx:id="tfRecommendation" editable="true" maxWidth="1.7976931348623157E308" promptText="Σύσταση" HBox.hgrow="ALWAYS" />
+                            <JFXButton mnemonicParsing="false" onAction="#handleAddRecommendation" styleClass="click-button" text="Προσθήκη Σύστασης" HBox.hgrow="NEVER">
+                                <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/add.png" />
+                                    </ImageView>
+                                </graphic>
+                                <HBox.margin>
+                                    <Insets left="20.0" />
+                                </HBox.margin>
+                            </JFXButton>
                             <VBox.margin>
                                 <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
                     </VBox>
-                    <VBox alignment="TOP_CENTER" minWidth="180.0" styleClass="pane" HBox.hgrow="NEVER">
+                    <VBox alignment="TOP_CENTER" minWidth="190.0" styleClass="pane" HBox.hgrow="NEVER">
                         <JFXButton fx:id="btnAddToMegasoft" alignment="TOP_LEFT" buttonType="RAISED" mnemonicParsing="false" onAction="#addMegasoft" prefWidth="180.0" styleClass="click-button" text="Megasoft" wrapText="true">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -279,24 +310,28 @@
                         </JFXButton>
                         <ProgressIndicator fx:id="progressIndicator" progress="-1.0" visible="false" VBox.vgrow="ALWAYS" />
                         <Label fx:id="lblBlance" styleClass="normal-label" text="Υπόλοιπο" />
-                        <TextField fx:id="tfBalance" minWidth="190.0" onMouseClicked="#handleMouseClick">
+                        <TextField fx:id="tfBalance" maxWidth="190.0" onMouseClicked="#handleMouseClick">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </TextField>
-                        <Label fx:id="lblBlanceMega" layoutX="47.0" layoutY="392.0" styleClass="normal-label" text="Υπολ. Megasoft">
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets></Label>
-                        <TextField fx:id="tfBalanceMega" layoutX="15.0" layoutY="424.0" minWidth="190.0" />
+                        <Label fx:id="lblBlanceMega" layoutX="47.0" layoutY="392.0" styleClass="normal-label" text="Υπολ. Megasoft" VBox.vgrow="ALWAYS">
+                            <opaqueInsets>
+                                <Insets />
+                            </opaqueInsets>
+                        </Label>
+                        <TextField fx:id="tfBalanceMega" layoutX="15.0" layoutY="424.0" maxWidth="190.0">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin></TextField>
                         <JFXCheckBox fx:id="checkboxActive" mnemonicParsing="false" styleClass="normal-label" text="Ενεργός">
                             <VBox.margin>
                                 <Insets top="30.0" />
                             </VBox.margin>
                         </JFXCheckBox>
-                  <HBox.margin>
-                     <Insets top="5.0" />
-                  </HBox.margin>
+                        <HBox.margin>
+                            <Insets top="5.0" />
+                        </HBox.margin>
                     </VBox>
                 </HBox>
             </ScrollPane>
@@ -398,9 +433,9 @@
                                 <Insets left="5.0" />
                             </HBox.margin>
                         </JFXButton>
-                  <VBox.margin>
-                     <Insets top="5.0" />
-                  </VBox.margin>
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
                         <Label minWidth="200.0" styleClass="normal-label" text="Τηλέφωνο:" />
@@ -415,9 +450,9 @@
                                 <Insets left="5.0" />
                             </HBox.margin>
                         </JFXButton>
-                  <VBox.margin>
-                     <Insets top="5.0" />
-                  </VBox.margin>
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
                         <Label minWidth="200.0" styleClass="normal-label" text="Κινητό:" />
@@ -432,9 +467,9 @@
                                 <Insets left="5.0" />
                             </HBox.margin>
                         </JFXButton>
-                  <VBox.margin>
-                     <Insets top="5.0" />
-                  </VBox.margin>
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
                         <Label minWidth="200.0" styleClass="normal-label" text="E-mail:" HBox.hgrow="NEVER" />
@@ -449,9 +484,9 @@
                                 <Insets left="5.0" />
                             </HBox.margin>
                         </JFXButton>
-                  <VBox.margin>
-                     <Insets top="5.0" />
-                  </VBox.margin>
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="177.0">
                         <Label minWidth="200.0" styleClass="normal-label" text="Epsilon Ergani:" HBox.hgrow="NEVER">
@@ -460,9 +495,9 @@
                             </HBox.margin>
                         </Label>
                         <TextField fx:id="tfAccErganiEmail" HBox.hgrow="ALWAYS" />
-                  <VBox.margin>
-                     <Insets top="5.0" />
-                  </VBox.margin>
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="68.0">
                         <Label minWidth="200.0" styleClass="normal-label" text="Επαφής:">
@@ -471,9 +506,9 @@
                             </HBox.margin>
                         </Label>
                         <TextField fx:id="tfAccName1" HBox.hgrow="ALWAYS" />
-                  <VBox.margin>
-                     <Insets top="5.0" />
-                  </VBox.margin>
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="174.0">
                         <Label minWidth="200.0" styleClass="normal-label" text="E-mail Επαφής:" HBox.hgrow="NEVER" />
@@ -488,9 +523,9 @@
                                 <Insets left="5.0" />
                             </HBox.margin>
                         </JFXButton>
-                  <VBox.margin>
-                     <Insets top="5.0" />
-                  </VBox.margin>
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
                     </HBox>
                 </VBox>
             </ScrollPane>

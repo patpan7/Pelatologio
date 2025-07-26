@@ -1,6 +1,8 @@
 package org.easytech.pelatologio.dao;
 
 import org.easytech.pelatologio.models.Customer;
+import org.easytech.pelatologio.models.Recommendation;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +14,8 @@ public interface CustomerDao {
     boolean isAfmExistsMegasoft(String afm);
     int insertCustomer(String name, String title, String job, String afm, String phone1,
                        String phone2, String mobile, String address,
-                       String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, String recommendation, String balance, String balanceReason);
-    void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, String recommendation, String balance, String balanceReason, boolean isActive);
+                       String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, int recommendation, String balance, String balanceReason, int jobTeam);
+    void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, int recommendation, String balance, String balanceReason, boolean isActive, int jobTeam);
     String checkCustomerLock(int code, String appUser);
     void customerLock(int code, String appUser);
     void customerUnlock(int code);
@@ -29,7 +31,7 @@ public interface CustomerDao {
     boolean hasOrders(int code);
     boolean hasInvoices(String afm);
     List<Customer> getCustomersByAcc(int accId);
-    List<String> getRecomedations();
+    List<Recommendation> getRecomedations();
     boolean hasAccountant(int customerId);
 
     void deactivateCustomer(Customer customer);
@@ -40,4 +42,6 @@ public interface CustomerDao {
     Map<String, Integer> getCustomersByRecommendation();
 
     Customer getCustomerByCode(int customerId);
+
+    List<Customer> getCustomersWithBalance();
 }

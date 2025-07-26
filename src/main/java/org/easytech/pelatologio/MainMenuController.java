@@ -92,8 +92,10 @@ public class MainMenuController implements Initializable {
                 if (sipClient != null) {
                     try {
                         sipClient.stop();
+                        DBHelper.getCustomerDao().customerUnlockAll(AppSettings.loadSetting("appuser"));
                         DBHelper.closeDataSource();
                         System.out.println("SIP Client stopped.");
+                        System.exit(0);
                     } catch (Exception e) {
                         System.err.println("Error stopping SIP client: " + e.getMessage());
                         e.printStackTrace();
@@ -345,7 +347,7 @@ public class MainMenuController implements Initializable {
         if (event.getButton() == MouseButton.SECONDARY) {
             try {
                 LoginAutomator loginAutomation = new LoginAutomator(true);
-                loginAutomation.openPage("https://simplypos.statuspage.io/");
+                loginAutomation.openPage("https://status.mypos.com/");
             } catch (IOException e) {
                 e.printStackTrace();
             }

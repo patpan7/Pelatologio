@@ -1,10 +1,5 @@
 package org.easytech.pelatologio.helper;
 
-
-import javafx.event.ActionEvent;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
-
 import java.awt.*;
 import java.net.URI;
 

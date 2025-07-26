@@ -113,7 +113,6 @@ public class AddOrderController {
 
     public void initialize() throws SQLException {
         // Φόρτωση πελατών
-        DBHelper dbHelper = new DBHelper();
         List<Customer> customers = DBHelper.getCustomerDao().getCustomers();
         filteredCustomers = new FilteredList<>(FXCollections.observableArrayList(customers));
         customerComboBox.setItems(filteredCustomers);
@@ -298,8 +297,6 @@ public class AddOrderController {
             Boolean isReceived = is_received.isSelected();
             Boolean isDelivered = is_delivered.isSelected();
 
-            DBHelper dbHelper = new DBHelper();
-
             if (order == null) {
                 // Δημιουργία νέας εργασίας
                 Order newOrder = new Order();
@@ -308,6 +305,7 @@ public class AddOrderController {
                 newOrder.setTitle(title);
                 newOrder.setDescription(description);
                 newOrder.setDueDate(date);
+                newOrder.setCompleted(false);
                 newOrder.setCustomerId(selectedCustomer != null ? selectedCustomer.getCode() : 0);
                 newOrder.setSupplierId(selectedSupplier != null ? selectedSupplier.getId() : 0);
                 newOrder.setErgent(isErgent);

@@ -1,20 +1,21 @@
 package org.easytech.pelatologio;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import org.easytech.pelatologio.dao.RecommendationDao;
+import org.easytech.pelatologio.models.Recommendation;
 import org.easytech.pelatologio.models.TaskCategory;
 
-public class EditTaskCategoryController {
+public class EditRecomController {
     @FXML
     private TextField nameField;
 
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
 
-    private TaskCategory taskCategory;
+    private Recommendation recommendation;
 
     @FXML
     public void initialize() {
@@ -61,15 +62,15 @@ public class EditTaskCategoryController {
     }
 
     // Μέθοδος για να ρυθμίσεις το login προς επεξεργασία
-    public void setTaskCategory(TaskCategory calendars) {
-        this.taskCategory = calendars;
-        nameField.setText(calendars.getName());
+    public void setRecommendation(Recommendation recommendation) {
+        this.recommendation = recommendation;
+        nameField.setText(recommendation.getName());
 
     }
 
     // Επιστρέφει το επεξεργασμένο login
-    public TaskCategory getUpdatedTaskCategory() {
-        taskCategory.setName(nameField.getText());
-        return taskCategory;
+    public Recommendation getUpdatedRecommendation() {
+        recommendation.setName(nameField.getText());
+        return recommendation;
     }
 }

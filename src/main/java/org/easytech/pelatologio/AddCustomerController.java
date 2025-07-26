@@ -9,7 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -30,13 +29,9 @@ import javafx.util.Pair;
 import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
-import org.easytech.pelatologio.models.Accountant;
-import org.easytech.pelatologio.models.CallLog;
-import org.easytech.pelatologio.models.Customer;
+import org.easytech.pelatologio.models.*;
 
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -57,7 +52,9 @@ public class AddCustomerController {
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone, tfBalance, tfBalanceMega;
     @FXML
-    private ComboBox<String> tfRecommendation;
+    private ComboBox<Recommendation> tfRecommendation;
+    @FXML
+    private ComboBox<JobTeam> tfJobTeam;
     @FXML
     private TextField tfAccPhone, tfAccMobile, tfAccEmail, tfAccName1, tfAccEmail1, tfAccErganiEmail;
     @FXML
@@ -79,7 +76,7 @@ public class AddCustomerController {
     @FXML
     public JFXCheckBox checkboxActive;
     @FXML
-    Button btnPhone1, btnPhone2, btnMobile, btnPhoneManager, btnAccPhone, btnAccMobile, startCallLogButton;
+    Button btnPhone1, btnPhone2, btnMobile, btnPhoneManager, btnAccPhone, btnAccMobile, startCallLogButton, btnAnydesk;
 
 
     private TaxisViewController taxisViewController;
@@ -108,8 +105,10 @@ public class AddCustomerController {
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
     private Customer customer;
     private FilteredList<Accountant> filteredAccountants;
-    private ObservableList<String> recommendationList = FXCollections.observableArrayList();
-    private FilteredList<String> filteredRecommendations;
+    private ObservableList<Recommendation> recommendationList = FXCollections.observableArrayList();
+    private FilteredList<Recommendation> filteredRecommendations;
+    private ObservableList<JobTeam> jobTeamList = FXCollections.observableArrayList();
+    private FilteredList<JobTeam> filteredJobTeams;
     private CustomersController customersController;
     private Consumer<String> originateCallCallback;
 
@@ -151,6 +150,10 @@ public class AddCustomerController {
         btnTask.setVisible(false);
         btnAcs.setDisable(true);
         btnAcs.setVisible(false);
+        startCallLogButton.setDisable(true);
+        startCallLogButton.setVisible(false);
+        btnAnydesk.setDisable(true);
+        btnAnydesk.setVisible(false);
         tfBalance.setDisable(true);
         tfBalance.setVisible(false);
         lblBlance.setVisible(false);
@@ -307,12 +310,18 @@ public class AddCustomerController {
         });
         setupComboBoxFilter(tfAccName, filteredAccountants);
         recommendationList.clear();
-        recommendationList.addAll(DBHelper.getCustomerDao().getRecomedations());
+        recommendationList.addAll(DBHelper.getRecommendationDao().getRecommendations());
 //        tfRecommendation.setItems(recommendationList);
         filteredRecommendations = new FilteredList<>(recommendationList);
         tfRecommendation.setItems(filteredRecommendations);
-        setupComboBoxFilterForStrings(tfRecommendation, filteredRecommendations);
+        setupComboBoxFilter(tfRecommendation, filteredRecommendations);
 
+        jobTeamList.clear();
+        jobTeamList.addAll(DBHelper.getJobTeamDao().getJobTeams());
+//        tfRecommendation.setItems(recommendationList);
+        filteredJobTeams = new FilteredList<>(jobTeamList);
+        tfJobTeam.setItems(filteredJobTeams);
+        setupComboBoxFilter(tfJobTeam, filteredJobTeams);
 
         // Προσθήκη ακροατών αλλαγών στα πεδία
         Platform.runLater(() -> {
@@ -685,6 +694,10 @@ public class AddCustomerController {
         btnTask.setVisible(true);
         btnAcs.setDisable(false);
         btnAcs.setVisible(true);
+        startCallLogButton.setDisable(false);
+        startCallLogButton.setVisible(true);
+        btnAnydesk.setDisable(false);
+        btnAnydesk.setVisible(true);
         tfBalance.setDisable(false);
         tfBalance.setVisible(true);
         lblBlance.setVisible(true);
@@ -713,6 +726,7 @@ public class AddCustomerController {
         hasTabs();
         setAccountant();
         setRecommendation();
+        setJobTeam();
     }
 
 
@@ -796,61 +810,33 @@ public class AddCustomerController {
 
     private void setRecommendation() {
         recommendationList.clear();
-        recommendationList.addAll(DBHelper.getCustomerDao().getRecomedations());
+        recommendationList.addAll(DBHelper.getRecommendationDao().getRecommendations());
         filteredRecommendations = new FilteredList<>(recommendationList);
         tfRecommendation.setItems(filteredRecommendations);
         //tfRecommendation.setItems(recommendationList);
 
-        for (String rec : recommendationList) {
-            if (rec.equals(customer.getRecommendation())) {
+        tfRecommendation.setConverter(new StringConverter<Recommendation>() {
+            @Override
+            public String toString(Recommendation recommendation) {
+                return recommendation != null ? recommendation.getName() : "";
+            }
+
+            @Override
+            public Recommendation fromString(String string) {
+                return recommendationList.stream()
+                        .filter(recommendation -> recommendation.getName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+        for (Recommendation rec : recommendationList) {
+            if (rec.getId() == customer.getRecommendation()) {
                 tfRecommendation.getSelectionModel().select(rec);
                 break;
             }
         }
-        setupComboBoxFilterForStrings(tfRecommendation, filteredRecommendations);
-    }
-
-    private void setupComboBoxFilterForStrings(ComboBox<String> comboBox, FilteredList<String> filteredList) {
-        // Listener for the TextField of the ComboBox
-        comboBox.getEditor().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-            comboBox.show();
-            String filterText = comboBox.getEditor().getText().toUpperCase();
-            filteredList.setPredicate(item -> {
-                if (filterText.isEmpty()) {
-                    return true; // Show all items if no filter
-                }
-                // Check if the item contains the filter text
-                char[] chars1 = filterText.toCharArray();
-                IntStream.range(0, chars1.length).forEach(i -> {
-                    Character repl = ENGLISH_TO_GREEK.get(chars1[i]);
-                    if (repl != null) chars1[i] = repl;
-                });
-                char[] chars2 = filterText.toCharArray();
-                IntStream.range(0, chars2.length).forEach(i -> {
-                    Character repl = GREEK_TO_ENGLISH.get(chars2[i]);
-                    if (repl != null) chars2[i] = repl;
-                });
-                String search1 = new String(chars1);
-                String search2 = new String(chars2);
-                return (item.toUpperCase().contains(search1) || item.toUpperCase().contains(search2));
-            });
-        });
-
-        // Listener for when an item is selected
-        comboBox.setOnHidden(event -> {
-            String selectedItem = comboBox.getSelectionModel().getSelectedItem();
-            if (selectedItem != null) {
-                comboBox.getEditor().setText(selectedItem);
-            }
-        });
-
-        // Listener for when the selection changes
-        comboBox.setOnAction(event -> {
-            String selectedItem = comboBox.getSelectionModel().getSelectedItem();
-            if (selectedItem != null) {
-                comboBox.getEditor().setText(selectedItem);
-            }
-        });
+        setupComboBoxFilter(tfRecommendation, filteredRecommendations);
     }
 
 
@@ -898,6 +884,37 @@ public class AddCustomerController {
             }
         }
         setupComboBoxFilter(tfAccName, filteredAccountants);
+    }
+
+    private void setJobTeam() {
+        jobTeamList.clear();
+        jobTeamList.addAll(DBHelper.getJobTeamDao().getJobTeams());
+        filteredJobTeams = new FilteredList<>(jobTeamList);
+        tfJobTeam.setItems(filteredJobTeams);
+        //tfRecommendation.setItems(recommendationList);
+
+        tfJobTeam.setConverter(new StringConverter<JobTeam>() {
+            @Override
+            public String toString(JobTeam jobTeam) {
+                return jobTeam != null ? jobTeam.getName() : "";
+            }
+
+            @Override
+            public JobTeam fromString(String string) {
+                return jobTeamList.stream()
+                        .filter(jobTeam -> jobTeam.getName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+        for (JobTeam jobTeam : jobTeamList) {
+            if (jobTeam.getId() == customer.getJobTeam()) {
+                tfJobTeam.getSelectionModel().select(jobTeam);
+                break;
+            }
+        }
+        setupComboBoxFilter(tfJobTeam, filteredJobTeams);
     }
 
     private void hasTabs() {
@@ -969,11 +986,12 @@ public class AddCustomerController {
         String notes = taNotes.getText();
         String accName1 = (tfAccName1.getText() != null ? tfAccName1.getText() : "");
         String accEmail1 = (tfAccEmail1.getText() != null ? tfAccEmail1.getText() : "");
-        String selectedRecommendation = tfRecommendation.getEditor().getText().trim();
+        int selectedRecommendation = tfRecommendation.getSelectionModel().getSelectedItem() != null ? tfRecommendation.getSelectionModel().getSelectedItem().getId() : 0;
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
         int accId = (selectedAccountant != null) ? selectedAccountant.getId() : 0;
         String balance = tfBalance.getText();
         String balanceReason = taBalanceReason.getText();
+        int selectedJobTeam = tfJobTeam.getSelectionModel().getSelectedItem() != null ? tfJobTeam.getSelectionModel().getSelectedItem().getId() : 0;
 
 
         if (mobile.startsWith("+30"))
@@ -989,8 +1007,6 @@ public class AddCustomerController {
         phone2 = phone2.replaceAll("\\s+", "");
         managerPhone = managerPhone.replaceAll("\\s+", "");
 
-        DBHelper dbHelper = new DBHelper();
-
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         int customerId;
         if (DBHelper.getCustomerDao().isAfmExists(afm)) {
@@ -1005,7 +1021,7 @@ public class AddCustomerController {
             });
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
-            customerId = DBHelper.getCustomerDao().insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason);
+            customerId = DBHelper.getCustomerDao().insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason, selectedJobTeam);
             // Εμφάνιση επιτυχίας
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -1064,14 +1080,16 @@ public class AddCustomerController {
         customer.setAccName1(accName1);
         String accEmail1 = tfAccEmail1.getText() == null ? "" : tfAccEmail1.getText();
         customer.setAccEmail1(accEmail1);
-        String selectedRecommendation = tfRecommendation.getEditor().getText().trim();
-        customer.setRecommendation(selectedRecommendation);
+        Recommendation selectedRecommendation = tfRecommendation.getSelectionModel().getSelectedItem();
+        customer.setRecommendation(selectedRecommendation == null ? 0 : selectedRecommendation.getId());
         String balance = tfBalance.getText();
         customer.setBalance(balance);
         String balanceReason = taBalanceReason.getText();
         customer.setBalanceReason(balanceReason);
-        Boolean isActive = checkboxActive.isSelected();
+        boolean isActive = checkboxActive.isSelected();
         customer.setActive(isActive);
+        JobTeam jobTeam = tfJobTeam.getSelectionModel().getSelectedItem();
+        customer.setJobTeam(jobTeam == null ? 0 : jobTeam.getId());
 
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
         int accId = selectedAccountant != null ? selectedAccountant.getId() : 0;
@@ -1098,7 +1116,7 @@ public class AddCustomerController {
         customer.setPhone2(phone2);
         customer.setManagerPhone(managerPhone);
 
-        DBHelper.getCustomerDao().updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason, isActive);
+        DBHelper.getCustomerDao().updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation.getId(), balance, balanceReason, isActive, jobTeam.getId());
 
         String accName = tfAccName.getValue() != null ? tfAccName.getValue().toString() : "";
         String accPhone = tfAccPhone.getText();
@@ -1635,6 +1653,48 @@ public class AddCustomerController {
         } catch (IOException e) {
             e.printStackTrace();
             // Handle error
+        }
+    }
+
+    public void handleAddRecommendation(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("recomManagerView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+            // Τώρα μπορείς να πάρεις τον controller
+            RecomManagerViewController controller = loader.getController();
+            controller.loadRecommendations();
+
+
+            dialog.setTitle("Συστάσεις");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
+
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα των κατηγοριών εργασιών.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+
+    public void handleAddJobTeam(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("jobTeamManagerView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+            // Τώρα μπορείς να πάρεις τον controller
+            JobTeamManagerViewController controller = loader.getController();
+            controller.loadJobTeams();
+
+
+            dialog.setTitle("Ομάδες εργασιών");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
+
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα των κατηγοριών εργασιών.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 }
