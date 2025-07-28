@@ -95,6 +95,16 @@ public class SettingsController implements Initializable {
     private TextArea taSignature;
     @FXML
     private TextField tfFanvilIp;
+    @FXML
+    private ToggleGroup positionToggleGroup;
+    @FXML
+    private RadioButton rbPositionTopRight;
+    @FXML
+    private RadioButton rbPositionTopLeft;
+    @FXML
+    private RadioButton rbPositionBottomLeft;
+    @FXML
+    private RadioButton rbPositionBottomRight;
 
     // SIP Settings
     @FXML private TextField tfSipUser;
@@ -111,8 +121,10 @@ public class SettingsController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> stackPane.requestFocus());
         setupBrowserToggleGroup();
+        setupPositionToggleGroup();
         loadTextFieldSettings();
         loadBrowserSettings();
+        loadPositionSettings();
     }
 
     private void setupBrowserToggleGroup() {
@@ -120,6 +132,14 @@ public class SettingsController implements Initializable {
         rbChrome.setToggleGroup(browserToggleGroup);
         rbEdge.setToggleGroup(browserToggleGroup);
         rbFirefox.setToggleGroup(browserToggleGroup);
+    }
+
+    private void setupPositionToggleGroup() {
+        positionToggleGroup = new ToggleGroup();
+        rbPositionTopRight.setToggleGroup(positionToggleGroup);
+        rbPositionTopLeft.setToggleGroup(positionToggleGroup);
+        rbPositionBottomLeft.setToggleGroup(positionToggleGroup);
+        rbPositionBottomRight.setToggleGroup(positionToggleGroup);
     }
 
     private void loadTextFieldSettings() {
@@ -176,6 +196,16 @@ public class SettingsController implements Initializable {
         }
     }
 
+    private void loadPositionSettings() {
+        String position = getSettingOrEmpty("callerPopupPosition");
+        switch (position) {
+            case "TOP_LEFT" -> rbPositionTopLeft.setSelected(true);
+            case "TOP_RIGHT" -> rbPositionTopRight.setSelected(true);
+            case "BOTTOM_LEFT" -> rbPositionBottomLeft.setSelected(true);
+            case "BOTTOM_RIGHT" -> rbPositionBottomRight.setSelected(true);
+        }
+    }
+
     public void saveSettings(ActionEvent event) {
 
         AppSettings.saveSetting("server", tfServer.getText());
@@ -222,6 +252,16 @@ public class SettingsController implements Initializable {
             AppSettings.saveSetting("browser", "firefox");
         } else if (rbEdge.isSelected()) {
             AppSettings.saveSetting("browser", "edge");
+        }
+
+        if (rbPositionTopLeft.isSelected()) {
+            AppSettings.saveSetting("callerPopupPosition", "TOP_LEFT");
+        } else if (rbPositionTopRight.isSelected()) {
+            AppSettings.saveSetting("callerPopupPosition", "TOP_RIGHT");
+        } else if (rbPositionBottomLeft.isSelected()) {
+            AppSettings.saveSetting("callerPopupPosition", "BOTTOM_LEFT");
+        } else if (rbPositionBottomRight.isSelected()) {
+            AppSettings.saveSetting("callerPopupPosition", "BOTTOM_RIGHT");
         }
         Platform.runLater(() -> {
             Notifications notifications = Notifications.create()

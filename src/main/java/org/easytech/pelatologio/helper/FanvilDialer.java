@@ -22,7 +22,7 @@ public class FanvilDialer {
             throw new IOException("Η IP της συσκευής Fanvil δεν έχει οριστεί στις ρυθμίσεις.");
         }
 
-        String command = "SPEAKER;" + phoneNumber + ";ENTER";
+        String command = "F_HANDFREE;" + phoneNumber + ";ENTER";
         String url = "http://" + FANVIL_IP + "/cgi-bin/ConfigManApp.com?key=" + command;
 
         HttpClient client;

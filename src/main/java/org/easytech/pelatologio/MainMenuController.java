@@ -118,6 +118,7 @@ public class MainMenuController implements Initializable {
             stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(new Scene(root));
             controller.setStage(stage);
+            controller.setPopupPosition(PopupPosition.valueOf(AppSettings.loadSetting("callerPopupPosition")));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

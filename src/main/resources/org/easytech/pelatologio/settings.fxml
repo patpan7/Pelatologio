@@ -75,9 +75,7 @@
                                     <TextField fx:id="tfAppUser" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                     <Label styleClass="normal-label" text="Διαδρομή δεδομένων" GridPane.columnIndex="0" GridPane.rowIndex="7" />
                                     <TextField fx:id="tfDataFolder" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                    <Button contentDisplay="TOP" layoutX="634.0" layoutY="167.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#deactivateCustomers" styleClass="click-button" text="Απενεργοποίηση πελατών" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                                    <Label layoutX="312.0" layoutY="453.0" styleClass="normal-label" text="Fanvil IP" GridPane.rowIndex="8" />
-                                    <TextField fx:id="tfFanvilIp" layoutX="569.0" layoutY="445.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                    <Button contentDisplay="TOP" layoutX="634.0" layoutY="167.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#deactivateCustomers" styleClass="click-button" text="Απενεργοποίηση πελατών" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                                 </GridPane>
 
                             </TitledPane>
@@ -90,6 +88,8 @@
                                         <ColumnConstraints />
                                     </columnConstraints>
                                     <rowConstraints>
+                                        <RowConstraints />
+                                        <RowConstraints />
                                         <RowConstraints />
                                         <RowConstraints />
                                         <RowConstraints />
@@ -114,6 +114,33 @@
 
                                     <Label styleClass="normal-label" text="Transport Protocol" GridPane.columnIndex="0" GridPane.rowIndex="5" />
                                     <TextField fx:id="tfSipTransport" text="udp" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                                    <Label layoutX="312.0" layoutY="453.0" styleClass="normal-label" text="Fanvil IP" GridPane.rowIndex="6" />
+                                    <TextField fx:id="tfFanvilIp" layoutX="569.0" layoutY="445.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+                                    <Label layoutX="312.0" layoutY="453.0" styleClass="normal-label" text="Θέση pop-up" GridPane.rowIndex="7" />
+                                    <HBox GridPane.columnIndex="1" GridPane.rowIndex="7">
+                                        <RadioButton fx:id="rbPositionTopRight" styleClass="normal-label"
+                                                     text="Πάνω δεξιά"/>
+                                        <RadioButton fx:id="rbPositionTopLeft" styleClass="normal-label"
+                                                     text="Πάνω αριστερά">
+                                            <HBox.margin>
+                                                <Insets left="5.0"/>
+                                            </HBox.margin>
+                                        </RadioButton>
+                                        <RadioButton fx:id="rbPositionBottomLeft" styleClass="normal-label"
+                                                     text="Κάτω αριστερά">
+                                            <HBox.margin>
+                                                <Insets left="5.0"/>
+                                            </HBox.margin>
+                                        </RadioButton>
+                                        <RadioButton fx:id="rbPositionBottomRight" styleClass="normal-label"
+                                                     text="Κάτω δεξιά">
+                                            <HBox.margin>
+                                                <Insets left="5.0"/>
+                                            </HBox.margin>
+                                        </RadioButton>
+                                    </HBox>
                                 </GridPane>
                             </TitledPane>
 
