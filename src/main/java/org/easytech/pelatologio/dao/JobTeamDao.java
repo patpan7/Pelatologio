@@ -1,7 +1,6 @@
 package org.easytech.pelatologio.dao;
 
 import org.easytech.pelatologio.models.JobTeam;
-import org.easytech.pelatologio.models.Recommendation;
 
 import java.util.List;
 

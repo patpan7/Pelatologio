@@ -1,6 +1,7 @@
 package org.easytech.pelatologio.dao;
 
 import org.easytech.pelatologio.models.Customer;
+import org.easytech.pelatologio.models.JobTeam;
 import org.easytech.pelatologio.models.Recommendation;
 
 import java.sql.SQLException;

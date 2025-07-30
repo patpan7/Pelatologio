@@ -28,12 +28,16 @@
                      </VBox.margin>
                        </Label>
                       <HBox alignment="CENTER_LEFT" spacing="10">
-
                           <!-- Αναζήτηση -->
                           <TextField fx:id="filterField" prefWidth="280.0" promptText="Αναζήτηση..." />
 
                           <!-- Κουμπί φίλτρου -->
-                          <JFXButton fx:id="filterButton" buttonType="RAISED" minHeight="46.0" styleClass="click-button" text="Φίλτρο μόνο">
+                          <JFXButton fx:id="filterButton" buttonType="RAISED" minHeight="46.0" styleClass="click-button" text="Περισσότερα Φίλτρα">
+                              <graphic>
+                                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                      <Image url="@icons/filter.png" />
+                                  </ImageView>
+                              </graphic>
                               <HBox.margin>
                                   <Insets />
                               </HBox.margin>
@@ -62,29 +66,6 @@
                                   <Insets left="5.0" />
                               </HBox.margin>
                           </JFXButton>
-
-                          <Separator HBox.hgrow="ALWAYS" />
-
-                          <!-- Υπόλοιπο -->
-                          <JFXButton fx:id="btnBalance" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#showBalance" styleClass="click-button" text="">
-                              <graphic>
-                                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                      <Image url="@icons/euro.png" />
-                                  </ImageView>
-                              </graphic>
-                          </JFXButton>
-
-                          <Separator HBox.hgrow="ALWAYS" />
-
-                          <!-- Ανενεργοί -->
-                          <JFXButton fx:id="btnShowInactive" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#showInactive" styleClass="click-button" text="">
-                              <graphic>
-                                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                      <Image url="@icons/inactive.png" />
-                                  </ImageView>
-                              </graphic>
-                          </JFXButton>
-
                           <Separator HBox.hgrow="ALWAYS" />
 
                           <!-- Ανανέωση -->
@@ -98,15 +79,31 @@
                                   <Insets left="5.0" />
                               </HBox.margin>
                           </JFXButton>
-
-                          <!-- ComboBox εφαρμογής -->
-                          <JFXComboBox fx:id="appComboBox" prefWidth="150.0" promptText="Επιλογή Εφαρμογής" />
                       </HBox>
                </children>
             </VBox>
             </top>
 
-            <!-- Center πίνακας -->
+            <!-- Left Sidebar for Filters -->
+            <left>
+                <VBox fx:id="filterPane" alignment="TOP_LEFT" managed="false" prefWidth="250.0" spacing="10.0" style="-fx-padding: 10;" visible="false">
+                    <Label styleClass="normal-label" text="Φίλτρα" />
+                    <Separator prefWidth="200.0" />
+                    <Label styleClass="normal-label" text="Αναζήτηση σε" />
+                    <JFXComboBox fx:id="searchFieldComboBox" prefWidth="280.0" promptText="Όλα τα πεδία" />
+                    <Label styleClass="normal-label" text="Κατάσταση" />
+                    <JFXComboBox fx:id="statusComboBox" prefWidth="280.0" promptText="Επιλογή Κατάστασης" />
+                    <Label styleClass="normal-label" text="Σύσταση" />
+                    <JFXComboBox fx:id="recommendationComboBox" prefWidth="280.0" promptText="Επιλογή Σύστασης" />
+                    <Label styleClass="normal-label" text="Ομάδα" />
+                    <JFXComboBox fx:id="jobTeamComboBox" prefWidth="280.0" promptText="Επιλογή Ομάδας" />
+                    <Label styleClass="normal-label" text="Εφαρμογή" />
+                    <JFXComboBox fx:id="appComboBox" prefWidth="280.0" promptText="Επιλογή Εφαρμογής" />
+                    <JFXButton fx:id="clearAdvancedFiltersButton" buttonType="RAISED" styleClass="click-button" text="Καθαρισμός Φίλτρων" />
+                </VBox>
+            </left>
+
+            <!-- Center Table -->
             <center>
                 <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                     <TableView fx:id="customerTable" VBox.vgrow="ALWAYS">

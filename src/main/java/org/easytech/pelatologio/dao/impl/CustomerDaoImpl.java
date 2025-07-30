@@ -3,6 +3,7 @@ package org.easytech.pelatologio.dao.impl;
 import com.zaxxer.hikari.HikariDataSource;
 import org.easytech.pelatologio.dao.CustomerDao;
 import org.easytech.pelatologio.models.Customer;
+import org.easytech.pelatologio.models.JobTeam;
 import org.easytech.pelatologio.models.Recommendation;
 
 import java.sql.*;
@@ -576,7 +577,7 @@ public class CustomerDaoImpl implements CustomerDao {
     @Override
     public List<Recommendation> getRecomedations() {
         List<Recommendation> recommendations = new ArrayList<>();
-        String query = "SELECT * FROM Recommendations WHERE ORDER BY name ASC";
+        String query = "SELECT * FROM Recommendations ORDER BY name ASC";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             ResultSet resultSet = stmt.executeQuery();

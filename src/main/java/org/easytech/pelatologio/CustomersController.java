@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPopup;
@@ -32,9 +33,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
+import org.easytech.pelatologio.dao.CustomerDao;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.AppItem;
 import org.easytech.pelatologio.models.Customer;
+import org.easytech.pelatologio.models.JobTeam;
+import org.easytech.pelatologio.models.Recommendation;
 import org.openqa.selenium.By;
 
 import java.awt.*;
@@ -52,6 +56,7 @@ import java.util.stream.IntStream;
 public class CustomersController implements Initializable {
     @FXML
     public TableColumn nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn;
+    public JFXButton btnClean;
     @FXML
     private TableColumn<Customer, BigDecimal> balanceColumn;
     @FXML
@@ -63,16 +68,29 @@ public class CustomersController implements Initializable {
     @FXML
     TextField filterField;
     @FXML
+    JFXComboBox<String> searchFieldComboBox;
+    @FXML
     JFXComboBox<AppItem> appComboBox;
     @FXML
     Button btnTaxis, btnMypos, btnSimply, btnEmblem, btnErgani, btnData, openFileButton;
     @FXML
     private Label customerCounterLabel; // The new counter label
+    @FXML
+    private VBox filterPane; // The new advanced filter pane
+    @FXML
+    private JFXComboBox<String> statusComboBox;
+    @FXML
+    private JFXComboBox<Recommendation> recommendationComboBox;
+    @FXML
+    private JFXComboBox<JobTeam> jobTeamComboBox;
+    @FXML
+    private JFXButton clearAdvancedFiltersButton;
     private Integer activeAppFilter = null; // null σημαίνει κανένα φίλτρο εφαρμογής
 
     ObservableList<Customer> observableList;
     FilteredList<Customer> filteredData;
     List<CheckBox> checkBoxes = new ArrayList<>();
+    private CustomerDao customerDao;
     private TabPane mainTabPane;  // Θα το περάσουμε από τον MainMenuController
 
     // Μέθοδος για να περάσουμε το TabPane
@@ -90,90 +108,14 @@ public class CustomersController implements Initializable {
         setTooltip(btnErgani, "Διαχείριση κωδικών Εργάνη του πελάτη");
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
         setTooltip(openFileButton, "1) Αντιγραφή πληροφοριών\n2) Άνοιγμα φακέλου με δεδομένα");
-        VBox filterBox = new VBox();
-        filterBox.setSpacing(5);
 
-        // ** Δημιουργία των CheckBox φίλτρων **
-        String[] filters = {"Όνομα", "Τίτλος", "ΑΦΜ", "Αριθμοί επικοινωνίας", "Πόλη", "Υπεύθυνος", "Σύσταση"};
+        this.customerDao = DBHelper.getCustomerDao();
 
-        for (String filter : filters) {
-            JFXCheckBox checkBox = new JFXCheckBox(filter);
-            //checkBox.applyCss();
-            checkBox.getStyleClass().add("normal-label");
-            checkBoxes.add(checkBox);
-            filterBox.getChildren().add(checkBox);
-        }
-
-
-        // ** Δημιουργία του popup **
-        JFXPopup popup = new JFXPopup(filterBox);
-
-        // ** Όταν πατάμε το κουμπί, εμφανίζεται το popup **
-        filterButton.setOnMousePressed(e -> {
-            if (e.isSecondaryButtonDown()) {  // Έλεγχος αν έγινε δεξί κλικ
-                for (CheckBox checkBox : checkBoxes) {
-                    checkBox.setSelected(false);  // Αποεπιλογή όλων των CheckBox
-                }
-                // Ενημέρωση των φίλτρων αν χρειάζεται
-                applyFilters("");  // Άδειασμα του φίλτρου
-                filterField.setText("");
-
-            } else
-                popup.show(filterButton, JFXPopup.PopupVPosition.TOP, JFXPopup.PopupHPosition.LEFT, 0,50);
-        });
-
-        ObservableList<AppItem> apps = FXCollections.observableArrayList(
-                new AppItem(0, "Όλες"),
-                new AppItem(1, "myPOS"),
-                new AppItem(2, "Simply"),
-                new AppItem(3, "Taxis"),
-                new AppItem(4, "Emblem"),
-                new AppItem(5, "Εργάνη"),
-                new AppItem(6, "Πελατολόγιο"),
-                new AppItem(7, "NinePOS")
-        );
-
-        appComboBox.setItems(apps);
-        appComboBox.getSelectionModel().selectFirst();  // Default επιλογή "Όλες οι Εφαρμογές"
-        appComboBox.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters(filterField.getText()));
-
-        // Δημιουργία και αρχικοποίηση των στηλών
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        afmColumn.setCellValueFactory(new PropertyValueFactory<>("afm"));
-        phone1Column.setCellValueFactory(new PropertyValueFactory<>("phone1"));
-        phone2Column.setCellValueFactory(new PropertyValueFactory<>("phone2"));
-        mobileColumn.setCellValueFactory(new PropertyValueFactory<>("mobile"));
-        townColumn.setCellValueFactory(new PropertyValueFactory<>("town"));
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        //balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balance"));
-        // Ορίζουμε το balanceColumn να κρατά BigDecimal, όχι String
-        balanceColumn.setCellValueFactory(cellData -> {
-            String balanceStr = cellData.getValue().getBalance();
-            balanceStr = balanceStr.replace(",", "."); // <-- αυτή η γραμμή είναι το κλειδί
-
-            try {
-                BigDecimal balance = new BigDecimal(balanceStr);
-                return new ReadOnlyObjectWrapper<>(balance);
-            } catch (NumberFormatException e) {
-                return new ReadOnlyObjectWrapper<>(BigDecimal.ZERO); // ή null, ανάλογα με τι προτιμάς
-            }
-        });
-
-        // Προαιρετικά: μορφοποίηση για εμφάνιση 2 δεκαδικών
-        balanceColumn.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(BigDecimal item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.compareTo(BigDecimal.ZERO) == 0) {
-                    setText(null); // Ή setText("") αν προτιμάς κενό κείμενο
-                } else {
-                    setText(String.format("%.2f", item));
-                }
-            }
-        });
         // Αρχικοποίηση πίνακα
+        setupTableColumns();
         initializeTable();
+        setupFilterControls();
+        loadFilterData();
 
         // Διπλό κλικ για επεξεργασία πελάτη
         customerTable.setOnMouseClicked(event -> {
@@ -251,6 +193,96 @@ public class CustomersController implements Initializable {
         });
     }
 
+    private void setupTableColumns() {
+        // Δημιουργία και αρχικοποίηση των στηλών
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        afmColumn.setCellValueFactory(new PropertyValueFactory<>("afm"));
+        phone1Column.setCellValueFactory(new PropertyValueFactory<>("phone1"));
+        phone2Column.setCellValueFactory(new PropertyValueFactory<>("phone2"));
+        mobileColumn.setCellValueFactory(new PropertyValueFactory<>("mobile"));
+        townColumn.setCellValueFactory(new PropertyValueFactory<>("town"));
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        //balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balance"));
+        // Ορίζουμε το balanceColumn να κρατά BigDecimal, όχι String
+        balanceColumn.setCellValueFactory(cellData -> {
+            String balanceStr = cellData.getValue().getBalance();
+            balanceStr = balanceStr.replace(",", "."); // <-- αυτή η γραμμή είναι το κλειδί
+
+            try {
+                BigDecimal balance = new BigDecimal(balanceStr);
+                return new ReadOnlyObjectWrapper<>(balance);
+            } catch (NumberFormatException e) {
+                return new ReadOnlyObjectWrapper<>(BigDecimal.ZERO); // ή null, ανάλογα με τι προτιμάς
+            }
+        });
+
+        // Προαιρετικά: μορφοποίηση για εμφάνιση 2 δεκαδικών
+        balanceColumn.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(BigDecimal item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.compareTo(BigDecimal.ZERO) == 0) {
+                    setText(null); // Ή setText("") αν προτιμάς κενό κείμενο
+                } else {
+                    setText(String.format("%.2f", item));
+                }
+            }
+        });
+    }
+
+    private void loadFilterData() {
+        // Status ComboBox
+        statusComboBox.getItems().addAll("Ενεργοί", "Ανενεργοί", "Όλοι");
+        statusComboBox.getSelectionModel().select("Ενεργοί");
+
+        // Recommendation ComboBox
+        recommendationComboBox.getItems().add(new Recommendation(0, "Όλες")); // Add a 'All' option
+        recommendationComboBox.getItems().addAll(customerDao.getRecomedations());
+        recommendationComboBox.getSelectionModel().selectFirst();
+
+        // JobTeam ComboBox
+        jobTeamComboBox.getItems().add(new JobTeam(0, "Όλες")); // Add a 'All' option
+        jobTeamComboBox.getItems().addAll(DBHelper.getJobTeamDao().getJobTeams());
+        jobTeamComboBox.getSelectionModel().selectFirst();
+
+        // App ComboBox
+        appComboBox.getItems().add(new AppItem(0, "Όλες"));
+        appComboBox.getItems().addAll(DBHelper.getAppItemDao().getApplications());
+//        appComboBox.getItems().addAll(
+//                new AppItem(1, "myPOS"), new AppItem(2, "Simply"), new AppItem(3, "Taxis"),
+//                new AppItem(4, "Emblem"), new AppItem(5, "Εργάνη"), new AppItem(6, "Πελατολόγιο"),
+//                new AppItem(7, "NinePOS")
+//        );
+
+        appComboBox.getSelectionModel().selectFirst();
+
+        // Search Field ComboBox
+        searchFieldComboBox.getItems().addAll("Όλα τα πεδία", "Όνομα", "ΑΦΜ", "Πόλη", "Τηλέφωνο");
+        searchFieldComboBox.getSelectionModel().selectFirst();
+    }
+
+    private void setupFilterControls() {
+        // Listener for the main search field
+        filterField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters(newVal));
+
+        // Toggle visibility of the advanced filter pane
+        filterButton.setOnAction(event -> {
+            boolean isVisible = !filterPane.isVisible();
+            filterPane.setVisible(isVisible);
+            filterPane.setManaged(isVisible);
+        });
+
+        // Add listeners to all ComboBoxes to apply filters automatically
+        statusComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilters(filterField.getText()));
+        recommendationComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilters(filterField.getText()));
+        jobTeamComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilters(filterField.getText()));
+        appComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilters(filterField.getText()));
+
+        // Action for the clear filters button
+        clearAdvancedFiltersButton.setOnAction(event -> clearAdvancedFilters());
+    }
+
     @FXML
     private void anydeskClick(MouseEvent event) {
         if (event.getButton() == MouseButton.SECONDARY) {
@@ -287,6 +319,14 @@ public class CustomersController implements Initializable {
         }
 
         return selectedFilters;
+    }
+
+    private void clearAdvancedFilters() {
+        statusComboBox.getSelectionModel().select("Ενεργοί");
+        recommendationComboBox.getSelectionModel().selectFirst();
+        jobTeamComboBox.getSelectionModel().selectFirst();
+        appComboBox.getSelectionModel().selectFirst();
+        applyFilters(filterField.getText());
     }
 
     private void initializeTable() {
@@ -347,84 +387,83 @@ public class CustomersController implements Initializable {
     }
 
     private void applyFilters(String filterValue) {
+        String filterText = filterField.getText() == null ? "" : filterField.getText().toUpperCase();
+        String searchField = searchFieldComboBox.getSelectionModel().getSelectedItem();
+
         filteredData.setPredicate(customer -> {
-            // ✅ Αγνόησε τους μη ενεργούς πελάτες
-            if (!customer.getActive()) {
-                return false;
+            // Status Filter
+            String statusFilter = statusComboBox.getSelectionModel().getSelectedItem();
+            if (statusFilter != null && !statusFilter.equals("Όλοι")) {
+                boolean isActive = statusFilter.equals("Ενεργοί");
+                if (customer.getActive() != isActive) {
+                    return false;
+                }
             }
 
-            // ✅ Φίλτρο εφαρμογής
-            AppItem selectedApp = appComboBox.getSelectionModel().getSelectedItem();
-            int selectedAppId = selectedApp != null ? selectedApp.getId() : 0;
-            if (selectedAppId != 0 && !customer.hasApp(selectedAppId)) {
-                return false;
+            // Recommendation Filter
+            Recommendation recFilter = recommendationComboBox.getSelectionModel().getSelectedItem();
+            if (recFilter != null && recFilter.getId() != 0) {
+                if (customer.getRecommendation() != recFilter.getId()) {
+                    return false;
+                }
             }
 
-
-            if (filterValue == null || filterValue.isEmpty()) {
-                return true;
+            // JobTeam Filter
+            JobTeam jobTeamFilter = jobTeamComboBox.getSelectionModel().getSelectedItem();
+            if (jobTeamFilter != null && jobTeamFilter.getId() != 0) {
+                if (customer.getJobTeam() != jobTeamFilter.getId()) {
+                    return false;
+                }
             }
 
-            String filter = filterValue.toUpperCase();
-
-            // Υποστήριξη Ελληνικών/Αγγλικών
-            char[] chars1 = filter.toCharArray();
-            IntStream.range(0, chars1.length).forEach(i -> {
-                Character repl = ENGLISH_TO_GREEK.get(chars1[i]);
-                if (repl != null) chars1[i] = repl;
-            });
-            char[] chars2 = filter.toCharArray();
-            IntStream.range(0, chars2.length).forEach(i -> {
-                Character repl = GREEK_TO_ENGLISH.get(chars2[i]);
-                if (repl != null) chars2[i] = repl;
-            });
-            String search1 = new String(chars1);
-            String search2 = new String(chars2);
-
-            Set<String> selectedFilters = getSelectedFilters(checkBoxes);
-
-            if (selectedFilters.isEmpty()) {
-                return (customer.getName() != null && (customer.getName().toUpperCase().contains(search1) || customer.getName().toUpperCase().contains(search2)))
-                        || (customer.getTitle() != null && (customer.getTitle().toUpperCase().contains(search1) || customer.getTitle().toUpperCase().contains(search2)))
-                        || (customer.getJob() != null && (customer.getJob().toUpperCase().contains(search1) || customer.getJob().toUpperCase().contains(search2)))
-                        || (String.valueOf(customer.getCode()).contains(search1) || String.valueOf(customer.getCode()).contains(search2))
-                        || (customer.getPhone1() != null && (customer.getPhone1().contains(search1) || customer.getPhone1().contains(search2)))
-                        || (customer.getPhone2() != null && (customer.getPhone2().contains(search1) || customer.getPhone2().contains(search2)))
-                        || (customer.getMobile() != null && (customer.getMobile().contains(search1) || customer.getMobile().contains(search2)))
-                        || (customer.getAfm() != null && (customer.getAfm().contains(search1) || customer.getAfm().contains(search2)))
-                        || (customer.getManager() != null && (customer.getManager().toUpperCase().contains(search1) || customer.getManager().toUpperCase().contains(search2)))
-                        || (customer.getManagerPhone() != null && (customer.getManagerPhone().toUpperCase().contains(search1) || customer.getManagerPhone().toUpperCase().contains(search2)))
-                        || (customer.getEmail() != null && (customer.getEmail().toUpperCase().contains(search1) || customer.getEmail().toUpperCase().contains(search2)))
-                        || (customer.getEmail2() != null && (customer.getEmail2().toUpperCase().contains(search1) || customer.getEmail2().toUpperCase().contains(search2)))
-                        || (customer.getTown() != null && (customer.getTown().toUpperCase().contains(search1) || customer.getTown().toUpperCase().contains(search2)))
-                        || (customer.getAddress() != null && (customer.getAddress().toUpperCase().contains(search1) || customer.getAddress().toUpperCase().contains(search2)));
+            // App Filter
+            AppItem appFilter = appComboBox.getSelectionModel().getSelectedItem();
+            if(appFilter != null && appFilter.getId() != 0) {
+                if(!customer.hasApp(appFilter.getId())) {
+                    return false;
+                }
             }
 
-            if (selectedFilters.contains("Όνομα") && customer.getName() != null && (customer.getName().toUpperCase().contains(search1) || customer.getName().toUpperCase().contains(search2))) {
-                return true;
-            }
-            if (selectedFilters.contains("Τίτλος") && customer.getTitle() != null && (customer.getTitle().toUpperCase().contains(search1) || customer.getTitle().toUpperCase().contains(search2))) {
-                return true;
-            }
-            if (selectedFilters.contains("ΑΦΜ") && customer.getAfm() != null && (customer.getAfm().contains(search1) || customer.getAfm().contains(search2))) {
-                return true;
-            }
-            if (selectedFilters.contains("Αριθμοί επικοινωνίας") && (customer.getPhone1() != null && (customer.getPhone1().contains(search1) || customer.getPhone1().contains(search2))
-                    || customer.getPhone2() != null && (customer.getPhone2().contains(search1) || customer.getPhone2().contains(search2))
-                    || customer.getMobile() != null && (customer.getMobile().contains(search1) || customer.getMobile().contains(search2)))) {
-                return true;
-            }
-            if (selectedFilters.contains("Πόλη") && customer.getTown() != null && (customer.getTown().toUpperCase().contains(search1) || customer.getTown().toUpperCase().contains(search2))) {
-                return true;
-            }
-            if (selectedFilters.contains("Υπεύθυνος") && customer.getManager() != null && (customer.getManager().toUpperCase().contains(search1) || customer.getManager().toUpperCase().contains(search2))) {
-                return true;
-            }
-//            if (selectedFilters.contains("Σύσταση") && customer.getRecommendation() != null && (customer.getRecommendation().toUpperCase().contains(search1) || customer.getRecommendation().toUpperCase().contains(search2))) {
-//                return true;
-//            }
+            // Free Text Filter
+            if (!filterText.isEmpty()) {
+                String search1 = filterText; // Simplified for clarity, assuming no greek/english conversion needed for now
 
-            return false;
+                if (searchField == null || searchField.equals("Όλα τα πεδία")) {
+                    boolean textMatch = (customer.getName() != null && customer.getName().toUpperCase().contains(search1)) ||
+                            (customer.getTitle() != null && customer.getTitle().toUpperCase().contains(search1)) ||
+                            (customer.getJob() != null && customer.getJob().toUpperCase().contains(search1)) ||
+                            (String.valueOf(customer.getCode()).contains(search1)) ||
+                            (customer.getPhone1() != null && customer.getPhone1().contains(search1)) ||
+                            (customer.getPhone2() != null && customer.getPhone2().contains(search1)) ||
+                            (customer.getMobile() != null && customer.getMobile().contains(search1)) ||
+                            (customer.getAfm() != null && customer.getAfm().contains(search1)) ||
+                            (customer.getManager() != null && customer.getManager().toUpperCase().contains(search1)) ||
+                            (customer.getTown() != null && customer.getTown().toUpperCase().contains(search1));
+                    if (!textMatch) {
+                        return false;
+                    }
+                } else {
+                    switch (searchField) {
+                        case "Όνομα":
+                            if (customer.getName() == null || !customer.getName().toUpperCase().contains(search1)) return false;
+                            break;
+                        case "ΑΦΜ":
+                            if (customer.getAfm() == null || !customer.getAfm().contains(search1)) return false;
+                            break;
+                        case "Πόλη":
+                            if (customer.getTown() == null || !customer.getTown().toUpperCase().contains(search1)) return false;
+                            break;
+                        case "Τηλέφωνο":
+                            boolean phoneMatch = (customer.getPhone1() != null && customer.getPhone1().contains(search1)) ||
+                                    (customer.getPhone2() != null && customer.getPhone2().contains(search1)) ||
+                                    (customer.getMobile() != null && customer.getMobile().contains(search1));
+                            if (!phoneMatch) return false;
+                            break;
+                    }
+                }
+            }
+
+            return true; // If all filters pass
         });
     }
 
@@ -786,7 +825,8 @@ public class CustomersController implements Initializable {
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
-        } else {
+        }
+        else {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
             openCustomerInTab(selectedCustomer, "myPOS");
         }
@@ -825,7 +865,8 @@ public class CustomersController implements Initializable {
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
             }
-        } else {
+        }
+        else {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
             openCustomerInTab(selectedCustomer, "Emblem");
         }

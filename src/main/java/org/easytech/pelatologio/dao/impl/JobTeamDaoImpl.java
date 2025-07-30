@@ -2,9 +2,7 @@ package org.easytech.pelatologio.dao.impl;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.easytech.pelatologio.dao.JobTeamDao;
-import org.easytech.pelatologio.dao.RecommendationDao;
 import org.easytech.pelatologio.models.JobTeam;
-import org.easytech.pelatologio.models.Recommendation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,7 +26,7 @@ public class JobTeamDaoImpl implements JobTeamDao {
     @Override
     public List<JobTeam> getJobTeams() {
         List<JobTeam> jobTeams = new ArrayList<>();
-        String query = "SELECT * FROM JobTeams";
+        String query = "SELECT * FROM JobTeams ORDER BY name ASC";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
