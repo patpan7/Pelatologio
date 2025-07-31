@@ -249,16 +249,11 @@ public class CustomersController implements Initializable {
         // App ComboBox
         appComboBox.getItems().add(new AppItem(0, "Όλες"));
         appComboBox.getItems().addAll(DBHelper.getAppItemDao().getApplications());
-//        appComboBox.getItems().addAll(
-//                new AppItem(1, "myPOS"), new AppItem(2, "Simply"), new AppItem(3, "Taxis"),
-//                new AppItem(4, "Emblem"), new AppItem(5, "Εργάνη"), new AppItem(6, "Πελατολόγιο"),
-//                new AppItem(7, "NinePOS")
-//        );
 
         appComboBox.getSelectionModel().selectFirst();
 
         // Search Field ComboBox
-        searchFieldComboBox.getItems().addAll("Όλα τα πεδία", "Όνομα", "ΑΦΜ", "Πόλη", "Τηλέφωνο");
+        searchFieldComboBox.getItems().addAll("Όλα τα πεδία", "Όνομα", "Τίτλος", "ΑΦΜ", "Αριθμοί επικοινωνίας", "Πόλη", "Υπεύθυνος");
         searchFieldComboBox.getSelectionModel().selectFirst();
     }
 
@@ -307,19 +302,6 @@ public class CustomersController implements Initializable {
         }
     }
 
-    // Μέθοδος για να πάρεις τα επιλεγμένα φίλτρα
-    private Set<String> getSelectedFilters(List<CheckBox> checkBoxes) {
-        Set<String> selectedFilters = new HashSet<>();
-
-        // Ελέγχουμε κάθε checkbox και προσθέτουμε το φίλτρο αν είναι επιλεγμένο
-        for (CheckBox checkBox : checkBoxes) {
-            if (checkBox.isSelected()) {
-                selectedFilters.add(checkBox.getText());
-            }
-        }
-
-        return selectedFilters;
-    }
 
     private void clearAdvancedFilters() {
         statusComboBox.getSelectionModel().select("Ενεργοί");
@@ -426,38 +408,61 @@ public class CustomersController implements Initializable {
 
             // Free Text Filter
             if (!filterText.isEmpty()) {
-                String search1 = filterText; // Simplified for clarity, assuming no greek/english conversion needed for now
+                // Υποστήριξη Ελληνικών/Αγγλικών
+                char[] chars1 = filterText.toCharArray();
+                IntStream.range(0, chars1.length).forEach(i -> {
+                    Character repl = ENGLISH_TO_GREEK.get(chars1[i]);
+                    if (repl != null) chars1[i] = repl;
+                });
+                char[] chars2 = filterText.toCharArray();
+                IntStream.range(0, chars2.length).forEach(i -> {
+                    Character repl = GREEK_TO_ENGLISH.get(chars2[i]);
+                    if (repl != null) chars2[i] = repl;
+                });
+                String search1 = new String(chars1);
+                String search2 = new String(chars2);
+                //String search1 = filterText; // Simplified for clarity, assuming no greek/english conversion needed for now
 
                 if (searchField == null || searchField.equals("Όλα τα πεδία")) {
-                    boolean textMatch = (customer.getName() != null && customer.getName().toUpperCase().contains(search1)) ||
-                            (customer.getTitle() != null && customer.getTitle().toUpperCase().contains(search1)) ||
-                            (customer.getJob() != null && customer.getJob().toUpperCase().contains(search1)) ||
-                            (String.valueOf(customer.getCode()).contains(search1)) ||
-                            (customer.getPhone1() != null && customer.getPhone1().contains(search1)) ||
-                            (customer.getPhone2() != null && customer.getPhone2().contains(search1)) ||
-                            (customer.getMobile() != null && customer.getMobile().contains(search1)) ||
-                            (customer.getAfm() != null && customer.getAfm().contains(search1)) ||
-                            (customer.getManager() != null && customer.getManager().toUpperCase().contains(search1)) ||
-                            (customer.getTown() != null && customer.getTown().toUpperCase().contains(search1));
+                    boolean textMatch = (customer.getName() != null && (customer.getName().toUpperCase().contains(search1) || customer.getName().toUpperCase().contains(search2)))
+                            || (customer.getTitle() != null && (customer.getTitle().toUpperCase().contains(search1) || customer.getTitle().toUpperCase().contains(search2)))
+                            || (customer.getJob() != null && (customer.getJob().toUpperCase().contains(search1) || customer.getJob().toUpperCase().contains(search2)))
+                            || (String.valueOf(customer.getCode()).contains(search1) || String.valueOf(customer.getCode()).contains(search2))
+                            || (customer.getPhone1() != null && (customer.getPhone1().contains(search1) || customer.getPhone1().contains(search2)))
+                            || (customer.getPhone2() != null && (customer.getPhone2().contains(search1) || customer.getPhone2().contains(search2)))
+                            || (customer.getMobile() != null && (customer.getMobile().contains(search1) || customer.getMobile().contains(search2)))
+                            || (customer.getAfm() != null && (customer.getAfm().contains(search1) || customer.getAfm().contains(search2)))
+                            || (customer.getManager() != null && (customer.getManager().toUpperCase().contains(search1) || customer.getManager().toUpperCase().contains(search2)))
+                            || (customer.getManagerPhone() != null && (customer.getManagerPhone().toUpperCase().contains(search1) || customer.getManagerPhone().toUpperCase().contains(search2)))
+                            || (customer.getEmail() != null && (customer.getEmail().toUpperCase().contains(search1) || customer.getEmail().toUpperCase().contains(search2)))
+                            || (customer.getEmail2() != null && (customer.getEmail2().toUpperCase().contains(search1) || customer.getEmail2().toUpperCase().contains(search2)))
+                            || (customer.getTown() != null && (customer.getTown().toUpperCase().contains(search1) || customer.getTown().toUpperCase().contains(search2)))
+                            || (customer.getAddress() != null && (customer.getAddress().toUpperCase().contains(search1) || customer.getAddress().toUpperCase().contains(search2)));
                     if (!textMatch) {
                         return false;
                     }
                 } else {
                     switch (searchField) {
                         case "Όνομα":
-                            if (customer.getName() == null || !customer.getName().toUpperCase().contains(search1)) return false;
+                            if (customer.getName() == null || !customer.getName().toUpperCase().contains(search1) && !customer.getName().toUpperCase().contains(search2)) return false;
+                            break;
+                        case "Τίτλος":
+                            if (customer.getTitle() == null || !customer.getTitle().toUpperCase().contains(search1) && !customer.getTitle().toUpperCase().contains(search2)) return false;
                             break;
                         case "ΑΦΜ":
                             if (customer.getAfm() == null || !customer.getAfm().contains(search1)) return false;
                             break;
                         case "Πόλη":
-                            if (customer.getTown() == null || !customer.getTown().toUpperCase().contains(search1)) return false;
+                            if (customer.getTown() == null || !customer.getTown().toUpperCase().contains(search1) && !customer.getTown().toUpperCase().contains(search2)) return false;
                             break;
-                        case "Τηλέφωνο":
+                        case "Αριθμοί επικοινωνίας":
                             boolean phoneMatch = (customer.getPhone1() != null && customer.getPhone1().contains(search1)) ||
                                     (customer.getPhone2() != null && customer.getPhone2().contains(search1)) ||
                                     (customer.getMobile() != null && customer.getMobile().contains(search1));
                             if (!phoneMatch) return false;
+                            break;
+                        case "Υπεύθυνος":
+                            if (customer.getManager() == null || !customer.getManager().toUpperCase().contains(search1) && !customer.getManager().toUpperCase().contains(search2)) return false;
                             break;
                     }
                 }
@@ -465,16 +470,6 @@ public class CustomersController implements Initializable {
 
             return true; // If all filters pass
         });
-    }
-
-    public void filterByApp(int appId) {
-        this.activeAppFilter = appId;
-        applyFilters(filterField.getText());
-    }
-
-    public void clearAppFilter() {
-        this.activeAppFilter = null;
-        applyFilters(filterField.getText());
     }
 
     public void customerAddNew(ActionEvent actionEvent) throws IOException {
