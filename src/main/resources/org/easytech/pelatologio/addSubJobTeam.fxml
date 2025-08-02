@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddSubJobTeamController">
+    <content>
+        <VBox alignment="CENTER">
+            <Label styleClass="normal-label" text="Επεξεργασία Υποομάδας" />
+            <TextField fx:id="nameField" promptText="Υποομάδα">
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </VBox.margin>
+            </TextField>
+            <JFXComboBox fx:id="jobTeamField" minWidth="300.0" promptText="Ομάδα" VBox.vgrow="ALWAYS">
+                <VBox.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </VBox.margin>
+            </JFXComboBox>
+        </VBox>
+    </content>
+</DialogPane>

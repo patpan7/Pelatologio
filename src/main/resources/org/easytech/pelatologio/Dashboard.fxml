@@ -33,105 +33,116 @@
                      <Insets right="10.0" />
                   </HBox.margin>
                   </VBox>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
-                      <children>
-                          <Label text="Συνδρομές που λήγουν (30 ημέρες)">
-                              <font>
-                                  <Font name="System Bold" size="16.0" />
-                              </font>
-                          </Label>
-                          <TableView fx:id="subscriptionsTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                              <columns>
-                                  <TableColumn fx:id="subsCustomerColumn" prefWidth="150.0" text="Πελάτης" />
-                                  <TableColumn fx:id="subsTypeColumn" prefWidth="150.0" text="Συνδρομή" />
-                                  <TableColumn fx:id="subsExpiryColumn" prefWidth="120.0" text="Ημερομηνία Λήξης" />
-                              </columns>
-                        <columnResizePolicy>
-                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                        </columnResizePolicy>
-                          </TableView>
-                      </children>
-                  <HBox.margin>
-                     <Insets left="10.0" right="10.0" />
-                  </HBox.margin>
-                  </VBox>
-               <VBox layoutX="605.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
-                  <children>
-                     <Label text="Υπόλοιπα πελατών">
+                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                    <HBox.margin>
+                        <Insets left="10.0" right="10.0"/>
+                    </HBox.margin>
+                    <Label text="Συνδρομές που λήγουν (30 ημέρες)">
                         <font>
-                           <Font name="System Bold" size="16.0" />
+                            <Font name="System Bold" size="16.0"/>
                         </font>
-                     </Label>
-                     <TableView fx:id="balanceTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                    </Label>
+                    <TableView fx:id="subscriptionsTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                         <columns>
-                           <TableColumn fx:id="balanceCustomerColumn" prefWidth="150.0" text="Πελάτης" />
-                           <TableColumn fx:id="balanceColumn" prefWidth="150.0" text="Υπόλοιπο" />
+                            <TableColumn fx:id="subsCustomerColumn" prefWidth="150.0" text="Πελάτης"/>
+                            <TableColumn fx:id="subsTypeColumn" prefWidth="150.0" text="Συνδρομή"/>
+                            <TableColumn fx:id="subsExpiryColumn" prefWidth="120.0" text="Ημερομηνία Λήξης"/>
                         </columns>
-                        <columnResizePolicy>
-                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                        </columnResizePolicy>
-                     </TableView>
-                  </children>
-                  <HBox.margin>
-                     <Insets left="10.0" />
-                  </HBox.margin>
-               </VBox>
+                  <columnResizePolicy>
+                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                  </columnResizePolicy>
+                    </TableView>
+                </VBox>
+                <VBox layoutX="605.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0"
+                      HBox.hgrow="ALWAYS">
+                    <HBox.margin>
+                        <Insets left="10.0"/>
+                    </HBox.margin>
+                    <Label text="Υπόλοιπα πελατών">
+                       <font>
+                           <Font name="System Bold" size="16.0"/>
+                       </font>
+                    </Label>
+                    <TableView fx:id="balanceTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                       <columns>
+                           <TableColumn fx:id="balanceCustomerColumn" prefWidth="150.0" text="Πελάτης"/>
+                           <TableColumn fx:id="balanceColumn" prefWidth="150.0" text="Υπόλοιπο"/>
+                       </columns>
+                       <columnResizePolicy>
+                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                       </columnResizePolicy>
+                    </TableView>
+                </VBox>
             </children>
             <VBox.margin>
                <Insets bottom="10.0" />
             </VBox.margin>
          </HBox>
-         <HBox VBox.vgrow="ALWAYS">
-            <children>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
-                      <Label text="Νέοι Πελάτες ανά μήνα">
+          <HBox VBox.vgrow="ALWAYS">
+              <VBox.margin>
+                  <Insets top="10.0"/>
+              </VBox.margin>
+              <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                  <Label text="Νέοι Πελάτες ανά μήνα">
+                      <font>
+                          <Font name="System Bold" size="16.0"/>
+                      </font>
+                  </Label>
+                  <BarChart fx:id="customersChart" VBox.vgrow="ALWAYS">
+                      <xAxis>
+                          <CategoryAxis side="BOTTOM"/>
+                      </xAxis>
+                      <yAxis>
+                          <NumberAxis side="LEFT"/>
+                      </yAxis>
+                  </BarChart>
+              <HBox.margin>
+                  <Insets right="5.0"/>
+              </HBox.margin>
+              </VBox>
+              <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                  <children>
+                      <Label text="Πελάτες ανά σύσταση">
                           <font>
-                              <Font name="System Bold" size="16.0" />
+                              <Font name="System Bold" size="16.0"/>
                           </font>
                       </Label>
-                      <BarChart fx:id="customersChart" VBox.vgrow="ALWAYS">
+                      <BarChart fx:id="recommendationChart" categoryGap="1.0" VBox.vgrow="ALWAYS">
                           <xAxis>
-                              <CategoryAxis side="BOTTOM" />
+                              <CategoryAxis side="BOTTOM"/>
                           </xAxis>
                           <yAxis>
-                              <NumberAxis side="LEFT" />
+                              <NumberAxis side="LEFT"/>
                           </yAxis>
                       </BarChart>
-                  <HBox.margin>
-                     <Insets right="5.0" />
-                  </HBox.margin>
-                  </VBox>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
-                      <children>
-                          <Label text="Πελάτες ανά σύσταση">
-                              <font>
-                                  <Font name="System Bold" size="16.0" />
-                              </font>
-                          </Label>
-                          <BarChart fx:id="recommendationChart" categoryGap="1.0" VBox.vgrow="ALWAYS">
-                              <xAxis>
-                                  <CategoryAxis side="BOTTOM" />
-                              </xAxis>
-                              <yAxis>
-                                  <NumberAxis side="LEFT" />
-                              </yAxis>
-                          </BarChart>
-                      </children>
-                  <HBox.margin>
-                     <Insets left="5.0" right="5.0" />
-                  </HBox.margin>
-                  </VBox>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
-                      <Label text="Τελευταίες κλήσεις">
-                          <font>
-                              <Font name="System Bold" size="16.0" />
-                          </font>
-                      </Label>
-                      <ListView fx:id="callsListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                  <HBox.margin>
-                     <Insets left="5.0" />
-                  </HBox.margin>
-                  </VBox>
+                  </children>
+              <HBox.margin>
+                  <Insets left="5.0" right="5.0"/>
+              </HBox.margin>
+              </VBox>
+              <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                  <Label text="Τελευταίες κλήσεις">
+                      <font>
+                          <Font name="System Bold" size="16.0"/>
+                      </font>
+                  </Label>
+                  <ListView fx:id="callsListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
+              <HBox.margin>
+                  <Insets left="5.0"/>
+              </HBox.margin>
+              </VBox>
+          </HBox>
+         <HBox VBox.vgrow="ALWAYS">
+            <children>
+                <PieChart fx:id="jobTeamPieChart" title="Πελάτες ανά Ομάδα" HBox.hgrow="ALWAYS" />
+                <BarChart fx:id="subJobTeamBarChart" title="Πελάτες ανά Υπο-ομάδα" HBox.hgrow="ALWAYS">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT" />
+                    </yAxis>
+                </BarChart>
             </children>
             <VBox.margin>
                <Insets top="10.0" />

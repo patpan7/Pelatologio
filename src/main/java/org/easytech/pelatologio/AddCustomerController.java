@@ -56,6 +56,8 @@ public class AddCustomerController {
     @FXML
     private ComboBox<JobTeam> tfJobTeam;
     @FXML
+    private ComboBox<SubJobTeam> tfSubJobTeam;
+    @FXML
     private TextField tfAccPhone, tfAccMobile, tfAccEmail, tfAccName1, tfAccEmail1, tfAccErganiEmail;
     @FXML
     private ComboBox<Accountant> tfAccName;
@@ -109,6 +111,8 @@ public class AddCustomerController {
     private FilteredList<Recommendation> filteredRecommendations;
     private ObservableList<JobTeam> jobTeamList = FXCollections.observableArrayList();
     private FilteredList<JobTeam> filteredJobTeams;
+    private ObservableList<SubJobTeam> subJobTeamList = FXCollections.observableArrayList();
+    private FilteredList<SubJobTeam> filteredSubJobTeams;
     private CustomersController customersController;
     private Consumer<String> originateCallCallback;
 
@@ -318,10 +322,36 @@ public class AddCustomerController {
 
         jobTeamList.clear();
         jobTeamList.addAll(DBHelper.getJobTeamDao().getJobTeams());
-//        tfRecommendation.setItems(recommendationList);
         filteredJobTeams = new FilteredList<>(jobTeamList);
         tfJobTeam.setItems(filteredJobTeams);
-        setupComboBoxFilter(tfJobTeam, filteredJobTeams);
+        setupComboBoxFilter(tfJobTeam, filteredJobTeams); // ✅ μόνο μία φορά
+
+// Listener για αλλαγή JobTeam
+        tfJobTeam.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+            subJobTeamList.clear();
+            if (newValue != null) {
+                subJobTeamList.clear();
+                subJobTeamList.addAll(DBHelper.getSubJobTeamDao().getSubJobTeams(newValue.getId()));
+                filteredSubJobTeams = new FilteredList<>(subJobTeamList);
+                tfSubJobTeam.setItems(filteredSubJobTeams);
+                setupComboBoxFilter(tfSubJobTeam,filteredSubJobTeams);
+            }
+        });
+
+        tfSubJobTeam.setConverter(new StringConverter<SubJobTeam>() {
+            @Override
+            public String toString(SubJobTeam subJobTeam) {
+                return subJobTeam != null ? subJobTeam.getName() : "";
+            }
+
+            @Override
+            public SubJobTeam fromString(String string) {
+                return subJobTeamList.stream()
+                        .filter(subJobTeam -> subJobTeam.getName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
 
         // Προσθήκη ακροατών αλλαγών στα πεδία
         Platform.runLater(() -> {
@@ -727,6 +757,29 @@ public class AddCustomerController {
         setAccountant();
         setRecommendation();
         setJobTeam();
+
+        // Find and select the parent job team based on the sub job team ID
+        if (customer.getSubJobTeam() != 0) {
+            int parentTeamId = DBHelper.getJobTeamDao().getParentTeamIdBySubTeamId(customer.getSubJobTeam());
+            if (parentTeamId != 0) {
+                for (JobTeam jobTeam : jobTeamList) {
+                    if (jobTeam.getId() == parentTeamId) {
+                        tfJobTeam.getSelectionModel().select(jobTeam);
+                        // Now that the parent is selected, the sub-teams are loaded by the listener.
+                        // We need to select the correct sub-team from the now-populated list.
+                        Platform.runLater(() -> {
+                            for (SubJobTeam s : subJobTeamList) {
+                                if (s.getId() == customer.getSubJobTeam()) {
+                                    tfSubJobTeam.getSelectionModel().select(s);
+                                    break;
+                                }
+                            }
+                        });
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 
@@ -909,7 +962,7 @@ public class AddCustomerController {
         });
 
         for (JobTeam jobTeam : jobTeamList) {
-            if (jobTeam.getId() == customer.getJobTeam()) {
+            if (jobTeam.getId() == customer.getSubJobTeam()) {
                 tfJobTeam.getSelectionModel().select(jobTeam);
                 break;
             }
@@ -1088,8 +1141,8 @@ public class AddCustomerController {
         customer.setBalanceReason(balanceReason);
         boolean isActive = checkboxActive.isSelected();
         customer.setActive(isActive);
-        JobTeam jobTeam = tfJobTeam.getSelectionModel().getSelectedItem();
-        customer.setJobTeam(jobTeam == null ? 0 : jobTeam.getId());
+        SubJobTeam subjobTeam = tfSubJobTeam.getSelectionModel().getSelectedItem();
+        customer.setSubJobTeam(subjobTeam == null ? 0 : subjobTeam.getId());
 
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
         int accId = selectedAccountant != null ? selectedAccountant.getId() : 0;
@@ -1116,7 +1169,7 @@ public class AddCustomerController {
         customer.setPhone2(phone2);
         customer.setManagerPhone(managerPhone);
 
-        DBHelper.getCustomerDao().updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation.getId(), balance, balanceReason, isActive, jobTeam.getId());
+        DBHelper.getCustomerDao().updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation.getId(), balance, balanceReason, isActive, subjobTeam.getId());
 
         String accName = tfAccName.getValue() != null ? tfAccName.getValue().toString() : "";
         String accPhone = tfAccPhone.getText();
@@ -1550,7 +1603,8 @@ public class AddCustomerController {
         // ComboBoxes
         tfAccName.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
         tfRecommendation.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
-
+        tfJobTeam.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
+        tfSubJobTeam.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
     }
 
     private void markAsChanged() {
@@ -1686,6 +1740,27 @@ public class AddCustomerController {
             // Τώρα μπορείς να πάρεις τον controller
             JobTeamManagerViewController controller = loader.getController();
             controller.loadJobTeams();
+
+
+            dialog.setTitle("Ομάδες εργασιών");
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.show();
+
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα των κατηγοριών εργασιών.", e.getMessage(), Alert.AlertType.ERROR));
+        }
+    }
+
+    public void handleAddSubJobTeam(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("subJobTeamManagerView.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load()); // Πρώτα κάνε load το FXML
+
+            // Τώρα μπορείς να πάρεις τον controller
+            SubJobTeamManagerViewController controller = loader.getController();
+            controller.loadSubJobTeams(tfJobTeam.getSelectionModel().getSelectedItem().getId());
 
 
             dialog.setTitle("Ομάδες εργασιών");

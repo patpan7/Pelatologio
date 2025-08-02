@@ -55,7 +55,7 @@ public class CustomerDaoImpl implements CustomerDao {
                 data.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
                 data.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 data.setActive(resultSet.getBoolean("isActive"));
-                data.setJobTeam(resultSet.getInt("jobTeam"));
+                data.setSubJobTeam(resultSet.getInt("subJobTeam"));
 
                 dataList.add(data);
             }
@@ -86,7 +86,7 @@ public class CustomerDaoImpl implements CustomerDao {
         // It was added during the refactoring. We can leave it as is or remove it.
         // For now, I will leave it.
         if (customer == null) return;
-        String query = "SELECT job, address, postcode, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation, balanceReason, jobTeam FROM customers WHERE code = ?";
+        String query = "SELECT job, address, postcode, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation, balanceReason, subJobTeam FROM customers WHERE code = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
@@ -105,7 +105,7 @@ public class CustomerDaoImpl implements CustomerDao {
                     customer.setAccEmail1(resultSet.getString("accEmail1"));
                     customer.setRecommendation(resultSet.getInt("recommendation"));
                     customer.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
-                    customer.setJobTeam(resultSet.getInt("jobTeam"));
+                    customer.setSubJobTeam(resultSet.getInt("subJobTeam"));
                 }
             }
         } catch (SQLException e) {
@@ -150,9 +150,9 @@ public class CustomerDaoImpl implements CustomerDao {
     @Override
     public int insertCustomer(String name, String title, String job, String afm, String phone1,
                               String phone2, String mobile, String address,
-                              String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, int recommendation, String balance, String balanceReason, int jobTeam) {
+                              String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, int recommendation, String balance, String balanceReason, int subJobTeam) {
         // Prepare the SQL query for inserting a new customer
-        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation, balance, balanceReason, isActive, jobTeam) "
+        String insertQuery = "INSERT INTO Customers (name, title, job, afm, phone1, phone2, mobile, address, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation, balance, balanceReason, isActive, subJobTeam) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int newCustomerId = -1; // Default value for error handling
         try (Connection conn = getConnection();
@@ -188,7 +188,7 @@ public class CustomerDaoImpl implements CustomerDao {
             pstmt.setString(20, balance);
             pstmt.setString(21, balanceReason);
             pstmt.setBoolean(22, true); // Ορισμός του isActive σε true
-            pstmt.setInt(23, jobTeam); // Ορισμός του jobTeam σε 0
+            pstmt.setInt(23, subJobTeam); // Ορισμός του subJobTeam σε 0
 
 
             int rowsInserted = pstmt.executeUpdate();
@@ -210,9 +210,9 @@ public class CustomerDaoImpl implements CustomerDao {
     }
 
     @Override
-    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, int recommendation, String balance, String balanceReason, boolean isActive, int jobTeam) {
+    public void updateCustomer(int code, String name, String title, String job, String afm, String phone1, String phone2, String mobile, String address, String town, String postcode, String email, String email2, String manager, String managerPhone, String notes, int accId, String accName1, String accEmail1, int recommendation, String balance, String balanceReason, boolean isActive, int subJobTeam) {
         String sql = "UPDATE customers SET name = ?, title = ?, job = ?,afm = ?, phone1 = ?, " +
-                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, email2 = ?,manager = ?, managerPhone = ?, notes = ?, accId = ?, accName1 = ?, accEmail1 = ?, recommendation = ?, balance = ?, balanceReason = ?, isActive = ?, jobTeam = ? WHERE code = ?";
+                "phone2 = ?, mobile = ?, address = ?, town = ?, postcode = ?, email = ?, email2 = ?,manager = ?, managerPhone = ?, notes = ?, accId = ?, accName1 = ?, accEmail1 = ?, recommendation = ?, balance = ?, balanceReason = ?, isActive = ?, subJobTeam = ? WHERE code = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -243,7 +243,7 @@ public class CustomerDaoImpl implements CustomerDao {
             pstmt.setString(20, balance);
             pstmt.setString(21, balanceReason);
             pstmt.setBoolean(22, isActive); // Ορισμός του isActive σε true
-            pstmt.setInt(23, jobTeam); // Ορισμός του jobTeam σε 0
+            pstmt.setInt(23, subJobTeam); // Ορισμός του subJobTeam σε 0
             pstmt.setInt(24, code);
 
             int rowsUpdated = pstmt.executeUpdate();
@@ -387,7 +387,7 @@ public class CustomerDaoImpl implements CustomerDao {
                 data.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
                 data.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 data.setActive(resultSet.getBoolean("isActive"));
-                data.setJobTeam(resultSet.getInt("jobTeam"));
+                data.setSubJobTeam(resultSet.getInt("subJobTeam"));
             }
             return data;
         } catch (SQLException e) {
@@ -565,7 +565,7 @@ public class CustomerDaoImpl implements CustomerDao {
                 data.setRecommendation(resultSet.getInt("recommendation"));
                 data.setBalance(resultSet.getString("balance"));
                 data.setBalanceReason(resultSet.getString("balanceReason"));
-                data.setJobTeam(resultSet.getInt("jobTeam"));
+                data.setSubJobTeam(resultSet.getInt("subJobTeam"));
                 customers.add(data);
             }
         } catch (SQLException e) {
@@ -743,7 +743,7 @@ public class CustomerDaoImpl implements CustomerDao {
                 customer.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
                 customer.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 customer.setActive(resultSet.getBoolean("isActive"));
-                customer.setJobTeam(resultSet.getInt("jobTeam"));
+                customer.setSubJobTeam(resultSet.getInt("subJobTeam"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -786,7 +786,7 @@ public class CustomerDaoImpl implements CustomerDao {
                 customer.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
                 customer.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 customer.setActive(resultSet.getBoolean("isActive"));
-                customer.setJobTeam(resultSet.getInt("jobTeam"));
+                customer.setSubJobTeam(resultSet.getInt("subJobTeam"));
                 customerList.add(customer);
             }
         } catch (Exception e) {

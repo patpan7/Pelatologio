@@ -30,6 +30,7 @@ public class DBHelper {
     private static CallLogDao callLogDao;
     private static RecommendationDao recommendationDao;
     private static JobTeamDao jobTeamDao;
+    private static SubJobTeamDao subJobTeamDao;
     private static AppItemDao appItemDao;
 
     static {
@@ -65,6 +66,7 @@ public class DBHelper {
             callLogDao = new CallLogDaoImpl(dataSource);
             recommendationDao = new RecommendationDaoImpl(dataSource);
             jobTeamDao = new JobTeamDaoImpl(dataSource);
+            subJobTeamDao = new SubJobTeamDaoImpl(dataSource);
             appItemDao = new AppItemDaoImpl(dataSource);
 
         } catch (ClassNotFoundException e) {
@@ -143,6 +145,10 @@ public class DBHelper {
 
     public static JobTeamDao getJobTeamDao() {
         return jobTeamDao;
+    }
+
+    public static SubJobTeamDao getSubJobTeamDao() {
+        return subJobTeamDao;
     }
 
     public static AppItemDao getAppItemDao() {

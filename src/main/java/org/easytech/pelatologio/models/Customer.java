@@ -28,7 +28,7 @@ public class Customer {
     String balance;
     String balanceReason;
     Boolean isActive;
-    int jobTeam;
+    int subJobTeam;
     private List<Integer> apps = new ArrayList<>();
 
     public Customer() {
@@ -235,12 +235,12 @@ public class Customer {
         isActive = active;
     }
 
-    public int getJobTeam() {
-        return jobTeam;
+    public int getSubJobTeam() {
+        return subJobTeam;
     }
 
-    public void setJobTeam(int jobTeam) {
-        this.jobTeam = jobTeam;
+    public void setSubJobTeam(int subJobTeam) {
+        this.subJobTeam = subJobTeam;
     }
 
     public List<Integer> getApps() {

@@ -15,6 +15,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.easytech.pelatologio.helper.CallNotesController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.CallLog;
 import org.easytech.pelatologio.models.Customer;
@@ -60,6 +61,10 @@ public class DashboardController {
     private BarChart<String, Number> customersChart;
     @FXML
     public BarChart recommendationChart;
+    @FXML
+    public BarChart subJobTeamBarChart;
+    @FXML
+    private PieChart jobTeamPieChart;
 
 
     // ListView for Recent Calls
@@ -222,5 +227,28 @@ public class DashboardController {
         }
 
         recommendationChart.getData().add(series);
+    }
+
+    private void loadJobTeamChartData() {
+        Map<String, Integer> jobTeamData = DBHelper.getJobTeamDao().getCustomerCountPerJobTeam();
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+        for (Map.Entry<String, Integer> entry : jobTeamData.entrySet()) {
+            pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+        }
+        jobTeamPieChart.setData(pieChartData);
+    }
+
+    private void loadSubJobTeamChartData(int jobTeamId) {
+        subJobTeamBarChart.getData().clear();
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Customers per Sub-Team");
+
+        Map<String, Integer> subJobTeamData = DBHelper.getJobTeamDao().getCustomerCountPerSubJobTeam(jobTeamId);
+
+        for (Map.Entry<String, Integer> entry : subJobTeamData.entrySet()) {
+            series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+        }
+
+        subJobTeamBarChart.getData().add(series);
     }
 }

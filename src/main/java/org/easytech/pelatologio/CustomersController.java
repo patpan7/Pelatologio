@@ -392,11 +392,11 @@ public class CustomersController implements Initializable {
 
             // JobTeam Filter
             JobTeam jobTeamFilter = jobTeamComboBox.getSelectionModel().getSelectedItem();
-            if (jobTeamFilter != null && jobTeamFilter.getId() != 0) {
-                if (customer.getJobTeam() != jobTeamFilter.getId()) {
-                    return false;
-                }
-            }
+//            if (jobTeamFilter != null && jobTeamFilter.getId() != 0) {
+//                if (customer.getSubJobTeam() != jobTeamFilter.getId()) {
+//                    return false;
+//                }
+//            }
 
             // App Filter
             AppItem appFilter = appComboBox.getSelectionModel().getSelectedItem();
