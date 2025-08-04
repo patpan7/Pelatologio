@@ -135,14 +135,7 @@
          <HBox VBox.vgrow="ALWAYS">
             <children>
                 <PieChart fx:id="jobTeamPieChart" title="Πελάτες ανά Ομάδα" HBox.hgrow="ALWAYS" />
-                <BarChart fx:id="subJobTeamBarChart" title="Πελάτες ανά Υπο-ομάδα" HBox.hgrow="ALWAYS">
-                    <xAxis>
-                        <CategoryAxis side="BOTTOM" />
-                    </xAxis>
-                    <yAxis>
-                        <NumberAxis side="LEFT" />
-                    </yAxis>
-                </BarChart>
+                <PieChart fx:id="subJobTeamPieChart" title="Πελάτες ανά Υπο-ομάδα" HBox.hgrow="ALWAYS" />
             </children>
             <VBox.margin>
                <Insets top="10.0" />

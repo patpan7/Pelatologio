@@ -97,6 +97,8 @@
                     <JFXComboBox fx:id="recommendationComboBox" prefWidth="280.0" promptText="Επιλογή Σύστασης" />
                     <Label styleClass="normal-label" text="Ομάδα" />
                     <JFXComboBox fx:id="jobTeamComboBox" prefWidth="280.0" promptText="Επιλογή Ομάδας" />
+                    <Label styleClass="normal-label" text="Υπο-ομάδα" />
+                    <JFXComboBox fx:id="subJobTeamComboBox" disable="true" prefWidth="280.0" promptText="Επιλογή Υπο-ομάδας" />
                     <Label styleClass="normal-label" text="Εφαρμογή" />
                     <JFXComboBox fx:id="appComboBox" prefWidth="280.0" promptText="Επιλογή Εφαρμογής" />
                     <JFXButton fx:id="clearAdvancedFiltersButton" buttonType="RAISED" styleClass="click-button" text="Καθαρισμός Φίλτρων" />

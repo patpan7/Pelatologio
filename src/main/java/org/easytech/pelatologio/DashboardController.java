@@ -9,11 +9,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.easytech.pelatologio.helper.CallNotesController;
 import org.easytech.pelatologio.helper.DBHelper;
@@ -62,9 +64,7 @@ public class DashboardController {
     @FXML
     public BarChart recommendationChart;
     @FXML
-    public BarChart subJobTeamBarChart;
-    @FXML
-    private PieChart jobTeamPieChart;
+    private PieChart jobTeamPieChart, subJobTeamPieChart;
 
 
     // ListView for Recent Calls
@@ -90,6 +90,7 @@ public class DashboardController {
         loadChartData();
         loadRecentCalls();
         loadRecommendationChartData();
+        loadJobTeamChartData();
 
         // Add click listeners for tables and list
         tasksTableView.setOnMouseClicked(event -> {
@@ -231,24 +232,106 @@ public class DashboardController {
 
     private void loadJobTeamChartData() {
         Map<String, Integer> jobTeamData = DBHelper.getJobTeamDao().getCustomerCountPerJobTeam();
+        double totalCustomers = jobTeamData.values().stream().mapToInt(Integer::intValue).sum();
+
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         for (Map.Entry<String, Integer> entry : jobTeamData.entrySet()) {
-            pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+            double percentage = (totalCustomers > 0) ? (entry.getValue() / totalCustomers) * 100 : 0;
+            String label = String.format("%s: %d (%.1f%%)", entry.getKey(), entry.getValue(), percentage);
+            pieChartData.add(new PieChart.Data(label, entry.getValue()));
         }
+
+        // Sort the data by value (customer count) in descending order
+        pieChartData.sort((d1, d2) -> Double.compare(d2.getPieValue(), d1.getPieValue()));
+
         jobTeamPieChart.setData(pieChartData);
+
+        // Define a list of 20 distinct colors to use
+        String[] colors = {
+            "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
+            "#bcbd22", "#17becf", "#aec7e8", "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", "#c49c94",
+            "#f7b6d2", "#c7c7c7", "#dbdb8d", "#9edae5"
+        };
+
+        int i = 0;
+        for (PieChart.Data data : jobTeamPieChart.getData()) {
+            String color = colors[i % colors.length];
+            data.getNode().setStyle("-fx-pie-color: " + color + ";");
+
+            // Add click listener to each pie slice
+            data.getNode().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                String teamName = data.getName().split(":")[0]; // Extract name before the colon
+                int teamId = DBHelper.getJobTeamDao().getJobTeamIdByName(teamName);
+                if (teamId != -1) {
+                    loadSubJobTeamChartData(teamId, teamName);
+                }
+            });
+
+            i++;
+        }
+
+        // Fix for legend colors and add click listener
+        jobTeamPieChart.applyCss();
+        i = 0;
+        for (Node node : jobTeamPieChart.lookupAll(".chart-legend-item")) {
+            if (node instanceof Label) {
+                String color = colors[i % colors.length];
+                ((Label) node).getGraphic().setStyle("-fx-background-color: " + color + ";");
+
+                // Add click listener to each legend item
+                node.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                    String teamName = ((Label) node).getText().split(":")[0]; // Extract name before the colon
+                    int teamId = DBHelper.getJobTeamDao().getJobTeamIdByName(teamName);
+                    if (teamId != -1) {
+                        loadSubJobTeamChartData(teamId, teamName);
+                    }
+                });
+                i++;
+            }
+        }
     }
 
-    private void loadSubJobTeamChartData(int jobTeamId) {
-        subJobTeamBarChart.getData().clear();
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Customers per Sub-Team");
-
+    private void loadSubJobTeamChartData(int jobTeamId, String teamName) {
+        subJobTeamPieChart.setTitle("Υπο-ομάδες για: " + teamName);
+        subJobTeamPieChart.getData().clear();
         Map<String, Integer> subJobTeamData = DBHelper.getJobTeamDao().getCustomerCountPerSubJobTeam(jobTeamId);
+        double totalCustomers = subJobTeamData.values().stream().mapToInt(Integer::intValue).sum();
 
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         for (Map.Entry<String, Integer> entry : subJobTeamData.entrySet()) {
-            series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+            double percentage = (totalCustomers > 0) ? (entry.getValue() / totalCustomers) * 100 : 0;
+            String label = String.format("%s: %d (%.1f%%)", entry.getKey(), entry.getValue(), percentage);
+            pieChartData.add(new PieChart.Data(label, entry.getValue()));
         }
 
-        subJobTeamBarChart.getData().add(series);
+        // Sort the data by value (customer count) in descending order
+        pieChartData.sort((d1, d2) -> Double.compare(d2.getPieValue(), d1.getPieValue()));
+
+        subJobTeamPieChart.setData(pieChartData);
+
+        // Define a list of 20 distinct colors to use
+        String[] colors = {
+            "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
+            "#bcbd22", "#17becf", "#aec7e8", "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", "#c49c94",
+            "#f7b6d2", "#c7c7c7", "#dbdb8d", "#9edae5"
+        };
+
+        int i = 0;
+        for (PieChart.Data data : subJobTeamPieChart.getData()) {
+            String color = colors[i % colors.length];
+            data.getNode().setStyle("-fx-pie-color: " + color + ";");
+            i++;
+        }
+
+        // Fix for legend colors
+        subJobTeamPieChart.applyCss();
+        i = 0;
+        for (Node node : subJobTeamPieChart.lookupAll(".chart-legend-item")) {
+            if (node instanceof Label) {
+                String color = colors[i % colors.length];
+                ((Label) node).getGraphic().setStyle("-fx-background-color: " + color + ";");
+                i++;
+            }
+        }
     }
 }

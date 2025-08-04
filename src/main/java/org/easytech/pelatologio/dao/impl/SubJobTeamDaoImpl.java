@@ -89,4 +89,27 @@ public class SubJobTeamDaoImpl implements SubJobTeamDao {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public List<Integer> getSubJobTeamIdsByTeam(int id) {
+        List<Integer> jobTeams = new ArrayList<>();
+        String query = "SELECT * FROM SubJobTeams WHERE jobTeamId = ? ORDER BY name ASC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, id); // ✅ Τώρα εκτός try(...) declaration block
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    jobTeams.add(rs.getInt("id"));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return jobTeams;
+    }
 }

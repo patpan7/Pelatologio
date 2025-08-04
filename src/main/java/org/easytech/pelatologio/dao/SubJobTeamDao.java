@@ -13,4 +13,6 @@ public interface SubJobTeamDao {
     void updateSubJobTeam(SubJobTeam subJobTeam);
 
     void deleteSubJobTeam(int id);
+
+    List<Integer> getSubJobTeamIdsByTeam(int id);
 }

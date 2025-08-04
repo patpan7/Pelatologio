@@ -38,6 +38,7 @@ import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.AppItem;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.JobTeam;
+import org.easytech.pelatologio.models.SubJobTeam;
 import org.easytech.pelatologio.models.Recommendation;
 import org.openqa.selenium.By;
 
@@ -83,6 +84,8 @@ public class CustomersController implements Initializable {
     private JFXComboBox<Recommendation> recommendationComboBox;
     @FXML
     private JFXComboBox<JobTeam> jobTeamComboBox;
+    @FXML
+    private JFXComboBox<SubJobTeam> subJobTeamComboBox; // New ComboBox for sub-teams
     @FXML
     private JFXButton clearAdvancedFiltersButton;
     private Integer activeAppFilter = null; // null σημαίνει κανένα φίλτρο εφαρμογής
@@ -246,6 +249,10 @@ public class CustomersController implements Initializable {
         jobTeamComboBox.getItems().addAll(DBHelper.getJobTeamDao().getJobTeams());
         jobTeamComboBox.getSelectionModel().selectFirst();
 
+        // SubJobTeam ComboBox - Initially empty
+        subJobTeamComboBox.getItems().add(new SubJobTeam(0, "Όλες",0));
+        subJobTeamComboBox.getSelectionModel().selectFirst();
+
         // App ComboBox
         appComboBox.getItems().add(new AppItem(0, "Όλες"));
         appComboBox.getItems().addAll(DBHelper.getAppItemDao().getApplications());
@@ -271,8 +278,22 @@ public class CustomersController implements Initializable {
         // Add listeners to all ComboBoxes to apply filters automatically
         statusComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilters(filterField.getText()));
         recommendationComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilters(filterField.getText()));
-        jobTeamComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilters(filterField.getText()));
+        subJobTeamComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilters(filterField.getText()));
         appComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilters(filterField.getText()));
+
+        // Listener for JobTeam to dynamically load SubJobTeams
+        jobTeamComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            subJobTeamComboBox.getItems().clear();
+            subJobTeamComboBox.getItems().add(new SubJobTeam(0, "Όλες",0));
+            if (newVal != null && newVal.getId() != 0) {
+                subJobTeamComboBox.setDisable(false);
+                subJobTeamComboBox.getItems().addAll(DBHelper.getSubJobTeamDao().getSubJobTeams(newVal.getId()));
+            } else {
+                subJobTeamComboBox.setDisable(true);
+            }
+            subJobTeamComboBox.getSelectionModel().selectFirst();
+            applyFilters(filterField.getText());
+        });
 
         // Action for the clear filters button
         clearAdvancedFiltersButton.setOnAction(event -> clearAdvancedFilters());
@@ -307,6 +328,7 @@ public class CustomersController implements Initializable {
         statusComboBox.getSelectionModel().select("Ενεργοί");
         recommendationComboBox.getSelectionModel().selectFirst();
         jobTeamComboBox.getSelectionModel().selectFirst();
+        // subJobTeamComboBox will be cleared by the jobTeamComboBox listener
         appComboBox.getSelectionModel().selectFirst();
         applyFilters(filterField.getText());
     }
@@ -372,6 +394,15 @@ public class CustomersController implements Initializable {
         String filterText = filterField.getText() == null ? "" : filterField.getText().toUpperCase();
         String searchField = searchFieldComboBox.getSelectionModel().getSelectedItem();
 
+        // Pre-fetch sub-team IDs if a main team is selected
+        JobTeam jobTeamFilter = jobTeamComboBox.getSelectionModel().getSelectedItem();
+        List<Integer> subTeamIds = null;
+        if (jobTeamFilter != null && jobTeamFilter.getId() != 0) {
+            subTeamIds = DBHelper.getSubJobTeamDao().getSubJobTeamIdsByTeam(jobTeamFilter.getId());
+        }
+
+        final List<Integer> finalSubTeamIds = subTeamIds; // Final variable for use in lambda
+
         filteredData.setPredicate(customer -> {
             // Status Filter
             String statusFilter = statusComboBox.getSelectionModel().getSelectedItem();
@@ -390,13 +421,21 @@ public class CustomersController implements Initializable {
                 }
             }
 
-            // JobTeam Filter
-            JobTeam jobTeamFilter = jobTeamComboBox.getSelectionModel().getSelectedItem();
-//            if (jobTeamFilter != null && jobTeamFilter.getId() != 0) {
-//                if (customer.getSubJobTeam() != jobTeamFilter.getId()) {
-//                    return false;
-//                }
-//            }
+            // JobTeam and SubJobTeam Filter
+            SubJobTeam subJobTeamFilter = subJobTeamComboBox.getSelectionModel().getSelectedItem();
+            if (jobTeamFilter != null && jobTeamFilter.getId() != 0) {
+                if (subJobTeamFilter != null && subJobTeamFilter.getId() != 0) {
+                    // Filter by specific sub-team
+                    if (customer.getSubJobTeam() != subJobTeamFilter.getId()) {
+                        return false;
+                    }
+                } else {
+                    // Filter by all sub-teams of the selected main team (using the pre-fetched list)
+                    if (finalSubTeamIds == null || !finalSubTeamIds.contains(customer.getSubJobTeam())) {
+                        return false;
+                    }
+                }
+            }
 
             // App Filter
             AppItem appFilter = appComboBox.getSelectionModel().getSelectedItem();
@@ -1095,5 +1134,11 @@ public class CustomersController implements Initializable {
                     break;
             }
         });
+    }
+
+    private void handleMakeCall(String phoneNumber) {
+        // Logic to make a call using the SIP client
+        // This can be expanded with more features like call logging, etc.
+        System.out.println("Making a call to: " + phoneNumber);
     }
 }

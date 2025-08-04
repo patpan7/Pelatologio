@@ -102,7 +102,7 @@ public class JobTeamDaoImpl implements JobTeamDao {
     @Override
     public Map<String, Integer> getCustomerCountPerJobTeam() {
         Map<String, Integer> data = new HashMap<>();
-        String sql = "SELECT jt.name, COUNT(c.id) as customer_count " +
+        String sql = "SELECT jt.name, COUNT(c.code) as customer_count " +
                      "FROM JobTeams jt " +
                      "JOIN SubJobTeams sjt ON jt.id = sjt.jobteamid " +
                      "JOIN Customers c ON sjt.id = c.subjobteam " +
@@ -122,10 +122,10 @@ public class JobTeamDaoImpl implements JobTeamDao {
     @Override
     public Map<String, Integer> getCustomerCountPerSubJobTeam(int jobTeamId) {
         Map<String, Integer> data = new HashMap<>();
-        String sql = "SELECT sjt.name, COUNT(c.id) as customer_count " +
+        String sql = "SELECT sjt.name, COUNT(c.code) as customer_count " +
                      "FROM SubJobTeams sjt " +
                      "JOIN Customers c ON sjt.id = c.subjobteam " +
-                     "WHERE sjt.subjobteam = ? " +
+                     "WHERE sjt.jobteamid = ? " +
                      "GROUP BY sjt.name";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
