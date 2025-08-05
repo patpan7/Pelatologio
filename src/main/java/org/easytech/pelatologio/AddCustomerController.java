@@ -102,7 +102,8 @@ public class AddCustomerController {
 
 
     int code = 0;
-    private boolean hasUnsavedChanges = false; // Νέο flag για παρακολούθηση αλλαγών
+    private boolean hasUnsavedChanges = false;
+    private boolean isLoading = false; // Flag to prevent listeners from firing during data load
 
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
     private Customer customer;
@@ -354,11 +355,8 @@ public class AddCustomerController {
         });
 
         // Προσθήκη ακροατών αλλαγών στα πεδία
-        Platform.runLater(() -> {
-            setupFieldListeners();
-            this.hasUnsavedChanges = false;
-            updateTabTitle("");
-        });
+        // This is now called from setCustomerForEdit to avoid premature firing
+        // setupFieldListeners(); 
 
         // Check for active call and show button if necessary
         if (ActiveCallState.hasPendingCall()) {
@@ -668,6 +666,8 @@ public class AddCustomerController {
 
 
     public void setCustomerForEdit(Customer customer) {
+        this.isLoading = true; // Start loading data
+
         // Ρύθμιση των πεδίων με τα υπάρχοντα στοιχεία του πελάτη
         tfName.setText(customer.getName());
         tfTitle.setText(customer.getTitle());
@@ -689,16 +689,13 @@ public class AddCustomerController {
         tfBalance.setText(customer.getBalance());
         taBalanceReason.setText(customer.getBalanceReason());
         tfBalanceMega.setText(DBHelper.getMegasoftDao().getMegasoftBalance(customer.getAfm()));
-        this.hasUnsavedChanges = false;
-        updateTabTitle("");
-
 
         if (customer.getActive())
             checkboxActive.setSelected(true);
         else
             checkboxActive.setSelected(false);
 
-        // Add listeners after populating the fields
+        // Add listeners after populating the fields to avoid premature firing
         Platform.runLater(() -> {
             setupFieldListeners();
             this.hasUnsavedChanges = false; // Reset again after listeners are set
@@ -765,21 +762,23 @@ public class AddCustomerController {
                 for (JobTeam jobTeam : jobTeamList) {
                     if (jobTeam.getId() == parentTeamId) {
                         tfJobTeam.getSelectionModel().select(jobTeam);
-                        // Now that the parent is selected, the sub-teams are loaded by the listener.
-                        // We need to select the correct sub-team from the now-populated list.
-                        Platform.runLater(() -> {
-                            for (SubJobTeam s : subJobTeamList) {
-                                if (s.getId() == customer.getSubJobTeam()) {
-                                    tfSubJobTeam.getSelectionModel().select(s);
-                                    break;
-                                }
+                        // The listener of tfJobTeam has now populated the sub-teams.
+                        // We can now select the correct sub-team directly.
+                        for (SubJobTeam s : subJobTeamList) {
+                            if (s.getId() == customer.getSubJobTeam()) {
+                                tfSubJobTeam.getSelectionModel().select(s);
+                                break;
                             }
-                        });
+                        }
                         break;
                     }
                 }
             }
         }
+
+        this.isLoading = false; // Finish loading data
+        this.hasUnsavedChanges = false; // Ensure it's clean after loading
+        updateTabTitle("");
     }
 
 
@@ -1569,7 +1568,7 @@ public class AddCustomerController {
     private void setupFieldListeners() {
         // Προσθήκη listeners σε όλα τα input fields
         Consumer<TextInputControl> textListener = field ->
-                field.textProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
+                field.textProperty().addListener((obs, oldVal, newVal) -> markAsChanged(field));
         // TextFields
         textListener.accept(tfName);
         textListener.accept(tfTitle);
@@ -1598,20 +1597,29 @@ public class AddCustomerController {
         textListener.accept(taBalanceReason);
 
         // CheckBox
-        checkboxActive.selectedProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
+        checkboxActive.selectedProperty().addListener((obs, oldVal, newVal) -> markAsChanged(checkboxActive));
 
         // ComboBoxes
-        tfAccName.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
-        tfRecommendation.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
-        tfJobTeam.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
-        tfSubJobTeam.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged());
+        tfAccName.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged(tfAccName));
+        tfRecommendation.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged(tfRecommendation));
+        tfJobTeam.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged(tfJobTeam));
+        tfSubJobTeam.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged(tfSubJobTeam));
     }
 
-    private void markAsChanged() {
+    private void markAsChanged(Object source) {
+        if (isLoading) return; // Don't mark as changed if data is being loaded
+
+        // Logging to identify the source of the change
+        String sourceId = "Unknown";
+        if (source instanceof Control) {
+            sourceId = ((Control) source).getId();
+        }
+        System.out.println("Change detected from: " + sourceId + " | Current hasUnsavedChanges: " + hasUnsavedChanges);
+
         if (!hasUnsavedChanges) {
             hasUnsavedChanges = true;
+            updateTabTitle("*");
         }
-        updateTabTitle("*");
     }
 
     private void updateTabTitle(String suffix) {
@@ -1648,14 +1656,6 @@ public class AddCustomerController {
         return true;
     }
 
-    //    private void closeCurrentTab(){
-//        if (handleTabCloseRequest()){
-//            Platform.runLater(() -> {
-//                Tab currentTab = mainTabPane.getSelectionModel().getSelectedItem();
-//                mainTabPane.getTabs().remove(currentTab);
-//            });
-//        }
-//    }
     private void setupCloseHandler() {
         myTab.setOnCloseRequest(event -> {
             if (!handleTabCloseRequest()) {
