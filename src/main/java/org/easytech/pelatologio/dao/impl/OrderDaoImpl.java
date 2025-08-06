@@ -24,11 +24,25 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public List<Order> getPendingOrders() {
         List<Order> orders = new ArrayList<>();
-        String query = "SELECT o.id, o.title, o.description, o.dueDate, o.is_completed, o.customerId, o.supplierId, o.is_ergent, o.is_wait, o.is_received, o.is_delivered, c.name AS customerName, s.name AS supplierName " +
+        String query = "SELECT " +
+                "o.id," +
+                "o.title," +
+                "o.description," +
+                "o.dueDate," +
+                "o.is_completed," +
+                "o.customerId," +
+                "o.supplierId," +
+                "o.is_ergent," +
+                "o.is_wait," +
+                "o.is_received," +
+                "o.is_delivered," +
+                "c.name AS customerName," +
+                "s.name AS supplierName " +
                 "FROM Orders o " +
                 "LEFT JOIN Customers c ON o.customerId = c.code " +
                 "LEFT JOIN Suppliers s ON o.supplierId = s.id " +
-                "WHERE o.is_completed = 0 AND o.is_received = 0";
+                "WHERE o.is_completed = 0 " +
+                "ORDER BY o.dueDate DESC;";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -41,14 +55,27 @@ public class OrderDaoImpl implements OrderDao {
         return orders;
     }
 
-    @Override
     public List<Order> getUnreceivedOrders() {
         List<Order> orders = new ArrayList<>();
-        String query = "SELECT o.id, o.title, o.description, o.dueDate, o.is_completed, o.customerId, o.supplierId, o.is_ergent, o.is_wait, o.is_received, o.is_delivered, c.name AS customerName, s.name AS supplierName " +
+        String query = "SELECT " +
+                "o.id," +
+                "o.title," +
+                "o.description," +
+                "o.dueDate," +
+                "o.is_completed," +
+                "o.customerId," +
+                "o.supplierId," +
+                "o.is_ergent," +
+                "o.is_wait," +
+                "o.is_received," +
+                "o.is_delivered," +
+                "c.name AS customerName," +
+                "s.name AS supplierName " +
                 "FROM Orders o " +
                 "LEFT JOIN Customers c ON o.customerId = c.code " +
                 "LEFT JOIN Suppliers s ON o.supplierId = s.id " +
-                "WHERE o.is_completed = 0 AND o.is_received = 1 AND o.is_delivered = 0";
+                "WHERE o.is_completed = 1 AND o.is_received = 0 " +
+                "ORDER BY o.dueDate DESC;";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -64,11 +91,25 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public List<Order> getUndeliveredOrders() {
         List<Order> orders = new ArrayList<>();
-        String query = "SELECT o.id, o.title, o.description, o.dueDate, o.is_completed, o.customerId, o.supplierId, o.is_ergent, o.is_wait, o.is_received, o.is_delivered, c.name AS customerName, s.name AS supplierName " +
+        String query = "SELECT " +
+                "o.id," +
+                "o.title," +
+                "o.description," +
+                "o.dueDate," +
+                "o.is_completed," +
+                "o.customerId," +
+                "o.supplierId," +
+                "o.is_ergent," +
+                "o.is_wait," +
+                "o.is_received," +
+                "o.is_delivered," +
+                "c.name AS customerName," +
+                "s.name AS supplierName " +
                 "FROM Orders o " +
                 "LEFT JOIN Customers c ON o.customerId = c.code " +
                 "LEFT JOIN Suppliers s ON o.supplierId = s.id " +
-                "WHERE o.is_completed = 0 AND o.is_delivered = 1";
+                "WHERE o.is_completed = 1 AND o.is_received = 1 AND o.is_delivered = 0 " +
+                "ORDER BY o.dueDate DESC;";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {

@@ -11,13 +11,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -38,7 +38,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.IntStream;
 
 public class AddCustomerController {
     private TabPane mainTabPane;
@@ -327,16 +326,10 @@ public class AddCustomerController {
         tfJobTeam.setItems(filteredJobTeams);
         setupComboBoxFilter(tfJobTeam, filteredJobTeams); // ✅ μόνο μία φορά
 
-// Listener για αλλαγή JobTeam
-        tfJobTeam.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-            subJobTeamList.clear();
-            if (newValue != null) {
-                subJobTeamList.clear();
-                subJobTeamList.addAll(DBHelper.getSubJobTeamDao().getSubJobTeams(newValue.getId()));
-                filteredSubJobTeams = new FilteredList<>(subJobTeamList);
-                tfSubJobTeam.setItems(filteredSubJobTeams);
-                setupComboBoxFilter(tfSubJobTeam,filteredSubJobTeams);
-            }
+        // Action handler για την επιλογή JobTeam
+        tfJobTeam.setOnAction(event -> {
+            System.out.println("JobTeam selection changed!");
+            handleJobTeamSelection();
         });
 
         tfSubJobTeam.setConverter(new StringConverter<SubJobTeam>() {
@@ -362,6 +355,40 @@ public class AddCustomerController {
         if (ActiveCallState.hasPendingCall()) {
             startCallLogButton.setVisible(true);
             startCallLogButton.setOnAction(e -> handleStartCallLogging());
+        }
+    }
+
+    private void handleJobTeamSelection() {
+        JobTeam selectedJobTeam = null;
+        Object value = tfJobTeam.getValue(); // Παίρνουμε την τιμή ως γενικό Object
+        if (value instanceof JobTeam) {
+            // Αν είναι ήδη αντικείμενο Recommendation, το παίρνουμε.
+            selectedJobTeam = (JobTeam) value;
+        } else if (value instanceof String) {
+            // Αν είναι String, ψάχνουμε στη λίστα για το αντίστοιχο αντικείμενο.
+            String typedValue = (String) value;
+            selectedJobTeam = jobTeamList.stream()
+                    .filter(r -> r.getName().equalsIgnoreCase(typedValue))
+                    .findFirst().orElse(null);
+        }
+
+        subJobTeamList.clear();
+        tfSubJobTeam.getItems().clear();
+
+        if (selectedJobTeam != null && selectedJobTeam.getId() != 0) {
+            // Μια έγκυρη ομάδα έχει επιλεγεί
+            tfSubJobTeam.setDisable(false);
+
+            subJobTeamList.addAll(DBHelper.getSubJobTeamDao().getSubJobTeams(selectedJobTeam.getId()));
+            filteredSubJobTeams = new FilteredList<>(subJobTeamList);
+            tfSubJobTeam.setItems(filteredSubJobTeams);
+        } else {
+            // "Όλες" ή καμία ομάδα δεν έχει επιλεγεί
+            tfSubJobTeam.setDisable(true);
+        }
+        //tfSubJobTeam.getSelectionModel().selectFirst();
+        if (!tfSubJobTeam.getItems().isEmpty()) {
+            tfSubJobTeam.getSelectionModel().selectFirst();
         }
     }
 
@@ -705,10 +732,6 @@ public class AddCustomerController {
 
         btnAddressAdd.setDisable(false);
 
-        // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
-        this.code = customer.getCode();
-        this.customer = customer;
-
         btnAddToMegasoft.setDisable(false);
         btnAddToMegasoft.setVisible(true);
         btnData.setDisable(false);
@@ -749,11 +772,10 @@ public class AddCustomerController {
 
         startCallLogButton.setVisible(true);
         startCallLogButton.setOnAction(e -> handleStartCallLogging());
+        // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
+        this.code = customer.getCode();
+        this.customer = customer;
 
-        hasTabs();
-        setAccountant();
-        setRecommendation();
-        setJobTeam();
 
         // Find and select the parent job team based on the sub job team ID
         if (customer.getSubJobTeam() != 0) {
@@ -775,6 +797,10 @@ public class AddCustomerController {
                 }
             }
         }
+        hasTabs();
+        setAccountant();
+        setRecommendation();
+        setJobTeam();
 
         this.isLoading = false; // Finish loading data
         this.hasUnsavedChanges = false; // Ensure it's clean after loading
@@ -943,7 +969,6 @@ public class AddCustomerController {
         jobTeamList.addAll(DBHelper.getJobTeamDao().getJobTeams());
         filteredJobTeams = new FilteredList<>(jobTeamList);
         tfJobTeam.setItems(filteredJobTeams);
-        //tfRecommendation.setItems(recommendationList);
 
         tfJobTeam.setConverter(new StringConverter<JobTeam>() {
             @Override
@@ -960,12 +985,31 @@ public class AddCustomerController {
             }
         });
 
-        for (JobTeam jobTeam : jobTeamList) {
-            if (jobTeam.getId() == customer.getSubJobTeam()) {
-                tfJobTeam.getSelectionModel().select(jobTeam);
-                break;
+        // Find and select the parent job team based on the sub job team ID
+        if (customer != null && customer.getSubJobTeam() != 0) {
+            int parentTeamId = DBHelper.getJobTeamDao().getParentTeamIdBySubTeamId(customer.getSubJobTeam());
+            if (parentTeamId != 0) {
+                for (JobTeam jobTeam : jobTeamList) {
+                    if (jobTeam.getId() == parentTeamId) {
+                        // Select the job team first
+                        tfJobTeam.getSelectionModel().select(jobTeam);
+
+                        // This will trigger the handler and load the sub-teams
+                        handleJobTeamSelection();
+
+                        // Now select the sub-job-team
+                        for (SubJobTeam s : subJobTeamList) {
+                            if (s.getId() == customer.getSubJobTeam()) {
+                                tfSubJobTeam.getSelectionModel().select(s);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
             }
         }
+
         setupComboBoxFilter(tfJobTeam, filteredJobTeams);
     }
 
@@ -1038,12 +1082,40 @@ public class AddCustomerController {
         String notes = taNotes.getText();
         String accName1 = (tfAccName1.getText() != null ? tfAccName1.getText() : "");
         String accEmail1 = (tfAccEmail1.getText() != null ? tfAccEmail1.getText() : "");
-        int selectedRecommendation = tfRecommendation.getSelectionModel().getSelectedItem() != null ? tfRecommendation.getSelectionModel().getSelectedItem().getId() : 0;
+        Recommendation selectedRec = null;
+        Object value = tfRecommendation.getValue(); // Παίρνουμε την τιμή ως γενικό Object
+        if (value instanceof Recommendation) {
+            // Αν είναι ήδη αντικείμενο Recommendation, το παίρνουμε.
+            selectedRec = (Recommendation) value;
+        } else if (value instanceof String) {
+            // Αν είναι String, ψάχνουμε στη λίστα για το αντίστοιχο αντικείμενο.
+            String typedValue = (String) value;
+            selectedRec = recommendationList.stream()
+                    .filter(r -> r.getName().equalsIgnoreCase(typedValue))
+                    .findFirst().orElse(null);
+        }
+        // Παίρνουμε το ID με ασφάλεια, αφού έχουμε βρει το σωστό αντικείμενο.
+        int selectedRecommendation = (selectedRec != null) ? selectedRec.getId() : 0;
+        //int selectedRecommendation = tfRecommendation.getSelectionModel().getSelectedItem() != null ? tfRecommendation.getSelectionModel().getSelectedItem().getId() : 0;
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
         int accId = (selectedAccountant != null) ? selectedAccountant.getId() : 0;
         String balance = tfBalance.getText();
         String balanceReason = taBalanceReason.getText();
-        int selectedJobTeam = tfJobTeam.getSelectionModel().getSelectedItem() != null ? tfJobTeam.getSelectionModel().getSelectedItem().getId() : 0;
+        SubJobTeam selectedSubJob = null;
+        value = tfSubJobTeam.getValue(); // Παίρνουμε την τιμή ως γενικό Object
+        if (value instanceof SubJobTeam) {
+            // Αν είναι ήδη αντικείμενο Recommendation, το παίρνουμε.
+            selectedSubJob = (SubJobTeam) value;
+        } else if (value instanceof String) {
+            // Αν είναι String, ψάχνουμε στη λίστα για το αντίστοιχο αντικείμενο.
+            String typedValue = (String) value;
+            selectedSubJob = subJobTeamList.stream()
+                    .filter(r -> r.getName().equalsIgnoreCase(typedValue))
+                    .findFirst().orElse(null);
+        }
+        // Παίρνουμε το ID με ασφάλεια, αφού έχουμε βρει το σωστό αντικείμενο.
+        int selectedJobTeam = (selectedSubJob != null) ? selectedSubJob.getId() : 0;
+        //int selectedJobTeam = tfJobTeam.getSelectionModel().getSelectedItem() != null ? tfJobTeam.getSelectionModel().getSelectedItem().getId() : 0;
 
 
         if (mobile.startsWith("+30"))
@@ -1602,7 +1674,10 @@ public class AddCustomerController {
         // ComboBoxes
         tfAccName.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged(tfAccName));
         tfRecommendation.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged(tfRecommendation));
-        tfJobTeam.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged(tfJobTeam));
+        tfJobTeam.valueProperty().addListener((obs, oldVal, newVal) -> {
+            markAsChanged(tfJobTeam);
+            handleJobTeamSelection();
+        });
         tfSubJobTeam.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged(tfSubJobTeam));
     }
 

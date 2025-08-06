@@ -8,6 +8,7 @@ import org.easytech.pelatologio.models.Tasks;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -312,34 +313,36 @@ public class TaskDaoImpl implements TaskDao {
     }
 
     @Override
-    public List<Tasks> getUpcomingAppointments(java.time.LocalDateTime dateTime) {
+    public List<Tasks> getUpcomingAppointments(LocalDateTime checkTime) {
         List<Tasks> tasks = new ArrayList<>();
-        String query = "SELECT t.id, t.title, t.description, t.dueDate, t.is_Completed, t.customerId, t.category, t.is_ergent, t.is_wait, t.is_calendar, t.start_time, t.end_time, c.name " +
-                "FROM Tasks t " +
-                "LEFT JOIN Customers c ON t.customerId = c.code " +
-                "WHERE t.start_time >= ? AND is_Completed = 0";
+        // Στρογγυλοποιούμε την checkTime για να αφαιρέσουμε τη νανοδευτερόλεπτη ακρίβεια
+        checkTime = checkTime.truncatedTo(ChronoUnit.SECONDS);
+        // Ερώτημα SQL για να βρούμε τα ραντεβού που ξεκινούν σε απόσταση 15 λεπτών από την τρέχουσα ώρα
+        String query = "SELECT id, customerId, title, description, start_time, end_time FROM Tasks " +
+                "WHERE start_time BETWEEN ? AND ? AND is_completed = 0 AND snooze = 0";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setTimestamp(1, java.sql.Timestamp.valueOf(dateTime));
+            // Βάζουμε το χρονικό παράθυρο για τα ραντεβού (από τώρα μέχρι 15 λεπτά μετά)
+            LocalDateTime startRange = checkTime;
+            LocalDateTime endRange = checkTime.plusMinutes(30);
+
+            stmt.setTimestamp(1, Timestamp.valueOf(startRange));
+            stmt.setTimestamp(2, Timestamp.valueOf(endRange));
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id");
                     String title = resultSet.getString("title");
-                    String description = resultSet.getString("description");
-                    LocalDate dueDate = resultSet.getDate("dueDate").toLocalDate();
-                    boolean isCompleted = resultSet.getBoolean("is_Completed");
-                    Integer customerId = resultSet.getObject("customerId", Integer.class);
-                    String category = resultSet.getString("category");
-                    String customerName = resultSet.getString("name");
-                    Boolean isErgent = resultSet.getBoolean("is_ergent");
-                    Boolean isWait = resultSet.getBoolean("is_wait");
-                    Boolean isCalendar = resultSet.getBoolean("is_calendar");
-                    LocalDateTime startTime = resultSet.getTimestamp("start_time") != null ? resultSet.getTimestamp("start_time").toLocalDateTime() : null;
-                    LocalDateTime endTime = resultSet.getTimestamp("end_time") != null ? resultSet.getTimestamp("end_time").toLocalDateTime() : null;
+                    LocalDateTime startTime = resultSet.getTimestamp("start_time").toLocalDateTime();
+                    int customerId = resultSet.getInt("customerId");
 
-                    Tasks task = new Tasks(id, title, description, dueDate, isCompleted, category, customerId, customerName, isErgent, isWait, isCalendar, startTime, endTime);
-                    tasks.add(task);
+                    // Δημιουργούμε το αντικείμενο Appointment και το προσθέτουμε στη λίστα
+                    Tasks appointment = new Tasks();
+                    appointment.setId(id);
+                    appointment.setTitle(title);
+                    appointment.setStartTime(startTime);
+                    appointment.setCustomerId(customerId);
+                    tasks.add(appointment);
                 }
             }
         } catch (SQLException e) {
