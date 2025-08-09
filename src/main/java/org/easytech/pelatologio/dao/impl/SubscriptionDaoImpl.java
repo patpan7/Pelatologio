@@ -7,6 +7,8 @@ import org.easytech.pelatologio.models.Subscription;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -297,7 +299,11 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
 
     @Override
     public void updateSubSent(int id) {
-        String query = "UPDATE Subscriptions SET sended = 'true' WHERE id = ?";
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        String formattedDate = "Ναί " + myDateObj.format(myFormatObj);
+        String query = "UPDATE Subscriptions SET sended = '" + formattedDate + "' WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, id);

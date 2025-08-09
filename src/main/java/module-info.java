@@ -32,6 +32,7 @@ module org.easytech.pelatologio {
     requires com.zaxxer.hikari;
     requires jain.sip.ri;
     requires java.net.http;
+    requires org.seleniumhq.selenium.api;
 //    requires org.apache.poi.ooxml.schemas;
 //    requires docx4j;
 //    requires org.apache.poi.ooxml;
@@ -41,4 +42,6 @@ module org.easytech.pelatologio {
     exports org.easytech.pelatologio;
     exports org.easytech.pelatologio.models;
     exports org.easytech.pelatologio.helper;
+    exports org.easytech.pelatologio.batches;
+    opens org.easytech.pelatologio.batches to javafx.fxml;
 }

@@ -7,6 +7,7 @@ import org.easytech.pelatologio.models.Offer;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -199,7 +200,11 @@ public class OfferDaoImpl implements OfferDao {
 
     @Override
     public void updateOfferSent(int id) {
-        String query = "UPDATE Offers SET sended = 'true' WHERE id = ?";
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        String formattedDate = "Ναί " + myDateObj.format(myFormatObj);
+        String query = "UPDATE Offers SET sended = '" + formattedDate + "' WHERE id = ?";
+
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, id);

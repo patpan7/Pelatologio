@@ -65,9 +65,12 @@
             <VBox.margin>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
-            <cursor>
-                <Cursor fx:constant="HAND" />
-            </cursor>
         </JFXButton>
+        <Label text="myPOS Client ID">
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </Label>
+        <TextField fx:id="tfMyPosClientId" />
     </VBox>
 </HBox>

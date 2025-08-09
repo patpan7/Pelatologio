@@ -73,7 +73,7 @@ public class AddCustomerController {
     @FXML
     Button btnAddToMegasoft, btnData, btnLabel, btnCopy, btnTask, btnAcs;
     @FXML
-    private Label lblBlance, lblBlanceMega;
+    private Label lblBlance, lblBlanceMega, lblCode;
     @FXML
     public JFXCheckBox checkboxActive;
     @FXML
@@ -805,6 +805,7 @@ public class AddCustomerController {
         this.isLoading = false; // Finish loading data
         this.hasUnsavedChanges = false; // Ensure it's clean after loading
         updateTabTitle("");
+        lblCode.setText("Κωδικός: " + customer.getCode());
     }
 
 
@@ -1213,7 +1214,17 @@ public class AddCustomerController {
         boolean isActive = checkboxActive.isSelected();
         customer.setActive(isActive);
         SubJobTeam subjobTeam = tfSubJobTeam.getSelectionModel().getSelectedItem();
+        if (subjobTeam == null) {
+            subjobTeam = new SubJobTeam(0, "",0); // Create a new SubJobTeam with ID 0 if none is selected
+            subjobTeam.setId(0); // Set to 0 if no sub-job team is selected
+        }
         customer.setSubJobTeam(subjobTeam == null ? 0 : subjobTeam.getId());
+
+        // Get the myPOS Client ID from the MyposViewController
+        if (myposViewController != null) {
+            customer.setMyPosClientId(myposViewController.getMyPosClientId());
+            DBHelper.getCustomerDao().updateMyPosClientId(code, customer.getMyPosClientId());
+        }
 
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
         int accId = selectedAccountant != null ? selectedAccountant.getId() : 0;

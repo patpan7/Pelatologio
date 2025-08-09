@@ -56,6 +56,7 @@ public class CustomerDaoImpl implements CustomerDao {
                 data.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 data.setActive(resultSet.getBoolean("isActive"));
                 data.setSubJobTeam(resultSet.getInt("subJobTeam"));
+                data.setMyPosClientId(resultSet.getString("mypos_client_id"));
 
                 dataList.add(data);
             }
@@ -86,7 +87,7 @@ public class CustomerDaoImpl implements CustomerDao {
         // It was added during the refactoring. We can leave it as is or remove it.
         // For now, I will leave it.
         if (customer == null) return;
-        String query = "SELECT job, address, postcode, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation, balanceReason, subJobTeam FROM customers WHERE code = ?";
+        String query = "SELECT job, address, postcode, email2, manager, managerPhone, notes, accId, accName1, accEmail1, recommendation, balanceReason, subJobTeam, mypos_client_id FROM customers WHERE code = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
@@ -106,6 +107,7 @@ public class CustomerDaoImpl implements CustomerDao {
                     customer.setRecommendation(resultSet.getInt("recommendation"));
                     customer.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                     customer.setSubJobTeam(resultSet.getInt("subJobTeam"));
+                    customer.setMyPosClientId(resultSet.getString("mypos_client_id"));
                 }
             }
         } catch (SQLException e) {
@@ -388,6 +390,7 @@ public class CustomerDaoImpl implements CustomerDao {
                 data.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 data.setActive(resultSet.getBoolean("isActive"));
                 data.setSubJobTeam(resultSet.getInt("subJobTeam"));
+                data.setMyPosClientId(resultSet.getString("mypos_client_id"));
             }
             return data;
         } catch (SQLException e) {
@@ -566,6 +569,7 @@ public class CustomerDaoImpl implements CustomerDao {
                 data.setBalance(resultSet.getString("balance"));
                 data.setBalanceReason(resultSet.getString("balanceReason"));
                 data.setSubJobTeam(resultSet.getInt("subJobTeam"));
+                data.setMyPosClientId(resultSet.getString("mypos_client_id"));
                 customers.add(data);
             }
         } catch (SQLException e) {
@@ -654,6 +658,8 @@ public class CustomerDaoImpl implements CustomerDao {
                 data.setBalance(resultSet.getObject("balance") != null ? resultSet.getString("balance").trim() : "");
                 data.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 data.setActive(resultSet.getBoolean("isActive"));
+                data.setSubJobTeam(resultSet.getInt("subJobTeam"));
+                data.setMyPosClientId(resultSet.getString("mypos_client_id"));
             }
             return data;
         } catch (SQLException e) {
@@ -744,6 +750,7 @@ public class CustomerDaoImpl implements CustomerDao {
                 customer.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 customer.setActive(resultSet.getBoolean("isActive"));
                 customer.setSubJobTeam(resultSet.getInt("subJobTeam"));
+                customer.setMyPosClientId(resultSet.getString("mypos_client_id"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -787,11 +794,26 @@ public class CustomerDaoImpl implements CustomerDao {
                 customer.setBalanceReason(resultSet.getString("balanceReason") != null ? resultSet.getString("balanceReason").trim() : "");
                 customer.setActive(resultSet.getBoolean("isActive"));
                 customer.setSubJobTeam(resultSet.getInt("subJobTeam"));
+                customer.setMyPosClientId(resultSet.getString("mypos_client_id"));
                 customerList.add(customer);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return customerList;
+    }
+
+
+    @Override
+    public void updateMyPosClientId(int customerId, String myposClientId) {
+        String sql = "UPDATE Customers SET mypos_client_id = ? WHERE code = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, myposClientId);
+            pstmt.setInt(2, customerId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

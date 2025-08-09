@@ -47,6 +47,8 @@ public class MyposViewController {
     private TableColumn<Logins, String> phoneColumn;
     @FXML
     private Button btnLogin, btnRegister;
+    @FXML
+    private TextField tfMyPosClientId; // New TextField for Client ID
 
 
     Customer customer;
@@ -253,6 +255,11 @@ public class MyposViewController {
         this.customer = customer;
         //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
         loadLoginsForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
+        tfMyPosClientId.setText(customer.getMyPosClientId());
+    }
+
+    public String getMyPosClientId() {
+        return tfMyPosClientId.getText();
     }
 
     public void myposloginOpen(ActionEvent event) {

@@ -37,6 +37,8 @@ public interface CustomerDao {
 
     void deactivateCustomer(Customer customer);
 
+    void updateMyPosClientId(int customerId, String myposClientId);
+
     Customer getCustomerByPhoneNumber(String phoneNumber) throws SQLException;
 
     Map<String, Integer> getNewCustomersPerMonth();

@@ -29,6 +29,7 @@ public class Customer {
     String balanceReason;
     Boolean isActive;
     int subJobTeam;
+    String myPosClientId;
     private List<Integer> apps = new ArrayList<>();
 
     public Customer() {
@@ -241,6 +242,14 @@ public class Customer {
 
     public void setSubJobTeam(int subJobTeam) {
         this.subJobTeam = subJobTeam;
+    }
+
+    public String getMyPosClientId() {
+        return myPosClientId;
+    }
+
+    public void setMyPosClientId(String myPosClientId) {
+        this.myPosClientId = myPosClientId;
     }
 
     public List<Integer> getApps() {

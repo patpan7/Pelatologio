@@ -56,7 +56,7 @@ import java.util.stream.IntStream;
 
 public class CustomersController implements Initializable {
     @FXML
-    public TableColumn nameColumn, titleColumn, afmColumn, phone1Column, phone2Column, mobileColumn, townColumn, emailColumn;
+    public TableColumn codeColumn, nameColumn, titleColumn, afmColumn, phone1Column, mobileColumn, townColumn, emailColumn;
     public JFXButton btnClean;
     @FXML
     private TableColumn<Customer, BigDecimal> balanceColumn;
@@ -198,11 +198,11 @@ public class CustomersController implements Initializable {
 
     private void setupTableColumns() {
         // Δημιουργία και αρχικοποίηση των στηλών
+        codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         afmColumn.setCellValueFactory(new PropertyValueFactory<>("afm"));
         phone1Column.setCellValueFactory(new PropertyValueFactory<>("phone1"));
-        phone2Column.setCellValueFactory(new PropertyValueFactory<>("phone2"));
         mobileColumn.setCellValueFactory(new PropertyValueFactory<>("mobile"));
         townColumn.setCellValueFactory(new PropertyValueFactory<>("town"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
@@ -476,7 +476,8 @@ public class CustomersController implements Initializable {
                             || (customer.getEmail() != null && (customer.getEmail().toUpperCase().contains(search1) || customer.getEmail().toUpperCase().contains(search2)))
                             || (customer.getEmail2() != null && (customer.getEmail2().toUpperCase().contains(search1) || customer.getEmail2().toUpperCase().contains(search2)))
                             || (customer.getTown() != null && (customer.getTown().toUpperCase().contains(search1) || customer.getTown().toUpperCase().contains(search2)))
-                            || (customer.getAddress() != null && (customer.getAddress().toUpperCase().contains(search1) || customer.getAddress().toUpperCase().contains(search2)));
+                            || (customer.getAddress() != null && (customer.getAddress().toUpperCase().contains(search1) || customer.getAddress().toUpperCase().contains(search2)))
+                            || (customer.getMyPosClientId() != null && (customer.getMyPosClientId().contains(search1) || customer.getMyPosClientId().contains(search2)));
                     if (!textMatch) {
                         return false;
                     }
