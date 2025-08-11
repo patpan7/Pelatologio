@@ -96,6 +96,10 @@ public class SettingsController implements Initializable {
     @FXML
     private TextField tfFanvilIp;
     @FXML
+    private TextField tfFanvilUser;
+    @FXML
+    private TextField tfFanvilPass;
+    @FXML
     private ToggleGroup positionToggleGroup;
     @FXML
     private RadioButton rbPositionTopRight;
@@ -146,7 +150,6 @@ public class SettingsController implements Initializable {
         tfServer.setText(getSettingOrEmpty("server"));
         tfUser.setText(getSettingOrEmpty("dbUser"));
         tfPass.setText(getSettingOrEmpty("dbPass"));
-        tfFanvilIp.setText(getSettingOrEmpty("fanvilIp"));
         tfMyposLink.setText(getSettingOrEmpty("myposlink"));
         tfMyposUser.setText(getSettingOrEmpty("myposUser"));
         tfMyposPass.setText(getSettingOrEmpty("myposPass"));
@@ -180,6 +183,9 @@ public class SettingsController implements Initializable {
         tfSipPort.setText(getSettingOrEmpty("sipPort"));
         tfLocalIpAddress.setText(getSettingOrEmpty("localIpAddress"));
         tfSipTransport.setText(getSettingOrEmpty("sipTransport"));
+        tfFanvilIp.setText(getSettingOrEmpty("fanvilIp"));
+        tfFanvilUser.setText(getSettingOrEmpty("fanvil.user"));
+        tfFanvilPass.setText(getSettingOrEmpty("fanvil.pass"));
     }
 
     private String getSettingOrEmpty(String key) {
@@ -211,7 +217,6 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("server", tfServer.getText());
         AppSettings.saveSetting("dbUser", tfUser.getText());
         AppSettings.saveSetting("dbPass", tfPass.getText());
-        AppSettings.saveSetting("fanvilIp", tfFanvilIp.getText());
         AppSettings.saveSetting("myposlink", tfMyposLink.getText());
         AppSettings.saveSetting("myposUser",tfMyposUser.getText());
         AppSettings.saveSetting("myposPass", tfMyposPass.getText());
@@ -245,6 +250,9 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("sipPort", tfSipPort.getText());
         AppSettings.saveSetting("localIpAddress", tfLocalIpAddress.getText());
         AppSettings.saveSetting("sipTransport", tfSipTransport.getText());
+        AppSettings.saveSetting("fanvilIp", tfFanvilIp.getText());
+        AppSettings.saveSetting("fanvil.user", tfFanvilUser.getText());
+        AppSettings.saveSetting("fanvil.pass", tfFanvilPass.getText());
 
         if (rbChrome.isSelected()) {
             AppSettings.saveSetting("browser", "chrome");

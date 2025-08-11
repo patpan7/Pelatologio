@@ -9,6 +9,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
@@ -16,15 +19,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
+import org.easytech.pelatologio.dao.CustomerMyPosDetailsDao;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.helper.LabelPrintHelper;
 import org.easytech.pelatologio.helper.LoginAutomator;
 import org.easytech.pelatologio.models.Customer;
+import org.easytech.pelatologio.models.CustomerMyPosDetails;
 import org.easytech.pelatologio.models.Logins;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class MyposViewController {
@@ -47,8 +54,20 @@ public class MyposViewController {
     private TableColumn<Logins, String> phoneColumn;
     @FXML
     private Button btnLogin, btnRegister;
+
+    // For myPOS Details Table
+    @FXML private TableView<CustomerMyPosDetails> myposDetailsTable;
+    @FXML private TableColumn<CustomerMyPosDetails, String> clientIdColumn;
+    @FXML private TableColumn<CustomerMyPosDetails, String> verificationStatusColumn;
+    @FXML private TableColumn<CustomerMyPosDetails, String> accountStatusColumn;
+    private ObservableList<CustomerMyPosDetails> detailsList;
+    private CustomerMyPosDetailsDao myPosDetailsDao;
     @FXML
     private TextField tfMyPosClientId; // New TextField for Client ID
+    @FXML
+    private ComboBox<String> verificationStatusComboBox;
+    @FXML
+    private ComboBox<String> accountStatusComboBox;
 
 
     Customer customer;
@@ -77,6 +96,14 @@ public class MyposViewController {
                 handleEditLogin(null);
             }
         });
+
+        // Setup for the new myPOS Details Table
+        setupMyPosDetailsTable();
+
+
+//        // Initialize ComboBoxes
+//        verificationStatusComboBox.getItems().addAll("Verified", "Unverified");
+//        accountStatusComboBox.getItems().addAll("Active", "Blocked", "Closed");
     }
 
     // Μέθοδος για τη φόρτωση των logins από τη βάση
@@ -253,13 +280,8 @@ public class MyposViewController {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
-        //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
-        loadLoginsForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
-        tfMyPosClientId.setText(customer.getMyPosClientId());
-    }
-
-    public String getMyPosClientId() {
-        return tfMyPosClientId.getText();
+        loadLoginsForCustomer(customer.getCode());
+        loadMyPosDetailsForCustomer();
     }
 
     public void myposloginOpen(ActionEvent event) {
@@ -371,5 +393,119 @@ public class MyposViewController {
                 .hideAfter(Duration.seconds(5))
                 .position(Pos.TOP_RIGHT)
                 .showError();
+    }
+
+    // --- Methods for myPOS Details Table ---
+
+    private void setupMyPosDetailsTable() {
+        this.myPosDetailsDao = DBHelper.getCustomerMyPosDetailsDao();
+        detailsList = FXCollections.observableArrayList();
+
+        clientIdColumn.setCellValueFactory(new PropertyValueFactory<>("myposClientId"));
+        verificationStatusColumn.setCellValueFactory(new PropertyValueFactory<>("verificationStatus"));
+        accountStatusColumn.setCellValueFactory(new PropertyValueFactory<>("accountStatus"));
+
+        // Make cells editable
+        clientIdColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        verificationStatusColumn.setCellFactory(ComboBoxTableCell.forTableColumn("Verified", "Unverified"));
+        accountStatusColumn.setCellFactory(ComboBoxTableCell.forTableColumn("Active", "Blocked", "Closed"));
+
+        // Handle cell edits
+        clientIdColumn.setOnEditCommit(event -> handleDetailsEditCommit(event));
+        verificationStatusColumn.setOnEditCommit(event -> handleDetailsEditCommit(event));
+        accountStatusColumn.setOnEditCommit(event -> handleDetailsEditCommit(event));
+
+        myposDetailsTable.setItems(detailsList);
+    }
+
+    private void loadMyPosDetailsForCustomer() {
+        detailsList.clear();
+        if (customer != null) {
+            System.out.println("Loading myPOS details for customer ID: " + customer.getCode());
+            List<CustomerMyPosDetails> details = myPosDetailsDao.getByCustomerId(customer.getCode());
+            System.out.println("Found " + (details != null ? details.size() : 0) + " myPOS details records.");
+            if (details != null && !details.isEmpty()) {
+                detailsList.addAll(details);
+            } else {
+                // If no details exist, you might want to add a placeholder or leave it empty
+                // For now, we'll leave it empty. The user can use the 'Add' button.
+            }
+        }
+    }
+
+    private <T> void handleDetailsEditCommit(TableColumn.CellEditEvent<CustomerMyPosDetails, T> event) {
+        CustomerMyPosDetails details = event.getRowValue();
+        TableColumn<CustomerMyPosDetails, T> column = event.getTableColumn();
+
+        System.out.println("--- Edit Commit ---");
+        System.out.println("Row ID: " + details.getId());
+        System.out.println("New Value: " + event.getNewValue());
+
+        if (column == clientIdColumn) {
+            System.out.println("Editing Client ID column.");
+            details.setMyposClientId((String) event.getNewValue());
+        } else if (column == verificationStatusColumn) {
+            System.out.println("Editing Verification Status column.");
+            details.setVerificationStatus((String) event.getNewValue());
+        } else if (column == accountStatusColumn) {
+            System.out.println("Editing Account Status column.");
+            details.setAccountStatus((String) event.getNewValue());
+        }
+
+        System.out.println("Saving details to DB: " + details.getMyposClientId());
+        myPosDetailsDao.saveOrUpdate(details);
+        myposDetailsTable.refresh();
+        System.out.println("--- Edit Commit Finished ---");
+    }
+
+    @FXML
+    void handleAdd(ActionEvent event) {
+        if (customer == null) return;
+
+        // Check if a placeholder already exists to prevent multiple empty rows
+        for (CustomerMyPosDetails item : detailsList) {
+            if (item.getMyposClientId() != null && item.getMyposClientId().startsWith("[")) {
+                myposDetailsTable.getSelectionModel().select(item);
+                myposDetailsTable.edit(detailsList.indexOf(item), clientIdColumn);
+                return;
+            }
+        }
+
+        CustomerMyPosDetails newDetails = new CustomerMyPosDetails();
+        newDetails.setCustomerId(customer.getCode());
+        newDetails.setMyposClientId("[Double Click to Edit ID]"); // More user-friendly placeholder
+        newDetails.setVerificationStatus("Unverified");
+        newDetails.setAccountStatus("Active");
+
+        // Save to DB first
+        myPosDetailsDao.saveOrUpdate(newDetails);
+
+        // Then, add the new object directly to the list for the UI to update.
+        // This is more efficient and safer than reloading the whole list.
+        detailsList.add(newDetails);
+        myposDetailsTable.refresh();
+    }
+
+    @FXML
+    void handleSync(ActionEvent event) {
+        // ... (Logic for CSV sync remains the same)
+    }
+
+    @FXML
+    void handleDelete(ActionEvent event) {
+        CustomerMyPosDetails selected = myposDetailsTable.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Επιβεβαίωση Διαγραφής");
+            alert.setHeaderText("Διαγραφή myPOS Account");
+            alert.setContentText("Είστε σίγουροι ότι θέλετε να διαγράψετε την εγγραφή με Client ID: " + selected.getMyposClientId() + ";");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                myPosDetailsDao.delete(selected.getId());
+                detailsList.remove(selected);
+                myposDetailsTable.refresh();
+            }
+        }
     }
 }

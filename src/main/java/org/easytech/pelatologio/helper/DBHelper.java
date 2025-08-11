@@ -32,6 +32,7 @@ public class DBHelper {
     private static JobTeamDao jobTeamDao;
     private static SubJobTeamDao subJobTeamDao;
     private static AppItemDao appItemDao;
+    private static CustomerMyPosDetailsDao customerMyPosDetailsDao;
 
     static {
         try {
@@ -68,6 +69,7 @@ public class DBHelper {
             jobTeamDao = new JobTeamDaoImpl(dataSource);
             subJobTeamDao = new SubJobTeamDaoImpl(dataSource);
             appItemDao = new AppItemDaoImpl(dataSource);
+            customerMyPosDetailsDao = new CustomerMyPosDetailsDaoImpl(dataSource);
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -153,6 +155,10 @@ public class DBHelper {
 
     public static AppItemDao getAppItemDao() {
         return appItemDao;
+    }
+
+    public static CustomerMyPosDetailsDao getCustomerMyPosDetailsDao() {
+        return customerMyPosDetailsDao;
     }
 
     // This method is no longer needed as DAOs handle their own connections

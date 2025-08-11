@@ -1220,12 +1220,6 @@ public class AddCustomerController {
         }
         customer.setSubJobTeam(subjobTeam == null ? 0 : subjobTeam.getId());
 
-        // Get the myPOS Client ID from the MyposViewController
-        if (myposViewController != null) {
-            customer.setMyPosClientId(myposViewController.getMyPosClientId());
-            DBHelper.getCustomerDao().updateMyPosClientId(code, customer.getMyPosClientId());
-        }
-
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
         int accId = selectedAccountant != null ? selectedAccountant.getId() : 0;
         customer.setAccId(accId);

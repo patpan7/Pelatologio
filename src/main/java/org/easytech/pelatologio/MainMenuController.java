@@ -41,7 +41,9 @@ public class MainMenuController implements Initializable {
     @FXML
     private Tab mainTab;
     @FXML
-    private Label vesrion, lbAppUser, lbTasks, lbAppointments, lbSimply, lbMypos;
+    private Label vesrion, lbAppUser, lbTasks, lbAppointments, lbSimply;
+    @FXML
+    private Label lbMyposTotal, lbMyposVerified, lbMyposUnverified, lbMyposActive, lbMyposBlocked, lbMyposClosed;
     @FXML
     private ListView<Order> ordersList, pendingOrdersList, deliveryOrdersList;
     @FXML
@@ -171,13 +173,27 @@ public class MainMenuController implements Initializable {
                 final String tasksCount = String.valueOf(DBHelper.getTaskDao().getTasksCount());
                 final String appointmentsCount = String.valueOf(DBHelper.getTaskDao().getAppointmentsCount());
                 final String simplyCount = String.valueOf(DBHelper.getLoginDao().getLoginsCount(2));
-                final String myposCount = String.valueOf(DBHelper.getLoginDao().getLoginsCount(1));
+                
+                // myPOS Stats
+                final int myposTotal = DBHelper.getCustomerMyPosDetailsDao().getTotalCount();
+                final int myposVerified = DBHelper.getCustomerMyPosDetailsDao().countByVerificationStatus("Verified");
+                final int myposUnverified = DBHelper.getCustomerMyPosDetailsDao().countByVerificationStatus("Unverified");
+                final int myposActive = DBHelper.getCustomerMyPosDetailsDao().countByAccountStatus("Active");
+                final int myposBlocked = DBHelper.getCustomerMyPosDetailsDao().countByAccountStatus("Blocked");
+                final int myposClosed = DBHelper.getCustomerMyPosDetailsDao().countByAccountStatus("Closed");
 
                 Platform.runLater(() -> {
                     lbTasks.setText("Εκκρεμείς εργασίες: " + tasksCount);
                     lbAppointments.setText("Ραντεβού ημέρας: " + appointmentsCount);
                     lbSimply.setText("Πελάτες Simply: " + simplyCount);
-                    lbMypos.setText("Πελάτες myPOS: " + myposCount);
+                    
+                    // Update myPOS Labels
+                    lbMyposTotal.setText("Σύνολο: " + myposTotal);
+                    lbMyposVerified.setText("Verified: " + myposVerified);
+                    lbMyposUnverified.setText("Unverified: " + myposUnverified);
+                    lbMyposActive.setText("Active: " + myposActive);
+                    lbMyposBlocked.setText("Blocked: " + myposBlocked);
+                    lbMyposClosed.setText("Closed: " + myposClosed);
                 });
 
                 final List<Order> pendingOrders = DBHelper.getOrderDao().getPendingOrders();

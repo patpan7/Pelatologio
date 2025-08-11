@@ -95,6 +95,8 @@
                                         <RowConstraints />
                                         <RowConstraints />
                                         <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
                                         <RowConstraints />
                                     </rowConstraints>
                                     <Label styleClass="normal-label" text="SIP User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -118,26 +120,28 @@
                                     <Label layoutX="312.0" layoutY="453.0" styleClass="normal-label" text="Fanvil IP" GridPane.rowIndex="6" />
                                     <TextField fx:id="tfFanvilIp" layoutX="569.0" layoutY="445.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 
-                                    <Label layoutX="312.0" layoutY="453.0" styleClass="normal-label" text="Θέση pop-up" GridPane.rowIndex="7" />
-                                    <HBox GridPane.columnIndex="1" GridPane.rowIndex="7">
-                                        <RadioButton fx:id="rbPositionTopRight" styleClass="normal-label"
-                                                     text="Πάνω δεξιά"/>
-                                        <RadioButton fx:id="rbPositionTopLeft" styleClass="normal-label"
-                                                     text="Πάνω αριστερά">
+                                    <Label layoutX="312.0" layoutY="453.0" styleClass="normal-label" text="Fanvil User" GridPane.rowIndex="7" />
+                                    <TextField fx:id="tfFanvilUser" layoutX="569.0" layoutY="445.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+                                    <Label layoutX="312.0" layoutY="453.0" styleClass="normal-label" text="Fanvil Pass" GridPane.rowIndex="8" />
+                                    <TextField fx:id="tfFanvilPass" layoutX="569.0" layoutY="445.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+
+                                    <Label layoutX="312.0" layoutY="453.0" styleClass="normal-label" text="Θέση pop-up" GridPane.rowIndex="9" />
+                                    <HBox GridPane.columnIndex="1" GridPane.rowIndex="9">
+                                        <RadioButton fx:id="rbPositionTopRight" styleClass="normal-label" text="Πάνω δεξιά" />
+                                        <RadioButton fx:id="rbPositionTopLeft" styleClass="normal-label" text="Πάνω αριστερά">
                                             <HBox.margin>
-                                                <Insets left="5.0"/>
+                                                <Insets left="5.0" />
                                             </HBox.margin>
                                         </RadioButton>
-                                        <RadioButton fx:id="rbPositionBottomLeft" styleClass="normal-label"
-                                                     text="Κάτω αριστερά">
+                                        <RadioButton fx:id="rbPositionBottomLeft" styleClass="normal-label" text="Κάτω αριστερά">
                                             <HBox.margin>
-                                                <Insets left="5.0"/>
+                                                <Insets left="5.0" />
                                             </HBox.margin>
                                         </RadioButton>
-                                        <RadioButton fx:id="rbPositionBottomRight" styleClass="normal-label"
-                                                     text="Κάτω δεξιά">
+                                        <RadioButton fx:id="rbPositionBottomRight" styleClass="normal-label" text="Κάτω δεξιά">
                                             <HBox.margin>
-                                                <Insets left="5.0"/>
+                                                <Insets left="5.0" />
                                             </HBox.margin>
                                         </RadioButton>
                                     </HBox>

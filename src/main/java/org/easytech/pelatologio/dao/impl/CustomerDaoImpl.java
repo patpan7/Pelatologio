@@ -806,7 +806,7 @@ public class CustomerDaoImpl implements CustomerDao {
 
     @Override
     public void updateMyPosClientId(int customerId, String myposClientId) {
-        String sql = "UPDATE Customers SET mypos_client_id = ? WHERE code = ?";
+        String sql = "UPDATE CustomerMyPosDetails SET mypos_client_id = ? WHERE customer_id = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, myposClientId);
