@@ -25,7 +25,26 @@
                   <JFXButton onAction="#handleMarkInvoiceReceived" styleClass="click-button" text="Σήμανση Τιμολογίου ως Ελήφθη" />
                   <JFXButton onAction="#handleMarkPaid" styleClass="click-button" text="Σήμανση ως Πληρωμένο" />
                   <JFXButton onAction="#handleCalculateCommissions" styleClass="click-button" text="Υπολογισμός Προμηθειών" />
+                  <Label text="Κατάσταση Τιμολογίου:" />
+                  <ComboBox fx:id="invoiceStatusFilterComboBox" prefWidth="150.0" />
+                  <Label text="Κατάσταση Πληρωμής:" />
+                  <ComboBox fx:id="paymentStatusFilterComboBox" prefWidth="150.0" />
+                  <JFXButton onAction="#handleClearFilters" styleClass="click-button" text="Εκκαθάριση Φίλτρων" />
+                  <JFXButton onAction="#handleGenerateStatement" styleClass="click-button" text="Δημιουργία Καρτέλας" />
                </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="20.0">
+               <children>
+                  <Label text="Σύνολο Οφειλών:" />
+                  <Label fx:id="totalEarningsLabel" text="0.00€" styleClass="bold-label" />
+                  <Label text="Σύνολο Ανεξόφλητων:" />
+                  <Label fx:id="totalUnpaidLabel" text="0.00€" styleClass="bold-label" />
+                  <Label text="Σύνολο Πληρωμένων:" />
+                  <Label fx:id="totalPaidLabel" text="0.00€" styleClass="bold-label" />
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
             </HBox>
          </children>
       </VBox>

@@ -42,7 +42,13 @@ public class PartnerEarningsController {
     @FXML private TableColumn<PartnerEarning, LocalDate> paymentDateColumn;
 
     @FXML private ComboBox<Partner> partnerFilterComboBox;
+    @FXML private ComboBox<String> invoiceStatusFilterComboBox;
+    @FXML private ComboBox<String> paymentStatusFilterComboBox;
     @FXML private JFXButton btnCalculateCommissions;
+
+    @FXML private Label totalEarningsLabel;
+    @FXML private Label totalUnpaidLabel;
+    @FXML private Label totalPaidLabel;
 
     private PartnerEarningDao partnerEarningDao;
     private ObservableList<PartnerEarning> masterData;
@@ -79,7 +85,7 @@ public class PartnerEarningsController {
         invoiceStatusColumn.setCellFactory(ComboBoxTableCell.forTableColumn("Pending", "Received", "Checked"));
         invoiceRefColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         paymentStatusColumn.setCellFactory(ComboBoxTableCell.forTableColumn("Unpaid", "Partially Paid", "Paid"));
-                paymentDateColumn.setCellFactory(column -> new DatePickerCellFactory()); // Correct way to set custom cell factory
+        paymentDateColumn.setCellFactory(column -> new DatePickerCellFactory()); // Custom cell factory for DatePicker
 
         // Set onEditCommit handlers
         invoiceStatusColumn.setOnEditCommit(this::handleEditCommit);
@@ -112,7 +118,29 @@ public class PartnerEarningsController {
                 }
             }
         });
-        paymentDateColumn.setCellFactory(tc -> new TableCell<PartnerEarning, LocalDate>() {
+                paymentDateColumn.setCellFactory(column -> new DatePickerCellFactory()); // Correct way to set custom cell factory
+
+        // Set onEditCommit handlers
+        invoiceStatusColumn.setOnEditCommit(this::handleEditCommit);
+        invoiceRefColumn.setOnEditCommit(this::handleEditCommit);
+        paymentStatusColumn.setOnEditCommit(this::handleEditCommit);
+        paymentDateColumn.setOnEditCommit(this::handleEditCommit);
+
+        // Custom cell factory for earningAmountColumn to format BigDecimal
+        earningAmountColumn.setCellFactory(tc -> new TableCell<PartnerEarning, BigDecimal>() {
+            @Override
+            protected void updateItem(BigDecimal amount, boolean empty) {
+                super.updateItem(amount, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(String.format("%.2f€", amount));
+                }
+            }
+        });
+
+        // Custom cell factory for LocalDate columns to format dates
+        earningDateColumn.setCellFactory(tc -> new TableCell<PartnerEarning, LocalDate>() {
             @Override
             protected void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
@@ -153,9 +181,19 @@ public class PartnerEarningsController {
             public Partner fromString(String string) { return null; } // Not needed for selection
         });
 
-        partnerFilterComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            applyFilter();
-        });
+        // Setup Invoice Status Filter ComboBox
+        invoiceStatusFilterComboBox.getItems().addAll("Όλα", "Pending", "Received", "Checked");
+        invoiceStatusFilterComboBox.getSelectionModel().selectFirst(); // Select "Όλα" by default
+
+        // Setup Payment Status Filter ComboBox
+        paymentStatusFilterComboBox.getItems().addAll("Όλα", "Unpaid", "Partially Paid", "Paid");
+        paymentStatusFilterComboBox.getSelectionModel().selectFirst(); // Select "Όλα" by default
+
+        // Add listeners to filter ComboBoxes
+        partnerFilterComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilter());
+        invoiceStatusFilterComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilter());
+        paymentStatusFilterComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilter());
+
         partnerFilterComboBox.getSelectionModel().selectFirst(); // Select "All" by default
     }
 
@@ -167,12 +205,44 @@ public class PartnerEarningsController {
 
     private void applyFilter() {
         Partner selectedPartner = partnerFilterComboBox.getSelectionModel().getSelectedItem();
+        String selectedInvoiceStatus = invoiceStatusFilterComboBox.getSelectionModel().getSelectedItem();
+        String selectedPaymentStatus = paymentStatusFilterComboBox.getSelectionModel().getSelectedItem();
+
         filteredData.setPredicate(earning -> {
-            if (selectedPartner == null || selectedPartner.getId() == 0) {
-                return true; // Show all if "All" is selected
-            }
-            return earning.getPartnerId() == selectedPartner.getId();
+            boolean partnerMatch = (selectedPartner == null || selectedPartner.getId() == 0 || earning.getPartnerId() == selectedPartner.getId());
+            boolean invoiceStatusMatch = (selectedInvoiceStatus == null || selectedInvoiceStatus.equals("Όλα") || earning.getPartnerInvoiceStatus().equals(selectedInvoiceStatus));
+            boolean paymentStatusMatch = (selectedPaymentStatus == null || selectedPaymentStatus.equals("Όλα") || earning.getPaymentToPartnerStatus().equals(selectedPaymentStatus));
+
+            return partnerMatch && invoiceStatusMatch && paymentStatusMatch;
         });
+
+        updateTotals();
+    }
+
+    private void updateTotals() {
+        BigDecimal totalEarnings = BigDecimal.ZERO;
+        BigDecimal totalUnpaid = BigDecimal.ZERO;
+        BigDecimal totalPaid = BigDecimal.ZERO;
+
+        for (PartnerEarning earning : filteredData) {
+            totalEarnings = totalEarnings.add(earning.getEarningAmount());
+            if (earning.getPaymentToPartnerStatus().equals("Unpaid")) {
+                totalUnpaid = totalUnpaid.add(earning.getEarningAmount());
+            } else if (earning.getPaymentToPartnerStatus().equals("Paid")) {
+                totalPaid = totalPaid.add(earning.getEarningAmount());
+            }
+        }
+
+        totalEarningsLabel.setText(String.format("%.2f€", totalEarnings));
+        totalUnpaidLabel.setText(String.format("%.2f€", totalUnpaid));
+        totalPaidLabel.setText(String.format("%.2f€", totalPaid));
+    }
+
+    @FXML
+    void handleClearFilters(ActionEvent event) {
+        partnerFilterComboBox.getSelectionModel().selectFirst();
+        invoiceStatusFilterComboBox.getSelectionModel().selectFirst();
+        paymentStatusFilterComboBox.getSelectionModel().selectFirst();
     }
 
     // --- Status Update Logic ---
@@ -256,10 +326,10 @@ public class PartnerEarningsController {
 
         // Save to DB
         partnerEarningDao.updateEarningStatus(
-                earning.getId(),
-                earning.getPartnerInvoiceStatus(),
-                earning.getPaymentToPartnerStatus(),
-                earning.getPaymentToPartnerDate()
+            earning.getId(),
+            earning.getPartnerInvoiceStatus(),
+            earning.getPaymentToPartnerStatus(),
+            earning.getPaymentToPartnerDate()
         );
         earningsTable.refresh(); // Refresh the table to show the updated value
     }
@@ -278,7 +348,8 @@ public class PartnerEarningsController {
                 public String toString(LocalDate date) {
                     if (date != null) {
                         return dateFormatter.format(date);
-                    } else {
+                    }
+                    else {
                         return "";
                     }
                 }
@@ -287,7 +358,8 @@ public class PartnerEarningsController {
                 public LocalDate fromString(String string) {
                     if (string != null && !string.isEmpty()) {
                         return LocalDate.parse(string, dateFormatter);
-                    } else {
+                    }
+                    else {
                         return null;
                     }
                 }
@@ -336,7 +408,7 @@ public class PartnerEarningsController {
         }
     }
 
-
+    
     @FXML
     void handleCalculateCommissions(ActionEvent event) throws SQLException {
         CommissionService commissionService = new CommissionService();
@@ -347,5 +419,29 @@ public class PartnerEarningsController {
 
         AlertDialogHelper.showInfoDialog("Υπολογισμός Προμηθειών", message);
         loadEarnings(); // Refresh the table to show new earnings
+    }
+
+    @FXML
+    void handleGenerateStatement(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("partnerEarningStatementDialog.fxml"));
+            DialogPane pane = loader.load();
+
+            PartnerEarningStatementDialogController controller = loader.getController();
+            // Pass the currently filtered data to the dialog
+            controller.setStatementData(filteredData,
+                    partnerFilterComboBox.getSelectionModel().getSelectedItem());
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(pane);
+            dialog.setTitle("Καρτέλα Οφειλών Συνεργάτη");
+
+            dialog.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα της καρτέλας οφειλών.",
+                    e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 }
