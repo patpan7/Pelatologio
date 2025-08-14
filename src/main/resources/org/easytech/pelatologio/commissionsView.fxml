@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CommissionsController">
+   <top>
+      <VBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+         <children>
+            <Label styleClass="header-label" text="Διαχείριση Συμβάσεων Προμήθειας" />
+            <HBox spacing="10.0">
+               <children>
+                  <JFXButton onAction="#handleAddCommission" styleClass="click-button" text="Προσθήκη Νέας Σύμβασης" />
+                  <JFXButton onAction="#handleEditCommission" styleClass="click-button" text="Επεξεργασία Επιλεγμένης" />
+                  <JFXButton onAction="#handleDeleteCommission" styleClass="click-button" text="Διαγραφή Επιλεγμένης" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <TableView fx:id="commissionsTable" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="partnerColumn" prefWidth="150.0" text="Συνεργάτης" />
+          <TableColumn fx:id="customerColumn" prefWidth="150.0" text="Πελάτης" />
+            <TableColumn fx:id="supplierColumn" prefWidth="150.0" text="Προμηθευτής" />
+            <TableColumn fx:id="rateColumn" prefWidth="100.0" text="Ποσοστό (%)" />
+            <TableColumn fx:id="startDateColumn" prefWidth="120.0" text="Ημ/νία Έναρξης" />
+            <TableColumn fx:id="endDateColumn" prefWidth="120.0" text="Ημ/νία Λήξης" />
+        </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+   </center>
+</BorderPane>

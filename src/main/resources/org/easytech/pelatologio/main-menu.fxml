@@ -33,7 +33,7 @@
                                 <Separator />
                                 <VBox styleClass="stat-box">
                                    <children>
-                                      <Label text="myPOS Στατιστικά" styleClass="normal-label"/>
+                                      <Label styleClass="normal-label" text="myPOS Στατιστικά" />
                                       <Label fx:id="lbMyposTotal" text="Σύνολο: 0" />
                                       <Label fx:id="lbMyposVerified" text="Verified: 0" />
                                       <Label fx:id="lbMyposUnverified" text="Unverified: 0" />
@@ -185,7 +185,6 @@
                                             </ImageView>
                                         </graphic>
                                     </JFXButton>
-
                                 </HBox>
                                 <HBox alignment="CENTER" spacing="30.0">
                                     <VBox.margin>
@@ -224,6 +223,32 @@
                                         <Insets bottom="10.0" />
                                     </VBox.margin>
                                 </JFXButton>
+                                <HBox alignment="CENTER" spacing="30.0">
+                                    <VBox.margin>
+                                        <Insets bottom="10.0" top="10.0" />
+                                    </VBox.margin>
+                                    <JFXButton fx:id="btnPartners" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#partnersClick" styleClass="click-button" text="Συνεργάτες">
+                                        <graphic>
+                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                <Image url="@icons/partners.png" />
+                                            </ImageView>
+                                        </graphic>
+                                    </JFXButton>
+                                    <JFXButton fx:id="btnPartnerEarnings" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#partnerEarningsClick" styleClass="click-button" text="Οφειλές Συνεργατών">
+                                        <graphic>
+                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                <Image url="@icons/earnings.png" />
+                                            </ImageView>
+                                        </graphic>
+                                    </JFXButton>
+                                    <JFXButton fx:id="btnCommissions" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#commisionsClick" styleClass="click-button" text="Προμήθειες">
+                                        <graphic>
+                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                <Image url="@icons/commission.png" />
+                                            </ImageView>
+                                        </graphic>
+                                    </JFXButton>
+                                </HBox>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false">
                                     <Label fx:id="version" alignment="CENTER" text="v 2.13.7" VBox.vgrow="NEVER">

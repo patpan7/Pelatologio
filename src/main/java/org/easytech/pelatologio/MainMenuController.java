@@ -747,5 +747,68 @@ public class MainMenuController implements Initializable {
             }
         });
     }
+
+    public void partnersClick(ActionEvent actionEvent) throws IOException {
+        for (Tab tab : mainTabPane.getTabs()) {
+            if (tab.getText().equals("Συνεργάτες")) {
+                mainTabPane.getSelectionModel().select(tab);
+                return;
+            }
+        }
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("partnersView.fxml"));
+        Parent customersContent = fxmlLoader.load();
+
+        PartnersController partnersController = fxmlLoader.getController();
+        partnersController.setMainTabPane(mainTabPane);
+
+        Tab newTab = new Tab("Συνεργάτες");
+        newTab.setContent(customersContent);
+        newTab.setUserData(partnersController); // Store the controller here!
+        newTab.setUserData(partnersController); // Store the controller here!
+
+        mainTabPane.getTabs().add(newTab);
+        mainTabPane.getSelectionModel().select(newTab);
+    }
+
+    public void partnerEarningsClick(ActionEvent actionEvent) {
+        for (Tab tab : mainTabPane.getTabs()) {
+            if (tab.getText().equals("Οφειλές Συνεργατών")) {
+                mainTabPane.getSelectionModel().select(tab);
+                return;
+            }
+        }
+
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("partnerEarningsView.fxml"));
+            Parent earningsContent = fxmlLoader.load();
+
+            Tab newTab = new Tab("Οφειλές Συνεργατών");
+            newTab.setContent(earningsContent);
+
+            mainTabPane.getTabs().add(newTab);
+            mainTabPane.getSelectionModel().select(newTab);
+        } catch (IOException e) {
+            AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα των οφειλών συνεργατών.", e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    public void commisionsClick(ActionEvent actionEvent) throws IOException {
+        for (Tab tab : mainTabPane.getTabs()) {
+            if (tab.getText().equals("Προμήθειες")) {
+                mainTabPane.getSelectionModel().select(tab);
+                return;
+            }
+        }
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("commissionsView.fxml"));
+        Parent commissionsContent = fxmlLoader.load();
+
+        Tab newTab = new Tab("Προμήθειες");
+        newTab.setContent(commissionsContent);
+
+        mainTabPane.getTabs().add(newTab);
+        mainTabPane.getSelectionModel().select(newTab);
+    }
 }
 

@@ -12,8 +12,9 @@ public class Supplier {
     private String email2;
     private String site;
     private String notes;
+    private boolean hasCommissions;
 
-    public Supplier(int id, String name, String title, String afm, String phone, String mobile, String contact, String email,String email2, String site, String notes) {
+    public Supplier(int id, String name, String title, String afm, String phone, String mobile, String contact, String email,String email2, String site, String notes, boolean hasCommissions) {
         this.id = id;
         this.name = name;
         this.title = title;
@@ -25,6 +26,7 @@ public class Supplier {
         this.email2 = email2;
         this.site = site;
         this.notes = notes;
+        this.hasCommissions = hasCommissions;
     }
 
     public Supplier() {
@@ -117,6 +119,14 @@ public class Supplier {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public boolean hasCommissions() {
+        return hasCommissions;
+    }
+
+    public void setHasCommissions(boolean hasCommissions) {
+        this.hasCommissions = hasCommissions;
     }
 
     @Override

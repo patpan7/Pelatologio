@@ -39,6 +39,8 @@ public interface CustomerDao {
 
     void updateMyPosClientId(int customerId, String myposClientId);
 
+    List<Customer> getCustomersWithCommissionForSupplier(int supplierId);
+
     Customer getCustomerByPhoneNumber(String phoneNumber) throws SQLException;
 
     Map<String, Integer> getNewCustomersPerMonth();

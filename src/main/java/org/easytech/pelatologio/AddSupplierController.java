@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import com.jfoenix.controls.JFXCheckBox;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,9 +38,9 @@ public class AddSupplierController {
     @FXML
     private TabPane tabPane;
     @FXML
-    private Tab tabOrders;
+    private Tab tabOrders, tabPayments;
     @FXML
-    private AnchorPane ordersContainer;
+    private AnchorPane ordersContainer, paymentsContainer;
     @FXML
     private TextField tfName, tfTitle,tfAfm, tfPhone, tfMobile, tfContact, tfEmail, tfEmail2, tfSite;
     @FXML
@@ -50,8 +51,11 @@ public class AddSupplierController {
     private Button btnAfmSearch;
     @FXML
     private TextArea taNotes;
+    @FXML
+    private JFXCheckBox hasCommissionsCheck;
 
     private OrdersSupViewController orderSupViewController;
+    private SupplierPaymentsController supplierPaymentsController;
 
     int code = 0;
 
@@ -86,14 +90,24 @@ public class AddSupplierController {
         Platform.runLater(() -> tabPane.requestFocus());
 
         try {
-            FXMLLoader loaderTaxis = new FXMLLoader(getClass().getResource("ordersSupView.fxml"));
-            Parent ordersContent = loaderTaxis.load();
-            orderSupViewController = loaderTaxis.getController(); // Πάρε τον controller
+            FXMLLoader loaderOrders = new FXMLLoader(getClass().getResource("ordersSupView.fxml"));
+            Parent ordersContent = loaderOrders.load();
+            orderSupViewController = loaderOrders.getController();
             ordersContainer.getChildren().setAll(ordersContent);
             AnchorPane.setTopAnchor(ordersContent, 0.0);
             AnchorPane.setBottomAnchor(ordersContent, 0.0);
             AnchorPane.setLeftAnchor(ordersContent, 0.0);
             AnchorPane.setRightAnchor(ordersContent, 0.0);
+
+            FXMLLoader loaderPayments = new FXMLLoader(getClass().getResource("supplierPaymentsView.fxml"));
+            Parent paymentsContent = loaderPayments.load();
+            supplierPaymentsController = loaderPayments.getController();
+            paymentsContainer.getChildren().setAll(paymentsContent);
+            AnchorPane.setTopAnchor(paymentsContent, 0.0);
+            AnchorPane.setBottomAnchor(paymentsContent, 0.0);
+            AnchorPane.setLeftAnchor(paymentsContent, 0.0);
+            AnchorPane.setRightAnchor(paymentsContent, 0.0);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -289,6 +303,7 @@ public class AddSupplierController {
         tfEmail2.setText(supplier.getEmail2());
         tfSite.setText(supplier.getSite());
         taNotes.setText(supplier.getNotes());
+        hasCommissionsCheck.setSelected(supplier.hasCommissions());
 
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = supplier.getId();
@@ -299,7 +314,14 @@ public class AddSupplierController {
             System.out.println("orderSupViewController δεν είναι ακόμα έτοιμος.");
         }
 
+        if (supplierPaymentsController != null) {
+            supplierPaymentsController.setSupplier(supplier);
+        } else {
+            System.out.println("supplierPaymentsController δεν είναι ακόμα έτοιμος.");
+        }
+
         tabOrders.setDisable(false);
+        tabPayments.setDisable(false);
     }
 
     public void handleOkButton() {
@@ -330,6 +352,8 @@ public class AddSupplierController {
         String email2 = (tfEmail2.getText() != null ? tfEmail2.getText() : "");
         String site = (tfSite.getText() != null ? tfSite.getText() : "");
         String notes = (taNotes.getText() != null ? taNotes.getText() : "");
+        boolean hasCommissions = hasCommissionsCheck.isSelected();
+
         if (mobile.startsWith("+30"))
             mobile = mobile.substring(3);
         if (phone.startsWith("+30"))
@@ -341,10 +365,10 @@ public class AddSupplierController {
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         int supplierId;
-        supplierId = DBHelper.getSupplierDao().insertSupplier(name, title, afm, phone, mobile, contact, email, email2, site, notes);
+        supplierId = DBHelper.getSupplierDao().insertSupplier(name, title, afm, phone, mobile, contact, email, email2, site, notes, hasCommissions);
         // Εμφάνιση επιτυχίας
         if (supplierId > 0) {
-            Supplier newSupplier = new Supplier(supplierId, name, title, afm, phone, mobile, contact, email, email2, site, notes);
+            Supplier newSupplier = new Supplier(supplierId, name, title, afm, phone, mobile, contact, email, email2, site, notes, hasCommissions);
 
             Platform.runLater(() -> {
                 Notifications notifications = Notifications.create()
@@ -385,6 +409,7 @@ public class AddSupplierController {
         String email2 = (tfEmail2.getText() != null ? tfEmail2.getText() : "");
         String site = (tfSite.getText() != null ? tfSite.getText() : "");
         String notes = (taNotes.getText() != null ? taNotes.getText() : "");
+        boolean hasCommissions = hasCommissionsCheck.isSelected();
 
         if (mobile.startsWith("+30"))
             mobile = mobile.substring(3);
@@ -393,7 +418,7 @@ public class AddSupplierController {
         mobile = mobile.replaceAll("\\s+", "");
         phone = phone.replaceAll("\\s+", "");
 
-        DBHelper.getSupplierDao().updateSupplier(code, name, title, afm, phone, mobile, contact, email, email2, site, notes);
+        DBHelper.getSupplierDao().updateSupplier(code, name, title, afm, phone, mobile, contact, email, email2, site, notes, hasCommissions);
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
         Notifications notifications = Notifications.create()
                 .title("Επιτυχία")

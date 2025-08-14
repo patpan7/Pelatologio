@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="600.0" prefWidth="1000.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.PartnerEarningsController">
+   <top>
+      <VBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+         <children>
+            <Label styleClass="header-label" text="Οφειλές Συνεργατών" />
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                  <Label text="Φίλτρο Συνεργάτη:" />
+                  <ComboBox fx:id="partnerFilterComboBox" prefWidth="200.0" />
+                  <JFXButton onAction="#handleMarkInvoiceReceived" styleClass="click-button" text="Σήμανση Τιμολογίου ως Ελήφθη" />
+                  <JFXButton onAction="#handleMarkPaid" styleClass="click-button" text="Σήμανση ως Πληρωμένο" />
+                  <JFXButton onAction="#handleCalculateCommissions" styleClass="click-button" text="Υπολογισμός Προμηθειών" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <TableView fx:id="earningsTable" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="partnerColumn" prefWidth="150.0" text="Συνεργάτης" />
+          <TableColumn fx:id="customerColumn" prefWidth="150.0" text="Πελάτης" />
+            <TableColumn fx:id="supplierColumn" prefWidth="150.0" text="Προμηθευτής" />
+            <TableColumn fx:id="earningDateColumn" prefWidth="120.0" text="Ημ/νία Υπολογισμού" />
+            <TableColumn fx:id="earningAmountColumn" prefWidth="100.0" text="Ποσό Οφειλής" />
+            <TableColumn fx:id="invoiceStatusColumn" prefWidth="120.0" text="Κατάσταση Τιμολογίου" />
+            <TableColumn fx:id="invoiceRefColumn" prefWidth="120.0" text="Αρ. Τιμολογίου" />
+            <TableColumn fx:id="paymentStatusColumn" prefWidth="120.0" text="Κατάσταση Πληρωμής" />
+            <TableColumn fx:id="paymentDateColumn" prefWidth="120.0" text="Ημ/νία Πληρωμής" />
+        </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+   </center>
+</BorderPane>

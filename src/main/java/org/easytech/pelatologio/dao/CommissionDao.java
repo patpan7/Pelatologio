@@ -1,0 +1,13 @@
+package org.easytech.pelatologio.dao;
+
+import org.easytech.pelatologio.models.Commission;
+import java.util.List;
+
+public interface CommissionDao {
+    void addCommission(Commission commission);
+    void updateCommission(Commission commission);
+    void deleteCommission(int commissionId);
+    Commission findCommission(int customerId, int supplierId);
+    List<Commission> getCommissionsForPartner(int partnerId);
+    List<Commission> getAllCommissions();
+}

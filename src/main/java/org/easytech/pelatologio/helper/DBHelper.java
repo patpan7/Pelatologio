@@ -33,6 +33,10 @@ public class DBHelper {
     private static SubJobTeamDao subJobTeamDao;
     private static AppItemDao appItemDao;
     private static CustomerMyPosDetailsDao customerMyPosDetailsDao;
+    private static CommissionDao commissionDao;
+    private static SupplierPaymentDao supplierPaymentDao;
+    private static PartnerEarningDao partnerEarningDao;
+    private static PartnerDao partnerDao;
 
     static {
         try {
@@ -70,6 +74,16 @@ public class DBHelper {
             subJobTeamDao = new SubJobTeamDaoImpl(dataSource);
             appItemDao = new AppItemDaoImpl(dataSource);
             customerMyPosDetailsDao = new CustomerMyPosDetailsDaoImpl(dataSource);
+            commissionDao = new CommissionDaoImpl(dataSource);
+            supplierPaymentDao = new SupplierPaymentDaoImpl(dataSource);
+            partnerEarningDao = new PartnerEarningDaoImpl(dataSource);
+            commissionDao = new CommissionDaoImpl(dataSource);
+            supplierPaymentDao = new SupplierPaymentDaoImpl(dataSource);
+            partnerEarningDao = new PartnerEarningDaoImpl(dataSource);
+            //commissionDao = new CommissionDaoImpl(dataSource);
+            //supplierPaymentDao = new SupplierPaymentDaoImpl(dataSource);
+            partnerEarningDao = new PartnerEarningDaoImpl(dataSource);
+            partnerDao = new PartnerDaoImpl(dataSource);
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -161,6 +175,21 @@ public class DBHelper {
         return customerMyPosDetailsDao;
     }
 
+    public static CommissionDao getCommissionDao() {
+        return commissionDao;
+    }
+
+    public static SupplierPaymentDao getSupplierPaymentDao() {
+        return supplierPaymentDao;
+    }
+
+    public static PartnerEarningDao getPartnerEarningDao() {
+        return partnerEarningDao;
+    }
+
+    public static PartnerDao getPartnerDao() {
+        return partnerDao;
+    }
     // This method is no longer needed as DAOs handle their own connections
     // but keeping it for compatibility if other parts of the code still use it directly.
     public static Connection getConnection() throws SQLException {

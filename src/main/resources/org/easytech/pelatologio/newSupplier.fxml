@@ -143,6 +143,15 @@
                                 </HBox.margin>
                             </JFXButton>
                         </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                           </VBox.margin>
+                           <children>
+                              <Label minWidth="140.0" styleClass="normal-label" text="Συμμετοχή σε Προμήθειες:" />
+                              <JFXCheckBox fx:id="hasCommissionsCheck" text="" />
+                           </children>
+                        </HBox>
                         <HBox alignment="CENTER" layoutX="15.0" layoutY="336.0">
                             <ProgressBar fx:id="progressIndicator" prefWidth="200.0" progress="0.0" visible="false" />
                         </HBox>
@@ -167,6 +176,11 @@
         <Tab fx:id="tabOrders" closable="false" text="Παραγγελίες">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
                 <AnchorPane fx:id="ordersContainer" styleClass="pane" />
+            </ScrollPane>
+        </Tab>
+        <Tab fx:id="tabPayments" closable="false" text="Εισερχόμενες Πληρωμές">
+            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
+                <AnchorPane fx:id="paymentsContainer" styleClass="pane" />
             </ScrollPane>
         </Tab>
         <VBox.margin>

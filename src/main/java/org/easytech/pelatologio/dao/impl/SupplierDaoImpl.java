@@ -23,9 +23,7 @@ public class SupplierDaoImpl implements SupplierDao {
     @Override
     public List<Supplier> getSuppliersFromOrders() {
         List<Supplier> suppliers = new ArrayList<>();
-        String query = "SELECT DISTINCT s.id, s.name, s.title, s.afm, s.phone, s.mobile, s.contact, s.email, s.email2, s.site, s.notes " +
-                "FROM Suppliers s " +
-                "JOIN Orders o ON s.id = o.supplierId";
+        String query = "SELECT * FROM Suppliers s JOIN Orders o ON s.id = o.supplierId";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -41,7 +39,23 @@ public class SupplierDaoImpl implements SupplierDao {
     @Override
     public List<Supplier> getSuppliers() {
         List<Supplier> suppliers = new ArrayList<>();
-        String query = "SELECT * FROM Suppliers";
+        String query = "SELECT * FROM Suppliers WHERE id > 0"; // Adjusted to fetch all suppliers
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                suppliers.add(mapResultSetToSupplier(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return suppliers;
+    }
+    
+    @Override
+    public List<Supplier> getCommissionSuppliers() {
+        List<Supplier> suppliers = new ArrayList<>();
+        String query = "SELECT * FROM Suppliers WHERE has_commissions = 1";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -72,9 +86,8 @@ public class SupplierDaoImpl implements SupplierDao {
     }
 
     @Override
-    public int insertSupplier(String name, String title, String afm, String phone, String mobile, String contact, String email, String email2, String site, String notes) {
-        String insertQuery = "INSERT INTO Suppliers (name, title, afm, phone, mobile, contact, email, email2, site, notes) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public int insertSupplier(String name, String title, String afm, String phone, String mobile, String contact, String email, String email2, String site, String notes, boolean hasCommissions) {
+        String insertQuery = "INSERT INTO Suppliers (name, title, afm, phone, mobile, contact, email, email2, site, notes, has_commissions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int newSupplierId = -1;
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -88,6 +101,7 @@ public class SupplierDaoImpl implements SupplierDao {
             pstmt.setString(8, email2);
             pstmt.setString(9, site);
             pstmt.setString(10, notes);
+            pstmt.setBoolean(11, hasCommissions);
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -104,8 +118,8 @@ public class SupplierDaoImpl implements SupplierDao {
     }
 
     @Override
-    public void updateSupplier(int code, String name, String title, String afm, String phone, String mobile, String contact, String email, String email2, String site, String notes) {
-        String sql = "UPDATE Suppliers SET name = ?, title = ?, afm = ?, phone = ?, mobile = ?, contact = ?, email = ?, email2 = ?, site = ?, notes = ? WHERE id = ?";
+    public void updateSupplier(int code, String name, String title, String afm, String phone, String mobile, String contact, String email, String email2, String site, String notes, boolean hasCommissions) {
+        String sql = "UPDATE Suppliers SET name = ?, title = ?, afm = ?, phone = ?, mobile = ?, contact = ?, email = ?, email2 = ?, site = ?, notes = ?, has_commissions = ? WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, name);
@@ -118,7 +132,8 @@ public class SupplierDaoImpl implements SupplierDao {
             pstmt.setString(8, email2);
             pstmt.setString(9, site);
             pstmt.setString(10, notes);
-            pstmt.setInt(11, code);
+            pstmt.setBoolean(11, hasCommissions);
+            pstmt.setInt(12, code);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -138,6 +153,7 @@ public class SupplierDaoImpl implements SupplierDao {
         supplier.setEmail2(rs.getString("email2"));
         supplier.setSite(rs.getString("site"));
         supplier.setNotes(rs.getString("notes"));
+        supplier.setHasCommissions(rs.getBoolean("has_commissions"));
         return supplier;
     }
 }

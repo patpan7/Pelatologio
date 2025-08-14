@@ -134,7 +134,7 @@ public class OrdersListController implements Initializable {
 
         DBHelper dbHelper = new DBHelper();
         List<Supplier> suppliers = DBHelper.getSupplierDao().getSuppliersFromOrders();
-        supplierFilterComboBox.getItems().add(new Supplier(-1, "Όλα","","","","","","","","",""));
+        supplierFilterComboBox.getItems().add(new Supplier(-1, "Όλα","","","","","","","","","", false)); // Προσθήκη επιλογής "Όλα"
         supplierFilterComboBox.getItems().addAll(suppliers);
         supplierFilterComboBox.getSelectionModel().selectFirst();
         supplierFilterComboBox.setConverter(new StringConverter<>() {

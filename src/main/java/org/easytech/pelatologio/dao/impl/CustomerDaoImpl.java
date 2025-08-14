@@ -816,4 +816,53 @@ public class CustomerDaoImpl implements CustomerDao {
             e.printStackTrace();
         }
     }
+
+    private Customer mapResultSetToCustomer(ResultSet rs) throws SQLException {
+        Customer customer = new Customer();
+        customer.setCode(rs.getInt("code"));
+        customer.setName(rs.getString("name"));
+        customer.setTitle(rs.getString("title"));
+        customer.setJob(rs.getString("job"));
+        customer.setAfm(rs.getString("afm"));
+        customer.setPhone1(rs.getString("phone1"));
+        customer.setPhone2(rs.getString("phone2"));
+        customer.setMobile(rs.getString("mobile"));
+        customer.setAddress(rs.getString("address"));
+        customer.setTown(rs.getString("town"));
+        customer.setPostcode(rs.getString("postcode"));
+        customer.setEmail(rs.getString("email"));
+        customer.setEmail2(rs.getString("email2"));
+        customer.setManager(rs.getString("manager"));
+        customer.setManagerPhone(rs.getString("managerPhone"));
+        customer.setNotes(rs.getString("notes") != null ? rs.getString("notes").trim() : "");
+        customer.setAccId(rs.getInt("accId"));
+        customer.setAccName1(rs.getString("accName1"));
+        customer.setAccEmail1(rs.getString("accEmail1"));
+        customer.setRecommendation(rs.getInt("recommendation"));
+        customer.setBalance(rs.getObject("balance") != null ? rs.getString("balance").trim() : "");
+        customer.setBalanceReason(rs.getString("balanceReason") != null ? rs.getString("balanceReason").trim() : "");
+        customer.setActive(rs.getBoolean("isActive"));
+        customer.setSubJobTeam(rs.getInt("subJobTeam"));
+        customer.setMyPosClientId(rs.getString("mypos_client_id"));
+        return customer;
+    }
+
+    @Override
+    public List<Customer> getCustomersWithCommissionForSupplier(int supplierId) {
+        List<Customer> customers = new ArrayList<>();
+        String sql = "SELECT DISTINCT c.* FROM Customers c " +
+                     "JOIN Commissions com ON c.code = com.customer_id " +
+                     "WHERE com.supplier_id = ? AND (com.end_date IS NULL OR com.end_date >= GETDATE())";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, supplierId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                customers.add(mapResultSetToCustomer(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customers;
+    }
 }

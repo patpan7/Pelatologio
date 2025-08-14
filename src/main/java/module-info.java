@@ -33,6 +33,10 @@ module org.easytech.pelatologio {
     requires jain.sip.ri;
     requires java.net.http;
     requires org.seleniumhq.selenium.api;
+    requires javafx.controls;
+    requires javafx.graphics;
+    requires java.desktop;
+    requires javafx.base;
 //    requires org.apache.poi.ooxml.schemas;
 //    requires docx4j;
 //    requires org.apache.poi.ooxml;
