@@ -53,7 +53,7 @@ public class SubJobTeamDaoImpl implements SubJobTeamDao {
 
     @Override
     public void saveSubJobTeam(SubJobTeam subJobTeam) {
-        String query = "INSERT INTO SubJobTeams (name) VALUES (?,?)";
+        String query = "INSERT INTO SubJobTeams (name, jobTeamId) VALUES (?,?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, subJobTeam.getName());

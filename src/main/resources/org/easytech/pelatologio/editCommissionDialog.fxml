@@ -13,22 +13,22 @@
             <GridPane hgap="10.0" vgap="10.0" VBox.vgrow="ALWAYS">
                 <children>
                     <Label styleClass="normal-label" text="Συνεργάτης:" GridPane.rowIndex="0" />
-                    <ComboBox fx:id="partnerComboBox" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <ComboBox fx:id="partnerComboBox" maxWidth="400.0" minHeight="47.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                     <Label styleClass="normal-label" text="Πελάτης:" GridPane.rowIndex="1" />
-                    <ComboBox fx:id="customerComboBox" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <ComboBox fx:id="customerComboBox" editable="true" maxWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                     <Label styleClass="normal-label" text="Προμηθευτής:" GridPane.rowIndex="2" />
-                    <ComboBox fx:id="supplierComboBox" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <ComboBox fx:id="supplierComboBox" maxWidth="400.0" minHeight="47.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                     <Label styleClass="normal-label" text="Ποσοστό (%):" GridPane.rowIndex="3" />
-                    <TextField fx:id="rateField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <TextField fx:id="rateField" maxWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                     <Label styleClass="normal-label" text="Ημ/νία Έναρξης:" GridPane.rowIndex="4" />
-                    <DatePicker fx:id="startDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <DatePicker fx:id="startDatePicker" maxWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
                     <Label styleClass="normal-label" text="Ημ/νία Λήξης:" GridPane.rowIndex="5" />
-                    <DatePicker fx:id="endDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <DatePicker fx:id="endDatePicker" maxWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                 </children>
             <columnConstraints>
                <ColumnConstraints />

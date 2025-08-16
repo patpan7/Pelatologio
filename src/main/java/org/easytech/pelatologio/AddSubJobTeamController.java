@@ -87,8 +87,8 @@ public class AddSubJobTeamController {
     public void handleSave(ActionEvent event) {
         String name = nameField.getText();
         int jobTeamId = jobTeamField.getSelectionModel().getSelectedItem().getId();
+        System.out.println("jobteamid " + jobTeamId);
         SubJobTeam newSubJobTeam = new SubJobTeam(0,name,jobTeamId);
-
         if (!name.isEmpty()) {
             DBHelper.getSubJobTeamDao().saveSubJobTeam(newSubJobTeam); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
 

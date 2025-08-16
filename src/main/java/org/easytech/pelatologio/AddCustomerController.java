@@ -1042,9 +1042,9 @@ public class AddCustomerController {
         if (DBHelper.getCustomerDao().hasDevice(customer.getCode())) {
             tabDevices.getStyleClass().add("tabHas");
         }
-        if (DBHelper.getCustomerDao().hasInvoices(customer.getAfm())) {
-            tabInvoices.getStyleClass().add("tabHas");
-        }
+//        if (DBHelper.getCustomerDao().hasInvoices(customer.getAfm())) {
+//            tabInvoices.getStyleClass().add("tabHas");
+//        }
         if (DBHelper.getCustomerDao().hasTask(customer.getCode())) {
             tabTasks.getStyleClass().add("tabHas");
         }
