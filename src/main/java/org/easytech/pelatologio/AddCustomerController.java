@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
+import org.easytech.pelatologio.helper.ComboBoxHelper;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.*;
@@ -312,19 +313,19 @@ public class AddCustomerController {
                 tfAccErganiEmail.clear();
             }
         });
-        setupComboBoxFilter(tfAccName, filteredAccountants);
+        ComboBoxHelper.setupFilter(tfAccName, filteredAccountants);
         recommendationList.clear();
         recommendationList.addAll(DBHelper.getRecommendationDao().getRecommendations());
 //        tfRecommendation.setItems(recommendationList);
         filteredRecommendations = new FilteredList<>(recommendationList);
         tfRecommendation.setItems(filteredRecommendations);
-        setupComboBoxFilter(tfRecommendation, filteredRecommendations);
+        ComboBoxHelper.setupFilter(tfRecommendation, filteredRecommendations);
 
         jobTeamList.clear();
         jobTeamList.addAll(DBHelper.getJobTeamDao().getJobTeams());
         filteredJobTeams = new FilteredList<>(jobTeamList);
         tfJobTeam.setItems(filteredJobTeams);
-        setupComboBoxFilter(tfJobTeam, filteredJobTeams); // ✅ μόνο μία φορά
+        ComboBoxHelper.setupFilter(tfJobTeam, filteredJobTeams); // ✅ μόνο μία φορά
 
         // Action handler για την επιλογή JobTeam
         tfJobTeam.setOnAction(event -> {
@@ -552,36 +553,7 @@ public class AddCustomerController {
         }
     }
 
-    private <T> void setupComboBoxFilter(ComboBox<T> comboBox, FilteredList<T> filteredList) {
-        // Ακροατής για το TextField του ComboBox
-        comboBox.getEditor().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-            comboBox.show();
-            String filterText = comboBox.getEditor().getText().toLowerCase();
-            filteredList.setPredicate(item -> {
-                if (filterText.isEmpty()) {
-                    return true; // Εμφάνιση όλων των στοιχείων αν δεν υπάρχει φίλτρο
-                }
-                // Ελέγχουμε αν το όνομα του αντικειμένου ταιριάζει με το φίλτρο
-                return item.toString().toLowerCase().contains(filterText);
-            });
-        });
-
-        // Ακροατής για την επιλογή ενός στοιχείου
-        comboBox.setOnHidden(event -> {
-            T selectedItem = comboBox.getSelectionModel().getSelectedItem();
-            if (selectedItem != null) {
-                comboBox.getEditor().setText(selectedItem.toString());
-            }
-        });
-
-        // Ακροατής για την αλλαγή της επιλογής
-        comboBox.setOnAction(event -> {
-            T selectedItem = comboBox.getSelectionModel().getSelectedItem();
-            if (selectedItem != null) {
-                comboBox.getEditor().setText(selectedItem.toString());
-            }
-        });
-    }
+    
 
 
     public void setInitialAFM(String afm) {
@@ -915,7 +887,7 @@ public class AddCustomerController {
                 break;
             }
         }
-        setupComboBoxFilter(tfRecommendation, filteredRecommendations);
+        ComboBoxHelper.setupFilter(tfRecommendation, filteredRecommendations);
     }
 
 
@@ -962,7 +934,7 @@ public class AddCustomerController {
                 break;
             }
         }
-        setupComboBoxFilter(tfAccName, filteredAccountants);
+        ComboBoxHelper.setupFilter(tfAccName, filteredAccountants);
     }
 
     private void setJobTeam() {
@@ -1011,7 +983,7 @@ public class AddCustomerController {
             }
         }
 
-        setupComboBoxFilter(tfJobTeam, filteredJobTeams);
+        ComboBoxHelper.setupFilter(tfJobTeam, filteredJobTeams);
     }
 
     private void hasTabs() {
@@ -1502,67 +1474,7 @@ public class AddCustomerController {
         Platform.runLater(() -> tabPane.getSelectionModel().select(tabErgani));
     }
 
-    private static final Map<Character, Character> ENGLISH_TO_GREEK = new HashMap<>();
-
-    static {
-        ENGLISH_TO_GREEK.put('\u0041', '\u0391');  // uppercase A
-        ENGLISH_TO_GREEK.put('\u0042', '\u0392');  // uppercase B
-        ENGLISH_TO_GREEK.put('\u0043', '\u03A8');  // uppercase C
-        ENGLISH_TO_GREEK.put('\u0044', '\u0394');  // uppercase D
-        ENGLISH_TO_GREEK.put('\u0045', '\u0395');  // uppercase E
-        ENGLISH_TO_GREEK.put('\u0046', '\u03A6');  // uppercase F
-        ENGLISH_TO_GREEK.put('\u0047', '\u0393');  // uppercase G
-        ENGLISH_TO_GREEK.put('\u0048', '\u0397');  // uppercase H
-        ENGLISH_TO_GREEK.put('\u0049', '\u0399');  // uppercase I
-        ENGLISH_TO_GREEK.put('\u004A', '\u039E');  // uppercase J
-        ENGLISH_TO_GREEK.put('\u004B', '\u039A');  // uppercase K
-        ENGLISH_TO_GREEK.put('\u004C', '\u039B');  // uppercase L
-        ENGLISH_TO_GREEK.put('\u004D', '\u039C');  // uppercase M
-        ENGLISH_TO_GREEK.put('\u004E', '\u039D');  // uppercase N
-        ENGLISH_TO_GREEK.put('\u004F', '\u039F');  // uppercase O
-        ENGLISH_TO_GREEK.put('\u0050', '\u03A0');  // uppercase P
-        //ENGLISH_TO_GREEK.put('\u0051', '\u0391');  // uppercase Q
-        ENGLISH_TO_GREEK.put('\u0052', '\u03A1');  // uppercase R
-        ENGLISH_TO_GREEK.put('\u0053', '\u03A3');  // uppercase S
-        ENGLISH_TO_GREEK.put('\u0054', '\u03A4');  // uppercase T
-        ENGLISH_TO_GREEK.put('\u0055', '\u0398');  // uppercase U
-        ENGLISH_TO_GREEK.put('\u0056', '\u03A9');  // uppercase V
-        ENGLISH_TO_GREEK.put('\u0057', '\u03A3');  // uppercase W
-        ENGLISH_TO_GREEK.put('\u0058', '\u03A7');  // uppercase X
-        ENGLISH_TO_GREEK.put('\u0059', '\u03A5');  // uppercase Y
-        ENGLISH_TO_GREEK.put('\u005A', '\u0396');  // uppercase Z
-    }
-
-    private static final Map<Character, Character> GREEK_TO_ENGLISH = new HashMap<>();
-
-    static {
-        GREEK_TO_ENGLISH.put('\u0391', '\u0041');  // uppercase Α
-        GREEK_TO_ENGLISH.put('\u0392', '\u0042');  // uppercase Β
-        GREEK_TO_ENGLISH.put('\u03A8', '\u0043');  // uppercase Ψ
-        GREEK_TO_ENGLISH.put('\u0394', '\u0044');  // uppercase Δ
-        GREEK_TO_ENGLISH.put('\u0395', '\u0045');  // uppercase Ε
-        GREEK_TO_ENGLISH.put('\u03A6', '\u0046');  // uppercase Φ
-        GREEK_TO_ENGLISH.put('\u0393', '\u0047');  // uppercase Γ
-        GREEK_TO_ENGLISH.put('\u0397', '\u0048');  // uppercase Η
-        GREEK_TO_ENGLISH.put('\u0399', '\u0049');  // uppercase Ι
-        GREEK_TO_ENGLISH.put('\u039E', '\u004A');  // uppercase Ξ
-        GREEK_TO_ENGLISH.put('\u039A', '\u004B');  // uppercase Κ
-        GREEK_TO_ENGLISH.put('\u039B', '\u004C');  // uppercase Λ
-        GREEK_TO_ENGLISH.put('\u039C', '\u004D');  // uppercase Μ
-        GREEK_TO_ENGLISH.put('\u039D', '\u004E');  // uppercase Ν
-        GREEK_TO_ENGLISH.put('\u039F', '\u004F');  // uppercase Ο
-        GREEK_TO_ENGLISH.put('\u03A0', '\u0050');  // uppercase Π
-        //GREEK_TO_ENGLISH.put('\u0051', '\u0391');  // uppercase Q
-        GREEK_TO_ENGLISH.put('\u03A1', '\u0052');  // uppercase Ρ
-        GREEK_TO_ENGLISH.put('\u03A3', '\u0053');  // uppercase Σ
-        GREEK_TO_ENGLISH.put('\u03A4', '\u0054');  // uppercase Τ
-        GREEK_TO_ENGLISH.put('\u0398', '\u0055');  // uppercase Θ
-        GREEK_TO_ENGLISH.put('\u03A9', '\u0056');  // uppercase Ω
-        GREEK_TO_ENGLISH.put('\u03A3', '\u0053');  // uppercase ς
-        GREEK_TO_ENGLISH.put('\u03A7', '\u0058');  // uppercase Χ
-        GREEK_TO_ENGLISH.put('\u03A5', '\u0059');  // uppercase Υ
-        GREEK_TO_ENGLISH.put('\u0396', '\u005A');  // uppercase Ζ
-    }
+    
 
     public void acsVoucher(MouseEvent actionEvent) {
         if (actionEvent.getButton() == MouseButton.PRIMARY) {

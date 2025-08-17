@@ -21,6 +21,7 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.ComboBoxHelper;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Order;
@@ -153,8 +154,10 @@ public class AddOrderController {
             }
         });
 
-        setupComboBoxFilterCust(customerComboBox, filteredCustomers);
-        setupComboBoxFilterSup(supplierComboBox, filteredSuppliers);
+        ComboBoxHelper.setupFilter(customerComboBox, filteredCustomers);
+        customerComboBox.setVisibleRowCount(5);
+        ComboBoxHelper.setupFilter(supplierComboBox, filteredSuppliers);
+        supplierComboBox.setVisibleRowCount(5);
 
         dueDatePicker.setValue(LocalDate.now());
         CheckBox[] checkBoxes = {
@@ -162,113 +165,6 @@ public class AddOrderController {
                 is_wait
         };
         configureSingleSelectionCheckBoxes(checkBoxes);
-    }
-
-    private <T> void setupComboBoxFilterCust(ComboBox<Customer> comboBox, FilteredList<Customer> filteredList) {
-        // Ακροατής για το TextField του ComboBox
-        comboBox.getEditor().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-            comboBox.show();
-            String filterText = comboBox.getEditor().getText().toUpperCase();
-            filteredList.setPredicate(item -> {
-                if (filterText.isEmpty()) {
-                    return true; // Εμφάνιση όλων των στοιχείων αν δεν υπάρχει φίλτρο
-                }
-//                // Ελέγχουμε αν το όνομα του αντικειμένου ταιριάζει με το φίλτρο
-//                return item.toString().toLowerCase().contains(filterText);
-                // Υποστήριξη Ελληνικών/Αγγλικών
-                char[] chars1 = filterText.toCharArray();
-                IntStream.range(0, chars1.length).forEach(i -> {
-                    Character repl = ENGLISH_TO_GREEK.get(chars1[i]);
-                    if (repl != null) chars1[i] = repl;
-                });
-                char[] chars2 = filterText.toCharArray();
-                IntStream.range(0, chars2.length).forEach(i -> {
-                    Character repl = GREEK_TO_ENGLISH.get(chars2[i]);
-                    if (repl != null) chars2[i] = repl;
-                });
-                String search1 = new String(chars1);
-                String search2 = new String(chars2);
-
-                // Αν δεν είναι επιλεγμένο κανένα φίλτρο, κάνε αναζήτηση σε όλα τα πεδία
-                return (item.getName() != null && (item.getName().toUpperCase().contains(search1) || item.getName().toUpperCase().contains(search2)))
-                        || (item.getTitle() != null && (item.getTitle().toUpperCase().contains(search1) || item.getTitle().toUpperCase().contains(search2)))
-                        || (item.getJob() != null && (item.getJob().toUpperCase().contains(search1) || item.getJob().toUpperCase().contains(search2)))
-                        || (String.valueOf(item.getCode()).contains(search1) || String.valueOf(item.getCode()).contains(search2))
-                        || (item.getPhone1() != null && (item.getPhone1().contains(search1) || item.getPhone1().contains(search2)))
-                        || (item.getPhone2() != null && (item.getPhone2().contains(search1) || item.getPhone2().contains(search2)))
-                        || (item.getMobile() != null && (item.getMobile().contains(search1) || item.getMobile().contains(search2)))
-                        || (item.getAfm() != null && (item.getAfm().contains(search1) || item.getAfm().contains(search2)))
-                        || (item.getManager() != null && (item.getManager().toUpperCase().contains(search1) || item.getManager().toUpperCase().contains(search2)))
-                        || (item.getTown() != null && (item.getTown().toUpperCase().contains(search1) || item.getTown().toUpperCase().contains(search2)));
-
-            });
-        });
-
-        // Ακροατής για την επιλογή ενός στοιχείου
-        comboBox.setOnHidden(event -> {
-            Customer selectedItem = comboBox.getSelectionModel().getSelectedItem();
-            if (selectedItem != null) {
-                comboBox.getEditor().setText(selectedItem.toString());
-            }
-        });
-
-        // Ακροατής για την αλλαγή της επιλογής
-        comboBox.setOnAction(event -> {
-            Customer selectedItem = comboBox.getSelectionModel().getSelectedItem();
-            if (selectedItem != null) {
-                comboBox.getEditor().setText(selectedItem.toString());
-            }
-        });
-    }
-
-    private <T> void setupComboBoxFilterSup(ComboBox<Supplier> comboBox, FilteredList<Supplier> filteredList) {
-        // Ακροατής για το TextField του ComboBox
-        comboBox.getEditor().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-            comboBox.show();
-            String filterText = comboBox.getEditor().getText().toUpperCase();
-            filteredList.setPredicate(item -> {
-                if (filterText.isEmpty()) {
-                    return true; // Εμφάνιση όλων των στοιχείων αν δεν υπάρχει φίλτρο
-                }
-//                // Ελέγχουμε αν το όνομα του αντικειμένου ταιριάζει με το φίλτρο
-//                return item.toString().toLowerCase().contains(filterText);
-                // Υποστήριξη Ελληνικών/Αγγλικών
-                char[] chars1 = filterText.toCharArray();
-                IntStream.range(0, chars1.length).forEach(i -> {
-                    Character repl = ENGLISH_TO_GREEK.get(chars1[i]);
-                    if (repl != null) chars1[i] = repl;
-                });
-                char[] chars2 = filterText.toCharArray();
-                IntStream.range(0, chars2.length).forEach(i -> {
-                    Character repl = GREEK_TO_ENGLISH.get(chars2[i]);
-                    if (repl != null) chars2[i] = repl;
-                });
-                String search1 = new String(chars1);
-                String search2 = new String(chars2);
-
-                // Αν δεν είναι επιλεγμένο κανένα φίλτρο, κάνε αναζήτηση σε όλα τα πεδία
-                return (item.getName() != null && (item.getName().toUpperCase().contains(search1) || item.getName().toUpperCase().contains(search2)))
-                        || (item.getPhone() != null && (item.getPhone().contains(search1) || item.getPhone().contains(search2)))
-                        || (item.getMobile() != null && (item.getMobile().contains(search1) || item.getMobile().contains(search2)))
-                        || (item.getEmail() != null && (item.getEmail().toUpperCase().contains(search1) || item.getEmail().toUpperCase().contains(search2)));
-            });
-        });
-
-        // Ακροατής για την επιλογή ενός στοιχείου
-        comboBox.setOnHidden(event -> {
-            Supplier selectedItem = comboBox.getSelectionModel().getSelectedItem();
-            if (selectedItem != null) {
-                comboBox.getEditor().setText(selectedItem.toString());
-            }
-        });
-
-        // Ακροατής για την αλλαγή της επιλογής
-        comboBox.setOnAction(event -> {
-            Supplier selectedItem = comboBox.getSelectionModel().getSelectedItem();
-            if (selectedItem != null) {
-                comboBox.getEditor().setText(selectedItem.toString());
-            }
-        });
     }
 
     public boolean handleSaveOrder() {
@@ -490,7 +386,7 @@ public class AddOrderController {
         ENGLISH_TO_GREEK.put('\u004A', '\u039E');  // uppercase J
         ENGLISH_TO_GREEK.put('\u004B', '\u039A');  // uppercase K
         ENGLISH_TO_GREEK.put('\u004C', '\u039B');  // uppercase L
-        ENGLISH_TO_GREEK.put('\u004D', '\u039C');  // uppercase M
+        
         ENGLISH_TO_GREEK.put('\u004E', '\u039D');  // uppercase N
         ENGLISH_TO_GREEK.put('\u004F', '\u039F');  // uppercase O
         ENGLISH_TO_GREEK.put('\u0050', '\u03A0');  // uppercase P

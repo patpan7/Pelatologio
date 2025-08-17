@@ -251,7 +251,7 @@
                                 </HBox>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false">
-                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.2" VBox.vgrow="NEVER">
+                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.3" VBox.vgrow="NEVER">
                                         <VBox.margin>
                                             <Insets bottom="5.0" right="20.0" />
                                         </VBox.margin>
