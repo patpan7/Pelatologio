@@ -25,7 +25,6 @@ import org.easytech.pelatologio.models.Subscription;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
@@ -53,12 +52,10 @@ public class SimplyViewController {
 
     private Customer customer;
     private ObservableList<Logins> loginList;
-    private DBHelper dbHelper;
     private boolean isInitializing = false;
 
     @FXML
     public void initialize() {
-        dbHelper = new DBHelper();
         isInitializing = true;
 
         setupTooltips();

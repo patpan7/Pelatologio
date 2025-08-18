@@ -20,6 +20,7 @@ import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.CustomerFolderManager;
 import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.Features;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Offer;
 
@@ -45,6 +46,18 @@ public class CustomerOffersController {
 
     @FXML
     public void initialize() {
+        if (!Features.isEnabled("offers")) {
+            offersTable.setVisible(false);
+            offersTable.setManaged(false);
+            createOfferButton.setVisible(false);
+            createOfferButton.setManaged(false);
+            addOfferButton.setVisible(false);
+            addOfferButton.setManaged(false);
+            editOfferButton.setVisible(false);
+            editOfferButton.setManaged(false);
+            deleteOfferButton.setVisible(false);
+            deleteOfferButton.setManaged(false);
+        }
         setTooltip(createOfferButton, "Δημιουργία προσφοράς από πρότυπα");
         setTooltip(addOfferButton, "Προσθήκη νέας προσφοράς");
         setTooltip(editOfferButton, "Επεξεργασία προσφοράς");
@@ -141,202 +154,256 @@ public class CustomerOffersController {
 
 
     private void loadOffers(int customerCode) {
-        allOffers.clear();
-        // Φόρτωση όλων των εργασιών από τη βάση
-        DBHelper dbHelper = new DBHelper();
-        allOffers.setAll(DBHelper.getOfferDao().getAllCustomerOffers(customerCode));
+        if (Features.isEnabled("offers")) {
+            allOffers.clear();
+            // Φόρτωση όλων των εργασιών από τη βάση
+            DBHelper dbHelper = new DBHelper();
+            allOffers.setAll(DBHelper.getOfferDao().getAllCustomerOffers(customerCode));
+        }
     }
 
 
     @FXML
     private void handleAddOffer() {
-        try {
-            // Φόρτωση του FXML για προσθήκη ραντεβού
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("addOffer.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Προσθήκη Προσφοράς");
-            AddOfferController controller = loader.getController();
-            controller.setCustomer(customer);
-            controller.setCustomerName(customer.getName());
-            controller.lock();
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        if (Features.isEnabled("offers")) {
+            try {
+                // Φόρτωση του FXML για προσθήκη ραντεβού
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addOffer.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Προσθήκη Προσφοράς");
+                AddOfferController controller = loader.getController();
+                controller.setCustomer(customer);
+                controller.setCustomerName(customer.getName());
+                controller.lock();
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
-            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                // Εκτελούμε το handleSaveAppointment
-                boolean success = controller.handleSaveOffer();
+                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                    // Εκτελούμε το handleSaveAppointment
+                    boolean success = controller.handleSaveOffer();
 
-                if (!success) {
-                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                    event.consume();
-                }
-            });
+                    if (!success) {
+                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                        event.consume();
+                    }
+                });
 
-            dialog.initModality(Modality.NONE);
-            dialog.initOwner(null);
-            dialog.show();
+                dialog.initModality(Modality.NONE);
+                dialog.initOwner(null);
+                dialog.show();
 
-            dialog.setOnHidden(e -> {
-                if (dialog.getResult() == ButtonType.OK) {
-                    loadOffers(customer.getCode());
-                }
-            });
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+                dialog.setOnHidden(e -> {
+                    if (dialog.getResult() == ButtonType.OK) {
+                        loadOffers(customer.getCode());
+                    }
+                });
+            } catch (IOException e) {
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+            }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Προσφορές είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
     @FXML
     private void handleEditOffer() throws IOException {
-        // Επεξεργασία επιλεγμένης εργασίας
-        Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
-        if (selectedOffer == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί προσφορά!");
-            Optional<ButtonType> result = alert.showAndWait();
-            return;
-        }
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("addOffer.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Επεξεργασία Προσφοράς");
-            AddOfferController controller = loader.getController();
+        if (Features.isEnabled("offers")) {
+            // Επεξεργασία επιλεγμένης εργασίας
+            Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
+            if (selectedOffer == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText("Δεν έχει επιλεγεί προσφορά!");
+                Optional<ButtonType> result = alert.showAndWait();
+                return;
+            }
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addOffer.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Επεξεργασία Προσφοράς");
+                AddOfferController controller = loader.getController();
 
-            // Ορισμός δεδομένων για επεξεργασία
-            controller.setOfferForEdit(selectedOffer);
-            controller.setCustomer(customer);
-            controller.lock();
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+                // Ορισμός δεδομένων για επεξεργασία
+                controller.setOfferForEdit(selectedOffer);
+                controller.setCustomer(customer);
+                controller.lock();
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                // Εκτελούμε το handleSaveAppointment
-                boolean success = controller.handleSaveOffer();
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                    // Εκτελούμε το handleSaveAppointment
+                    boolean success = controller.handleSaveOffer();
 
-                if (!success) {
-                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                    event.consume();
-                }
-            });
-            dialog.initModality(Modality.NONE);
-            dialog.initOwner(null);
-            dialog.show();
+                    if (!success) {
+                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                        event.consume();
+                    }
+                });
+                dialog.initModality(Modality.NONE);
+                dialog.initOwner(null);
+                dialog.show();
 
-            dialog.setOnHidden(e -> {
-                if (dialog.getResult() == ButtonType.OK) {
-                    loadOffers(customer.getCode());
-                }
-            });
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
+                dialog.setOnHidden(e -> {
+                    if (dialog.getResult() == ButtonType.OK) {
+                        loadOffers(customer.getCode());
+                    }
+                });
+            } catch (IOException e) {
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
+            }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Προσφορές είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
     @FXML
     private void handleDeleteOffer() throws SQLException {
-        // Διαγραφή επιλεγμένης εργασίας
-        Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
-        if (selectedOffer == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί προσφορά!");
+        if (Features.isEnabled("offers")) {
+            // Διαγραφή επιλεγμένης εργασίας
+            Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
+            if (selectedOffer == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText("Δεν έχει επιλεγεί προσφορά!");
+                Optional<ButtonType> result = alert.showAndWait();
+                return;
+            }
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Επιβεβαίωση");
+            alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την προσφορά " + selectedOffer.getDescription() + ";");
             Optional<ButtonType> result = alert.showAndWait();
-            return;
-        }
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Επιβεβαίωση");
-        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την προσφορά " + selectedOffer.getDescription() + ";");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            DBHelper dbHelper = new DBHelper();
-            DBHelper.getOfferDao().deleteOffer(selectedOffer.getId());
-            loadOffers(customer.getCode());
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                DBHelper dbHelper = new DBHelper();
+                DBHelper.getOfferDao().deleteOffer(selectedOffer.getId());
+                loadOffers(customer.getCode());
+            }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Προσφορές είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
         //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
-        loadOffers(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
+        if (Features.isEnabled("offers")) {
+            loadOffers(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
+        }
     }
 
 
     public void handleAddTask(ActionEvent evt) {
-        Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
-        if (selectedOffer == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα προσφορά.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-            });
-            return;
-        }
-        try {
-            // Φόρτωση του FXML για προσθήκη ραντεβού
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Προσθήκη Εργασίας");
-            AddTaskController controller = loader.getController();
-            controller.setTaskTitle("Προσφορά " + selectedOffer.getId() + ": " + selectedOffer.getCustomerName());
-            controller.setCustomerName(selectedOffer.getCustomerName());
-            controller.setCustomerId(selectedOffer.getCustomerId());
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        if (Features.isEnabled("offers")) {
+            Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
+            if (selectedOffer == null) {
+                // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Παρακαλώ επιλέξτε ένα προσφορά.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();
+                });
+                return;
+            }
+            try {
+                // Φόρτωση του FXML για προσθήκη ραντεβού
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Προσθήκη Εργασίας");
+                AddTaskController controller = loader.getController();
+                controller.setTaskTitle("Προσφορά " + selectedOffer.getId() + ": " + selectedOffer.getCustomerName());
+                controller.setCustomerName(selectedOffer.getCustomerName());
+                controller.setCustomerId(selectedOffer.getCustomerId());
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
-            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                // Εκτελούμε το handleSaveAppointment
-                boolean success = controller.handleSaveTask();
+                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                    // Εκτελούμε το handleSaveAppointment
+                    boolean success = controller.handleSaveTask();
 
-                if (!success) {
-                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                    event.consume();
-                }
-            });
+                    if (!success) {
+                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                        event.consume();
+                    }
+                });
 
-            dialog.initModality(Modality.NONE);
-            dialog.initOwner(null);
-            dialog.show();
+                dialog.initModality(Modality.NONE);
+                dialog.initOwner(null);
+                dialog.show();
 
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
+            } catch (IOException e) {
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
+            }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Προσφορές είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
     public void handleShareOffer(ActionEvent evt) {
-        Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
-        if (selectedOffer == null) {
-            // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα προσφορά.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-            });
-            return;
+        if (Features.isEnabled("offers")) {
+            Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
+            if (selectedOffer == null) {
+                // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Παρακαλώ επιλέξτε ένα προσφορά.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();
+                });
+                return;
+            }
+            String msg = "Επωνυμία: " + selectedOffer.getCustomerName() +
+                    "\nΣας αποστείλαμε μια νέα προσφορά"+
+                    "\nΜπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου:" +
+                    "\nhttp://dgou.dynns.com:8090/portal/offer.php?id="+selectedOffer.getId()+
+                    "\n\nΜπορείτε δείτε τους τραπεζικούς μας λογαριασμούς στην παρακάτω διεύθυνση:" +
+                    "\nhttp://dgou.dynns.com:8090/portal/bank_accounts.php" +
+                    "\n\nΓια οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας." +
+                    "\nΕυχαριστώ πολύ";
+            copyTextToClipboard(msg);
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Προσφορές είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
-        String msg = "Επωνυμία: " + selectedOffer.getCustomerName() +
-                "\nΣας αποστείλαμε μια νέα προσφορά"+
-                "\nΜπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου:" +
-                "\nhttp://dgou.dynns.com:8090/portal/offer.php?id="+selectedOffer.getId()+
-                "\n\nΜπορείτε δείτε τους τραπεζικούς μας λογαριασμούς στην παρακάτω διεύθυνση:" +
-                "\nhttp://dgou.dynns.com:8090/portal/bank_accounts.php" +
-                "\n\nΓια οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας." +
-                "\nΕυχαριστώ πολύ";
-        copyTextToClipboard(msg);
     }
 
 

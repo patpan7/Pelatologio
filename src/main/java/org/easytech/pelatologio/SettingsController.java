@@ -15,10 +15,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AfmLookupService;
-import org.easytech.pelatologio.helper.AfmResponseParser;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 
 import java.net.URL;
@@ -56,6 +53,8 @@ public class SettingsController implements Initializable {
     @FXML
     private TextField tfSimplyMail2;
     @FXML
+    private TitledPane simplySettingsPane;
+    @FXML
     private TextField tfEmblemUser;
     @FXML
     private TextField tfEmblemPass;
@@ -63,6 +62,10 @@ public class SettingsController implements Initializable {
     private TextField tfEmblemRegisterMail;
     @FXML
     private TextField tfErganiRegisterMail;
+    @FXML
+    private TitledPane emblemSettingsPane;
+    @FXML
+    private TitledPane erganiSettingsPane;
     @FXML
     private TextField tfTaxisUser;
     @FXML
@@ -111,14 +114,18 @@ public class SettingsController implements Initializable {
     private RadioButton rbPositionBottomRight;
 
     // SIP Settings
-    @FXML private TextField tfSipUser;
-    @FXML private TextField tfSipPassword;
-    @FXML private TextField tfSipDomain;
-    @FXML private TextField tfSipPort;
-    @FXML private TextField tfLocalIpAddress;
-    @FXML private TextField tfSipTransport;
-
-
+    @FXML
+    private TextField tfSipUser;
+    @FXML
+    private TextField tfSipPassword;
+    @FXML
+    private TextField tfSipDomain;
+    @FXML
+    private TextField tfSipPort;
+    @FXML
+    private TextField tfLocalIpAddress;
+    @FXML
+    private TextField tfSipTransport;
 
 
     @Override
@@ -129,6 +136,21 @@ public class SettingsController implements Initializable {
         loadTextFieldSettings();
         loadBrowserSettings();
         loadPositionSettings();
+
+        if (!Features.isEnabled("simply")) {
+            simplySettingsPane.setVisible(false);
+            simplySettingsPane.setManaged(false);
+        }
+
+        if (!Features.isEnabled("emblem")) {
+            emblemSettingsPane.setVisible(false);
+            emblemSettingsPane.setManaged(false);
+        }
+
+        if (!Features.isEnabled("ergani")) {
+            erganiSettingsPane.setVisible(false);
+            erganiSettingsPane.setManaged(false);
+        }
     }
 
     private void setupBrowserToggleGroup() {
@@ -153,13 +175,15 @@ public class SettingsController implements Initializable {
         tfMyposLink.setText(getSettingOrEmpty("myposlink"));
         tfMyposUser.setText(getSettingOrEmpty("myposUser"));
         tfMyposPass.setText(getSettingOrEmpty("myposPass"));
-        tfSimplyPosUser.setText(getSettingOrEmpty("simplyPosUser"));
-        tfSimplyPosPass.setText(getSettingOrEmpty("simplyPosPass"));
-        tfSimplyCloudUser.setText(getSettingOrEmpty("simplyCloudUser"));
-        tfSimplyCloudPass.setText(getSettingOrEmpty("simplyCloudPass"));
-        tfSimplyRegisterMail.setText(getSettingOrEmpty("simplyRegisterMail"));
-        tfSimplyMail1.setText(getSettingOrEmpty("simplyMail1"));
-        tfSimplyMail2.setText(getSettingOrEmpty("simplyMail2"));
+        if (Features.isEnabled("simply")) {
+            tfSimplyPosUser.setText(getSettingOrEmpty("simplyPosUser"));
+            tfSimplyPosPass.setText(getSettingOrEmpty("simplyPosPass"));
+            tfSimplyCloudUser.setText(getSettingOrEmpty("simplyCloudUser"));
+            tfSimplyCloudPass.setText(getSettingOrEmpty("simplyCloudPass"));
+            tfSimplyRegisterMail.setText(getSettingOrEmpty("simplyRegisterMail"));
+            tfSimplyMail1.setText(getSettingOrEmpty("simplyMail1"));
+            tfSimplyMail2.setText(getSettingOrEmpty("simplyMail2"));
+        }
         tfTaxisUser.setText(getSettingOrEmpty("taxisUser"));
         tfTaxisPass.setText(getSettingOrEmpty("taxisPass"));
         tfAfmUser.setText(getSettingOrEmpty("afmUser"));
@@ -170,11 +194,15 @@ public class SettingsController implements Initializable {
         tfEmailPassKey.setText(getSettingOrEmpty("emailPass"));
         tfSMTP.setText(getSettingOrEmpty("smtp"));
         tfSMTPPort.setText(getSettingOrEmpty("smtpport"));
-        tfEmblemUser.setText(getSettingOrEmpty("emblemUser"));
-        tfEmblemPass.setText(getSettingOrEmpty("emblemPass"));
-        tfEmblemRegisterMail.setText(getSettingOrEmpty("emblemRegisterMail"));
+        if (Features.isEnabled("emblem")) {
+            tfEmblemUser.setText(getSettingOrEmpty("emblemUser"));
+            tfEmblemPass.setText(getSettingOrEmpty("emblemPass"));
+            tfEmblemRegisterMail.setText(getSettingOrEmpty("emblemRegisterMail"));
+        }
         taSignature.setText(getSettingOrEmpty("signature"));
-        tfErganiRegisterMail.setText(getSettingOrEmpty("erganiRegisterMail"));
+        if (Features.isEnabled("ergani")) {
+            tfErganiRegisterMail.setText(getSettingOrEmpty("erganiRegisterMail"));
+        }
 
         // Load SIP settings
         tfSipUser.setText(getSettingOrEmpty("sipUser"));
@@ -214,19 +242,15 @@ public class SettingsController implements Initializable {
 
     public void saveSettings(ActionEvent event) {
 
-        AppSettings.saveSetting("server", tfServer.getText());
-        AppSettings.saveSetting("dbUser", tfUser.getText());
-        AppSettings.saveSetting("dbPass", tfPass.getText());
-        AppSettings.saveSetting("myposlink", tfMyposLink.getText());
-        AppSettings.saveSetting("myposUser",tfMyposUser.getText());
-        AppSettings.saveSetting("myposPass", tfMyposPass.getText());
-        AppSettings.saveSetting("simplyPosUser", tfSimplyPosUser.getText());
-        AppSettings.saveSetting("simplyPosPass", tfSimplyPosPass.getText());
-        AppSettings.saveSetting("simplyCloudUser", tfSimplyCloudUser.getText());
-        AppSettings.saveSetting("simplyCloudPass", tfSimplyCloudPass.getText());
-        AppSettings.saveSetting("simplyRegisterMail", tfSimplyRegisterMail.getText());
-        AppSettings.saveSetting("simplyMail1", tfSimplyMail1.getText());
-        AppSettings.saveSetting("simplyMail2", tfSimplyMail2.getText());
+        if (Features.isEnabled("simply")) {
+            AppSettings.saveSetting("simplyPosUser", tfSimplyPosUser.getText());
+            AppSettings.saveSetting("simplyPosPass", tfSimplyPosPass.getText());
+            AppSettings.saveSetting("simplyCloudUser", tfSimplyCloudUser.getText());
+            AppSettings.saveSetting("simplyCloudPass", tfSimplyCloudPass.getText());
+            AppSettings.saveSetting("simplyRegisterMail", tfSimplyRegisterMail.getText());
+            AppSettings.saveSetting("simplyMail1", tfSimplyMail1.getText());
+            AppSettings.saveSetting("simplyMail2", tfSimplyMail2.getText());
+        }
         AppSettings.saveSetting("taxisUser", tfTaxisUser.getText());
         AppSettings.saveSetting("taxisPass", tfTaxisPass.getText());
         AppSettings.saveSetting("afmUser", tfAfmUser.getText());
@@ -238,10 +262,14 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("smtp", tfSMTP.getText());
         AppSettings.saveSetting("smtpport", tfSMTPPort.getText());
         AppSettings.saveSetting("signature", taSignature.getText());
-        AppSettings.saveSetting("emblemUser", tfEmblemUser.getText());
-        AppSettings.saveSetting("emblemPass", tfEmblemPass.getText());
-        AppSettings.saveSetting("emblemRegisterMail", tfEmblemRegisterMail.getText());
-        AppSettings.saveSetting("erganiRegisterMail", tfErganiRegisterMail.getText());
+        if (Features.isEnabled("emblem")) {
+            AppSettings.saveSetting("emblemUser", tfEmblemUser.getText());
+            AppSettings.saveSetting("emblemPass", tfEmblemPass.getText());
+            AppSettings.saveSetting("emblemRegisterMail", tfEmblemRegisterMail.getText());
+        }
+        if (Features.isEnabled("ergani")) {
+            AppSettings.saveSetting("erganiRegisterMail", tfErganiRegisterMail.getText());
+        }
 
         // Save SIP settings
         AppSettings.saveSetting("sipUser", tfSipUser.getText());
@@ -278,7 +306,8 @@ public class SettingsController implements Initializable {
                     .graphic(null)
                     .hideAfter(Duration.seconds(5))
                     .position(Pos.TOP_RIGHT);
-            notifications.showInformation();});
+            notifications.showInformation();
+        });
     }
 
     public void syncClick(ActionEvent event) {

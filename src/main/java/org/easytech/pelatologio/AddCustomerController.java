@@ -31,6 +31,7 @@ import org.easytech.pelatologio.helper.ComboBoxHelper;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.*;
+import org.easytech.pelatologio.helper.Features;
 
 import java.awt.*;
 import java.io.File;
@@ -170,16 +171,34 @@ public class AddCustomerController {
         btnTask.setVisible(false);
         tabTaxis.setDisable(true);
         tabMypos.setDisable(true);
-        tabSimply.setDisable(true);
-        tabEmblem.setDisable(true);
-        tabErgani.setDisable(true);
-        tabPelatologio.setDisable(true);
-        tabNinepos.setDisable(true);
-        tabDevices.setDisable(true);
+        if (!Features.isEnabled("simply")) {
+            tabSimply.setDisable(true);
+        }
+        if (!Features.isEnabled("emblem")) {
+            tabEmblem.setDisable(true);
+        }
+        if (!Features.isEnabled("ergani")) {
+            tabErgani.setDisable(true);
+        }
+        if (!Features.isEnabled("pelatologio")) {
+            tabPelatologio.setDisable(true);
+        }
+        if (!Features.isEnabled("ninepos")) {
+            tabNinepos.setDisable(true);
+        }
+        if (!Features.isEnabled("devices")) {
+            tabDevices.setDisable(true);
+        }
         tabInvoices.setDisable(true);
-        tabTasks.setDisable(true);
-        tabSubs.setDisable(true);
-        tabOffers.setDisable(true);
+        if (!Features.isEnabled("tasks")) {
+            tabTasks.setDisable(true);
+        }
+        if (!Features.isEnabled("contracts")) {
+            tabSubs.setDisable(true);
+        }
+        if (!Features.isEnabled("offers")) {
+            tabOffers.setDisable(true);
+        }
         tabOrders.setDisable(true);
 
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
@@ -231,8 +250,10 @@ public class AddCustomerController {
         tfAccEmail.setOnContextMenuRequested(e -> currentTextField = tfAccEmail);
         tfAccEmail1.setContextMenu(emailContextMenu);
         tfAccEmail1.setOnContextMenuRequested(e -> currentTextField = tfAccEmail1);
-        tfAccErganiEmail.setContextMenu(emailContextMenu);
-        tfAccErganiEmail.setOnContextMenuRequested(e -> currentTextField = tfAccErganiEmail);
+        if (Features.isEnabled("ergani")) {
+            tfAccErganiEmail.setContextMenu(emailContextMenu);
+            tfAccErganiEmail.setOnContextMenuRequested(e -> currentTextField = tfAccErganiEmail);
+        }
 
         btnEmail.setUserData(tfEmail);
         btnEmail2.setUserData(tfEmail2);
@@ -396,32 +417,72 @@ public class AddCustomerController {
 
     private void setupTabs() {
         tabToFxml.put(tabTaxis, "taxisView.fxml");
-        tabToFxml.put(tabMypos, "myposView.fxml");
-        tabToFxml.put(tabSimply, "simplyView.fxml");
-        tabToFxml.put(tabEmblem, "emblemView.fxml");
-        tabToFxml.put(tabErgani, "erganiView.fxml");
-        tabToFxml.put(tabPelatologio, "pelatologioView.fxml");
-        tabToFxml.put(tabNinepos, "nineposView.fxml");
-        tabToFxml.put(tabDevices, "customerDevicesView.fxml");
+        if (Features.isEnabled("mypos")) {
+            tabToFxml.put(tabMypos, "myposView.fxml");
+        }
+        if (Features.isEnabled("simply")) {
+            tabToFxml.put(tabSimply, "simplyView.fxml");
+        }
+        if (Features.isEnabled("emblem")) {
+            tabToFxml.put(tabEmblem, "emblemView.fxml");
+        }
+        if (Features.isEnabled("ergani")) {
+            tabToFxml.put(tabErgani, "erganiView.fxml");
+        }
+        if (Features.isEnabled("pelatologio")) {
+            tabToFxml.put(tabPelatologio, "pelatologioView.fxml");
+        }
+        if (Features.isEnabled("ninepos")) {
+            tabToFxml.put(tabNinepos, "nineposView.fxml");
+        }
+        if (Features.isEnabled("devices")) {
+            tabToFxml.put(tabDevices, "customerDevicesView.fxml");
+        }
         tabToFxml.put(tabInvoices, "invoicesView.fxml");
-        tabToFxml.put(tabTasks, "customerTasksView.fxml");
-        tabToFxml.put(tabSubs, "customerSubsView.fxml");
-        tabToFxml.put(tabOffers, "customerOffersView.fxml");
+        if (Features.isEnabled("tasks")) {
+            tabToFxml.put(tabTasks, "customerTasksView.fxml");
+        }
+        if (Features.isEnabled("contracts")) {
+            tabToFxml.put(tabSubs, "customerSubsView.fxml");
+        }
+        if (Features.isEnabled("offers")) {
+            tabToFxml.put(tabOffers, "customerOffersView.fxml");
+        }
         tabToFxml.put(tabOrders, "ordersCustView.fxml");
         tabToFxml.put(tabCallLog, "customerCallLogView.fxml");
 
         tabToContainer.put(tabTaxis, taxisContainer);
-        tabToContainer.put(tabMypos, myposContainer);
-        tabToContainer.put(tabSimply, simplyContainer);
-        tabToContainer.put(tabEmblem, emblemContainer);
-        tabToContainer.put(tabErgani, erganiContainer);
-        tabToContainer.put(tabPelatologio, pelatologioContainer);
-        tabToContainer.put(tabNinepos, nineposContainer);
-        tabToContainer.put(tabDevices, devicesContainer);
+        if (Features.isEnabled("mypos")) {
+            tabToContainer.put(tabMypos, myposContainer);
+        }
+        if (Features.isEnabled("simply")) {
+            tabToContainer.put(tabSimply, simplyContainer);
+        }
+        if (Features.isEnabled("emblem")) {
+            tabToContainer.put(tabEmblem, emblemContainer);
+        }
+        if (Features.isEnabled("ergani")) {
+            tabToContainer.put(tabErgani, erganiContainer);
+        }
+        if (Features.isEnabled("pelatologio")) {
+            tabToContainer.put(tabPelatologio, pelatologioContainer);
+        }
+        if (Features.isEnabled("ninepos")) {
+            tabToContainer.put(tabNinepos, nineposContainer);
+        }
+        if (Features.isEnabled("devices")) {
+            tabToContainer.put(tabDevices, devicesContainer);
+        }
         tabToContainer.put(tabInvoices, invoicesContainer);
-        tabToContainer.put(tabTasks, tasksContainer);
-        tabToContainer.put(tabSubs, subsContainer);
-        tabToContainer.put(tabOffers, offersContainer);
+        if (Features.isEnabled("tasks")) {
+            tabToContainer.put(tabTasks, tasksContainer);
+        }
+        if (Features.isEnabled("contracts")) {
+            tabToContainer.put(tabSubs, subsContainer);
+        }
+        if (Features.isEnabled("offers")) {
+            tabToContainer.put(tabOffers, offersContainer);
+        }
         tabToContainer.put(tabOrders, ordersContainer);
         tabToContainer.put(tabCallLog, callLogContainer);
     }
@@ -729,17 +790,37 @@ public class AddCustomerController {
         checkboxActive.setVisible(true);
         checkboxActive.setDisable(false);
         tabTaxis.setDisable(false);
-        tabMypos.setDisable(false);
-        tabSimply.setDisable(false);
-        tabEmblem.setDisable(false);
-        tabErgani.setDisable(false);
-        tabPelatologio.setDisable(false);
-        tabNinepos.setDisable(false);
-        tabDevices.setDisable(false);
+        if (Features.isEnabled("mypos")) {
+            tabMypos.setDisable(false);
+        }
+        if (Features.isEnabled("simply")) {
+            tabSimply.setDisable(false);
+        }
+        if (Features.isEnabled("emblem")) {
+            tabEmblem.setDisable(false);
+        }
+        if (Features.isEnabled("ergani")) {
+            tabErgani.setDisable(false);
+        }
+        if (Features.isEnabled("pelatologio")) {
+            tabPelatologio.setDisable(false);
+        }
+        if (Features.isEnabled("ninepos")) {
+            tabNinepos.setDisable(false);
+        }
+        if (Features.isEnabled("devices")) {
+            tabDevices.setDisable(false);
+        }
         tabInvoices.setDisable(false);
-        tabTasks.setDisable(false);
-        tabSubs.setDisable(false);
-        tabOffers.setDisable(false);
+        if (Features.isEnabled("tasks")) {
+            tabTasks.setDisable(false);
+        }
+        if (Features.isEnabled("contracts")) {
+            tabSubs.setDisable(false);
+        }
+        if (Features.isEnabled("offers")) {
+            tabOffers.setDisable(false);
+        }
         tabOrders.setDisable(false);
 
         startCallLogButton.setVisible(true);
@@ -990,41 +1071,61 @@ public class AddCustomerController {
         if (DBHelper.getCustomerDao().hasSubAddress(customer.getCode())) {
             btnAddressAdd.setStyle("-fx-border-color: #FF0000;");
         }
-        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 1)) {
-            tabMypos.getStyleClass().add("tabHas");
+        if (Features.isEnabled("mypos")) {
+            if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 1)) {
+                tabMypos.getStyleClass().add("tabHas");
+            }
         }
-        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 2)) {
-            tabSimply.getStyleClass().add("tabHas");
+        if (Features.isEnabled("simply")) {
+            if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 2)) {
+                tabSimply.getStyleClass().add("tabHas");
+            }
         }
         if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 3)) {
             tabTaxis.getStyleClass().add("tabHas");
         }
-        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 4)) {
-            tabEmblem.getStyleClass().add("tabHas");
+        if (Features.isEnabled("emblem")) {
+            if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 4)) {
+                tabEmblem.getStyleClass().add("tabHas");
+            }
         }
-        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 5)) {
-            tabErgani.getStyleClass().add("tabHas");
+        if (Features.isEnabled("ergani")) {
+            if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 5)) {
+                tabErgani.getStyleClass().add("tabHas");
+            }
         }
-        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 6)) {
-            tabPelatologio.getStyleClass().add("tabHas");
+        if (Features.isEnabled("pelatologio")) {
+            if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 6)) {
+                tabPelatologio.getStyleClass().add("tabHas");
+            }
         }
-        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 7)) {
-            tabNinepos.getStyleClass().add("tabHas");
+        if (Features.isEnabled("ninepos")) {
+            if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 7)) {
+                tabNinepos.getStyleClass().add("tabHas");
+            }
         }
-        if (DBHelper.getCustomerDao().hasDevice(customer.getCode())) {
-            tabDevices.getStyleClass().add("tabHas");
+        if (Features.isEnabled("devices")) {
+            if (DBHelper.getCustomerDao().hasDevice(customer.getCode())) {
+                tabDevices.getStyleClass().add("tabHas");
+            }
         }
 //        if (DBHelper.getCustomerDao().hasInvoices(customer.getAfm())) {
 //            tabInvoices.getStyleClass().add("tabHas");
 //        }
-        if (DBHelper.getCustomerDao().hasTask(customer.getCode())) {
-            tabTasks.getStyleClass().add("tabHas");
+        if (Features.isEnabled("tasks")) {
+            if (DBHelper.getCustomerDao().hasTask(customer.getCode())) {
+                tabTasks.getStyleClass().add("tabHas");
+            }
         }
-        if (DBHelper.getCustomerDao().hasSub(customer.getCode())) {
-            tabSubs.getStyleClass().add("tabHas");
+        if (Features.isEnabled("contracts")) {
+            if (DBHelper.getCustomerDao().hasSub(customer.getCode())) {
+                tabSubs.getStyleClass().add("tabHas");
+            }
         }
-        if (DBHelper.getCustomerDao().hasOffer(customer.getCode())) {
-            tabOffers.getStyleClass().add("tabHas");
+        if (Features.isEnabled("offers")) {
+            if (DBHelper.getCustomerDao().hasOffer(customer.getCode())) {
+                tabOffers.getStyleClass().add("tabHas");
+            }
         }
         if (customer.getAccId() != 0) {
             tabAccountant.getStyleClass().add("tabHas");
@@ -1459,19 +1560,27 @@ public class AddCustomerController {
     }
 
     public void selectMyPOSTab() {
-        Platform.runLater(() -> tabPane.getSelectionModel().select(tabMypos));
+        if (Features.isEnabled("mypos")) {
+            Platform.runLater(() -> tabPane.getSelectionModel().select(tabMypos));
+        }
     }
 
     public void selectSimplyTab() {
-        Platform.runLater(() -> tabPane.getSelectionModel().select(tabSimply));
+        if (Features.isEnabled("simply")) {
+            Platform.runLater(() -> tabPane.getSelectionModel().select(tabSimply));
+        }
     }
 
     public void selectEmbelmTab() {
-        Platform.runLater(() -> tabPane.getSelectionModel().select(tabEmblem));
+        if (Features.isEnabled("emblem")) {
+            Platform.runLater(() -> tabPane.getSelectionModel().select(tabEmblem));
+        }
     }
 
     public void selectErganiTab() {
-        Platform.runLater(() -> tabPane.getSelectionModel().select(tabErgani));
+        if (Features.isEnabled("ergani")) {
+            Platform.runLater(() -> tabPane.getSelectionModel().select(tabErgani));
+        }
     }
 
     

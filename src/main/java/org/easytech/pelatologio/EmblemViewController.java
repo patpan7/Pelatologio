@@ -51,6 +51,18 @@ public class EmblemViewController {
 
     @FXML
     public void initialize() {
+        if (!Features.isEnabled("emblem")) {
+            btnEmblem.setVisible(false);
+            btnEmblem.setManaged(false);
+            btnEmblemRegister.setVisible(false);
+            btnEmblemRegister.setManaged(false);
+        }
+        if (!Features.isEnabled("emblem")) {
+            btnEmblem.setVisible(false);
+            btnEmblem.setManaged(false);
+            btnEmblemRegister.setVisible(false);
+            btnEmblemRegister.setManaged(false);
+        }
         setTooltip(btnEmblem, "1) Είσοδος στο Emblem με επιλεγμένο κωδικό\n2) Αντιγραφή στοιχείων για επιλεγμένο κωδικό");
         setTooltip(btnEmblemRegister, "Εγγραφή πελάτη στο Emblem");
 
@@ -285,61 +297,69 @@ public class EmblemViewController {
     }
 
     public void emblemOpen(MouseEvent event) {
-        Logins selectedLogin = checkSelectedLogin();
-        if (selectedLogin == null) return;
+        if (Features.isEnabled("emblem")) {
+            Logins selectedLogin = checkSelectedLogin();
+            if (selectedLogin == null) return;
 
-        if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
+            if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
 
-                String msg = "Νέος Πελάτης Emblem" +
-                        "\nΕπωνυμία: " + customer.getName() +
-                        "\nΑΦΜ: " + customer.getAfm() +
-                        "\nEmail: " + selectedLogin.getUsername() +
-                        "\nΚωδικός: " + selectedLogin.getPassword() +
-                        "\nΚινητό: " + customer.getMobile() +
-                        "\n";
-                copyTextToClipboard(msg);
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showInformation();
-        } else {
-            try {
-                LoginAutomator loginAutomation = new LoginAutomator(true);
-                loginAutomation.openAndFillLoginForm(
-                        "https://emblem.gr/login-sk.html",
-                        selectedLogin.getUsername(),
-                        selectedLogin.getPassword(),
-                        By.id("InputEmail"),
-                        By.id("InputPassword"),
-                        By.cssSelector("button.g-recaptcha")
-                );
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+                    String msg = "Νέος Πελάτης Emblem" +
+                            "\nΕπωνυμία: " + customer.getName() +
+                            "\nΑΦΜ: " + customer.getAfm() +
+                            "\nEmail: " + selectedLogin.getUsername() +
+                            "\nΚωδικός: " + selectedLogin.getPassword() +
+                            "\nΚινητό: " + customer.getMobile() +
+                            "\n";
+                    copyTextToClipboard(msg);
+                    Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showInformation();
+            } else {
+                try {
+                    LoginAutomator loginAutomation = new LoginAutomator(true);
+                    loginAutomation.openAndFillLoginForm(
+                            "https://emblem.gr/login-sk.html",
+                            selectedLogin.getUsername(),
+                            selectedLogin.getPassword(),
+                            By.id("InputEmail"),
+                            By.id("InputPassword"),
+                            By.cssSelector("button.g-recaptcha")
+                    );
+                } catch (IOException e) {
+                    Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+                }
             }
+        } else {
+            showErrorNotification(WARNING_TITLE, "Το module Emblem είναι απενεργοποιημένο.");
         }
     }
 
     public void registerEmblemOpen(ActionEvent actionEvent) {
-        Logins selectedLogin = checkSelectedLogin();
-        if (selectedLogin == null) return;
+        if (Features.isEnabled("emblem")) {
+            Logins selectedLogin = checkSelectedLogin();
+            if (selectedLogin == null) return;
 
-        try {
-            LoginAutomator loginAutomation = new LoginAutomator(true);
-            loginAutomation.openAndFillLoginRegisterEmblem(
-                    "https://pool2.emblem.gr/resellers/",
-                    AppSettings.loadSetting("emblemUser"),
-                    AppSettings.loadSetting("emblemPass"),
-                    By.id("inputEmail"),
-                    By.id("inputPassword"),
-                    By.xpath("//button[@onclick=\"validateLogin()\"]"),
-                    customer,
-                    selectedLogin
-            );
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+            try {
+                LoginAutomator loginAutomation = new LoginAutomator(true);
+                loginAutomation.openAndFillLoginRegisterEmblem(
+                        "https://pool2.emblem.gr/resellers/",
+                        AppSettings.loadSetting("emblemUser"),
+                        AppSettings.loadSetting("emblemPass"),
+                        By.id("inputEmail"),
+                        By.id("inputPassword"),
+                        By.xpath("//button[@onclick=\"validateLogin()\"]"),
+                        customer,
+                        selectedLogin
+                );
+            } catch (IOException e) {
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+            }
+        } else {
+            showErrorNotification(WARNING_TITLE, "Το module Emblem είναι απενεργοποιημένο.");
         }
     }
 

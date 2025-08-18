@@ -1,9 +1,7 @@
 package org.easytech.pelatologio;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXPopup;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -41,6 +39,7 @@ import org.easytech.pelatologio.models.JobTeam;
 import org.easytech.pelatologio.models.SubJobTeam;
 import org.easytech.pelatologio.models.Recommendation;
 import org.openqa.selenium.By;
+import org.easytech.pelatologio.helper.Features;
 
 import java.awt.*;
 import java.io.File;
@@ -105,10 +104,18 @@ public class CustomersController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> stackPane.requestFocus());
         setTooltip(btnTaxis, "1) Διαχείριση κωδικών Taxis του πελάτη\n2) Είσοδος με κωδικούς νέου πελάτη");
-        setTooltip(btnMypos, "1) Διαχείριση κωδικών myPOS του πελάτη\n2) Είσοδος στο DAS της myPOS");
-        setTooltip(btnSimply, "1) Διαχείριση κωδικών Simply του πελάτη\n2) Είσοδος στο DAS της Simply");
-        setTooltip(btnEmblem, "1) Διαχείριση κωδικών Emblem του πελάτη\n2) Είσοδος στο DAS της Emblem");
-        setTooltip(btnErgani, "Διαχείριση κωδικών Εργάνη του πελάτη");
+        if (Features.isEnabled("mypos")) {
+            setTooltip(btnMypos, "1) Διαχείριση κωδικών myPOS του πελάτη\n2) Είσοδος στο DAS της myPOS");
+        }
+        if (Features.isEnabled("simply")) {
+            setTooltip(btnSimply, "1) Διαχείριση κωδικών Simply του πελάτη\n2) Είσοδος στο DAS της Simply");
+        }
+        if (Features.isEnabled("emblem")) {
+            setTooltip(btnEmblem, "1) Διαχείριση κωδικών Emblem του πελάτη\n2) Είσοδος στο DAS της Emblem");
+        }
+        if (Features.isEnabled("ergani")) {
+            setTooltip(btnErgani, "Διαχείριση κωδικών Εργάνη του πελάτη");
+        }
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
         setTooltip(openFileButton, "1) Αντιγραφή πληροφοριών\n2) Άνοιγμα φακέλου με δεδομένα");
 
@@ -125,26 +132,44 @@ public class CustomersController implements Initializable {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
             if (event.getClickCount() == 1 && selectedCustomer != null) {
                 btnTaxis.setStyle("-fx-border-color: #005599;");
-                btnMypos.setStyle("-fx-border-color: #005599;");
-                btnSimply.setStyle("-fx-border-color: #005599;");
-                btnEmblem.setStyle("-fx-border-color: #005599;");
+                if (Features.isEnabled("mypos")) {
+                    btnMypos.setStyle("-fx-border-color: #005599;");
+                }
+                if (Features.isEnabled("simply")) {
+                    btnSimply.setStyle("-fx-border-color: #005599;");
+                }
+                if (Features.isEnabled("emblem")) {
+                    btnEmblem.setStyle("-fx-border-color: #005599;");
+                }
+                if (Features.isEnabled("ergani")) {
+                    if (Features.isEnabled("ergani")) {
                 btnErgani.setStyle("-fx-border-color: #005599;");
+            }
+                }
                 // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
 
-                if (selectedCustomer.hasApp(1)) {
-                    btnMypos.setStyle("-fx-border-color: #FF0000;");
+                if (Features.isEnabled("mypos")) {
+                    if (selectedCustomer.hasApp(1)) {
+                        btnMypos.setStyle("-fx-border-color: #FF0000;");
+                    }
                 }
-                if (selectedCustomer.hasApp(2)) {
-                    btnSimply.setStyle("-fx-border-color: #FF0000;");
+                if (Features.isEnabled("simply")) {
+                    if (selectedCustomer.hasApp(2)) {
+                        btnSimply.setStyle("-fx-border-color: #FF0000;");
+                    }
                 }
                 if (selectedCustomer.hasApp(3)) {
                     btnTaxis.setStyle("-fx-border-color: #FF0000;");
                 }
-                if (selectedCustomer.hasApp(4)) {
-                    btnEmblem.setStyle("-fx-border-color: #FF0000;");
+                if (Features.isEnabled("emblem")) {
+                    if (selectedCustomer.hasApp(4)) {
+                        btnEmblem.setStyle("-fx-border-color: #FF0000;");
+                    }
                 }
-                if (selectedCustomer.hasApp(5)) {
-                    btnErgani.setStyle("-fx-border-color: #FF0000;");
+                if (Features.isEnabled("ergani")) {
+                    if (selectedCustomer.hasApp(5)) {
+                        btnErgani.setStyle("-fx-border-color: #FF0000;");
+                    }
                 }
             }
             if (event.getClickCount() == 2) { // Έλεγχος για δύο κλικ
@@ -848,68 +873,108 @@ public class CustomersController implements Initializable {
     }
 
     public void myposClick(MouseEvent event) {
-        if (event.getButton() == MouseButton.SECONDARY) {
-            try {
-                LoginAutomator loginAutomation = new LoginAutomator(true);
-                loginAutomation.openAndFillLoginFormDas("https://das.mypos.eu/en/login",
-                        AppSettings.loadSetting("myposUser"),
-                        AppSettings.loadSetting("myposPass"),
-                        By.id("username"),
-                        By.className("btn-primary"),
-                        By.id("password"));
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+        if (Features.isEnabled("mypos")) {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                try {
+                    LoginAutomator loginAutomation = new LoginAutomator(true);
+                    loginAutomation.openAndFillLoginFormDas("https://das.mypos.eu/en/login",
+                            AppSettings.loadSetting("myposUser"),
+                            AppSettings.loadSetting("myposPass"),
+                            By.id("username"),
+                            By.className("btn-primary"),
+                            By.id("password"));
+                } catch (IOException e) {
+                    Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+                }
             }
-        }
-        else {
-            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-            openCustomerInTab(selectedCustomer, "myPOS");
+            else {
+                Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+                openCustomerInTab(selectedCustomer, "myPOS");
+            }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module myPOS είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
     public void simplyClick(MouseEvent event) {
-        if (event.getButton() == MouseButton.SECONDARY) {
-            try {
-                LoginAutomator loginAutomation = new LoginAutomator(true);
-                loginAutomation.openAndFillLoginForm("https://app.simplycloud.gr/Partners",
-                        AppSettings.loadSetting("simplyCloudUser"),
-                        AppSettings.loadSetting("simplyCloudPass"),
-                        By.name("Email"),
-                        By.id("Password"),
-                        By.id("btnSubmit"));
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+        if (Features.isEnabled("simply")) {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                try {
+                    LoginAutomator loginAutomation = new LoginAutomator(true);
+                    loginAutomation.openAndFillLoginForm("https://app.simplycloud.gr/Partners",
+                            AppSettings.loadSetting("simplyCloudUser"),
+                            AppSettings.loadSetting("simplyCloudPass"),
+                            By.name("Email"),
+                            By.id("Password"),
+                            By.id("btnSubmit"));
+                } catch (IOException e) {
+                    Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
 
+                }
+            } else {
+                Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+                openCustomerInTab(selectedCustomer, "Simply");
             }
         } else {
-            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-            openCustomerInTab(selectedCustomer, "Simply");
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Simply είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
     public void emblemClick(MouseEvent event) {
-        if (event.getButton() == MouseButton.SECONDARY) {
-            try {
-                LoginAutomator loginAutomation = new LoginAutomator(true);
-                loginAutomation.openAndFillLoginForm("https://pool2.emblem.gr/resellers/",
-                        AppSettings.loadSetting("emblemUser"),
-                        AppSettings.loadSetting("emblemPass"),
-                        By.id("inputEmail"),
-                        By.id("inputPassword"),
-                        By.xpath("//button[@onclick=\"validateLogin()\"]"));
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+        if (Features.isEnabled("emblem")) {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                try {
+                    LoginAutomator loginAutomation = new LoginAutomator(true);
+                    loginAutomation.openAndFillLoginForm("https://pool2.emblem.gr/resellers/",
+                            AppSettings.loadSetting("emblemUser"),
+                            AppSettings.loadSetting("emblemPass"),
+                            By.id("inputEmail"),
+                            By.id("inputPassword"),
+                            By.xpath("//button[@onclick=\"validateLogin()\"]"));
+                } catch (IOException e) {
+                    Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+                }
             }
-        }
-        else {
-            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-            openCustomerInTab(selectedCustomer, "Emblem");
+            else {
+                Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+                openCustomerInTab(selectedCustomer, "Emblem");
+            }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Emblem είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
     public void erganiClick(MouseEvent event) {
-        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-        openCustomerInTab(selectedCustomer, "Ergani");
+        if (Features.isEnabled("ergani")) {
+            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+            openCustomerInTab(selectedCustomer, "Ergani");
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Ergani είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
+        }
     }
 
     public void folderClick(ActionEvent event) {
@@ -990,9 +1055,15 @@ public class CustomersController implements Initializable {
             filterField.setText("");
             customerTable.getSelectionModel().clearSelection();
             btnTaxis.setStyle("-fx-border-color: #005599;");
-            btnMypos.setStyle("-fx-border-color: #005599;");
-            btnSimply.setStyle("-fx-border-color: #005599;");
-            btnEmblem.setStyle("-fx-border-color: #005599;");
+            if (Features.isEnabled("mypos")) {
+                btnMypos.setStyle("-fx-border-color: #005599;");
+            }
+            if (Features.isEnabled("simply")) {
+                btnSimply.setStyle("-fx-border-color: #005599;");
+            }
+            if (Features.isEnabled("emblem")) {
+                btnEmblem.setStyle("-fx-border-color: #005599;");
+            }
             filterField.requestFocus();
         } else if (event.getButton() == MouseButton.SECONDARY) {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
@@ -1122,16 +1193,24 @@ public class CustomersController implements Initializable {
                     controller.selectTaxisTab();
                     break;
                 case "myPOS":
-                    controller.selectMyPOSTab();
+                    if (Features.isEnabled("mypos")) {
+                        controller.selectMyPOSTab();
+                    }
                     break;
                 case "Simply":
-                    controller.selectSimplyTab();
+                    if (Features.isEnabled("simply")) {
+                        controller.selectSimplyTab();
+                    }
                     break;
                 case "Emblem":
-                    controller.selectEmbelmTab();
+                    if (Features.isEnabled("emblem")) {
+                        controller.selectEmbelmTab();
+                    }
                     break;
                 case "Ergani":
-                    controller.selectErganiTab();
+                    if (Features.isEnabled("ergani")) {
+                        controller.selectErganiTab();
+                    }
                     break;
             }
         });

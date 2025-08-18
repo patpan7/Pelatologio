@@ -4,11 +4,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
@@ -16,19 +12,16 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
-import org.easytech.pelatologio.helper.CallNotesController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.CallLog;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Subscription;
 import org.easytech.pelatologio.models.Tasks;
+import org.easytech.pelatologio.helper.Features;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class DashboardController {
     // Table for Today's Tasks
@@ -84,8 +77,12 @@ public class DashboardController {
     public void initialize() {
         System.out.println("Dashboard Initialized!");
 
-        loadTasks();
-        loadSubscriptions();
+        if (Features.isEnabled("tasks")) {
+            loadTasks();
+        }
+        if (Features.isEnabled("contracts")) {
+            loadSubscriptions();
+        }
         loadBalance();
         loadChartData();
         loadRecentCalls();
@@ -93,24 +90,28 @@ public class DashboardController {
         loadJobTeamChartData();
 
         // Add click listeners for tables and list
-        tasksTableView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                Tasks selectedTask = tasksTableView.getSelectionModel().getSelectedItem();
-                if (selectedTask != null && selectedTask.getCustomerId() != null && openCustomerCallback != null) {
-                    openCustomerCallback.accept(selectedTask.getCustomerId());
+        if (Features.isEnabled("tasks")) {
+            tasksTableView.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    Tasks selectedTask = tasksTableView.getSelectionModel().getSelectedItem();
+                    if (selectedTask != null && selectedTask.getCustomerId() != null && openCustomerCallback != null) {
+                        openCustomerCallback.accept(selectedTask.getCustomerId());
+                    }
                 }
-            }
-        });
+            });
+        }
 
-        subscriptionsTableView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                Subscription selectedSub = subscriptionsTableView.getSelectionModel().getSelectedItem();
-                if (selectedSub != null && selectedSub.getCustomerId() != null && openCustomerCallback != null) {
-                    System.out.println("Selected Subscription: " + selectedSub.getCustomerId());
-                    openCustomerCallback.accept(selectedSub.getCustomerId());
+        if (Features.isEnabled("contracts")) {
+            subscriptionsTableView.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    Subscription selectedSub = subscriptionsTableView.getSelectionModel().getSelectedItem();
+                    if (selectedSub != null && selectedSub.getCustomerId() != null && openCustomerCallback != null) {
+                        System.out.println("Selected Subscription: " + selectedSub.getCustomerId());
+                        openCustomerCallback.accept(selectedSub.getCustomerId());
+                    }
                 }
-            }
-        });
+            });
+        }
 
         balanceTableView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
@@ -133,20 +134,32 @@ public class DashboardController {
     }
 
     private void loadTasks() {
-        taskCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        taskDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        if (Features.isEnabled("tasks")) {
+            taskCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+            taskDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
 
-        List<Tasks> todaysTasks = DBHelper.getTaskDao().getTodaysTasks();
-        tasksTableView.getItems().setAll(todaysTasks);
+            List<Tasks> todaysTasks = DBHelper.getTaskDao().getTodaysTasks();
+            tasksTableView.getItems().setAll(todaysTasks);
+        } else {
+            tasksTableView.getItems().clear();
+            // Optionally add a placeholder or message
+            // tasksTableView.setPlaceholder(new Label("Tasks module is disabled."));
+        }
     }
 
     private void loadSubscriptions() {
-        subsCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        subsTypeColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
-        subsExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+        if (Features.isEnabled("contracts")) {
+            subsCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+            subsTypeColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+            subsExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
 
-        List<Subscription> expiringSubs = DBHelper.getSubscriptionDao().getExpiringSubscriptions(30);
-        subscriptionsTableView.getItems().setAll(expiringSubs);
+            List<Subscription> expiringSubs = DBHelper.getSubscriptionDao().getExpiringSubscriptions(30);
+            subscriptionsTableView.getItems().setAll(expiringSubs);
+        } else {
+            subscriptionsTableView.getItems().clear();
+            // Optionally add a placeholder or message
+            // subscriptionsTableView.setPlaceholder(new Label("Contracts module is disabled."));
+        }
     }
 
 

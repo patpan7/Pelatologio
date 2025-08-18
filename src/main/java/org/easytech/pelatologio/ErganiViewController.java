@@ -17,10 +17,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.DBHelper;
-import org.easytech.pelatologio.helper.EmailSender;
-import org.easytech.pelatologio.helper.LabelPrintHelper;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.ErganiRegistration;
 import org.easytech.pelatologio.models.Logins;
@@ -52,6 +49,22 @@ public class ErganiViewController {
 
     @FXML
     public void initialize() {
+        if (!Features.isEnabled("ergani")) {
+            btnErganiRegister.setVisible(false);
+            btnErganiRegister.setManaged(false);
+            btnErganiLogin.setVisible(false);
+            btnErganiLogin.setManaged(false);
+            btnErganiOffer.setVisible(false);
+            btnErganiOffer.setManaged(false);
+        }
+        if (!Features.isEnabled("ergani")) {
+            btnErganiRegister.setVisible(false);
+            btnErganiRegister.setManaged(false);
+            btnErganiLogin.setVisible(false);
+            btnErganiLogin.setManaged(false);
+            btnErganiOffer.setVisible(false);
+            btnErganiOffer.setManaged(false);
+        }
         setTooltip(btnErganiRegister, "Εγγραφή πελάτη στο Ergani");
         setTooltip(btnErganiLogin, "Πρόσβαση στο Ergani");
 
@@ -289,117 +302,123 @@ public class ErganiViewController {
         }
     }
 
-    public void registerErgani(ActionEvent actionEvent) {
-        Logins selectedLogin = checkSelectedLogin();
-        if (selectedLogin == null) return;
+        public void registerErgani(ActionEvent actionEvent) {
+        if (Features.isEnabled("ergani")) {
+            Logins selectedLogin = checkSelectedLogin();
+            if (selectedLogin == null) return;
 
-        Dialog<ErganiRegistration> dialog = new Dialog<>();
-        dialog.setTitle("Εγγραφή στο Εργάνη");
+            Dialog<ErganiRegistration> dialog = new Dialog<>();
+            dialog.setTitle("Εγγραφή στο Εργάνη");
 
-        // Δημιουργία των στοιχείων εισαγωγής
-        ComboBox<String> comboProgram = new ComboBox<>();
-        comboProgram.getItems().addAll("1-2 Υπάλληλοι", "3-5 Υπάλληλοι", "6-20 Υπάλληλοι", "21-50 Υπάλληλοι"); // Σταθερές επιλογές
-        //comboProgram.setValue("Πρόγραμμα 1"); // Προεπιλογή
+            // Δημιουργία των στοιχείων εισαγωγής
+            ComboBox<String> comboProgram = new ComboBox<>();
+            comboProgram.getItems().addAll("1-2 Υπάλληλοι", "3-5 Υπάλληλοι", "6-20 Υπάλληλοι", "21-50 Υπάλληλοι"); // Σταθερές επιλογές
+            //comboProgram.setValue("Πρόγραμμα 1"); // Προεπιλογή
 
-        TextField yearsField = new TextField();
-        yearsField.setPromptText("Αριθμός Ετών");
+            TextField yearsField = new TextField();
+            yearsField.setPromptText("Αριθμός Ετών");
 
-        TextField emailField = new TextField();
-        emailField.setPromptText("Email Λογιστή");
-        DBHelper dbHelper = new DBHelper();
-        String erganiEmail = DBHelper.getSubscriptionDao().getErganiEmail(selectedLogin.getCustomerId());
-        emailField.setText(erganiEmail);
+            TextField emailField = new TextField();
+            emailField.setPromptText("Email Λογιστή");
+            DBHelper dbHelper = new DBHelper();
+            String erganiEmail = DBHelper.getSubscriptionDao().getErganiEmail(selectedLogin.getCustomerId());
+            emailField.setText(erganiEmail);
 
-        TextField entranceField = new TextField();
-        entranceField.setPromptText("Είσοδος");
-        entranceField.setText("Όχι");
+            TextField entranceField = new TextField();
+            entranceField.setPromptText("Είσοδος");
+            entranceField.setText("Όχι");
 
-        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+            ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new Insets(20, 150, 10, 10));
 
-        grid.add(new Label("Επιλογή Προγράμματος:"), 0, 0);
-        grid.add(comboProgram, 1, 0);
-        grid.add(new Label("Σύνολο Ετών:"), 0, 1);
-        grid.add(yearsField, 1, 1);
-        grid.add(new Label("Email Λογιστή:"), 0, 2);
-        grid.add(emailField, 1, 2);
-        grid.add(new Label("Extra Είσοδος:"), 0, 3);
-        grid.add(entranceField, 1, 3);
+            grid.add(new Label("Επιλογή Προγράμματος:"), 0, 0);
+            grid.add(comboProgram, 1, 0);
+            grid.add(new Label("Σύνολο Ετών:"), 0, 1);
+            grid.add(yearsField, 1, 1);
+            grid.add(new Label("Email Λογιστή:"), 0, 2);
+            grid.add(emailField, 1, 2);
+            grid.add(new Label("Extra Είσοδος:"), 0, 3);
+            grid.add(entranceField, 1, 3);
 
-        dialog.getDialogPane().setContent(grid);
+            dialog.getDialogPane().setContent(grid);
 
-        // Ενεργοποίηση του κουμπιού OK μόνο αν έχουν συμπληρωθεί όλα τα πεδία
-        Node okButton = dialog.getDialogPane().lookupButton(okButtonType);
-        okButton.setDisable(true);
+            // Ενεργοποίηση του κουμπιού OK μόνο αν έχουν συμπληρωθεί όλα τα πεδία
+            Node okButton = dialog.getDialogPane().lookupButton(okButtonType);
+            okButton.setDisable(true);
 
-        yearsField.textProperty().addListener((observable, oldValue, newValue) ->
-                okButton.setDisable(newValue.trim().isEmpty() || emailField.getText().trim().isEmpty()));
+            yearsField.textProperty().addListener((observable, oldValue, newValue) ->
+                    okButton.setDisable(newValue.trim().isEmpty() || emailField.getText().trim().isEmpty()));
 
-        emailField.textProperty().addListener((observable, oldValue, newValue) ->
-                okButton.setDisable(newValue.trim().isEmpty() || yearsField.getText().trim().isEmpty()));
+            emailField.textProperty().addListener((observable, oldValue, newValue) ->
+                    okButton.setDisable(newValue.trim().isEmpty() || yearsField.getText().trim().isEmpty()));
 
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == okButtonType) {
-                return new ErganiRegistration(
-                        comboProgram.getValue(),
-                        yearsField.getText().trim(),
-                        emailField.getText().trim(),
-                        entranceField.getText().trim()
-                );
-            }
-            return null; // Αν ο χρήστης πατήσει "Άκυρο"
-        });
-
-
-        Optional<ErganiRegistration> result = dialog.showAndWait();
-        result.ifPresent(data -> {
-            String program = data.getProgram();
-            String years = data.getYears();
-            String emailAcc = data.getEmail();
-            String entrance = data.getEntrance();
-            String subject = "Νέος πελάτης Εργάνη";
-            String msg = "<b>Νέος πελάτης Εργάνη</b>" +
-                    "<br><b>Επωνυμία:</b> " + customer.getName() +
-                    "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
-                    "<br><b>E-mai:</b> " + selectedLogin.getUsername() +
-                    "<br><b>Κινητό:</b> " + selectedLogin.getPhone() +
-                    "<br><b>E-mail Λογιστή:</b> " + emailAcc +
-                    "<br><b>Προγράμματα:</b> " + program +
-                    "<br><b>Σύνολο Ετών:</b> " + years +
-                    "<br><b>Extra Είσοδος:</b> " + entrance;
-            sendEmail(subject, msg);
-            if (DBHelper.getCustomerDao().hasAccountant(selectedLogin.getCustomerId())) {
-                DBHelper.getSubscriptionDao().updateErganiEmail(selectedLogin.getCustomerId(), emailAcc);
-            }
-        });
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == okButtonType) {
+                    return new ErganiRegistration(
+                            comboProgram.getValue(),
+                            yearsField.getText().trim(),
+                            emailField.getText().trim(),
+                            entranceField.getText().trim()
+                    );
+                }
+                return null; // Αν ο χρήστης πατήσει "Άκυρο"
+            });
 
 
+            Optional<ErganiRegistration> result = dialog.showAndWait();
+            result.ifPresent(data -> {
+                String program = data.getProgram();
+                String years = data.getYears();
+                String emailAcc = data.getEmail();
+                String entrance = data.getEntrance();
+                String subject = "Νέος πελάτης Εργάνη";
+                String msg = "<b>Νέος πελάτης Εργάνη</b>" +
+                        "<br><b>Επωνυμία:</b> " + customer.getName() +
+                        "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
+                        "<br><b>E-mai:</b> " + selectedLogin.getUsername() +
+                        "<br><b>Κινητό:</b> " + selectedLogin.getPhone() +
+                        "<br><b>E-mail Λογιστή:</b> " + emailAcc +
+                        "<br><b>Προγράμματα:</b> " + program +
+                        "<br><b>Σύνολο Ετών:</b> " + years +
+                        "<br><b>Extra Είσοδος:</b> " + entrance;
+                sendEmail(subject, msg);
+                if (DBHelper.getCustomerDao().hasAccountant(selectedLogin.getCustomerId())) {
+                    DBHelper.getSubscriptionDao().updateErganiEmail(selectedLogin.getCustomerId(), emailAcc);
+                }
+            });
+        } else {
+            showErrorNotification(WARNING_TITLE, "Το module Ergani είναι απενεργοποιημένο.");
+        }
     }
 
     public void loginErgani (ActionEvent actionEvent) {
-        Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
-        if (selectedLogin == null) {
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Παρακαλώ επιλέξτε ένα login.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
-            return;
-        }
-        try {
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString("https://myaccount.epsilonnet.gr/Identity/Account/Login?product=8fd59003-5af4-4ca7-6fbd-08dace2c8999");
-            clipboard.setContent(content);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (Features.isEnabled("ergani")) {
+            Logins selectedLogin = checkSelectedLogin();
+            if (selectedLogin == null) {
+                Notifications notifications = Notifications.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ επιλέξτε ένα login.")
+                        .graphic(null)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT);
+                notifications.showError();
+                return;
+            }
+            try {
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString("https://myaccount.epsilonnet.gr/Identity/Account/Login?product=8fd59003-5af4-4ca7-6fbd-08dace2c8999");
+                clipboard.setContent(content);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            showErrorNotification(WARNING_TITLE, "Το module Ergani είναι απενεργοποιημένο.");
         }
     }
     // Μέθοδος αποστολής email

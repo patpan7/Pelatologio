@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.Features;
 import org.easytech.pelatologio.helper.Logger;
 import org.easytech.pelatologio.models.Offer;
 import org.easytech.pelatologio.models.Tasks;
@@ -30,6 +31,7 @@ public class MainMenu extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        Features.loadFeatureFlags();
         //Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
         String username = AppSettings.loadSetting("appuser") != null ? AppSettings.loadSetting("appuser") : "";
         if (username == null || username.isEmpty()) {

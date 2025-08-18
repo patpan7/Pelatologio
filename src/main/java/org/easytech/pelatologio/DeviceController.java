@@ -16,6 +16,7 @@ import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.Features;
 import org.easytech.pelatologio.models.Device;
 import org.easytech.pelatologio.models.Item;
 
@@ -53,6 +54,26 @@ public class DeviceController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        if (!Features.isEnabled("devices")) {
+            devicesTable.setVisible(false);
+            devicesTable.setManaged(false);
+            addDeviceButton.setVisible(false);
+            addDeviceButton.setManaged(false);
+            filterField.setVisible(false);
+            filterField.setManaged(false);
+            showAllCheckbox.setVisible(false);
+            showAllCheckbox.setManaged(false);
+            showWithCustomerCheckbox.setVisible(false);
+            showWithCustomerCheckbox.setManaged(false);
+            showWithoutCustomerCheckbox.setVisible(false);
+            showWithoutCustomerCheckbox.setManaged(false);
+            itemFilterComboBox.setVisible(false);
+            itemFilterComboBox.setManaged(false);
+            rateFilterComboBox.setVisible(false);
+            rateFilterComboBox.setManaged(false);
+            countLabel.setVisible(false);
+            countLabel.setManaged(false);
+        }
         Platform.runLater(() -> stackPane.requestFocus());
         // Σύνδεση στηλών πίνακα με πεδία του Task
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -152,12 +173,14 @@ public class DeviceController implements Initializable {
     }
 
     private void loadDevices() {
-        List<TableColumn<Device, ?>> sortOrder = new ArrayList<>(devicesTable.getSortOrder());
-        // Φόρτωση όλων των εργασιών από τη βάση
-        DBHelper dbHelper = new DBHelper();
-        allDevices.setAll(DBHelper.getDeviceDao().getAllDevices());
-        updateDevicesTable();
-        devicesTable.getSortOrder().setAll(sortOrder);
+        if (Features.isEnabled("devices")) {
+            List<TableColumn<Device, ?>> sortOrder = new ArrayList<>(devicesTable.getSortOrder());
+            // Φόρτωση όλων των εργασιών από τη βάση
+            DBHelper dbHelper = new DBHelper();
+            allDevices.setAll(DBHelper.getDeviceDao().getAllDevices());
+            updateDevicesTable();
+            devicesTable.getSortOrder().setAll(sortOrder);
+        }
     }
 
     private void updateDevicesTable() {
@@ -201,6 +224,7 @@ public class DeviceController implements Initializable {
 
     @FXML
     private void handleAddDevice() {
+        if (Features.isEnabled("devices")) {
             try {
                 // Φόρτωση του FXML για προσθήκη ραντεβού
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("addDevice.fxml"));
@@ -228,6 +252,15 @@ public class DeviceController implements Initializable {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
 
             }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Συσκευές είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
+        }
     }
 
     @FXML

@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -18,12 +19,14 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.dao.CustomerDao;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.CallLog;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Order;
 import org.openqa.selenium.By;
+import org.easytech.pelatologio.helper.Features;
 
 import java.io.IOException;
 import java.net.URL;
@@ -33,6 +36,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MainMenuController implements Initializable {
+    @FXML
+    public JFXButton btnSubs, btnDashboard, btnAccountants, btnSuppliers, btnOffers, btnOrders, btnPartners, btnCallHistory, btnPartnerEarnings, btnCommissions;
 
     @FXML
     private StackPane stackPane;
@@ -60,6 +65,50 @@ public class MainMenuController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         mainTab.setClosable(false);
         setTooltips();
+
+        if (!Features.isEnabled("mypos")) {
+            btnMyPOS.setVisible(false);
+            btnMyPOS.setManaged(false);
+            lbMyposTotal.setVisible(false);
+            lbMyposTotal.setManaged(false);
+            lbMyposVerified.setVisible(false);
+            lbMyposVerified.setManaged(false);
+            lbMyposUnverified.setVisible(false);
+            lbMyposUnverified.setManaged(false);
+            lbMyposActive.setVisible(false);
+            lbMyposActive.setManaged(false);
+            lbMyposBlocked.setVisible(false);
+            lbMyposBlocked.setManaged(false);
+            lbMyposClosed.setVisible(false);
+                        lbMyposClosed.setManaged(false);
+        }
+
+        if (!Features.isEnabled("simply")) {
+            btnSimplyStatus.setVisible(false);
+                        lbSimply.setManaged(false);
+        }
+
+        if (!Features.isEnabled("contracts")) {
+            btnSubs.setVisible(false);
+            btnSubs.setManaged(false);
+        }
+
+        if (!Features.isEnabled("devices")) {
+            btnDevices.setVisible(false);
+            btnDevices.setManaged(false);
+        }
+
+        if (!Features.isEnabled("tasks")) {
+            btnTasks.setVisible(false);
+            btnTasks.setManaged(false);
+            lbTasks.setVisible(false);
+            lbTasks.setManaged(false);
+        }
+
+        if (!Features.isEnabled("offers")) {
+            btnOffers.setVisible(false);
+            btnOffers.setManaged(false);
+        }
         lbAppUser.setText("Χειριστής: " + AppSettings.loadSetting("appuser"));
         loadAllDashboardData();
 
@@ -170,31 +219,38 @@ public class MainMenuController implements Initializable {
         Task<Void> loadDataTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                final String tasksCount = String.valueOf(DBHelper.getTaskDao().getTasksCount());
+                final String tasksCount = Features.isEnabled("tasks") ? String.valueOf(DBHelper.getTaskDao().getTasksCount()) : "N/A";
                 final String appointmentsCount = String.valueOf(DBHelper.getTaskDao().getAppointmentsCount());
-                final String simplyCount = String.valueOf(DBHelper.getLoginDao().getLoginsCount(2));
+                final String simplyCount = Features.isEnabled("simply") ? String.valueOf(DBHelper.getLoginDao().getLoginsCount(2)) : "N/A";
                 
                 // myPOS Stats
-                final int myposTotal = DBHelper.getCustomerMyPosDetailsDao().getTotalCount();
-                final int myposVerified = DBHelper.getCustomerMyPosDetailsDao().countByVerificationStatus("Verified");
-                final int myposUnverified = DBHelper.getCustomerMyPosDetailsDao().countByVerificationStatus("Unverified");
-                final int myposActive = DBHelper.getCustomerMyPosDetailsDao().countByAccountStatus("Active");
-                final int myposBlocked = DBHelper.getCustomerMyPosDetailsDao().countByAccountStatus("Blocked");
-                final int myposClosed = DBHelper.getCustomerMyPosDetailsDao().countByAccountStatus("Closed");
+                if (Features.isEnabled("mypos")) {
+                    final int myposTotal = DBHelper.getCustomerMyPosDetailsDao().getTotalCount();
+                    final int myposVerified = DBHelper.getCustomerMyPosDetailsDao().countByVerificationStatus("Verified");
+                    final int myposUnverified = DBHelper.getCustomerMyPosDetailsDao().countByVerificationStatus("Unverified");
+                    final int myposActive = DBHelper.getCustomerMyPosDetailsDao().countByAccountStatus("Active");
+                    final int myposBlocked = DBHelper.getCustomerMyPosDetailsDao().countByAccountStatus("Blocked");
+                    final int myposClosed = DBHelper.getCustomerMyPosDetailsDao().countByAccountStatus("Closed");
 
-                Platform.runLater(() -> {
-                    lbTasks.setText("Εκκρεμείς εργασίες: " + tasksCount);
-                    lbAppointments.setText("Ραντεβού ημέρας: " + appointmentsCount);
-                    lbSimply.setText("Πελάτες Simply: " + simplyCount);
-                    
-                    // Update myPOS Labels
-                    lbMyposTotal.setText("Σύνολο: " + myposTotal);
-                    lbMyposVerified.setText("Verified: " + myposVerified);
-                    lbMyposUnverified.setText("Unverified: " + myposUnverified);
-                    lbMyposActive.setText("Active: " + myposActive);
-                    lbMyposBlocked.setText("Blocked: " + myposBlocked);
-                    lbMyposClosed.setText("Closed: " + myposClosed);
-                });
+                    Platform.runLater(() -> {
+                        // Update myPOS Labels
+                        lbMyposTotal.setText("Σύνολο: " + myposTotal);
+                        lbMyposVerified.setText("Verified: " + myposVerified);
+                        lbMyposUnverified.setText("Unverified: " + myposUnverified);
+                        lbMyposActive.setText("Active: " + myposActive);
+                        lbMyposBlocked.setText("Blocked: " + myposBlocked);
+                        lbMyposClosed.setText("Closed: " + myposClosed);
+                    });
+                } else {
+                    Platform.runLater(() -> {
+                        lbMyposTotal.setText("Σύνολο: N/A");
+                        lbMyposVerified.setText("Verified: N/A");
+                        lbMyposUnverified.setText("Unverified: N/A");
+                        lbMyposActive.setText("Active: N/A");
+                        lbMyposBlocked.setText("Blocked: N/A");
+                        lbMyposClosed.setText("Closed: N/A");
+                    });
+                }
 
                 final List<Order> pendingOrders = DBHelper.getOrderDao().getPendingOrders();
                 final List<Order> unreceivedOrders = DBHelper.getOrderDao().getUnreceivedOrders();
@@ -220,13 +276,22 @@ public class MainMenuController implements Initializable {
 
     private void setTooltips() {
         setTooltip(btnCustomers, "Διαχείριση πελατών");
-        setTooltip(btnMyPOS, "1)Είσοδος στο DAS της myPOS\n2)Έλεγχος κατάστασης myPOS");
-        setTooltip(btnTasks, "Διαχείριση εργασιών");
+        if (Features.isEnabled("mypos")) {
+            setTooltip(btnMyPOS, "1)Είσοδος στο DAS της myPOS\n2)Έλεγχος κατάστασης myPOS");
+        }
+        if (Features.isEnabled("simply")) {
+            setTooltip(btnSimplyStatus, "1)Είσοδος στο Simply Status Page\n2)Άνοιγμα Simply Status Tab");
+        }
+        if (Features.isEnabled("tasks")) {
+            setTooltip(btnTasks, "Διαχείριση εργασιών");
+        }
         setTooltip(btnCalendar, "Διαχείριση ραντεβού");
         setTooltip(btnD11, "Καταχώρηση Δ11");
         setTooltip(btnMyDataStatus, "Έλεγχος κατάστασης myData");
         setTooltip(btnItems, "Διαχείριση ειδών");
-        setTooltip(btnDevices, "Διαχείριση συσκευών");
+        if (Features.isEnabled("devices")) {
+            setTooltip(btnDevices, "Διαχείριση συσκευών");
+        }
     }
 
     private void setTooltip(Button button, String text) {
@@ -304,21 +369,31 @@ public class MainMenuController implements Initializable {
     }
 
     public void tasksClick(ActionEvent event) throws IOException {
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Εργασίες")) {
-                mainTabPane.getSelectionModel().select(tab);
-                return;
+        if (Features.isEnabled("tasks")) {
+            for (Tab tab : mainTabPane.getTabs()) {
+                if (tab.getText().equals("Εργασίες")) {
+                    mainTabPane.getSelectionModel().select(tab);
+                    return;
+                }
             }
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("tasksView.fxml"));
+            Parent tasksContent = fxmlLoader.load();
+
+            Tab newTab = new Tab("Εργασίες");
+            newTab.setContent(tasksContent);
+
+            mainTabPane.getTabs().add(newTab);
+            mainTabPane.getSelectionModel().select(newTab);
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Εργασίες είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
-
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("tasksView.fxml"));
-        Parent tasksContent = fxmlLoader.load();
-
-        Tab newTab = new Tab("Εργασίες");
-        newTab.setContent(tasksContent);
-
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab);
     }
 
     public void calendarClick(ActionEvent event) throws IOException {
@@ -340,46 +415,65 @@ public class MainMenuController implements Initializable {
     }
 
     public void offersClick(ActionEvent actionEvent) throws IOException {
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Προσφορές")) {
-                mainTabPane.getSelectionModel().select(tab);
-                return;
+        if (Features.isEnabled("offers")) {
+            for (Tab tab : mainTabPane.getTabs()) {
+                if (tab.getText().equals("Προσφορές")) {
+                    mainTabPane.getSelectionModel().select(tab);
+                    return;
+                }
             }
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("offersView.fxml"));
+            Parent offerContent = fxmlLoader.load();
+
+            OffersController offerController = fxmlLoader.getController();
+            offerController.setMainTabPane(mainTabPane);
+
+            Tab newTab = new Tab("Προσφορές");
+            newTab.setContent(offerContent);
+
+            mainTabPane.getTabs().add(newTab);
+            mainTabPane.getSelectionModel().select(newTab);
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Προσφορές είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("offersView.fxml"));
-        Parent offerContent = fxmlLoader.load();
-
-        OffersController offerController = fxmlLoader.getController();
-        offerController.setMainTabPane(mainTabPane);
-
-        Tab newTab = new Tab("Προσφορές");
-        newTab.setContent(offerContent);
-
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab);
     }
 
-    public void myposdasClick(MouseEvent event) {
-
-        if (event.getButton() == MouseButton.SECONDARY) {
-            try {
-                LoginAutomator loginAutomation = new LoginAutomator(true);
-                loginAutomation.openPage("https://status.mypos.com/");
-            } catch (IOException e) {
-                e.printStackTrace();
+        public void myposdasClick(MouseEvent event) {
+        if (Features.isEnabled("mypos")) {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                try {
+                    LoginAutomator loginAutomation = new LoginAutomator(true);
+                    loginAutomation.openPage("https://status.mypos.com/");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    LoginAutomator loginAutomation = new LoginAutomator(true);
+                    loginAutomation.openAndFillLoginFormDas("https://das.mypos.eu/en/login",
+                            AppSettings.loadSetting("myposUser"),
+                            AppSettings.loadSetting("myposPass"),
+                            By.id("username"),
+                            By.className("btn-primary"),
+                            By.id("password"));
+                } catch (IOException e) {
+                    Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+                }
             }
         } else {
-            try {
-                LoginAutomator loginAutomation = new LoginAutomator(true);
-                loginAutomation.openAndFillLoginFormDas("https://das.mypos.eu/en/login",
-                        AppSettings.loadSetting("myposUser"),
-                        AppSettings.loadSetting("myposPass"),
-                        By.id("username"),
-                        By.className("btn-primary"),
-                        By.id("password"));
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-            }
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module myPOS είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
@@ -430,41 +524,61 @@ public class MainMenuController implements Initializable {
     }
 
     public void devicesClick(ActionEvent actionEvent) throws IOException {
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Συσκευές")) {
-                mainTabPane.getSelectionModel().select(tab);
-                return;
+        if (Features.isEnabled("devices")) {
+            for (Tab tab : mainTabPane.getTabs()) {
+                if (tab.getText().equals("Συσκευές")) {
+                    mainTabPane.getSelectionModel().select(tab);
+                    return;
+                }
             }
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("deviceView.fxml"));
+            Parent devicesContent = fxmlLoader.load();
+
+            Tab newTab = new Tab("Συσκευές");
+            newTab.setContent(devicesContent);
+
+            mainTabPane.getTabs().add(newTab);
+            mainTabPane.getSelectionModel().select(newTab);
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Συσκευές είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
-
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("deviceView.fxml"));
-        Parent devicesContent = fxmlLoader.load();
-
-        Tab newTab = new Tab("Συσκευές");
-        newTab.setContent(devicesContent);
-
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab);
     }
 
     public void subsClick(ActionEvent actionEvent) throws IOException {
-        for (Tab tab : mainTabPane.getTabs()) {
-            if (tab.getText().equals("Συμβόλαια")) {
-                mainTabPane.getSelectionModel().select(tab);
-                return;
+        if (Features.isEnabled("contracts")) {
+            for (Tab tab : mainTabPane.getTabs()) {
+                if (tab.getText().equals("Συμβόλαια")) {
+                    mainTabPane.getSelectionModel().select(tab);
+                    return;
+                }
             }
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("subsView.fxml"));
+            Parent subsContent = fxmlLoader.load();
+
+            SubsController subsController = fxmlLoader.getController();
+            subsController.setMainTabPane(mainTabPane);
+
+            Tab newTab = new Tab("Συμβόλαια");
+            newTab.setContent(subsContent);
+
+            mainTabPane.getTabs().add(newTab);
+            mainTabPane.getSelectionModel().select(newTab);
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Συμβόλαια είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("subsView.fxml"));
-        Parent subsContent = fxmlLoader.load();
-
-        SubsController subsController = fxmlLoader.getController();
-        subsController.setMainTabPane(mainTabPane);
-
-        Tab newTab = new Tab("Συμβόλαια");
-        newTab.setContent(subsContent);
-
-        mainTabPane.getTabs().add(newTab);
-        mainTabPane.getSelectionModel().select(newTab);
     }
 
     public void d11Click(ActionEvent event) {
@@ -611,32 +725,41 @@ public class MainMenuController implements Initializable {
     }
 
     public void simplyClick(MouseEvent event) throws IOException {
+        if (Features.isEnabled("simply")) {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                try {
+                    LoginAutomator loginAutomation = new LoginAutomator(true);
+                    loginAutomation.openPage("https://simplypos.statuspage.io/");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                for (Tab tab : mainTabPane.getTabs()) {
+                    if (tab.getText().equals("Simply")) {
+                        mainTabPane.getSelectionModel().select(tab);
+                        return;
+                    }
+                }
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("simplyStatusView.fxml"));
+                Parent simplyStatusContent = fxmlLoader.load();
 
-        if (event.getButton() == MouseButton.SECONDARY) {
-            try {
-                LoginAutomator loginAutomation = new LoginAutomator(true);
-                loginAutomation.openPage("https://simplypos.statuspage.io/");
-            } catch (IOException e) {
-                e.printStackTrace();
+                SimplyStatusController simplyStatusController = fxmlLoader.getController();
+                simplyStatusController.setMainTabPane(mainTabPane);
+
+                Tab newTab = new Tab("Simply");
+                newTab.setContent(simplyStatusContent);
+
+                mainTabPane.getTabs().add(newTab);
+                mainTabPane.getSelectionModel().select(newTab);
             }
         } else {
-            for (Tab tab : mainTabPane.getTabs()) {
-                if (tab.getText().equals("Simply")) {
-                    mainTabPane.getSelectionModel().select(tab);
-                    return;
-                }
-            }
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("simplyStatusView.fxml"));
-            Parent simplyStatusContent = fxmlLoader.load();
-
-            SimplyStatusController simplyStatusController = fxmlLoader.getController();
-            simplyStatusController.setMainTabPane(mainTabPane);
-
-            Tab newTab = new Tab("Simply");
-            newTab.setContent(simplyStatusContent);
-
-            mainTabPane.getTabs().add(newTab);
-            mainTabPane.getSelectionModel().select(newTab);
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Simply είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 

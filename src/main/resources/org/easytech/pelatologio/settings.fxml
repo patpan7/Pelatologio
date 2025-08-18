@@ -199,7 +199,7 @@
                             </TitledPane>
 
                             <!-- Τέταρτο TitledPane: Άλλες Ρυθμίσεις -->
-                            <TitledPane styleClass="menu-label" text="Ρυθμίσεις Simply">
+                            <TitledPane fx:id="simplySettingsPane" styleClass="menu-label" text="Ρυθμίσεις Simply">
                                 <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
                                     <children>
                                         <Label styleClass="normal-label" text="Simply POS User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -236,7 +236,7 @@
                                     </rowConstraints>
                                 </GridPane>
                             </TitledPane>
-                            <TitledPane styleClass="menu-label" text="Ρυθμίσεις Emblem">
+                            <TitledPane fx:id="emblemSettingsPane" styleClass="menu-label" text="Ρυθμίσεις Emblem">
                                 <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
                                     <columnConstraints>
                                         <ColumnConstraints />
@@ -259,7 +259,7 @@
                                     <TextField fx:id="tfEmblemRegisterMail" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                 </GridPane>
                             </TitledPane>
-                            <TitledPane styleClass="menu-label" text="Ρυθμίσεις Εργάνη">
+                            <TitledPane fx:id="erganiSettingsPane" styleClass="menu-label" text="Ρυθμίσεις Εργάνη">
                                 <GridPane alignment="TOP_CENTER" hgap="10" styleClass="pane" vgap="10">
                                     <columnConstraints>
                                         <ColumnConstraints />

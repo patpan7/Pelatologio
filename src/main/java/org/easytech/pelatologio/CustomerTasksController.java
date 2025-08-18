@@ -14,6 +14,7 @@ import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.Features;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Tasks;
 
@@ -35,6 +36,20 @@ public class CustomerTasksController {
 
     @FXML
     public void initialize() {
+        if (!Features.isEnabled("tasks")) {
+            tasksTable.setVisible(false);
+            tasksTable.setManaged(false);
+            addTaskButton.setVisible(false);
+            addTaskButton.setManaged(false);
+            editTaskButton.setVisible(false);
+            editTaskButton.setManaged(false);
+            deleteTaskButton.setVisible(false);
+            deleteTaskButton.setManaged(false);
+            completeTaskButton.setVisible(false);
+            completeTaskButton.setManaged(false);
+            uncompletedTaskButton.setVisible(false);
+            uncompletedTaskButton.setManaged(false);
+        }
         setTooltip(addTaskButton, "Προσθήκη νέας εργασίας");
         setTooltip(editTaskButton, "Επεξεργασία εργασίας");
         setTooltip(deleteTaskButton, "Διαγραφή εργασίας");
@@ -106,204 +121,258 @@ public class CustomerTasksController {
 
 
     private void toggleComplete(boolean complete) {
-        Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
-        if (selectedTasks == null) {
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Δεν έχει επιλεγεί εργασία.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
-            return;
-        }
+        if (Features.isEnabled("tasks")) {
+            Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
+            if (selectedTasks == null) {
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Προσοχή")
+                            .text("Δεν έχει επιλεγεί εργασία.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();});
+                return;
+            }
 
-        DBHelper dbHelper = new DBHelper();
-        if (DBHelper.getTaskDao().completeTask(selectedTasks.getId(), complete)) {
-            System.out.println("Task completion status updated.");
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Ενημέρωση")
-                        .text("Ενημέρωση εργασίας επιτυχής.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();});
-            loadTasks(customer.getCode()); // Φορτώνει ξανά τις εργασίες
+            DBHelper dbHelper = new DBHelper();
+            if (DBHelper.getTaskDao().completeTask(selectedTasks.getId(), complete)) {
+                System.out.println("Task completion status updated.");
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Ενημέρωση")
+                            .text("Ενημέρωση εργασίας επιτυχής.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showConfirm();});
+                loadTasks(customer.getCode()); // Φορτώνει ξανά τις εργασίες
+            } else {
+                System.out.println("Failed to update task completion status.");
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Ενημέρωση")
+                            .text("Αποτυχία ενημέρωση εργασίας.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();});
+            }
         } else {
-            System.out.println("Failed to update task completion status.");
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Ενημέρωση")
-                        .text("Αποτυχία ενημέρωση εργασίας.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Εργασίες είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
 
 
     private void loadTasks(int customerCode) {
-        allTasks.clear();
-        // Φόρτωση όλων των εργασιών από τη βάση
-        DBHelper dbHelper = new DBHelper();
-        allTasks.setAll(DBHelper.getTaskDao().getAllCustomerTasks(customerCode));
+        if (Features.isEnabled("tasks")) {
+            allTasks.clear();
+            // Φόρτωση όλων των εργασιών από τη βάση
+            DBHelper dbHelper = new DBHelper();
+            allTasks.setAll(DBHelper.getTaskDao().getAllCustomerTasks(customerCode));
+        }
     }
 
 
-    @FXML
+        @FXML
     private void handleAddTask() {
-        try {
-            // Φόρτωση του FXML για προσθήκη ραντεβού
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Προσθήκη Εργασίας");
-            AddTaskController controller = loader.getController();
-            controller.setCustomerId(customer.getCode());
-            controller.setCustomerName(customer.getName());
-            controller.lock();
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        if (Features.isEnabled("tasks")) {
+            try {
+                // Φόρτωση του FXML για προσθήγη ραντεβού
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Προσθήκη Εργασίας");
+                AddTaskController controller = loader.getController();
+                controller.setCustomerId(customer.getCode());
+                controller.setCustomerName(customer.getName());
+                controller.lock();
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
-            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                // Εκτελούμε το handleSaveAppointment
-                boolean success = controller.handleSaveTask();
+                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                    // Εκτελούμε το handleSaveAppointment
+                    boolean success = controller.handleSaveTask();
 
-                if (!success) {
-                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                    event.consume();
-                }
-            });
+                    if (!success) {
+                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                        event.consume();
+                    }
+                });
 
-            dialog.initModality(Modality.NONE);
-            dialog.initOwner(null);
-            dialog.show();
+                dialog.initModality(Modality.NONE);
+                dialog.initOwner(null);
+                dialog.show();
 
-            dialog.setOnHidden(e -> {
-                if (dialog.getResult() == ButtonType.OK) {
-                    loadTasks(customer.getCode());
-                }
-            });
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+                dialog.setOnHidden(e -> {
+                    if (dialog.getResult() == ButtonType.OK) {
+                        loadTasks(customer.getCode());
+                    }
+                });
+            } catch (IOException e) {
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήγη.", e.getMessage(), Alert.AlertType.ERROR));
+            }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Εργασίες είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
     @FXML
     private void handleEditTask() throws IOException {
-        // Επεξεργασία επιλεγμένης εργασίας
-        Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
-        if (selectedTasks == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί εργασία!");
-            Optional<ButtonType> result = alert.showAndWait();
-            return;
-        }
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Επεξεργασία Εργασίας");
-            AddTaskController controller = loader.getController();
+        if (Features.isEnabled("tasks")) {
+            // Επεξεργασία επιλεγμένης εργασίας
+            Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
+            if (selectedTasks == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText("Δεν έχει επιλεγεί εργασία!");
+                Optional<ButtonType> result = alert.showAndWait();
+                return;
+            }
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Επεξεργασία Εργασίας");
+                AddTaskController controller = loader.getController();
 
-            // Ορισμός δεδομένων για επεξεργασία
-            controller.setTaskForEdit(selectedTasks);
-            controller.lock();
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+                // Ορισμός δεδομένων για επεξεργασία
+                controller.setTaskForEdit(selectedTasks);
+                controller.lock();
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                // Εκτελούμε το handleSaveAppointment
-                boolean success = controller.handleSaveTask();
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                    // Εκτελούμε το handleSaveAppointment
+                    boolean success = controller.handleSaveTask();
 
-                if (!success) {
-                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                    event.consume();
-                }
-            });
-            dialog.initModality(Modality.NONE);
-            dialog.initOwner(null);
-            dialog.show();
+                    if (!success) {
+                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                        event.consume();
+                    }
+                });
+                dialog.initModality(Modality.NONE);
+                dialog.initOwner(null);
+                dialog.show();
 
-            dialog.setOnHidden(e -> {
-                if (dialog.getResult() == ButtonType.OK) {
-                    loadTasks(customer.getCode());
-                }
-            });
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
+                dialog.setOnHidden(e -> {
+                    if (dialog.getResult() == ButtonType.OK) {
+                        loadTasks(customer.getCode());
+                    }
+                });
+            } catch (IOException e) {
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
+            }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Εργασίες είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
     @FXML
     private void handleDeleteTask() throws SQLException {
-        // Διαγραφή επιλεγμένης εργασίας
-        Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
-        if (selectedTasks == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί εργασία!");
+        if (Features.isEnabled("tasks")) {
+            // Διαγραφή επιλεγμένης εργασίας
+            Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
+            if (selectedTasks == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Προσοχή");
+                alert.setContentText("Δεν έχει επιλεγεί εργασία!");
+                Optional<ButtonType> result = alert.showAndWait();
+                return;
+            }
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Επιβεβαίωση");
+            alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedTasks.getTitle() + ";" );
             Optional<ButtonType> result = alert.showAndWait();
-            return;
-        }
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Επιβεβαίωση");
-        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedTasks.getTitle() + ";" );
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            DBHelper dbHelper = new DBHelper();
-            DBHelper.getTaskDao().deleteTask(selectedTasks.getId());
-            loadTasks(customer.getCode());
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                DBHelper dbHelper = new DBHelper();
+                DBHelper.getTaskDao().deleteTask(selectedTasks.getId());
+                loadTasks(customer.getCode());
+            }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Εργασίες είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
     @FXML
     private void handleAddOffer() throws SQLException {
-        try {
-            Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
-            // Φόρτωση του FXML για προσθήκη ραντεβού
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("addOffer.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Προσθήκη Προσφοράς");
-            AddOfferController controller = loader.getController();
-            controller.setCustomer(customer);
-            controller.setCustomerName(customer.getName());
-            controller.setDescription(selectedTasks.getDescription());
-            controller.lock();
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        if (Features.isEnabled("tasks")) {
+            try {
+                Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
+                // Φόρτωση του FXML για προσθήκη ραντεβού
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("addOffer.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Προσθήκη Προσφοράς");
+                AddOfferController controller = loader.getController();
+                controller.setCustomer(customer);
+                controller.setCustomerName(customer.getName());
+                controller.setDescription(selectedTasks.getDescription());
+                controller.lock();
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
-            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                // Εκτελούμε το handleSaveAppointment
-                boolean success = controller.handleSaveOffer();
+                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                    // Εκτελούμε το handleSaveAppointment
+                    boolean success = controller.handleSaveOffer();
 
-                if (!success) {
-                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                    event.consume();
-                }
-            });
+                    if (!success) {
+                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                        event.consume();
+                    }
+                });
 
-            dialog.initModality(Modality.NONE);
-            dialog.initOwner(null);
-            dialog.show();
+                dialog.initModality(Modality.NONE);
+                dialog.initOwner(null);
+                dialog.show();
 
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+            } catch (IOException e) {
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+            }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Εργασίες είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
         //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
-        loadTasks(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
+        if (Features.isEnabled("tasks")) {
+            loadTasks(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
+        }
     }
 
 
