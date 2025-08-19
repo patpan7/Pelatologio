@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+
+<DialogPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.FeatureManagementDialogController">
+    <content>
+        <VBox spacing="10.0">
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <Label text="Διαχείριση Modules" styleClass="header-label" />
+            <GridPane hgap="10.0" vgap="10.0">
+                <children>
+                    <Label text="Προμηθευτές:" GridPane.rowIndex="0" />
+                    <CheckBox fx:id="suppliersCheck" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                    <Label text="Εργασίες:" GridPane.rowIndex="1" />
+                    <CheckBox fx:id="tasksCheck" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                    <Label text="Παραγγελίες:" GridPane.rowIndex="2" />
+                    <CheckBox fx:id="ordersCheck" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                    <Label text="myPOS:" GridPane.rowIndex="3" />
+                    <CheckBox fx:id="myposCheck" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                    <Label text="Συσκευές/Είδη:" GridPane.rowIndex="4" />
+                    <CheckBox fx:id="devicesCheck" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                    <Label text="Συμβόλαια:" GridPane.rowIndex="5" />
+                    <CheckBox fx:id="subsCheck" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+                    <Label text="Δ11:" GridPane.rowIndex="6" />
+                    <CheckBox fx:id="d11Check" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+                    <Label text="Simply:" GridPane.rowIndex="7" />
+                    <CheckBox fx:id="simplyCheck" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+                    <Label text="Κλήσεις:" GridPane.rowIndex="8" />
+                    <CheckBox fx:id="callsCheck" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+
+                    <Label text="Συνεργάτες/Προμήθειες:" GridPane.rowIndex="9" />
+                    <CheckBox fx:id="partnersCheck" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+
+                    <Label text="Προσφορές:" GridPane.rowIndex="10" />
+                    <CheckBox fx:id="offersCheck" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                </children>
+            </GridPane>
+            <Button onAction="#handleSave" text="Αποθήκευση" />
+        </VBox>
+    </content>
+</DialogPane>

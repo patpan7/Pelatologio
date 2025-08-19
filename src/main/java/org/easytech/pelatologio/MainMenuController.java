@@ -7,13 +7,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -205,6 +210,10 @@ public class MainMenuController implements Initializable {
                     }
                 }
             });
+
+            // Add key combination for feature management
+            final KeyCombination keyCombination = new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
+            stage.getScene().getAccelerators().put(keyCombination, this::openFeatureManagement);
         });
     }
 
@@ -984,6 +993,64 @@ public class MainMenuController implements Initializable {
 
         mainTabPane.getTabs().add(newTab);
         mainTabPane.getSelectionModel().select(newTab);
+    }
+
+    private void openFeatureManagement() {
+        // Create a custom dialog
+        Dialog<String> passwordDialog = new Dialog<>();
+        passwordDialog.setTitle("Είσοδος Διαχειριστή");
+        passwordDialog.setHeaderText("Απαιτείται κωδικός πρόσβασης για τη διαχείριση των modules.");
+
+        // Set the button types
+        ButtonType loginButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        passwordDialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        // Create the password field and label
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Κωδικός");
+
+        grid.add(new Label("Κωdικός:"), 0, 0);
+        grid.add(passwordField, 1, 0);
+
+        passwordDialog.getDialogPane().setContent(grid);
+
+        // Request focus on the password field by default
+        Platform.runLater(passwordField::requestFocus);
+
+        // Convert the result to the password string when the login button is clicked
+        passwordDialog.setResultConverter(dialogButton -> {
+            if (dialogButton == loginButtonType) {
+                return passwordField.getText();
+            }
+            return null;
+        });
+
+        Optional<String> result = passwordDialog.showAndWait();
+
+        result.ifPresent(password -> {
+            if (password.equals("054909468")) { // Hardcoded password
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("featureManagementDialog.fxml"));
+                    DialogPane pane = loader.load();
+
+                    Dialog<ButtonType> featureDialog = new Dialog<>();
+                    featureDialog.setDialogPane(pane);
+                    featureDialog.setTitle("Διαχείριση Modules");
+                    featureDialog.showAndWait();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα της διαχείρισης modules.", e.getMessage(), Alert.AlertType.ERROR);
+                }
+            } else {
+                AlertDialogHelper.showDialog("Σφάλμα", "Λανθασμένος κωδικός πρόσβασης.", "", Alert.AlertType.ERROR);
+            }
+        });
     }
 }
 
