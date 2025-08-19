@@ -171,6 +171,13 @@ public class AddCustomerController {
         btnTask.setVisible(false);
         tabTaxis.setDisable(true);
         tabMypos.setDisable(true);
+        // Disable tabs based on feature flags
+        if (!Features.isEnabled("taxis")) {
+            tabTaxis.setDisable(true);
+        }
+        if (!Features.isEnabled("mypos")) {
+            tabMypos.setDisable(true);
+        }
         if (!Features.isEnabled("simply")) {
             tabSimply.setDisable(true);
         }
@@ -189,17 +196,25 @@ public class AddCustomerController {
         if (!Features.isEnabled("devices")) {
             tabDevices.setDisable(true);
         }
+        if (!Features.isEnabled("megasoft")) {
+            tabInvoices.setDisable(true);
+        }
         tabInvoices.setDisable(true);
         if (!Features.isEnabled("tasks")) {
             tabTasks.setDisable(true);
         }
-        if (!Features.isEnabled("contracts")) {
+        if (!Features.isEnabled("subs")) {
             tabSubs.setDisable(true);
         }
         if (!Features.isEnabled("offers")) {
             tabOffers.setDisable(true);
         }
-        tabOrders.setDisable(true);
+        if (!Features.isEnabled("orders")) {
+            tabOrders.setDisable(true);
+        }
+        if (!Features.isEnabled("calls")) {
+            tabCallLog.setDisable(true);
+        }
 
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
@@ -416,75 +431,62 @@ public class AddCustomerController {
 
 
     private void setupTabs() {
-        tabToFxml.put(tabTaxis, "taxisView.fxml");
+        if (Features.isEnabled("taxis")){
+            tabToFxml.put(tabTaxis, "taxisView.fxml");
+            tabToContainer.put(tabTaxis, taxisContainer);
+        }
         if (Features.isEnabled("mypos")) {
             tabToFxml.put(tabMypos, "myposView.fxml");
-        }
-        if (Features.isEnabled("simply")) {
-            tabToFxml.put(tabSimply, "simplyView.fxml");
-        }
-        if (Features.isEnabled("emblem")) {
-            tabToFxml.put(tabEmblem, "emblemView.fxml");
-        }
-        if (Features.isEnabled("ergani")) {
-            tabToFxml.put(tabErgani, "erganiView.fxml");
-        }
-        if (Features.isEnabled("pelatologio")) {
-            tabToFxml.put(tabPelatologio, "pelatologioView.fxml");
-        }
-        if (Features.isEnabled("ninepos")) {
-            tabToFxml.put(tabNinepos, "nineposView.fxml");
-        }
-        if (Features.isEnabled("devices")) {
-            tabToFxml.put(tabDevices, "customerDevicesView.fxml");
-        }
-        tabToFxml.put(tabInvoices, "invoicesView.fxml");
-        if (Features.isEnabled("tasks")) {
-            tabToFxml.put(tabTasks, "customerTasksView.fxml");
-        }
-        if (Features.isEnabled("contracts")) {
-            tabToFxml.put(tabSubs, "customerSubsView.fxml");
-        }
-        if (Features.isEnabled("offers")) {
-            tabToFxml.put(tabOffers, "customerOffersView.fxml");
-        }
-        tabToFxml.put(tabOrders, "ordersCustView.fxml");
-        tabToFxml.put(tabCallLog, "customerCallLogView.fxml");
-
-        tabToContainer.put(tabTaxis, taxisContainer);
-        if (Features.isEnabled("mypos")) {
             tabToContainer.put(tabMypos, myposContainer);
         }
         if (Features.isEnabled("simply")) {
+            tabToFxml.put(tabSimply, "simplyView.fxml");
             tabToContainer.put(tabSimply, simplyContainer);
         }
         if (Features.isEnabled("emblem")) {
+            tabToFxml.put(tabEmblem, "emblemView.fxml");
             tabToContainer.put(tabEmblem, emblemContainer);
         }
         if (Features.isEnabled("ergani")) {
+            tabToFxml.put(tabErgani, "erganiView.fxml");
             tabToContainer.put(tabErgani, erganiContainer);
         }
         if (Features.isEnabled("pelatologio")) {
+            tabToFxml.put(tabPelatologio, "pelatologioView.fxml");
             tabToContainer.put(tabPelatologio, pelatologioContainer);
         }
         if (Features.isEnabled("ninepos")) {
+            tabToFxml.put(tabNinepos, "nineposView.fxml");
             tabToContainer.put(tabNinepos, nineposContainer);
         }
         if (Features.isEnabled("devices")) {
+            tabToFxml.put(tabDevices, "customerDevicesView.fxml");
             tabToContainer.put(tabDevices, devicesContainer);
         }
-        tabToContainer.put(tabInvoices, invoicesContainer);
+        if (Features.isEnabled("megasoft")) {
+            tabToFxml.put(tabInvoices, "invoicesView.fxml");
+            tabToContainer.put(tabInvoices, invoicesContainer);
+        }
         if (Features.isEnabled("tasks")) {
+            tabToFxml.put(tabTasks, "customerTasksView.fxml");
             tabToContainer.put(tabTasks, tasksContainer);
         }
-        if (Features.isEnabled("contracts")) {
+        if (Features.isEnabled("subs")) {
+            tabToFxml.put(tabSubs, "customerSubsView.fxml");
             tabToContainer.put(tabSubs, subsContainer);
         }
         if (Features.isEnabled("offers")) {
+            tabToFxml.put(tabOffers, "customerOffersView.fxml");
             tabToContainer.put(tabOffers, offersContainer);
         }
-        tabToContainer.put(tabOrders, ordersContainer);
-        tabToContainer.put(tabCallLog, callLogContainer);
+        if (Features.isEnabled("orders")) {
+            tabToFxml.put(tabOrders, "ordersCustView.fxml");
+            tabToContainer.put(tabOrders, ordersContainer);
+        }
+        if (Features.isEnabled("calls")) {
+            tabToFxml.put(tabCallLog, "customerCallLogView.fxml");
+            tabToContainer.put(tabCallLog, callLogContainer);
+        }
     }
 
     private void loadTabContent(Tab tab) {
@@ -765,20 +767,17 @@ public class AddCustomerController {
 
         btnAddressAdd.setDisable(false);
 
-        btnAddToMegasoft.setDisable(false);
-        btnAddToMegasoft.setVisible(true);
+
         btnData.setDisable(false);
         btnData.setVisible(true);
         btnLabel.setDisable(false);
         btnLabel.setVisible(true);
         btnCopy.setDisable(false);
         btnCopy.setVisible(true);
-        btnTask.setDisable(false);
-        btnTask.setVisible(true);
+
         btnAcs.setDisable(false);
         btnAcs.setVisible(true);
-        startCallLogButton.setDisable(false);
-        startCallLogButton.setVisible(true);
+
         btnAnydesk.setDisable(false);
         btnAnydesk.setVisible(true);
         tfBalance.setDisable(false);
@@ -789,7 +788,10 @@ public class AddCustomerController {
         lblBlanceMega.setVisible(true);
         checkboxActive.setVisible(true);
         checkboxActive.setDisable(false);
-        tabTaxis.setDisable(false);
+
+        if (Features.isEnabled("taxis")) {
+            tabTaxis.setDisable(false);
+        }
         if (Features.isEnabled("mypos")) {
             tabMypos.setDisable(false);
         }
@@ -811,19 +813,31 @@ public class AddCustomerController {
         if (Features.isEnabled("devices")) {
             tabDevices.setDisable(false);
         }
-        tabInvoices.setDisable(false);
+        if (Features.isEnabled("megasoft")) {
+            tabInvoices.setDisable(false);
+            btnAddToMegasoft.setDisable(false);
+            btnAddToMegasoft.setVisible(true);
+        }
         if (Features.isEnabled("tasks")) {
             tabTasks.setDisable(false);
+            btnTask.setDisable(false);
+            btnTask.setVisible(true);
         }
-        if (Features.isEnabled("contracts")) {
+        if (Features.isEnabled("subs")) {
             tabSubs.setDisable(false);
         }
         if (Features.isEnabled("offers")) {
             tabOffers.setDisable(false);
         }
-        tabOrders.setDisable(false);
+        if (Features.isEnabled("calls")) {
+            tabCallLog.setDisable(false);
+            startCallLogButton.setDisable(false);
+            startCallLogButton.setVisible(true);
+        }
+        if (Features.isEnabled("orders")) {
+            tabOrders.setDisable(false);
+        }
 
-        startCallLogButton.setVisible(true);
         startCallLogButton.setOnAction(e -> handleStartCallLogging());
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = customer.getCode();
@@ -1071,6 +1085,12 @@ public class AddCustomerController {
         if (DBHelper.getCustomerDao().hasSubAddress(customer.getCode())) {
             btnAddressAdd.setStyle("-fx-border-color: #FF0000;");
         }
+
+        if (Features.isEnabled("taxis")) {
+            if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 3)) {
+                tabTaxis.getStyleClass().add("tabHas");
+            }
+        }
         if (Features.isEnabled("mypos")) {
             if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 1)) {
                 tabMypos.getStyleClass().add("tabHas");
@@ -1080,9 +1100,6 @@ public class AddCustomerController {
             if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 2)) {
                 tabSimply.getStyleClass().add("tabHas");
             }
-        }
-        if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 3)) {
-            tabTaxis.getStyleClass().add("tabHas");
         }
         if (Features.isEnabled("emblem")) {
             if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 4)) {
@@ -1117,7 +1134,7 @@ public class AddCustomerController {
                 tabTasks.getStyleClass().add("tabHas");
             }
         }
-        if (Features.isEnabled("contracts")) {
+        if (Features.isEnabled("subs")) {
             if (DBHelper.getCustomerDao().hasSub(customer.getCode())) {
                 tabSubs.getStyleClass().add("tabHas");
             }
@@ -1127,11 +1144,14 @@ public class AddCustomerController {
                 tabOffers.getStyleClass().add("tabHas");
             }
         }
+        if (Features.isEnabled("orders")) {
+            if (DBHelper.getCustomerDao().hasOrders(customer.getCode())) {
+                tabOrders.getStyleClass().add("tabHas");
+            }
+        }
+
         if (customer.getAccId() != 0) {
             tabAccountant.getStyleClass().add("tabHas");
-        }
-        if (DBHelper.getCustomerDao().hasOrders(customer.getCode())) {
-            tabOrders.getStyleClass().add("tabHas");
         }
         if (!customer.getNotes().isEmpty()) {
             tabNotes.getStyleClass().add("tabHas");
@@ -1556,7 +1576,9 @@ public class AddCustomerController {
     }
 
     public void selectTaxisTab() {
-        Platform.runLater(() -> tabPane.getSelectionModel().select(tabTaxis));
+        if (Features.isEnabled("taxis")) {
+            Platform.runLater(() -> tabPane.getSelectionModel().select(tabTaxis));
+        }
     }
 
     public void selectMyPOSTab() {

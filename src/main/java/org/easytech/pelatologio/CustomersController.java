@@ -15,12 +15,12 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -33,13 +33,8 @@ import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.dao.CustomerDao;
 import org.easytech.pelatologio.helper.*;
-import org.easytech.pelatologio.models.AppItem;
-import org.easytech.pelatologio.models.Customer;
-import org.easytech.pelatologio.models.JobTeam;
-import org.easytech.pelatologio.models.SubJobTeam;
-import org.easytech.pelatologio.models.Recommendation;
+import org.easytech.pelatologio.models.*;
 import org.openqa.selenium.By;
-import org.easytech.pelatologio.helper.Features;
 
 import java.awt.*;
 import java.io.File;
@@ -49,8 +44,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class CustomersController implements Initializable {
@@ -104,20 +99,14 @@ public class CustomersController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> stackPane.requestFocus());
         setTooltip(btnTaxis, "1) Διαχείριση κωδικών Taxis του πελάτη\n2) Είσοδος με κωδικούς νέου πελάτη");
-        if (Features.isEnabled("mypos")) {
-            setTooltip(btnMypos, "1) Διαχείριση κωδικών myPOS του πελάτη\n2) Είσοδος στο DAS της myPOS");
-        }
-        if (Features.isEnabled("simply")) {
-            setTooltip(btnSimply, "1) Διαχείριση κωδικών Simply του πελάτη\n2) Είσοδος στο DAS της Simply");
-        }
-        if (Features.isEnabled("emblem")) {
-            setTooltip(btnEmblem, "1) Διαχείριση κωδικών Emblem του πελάτη\n2) Είσοδος στο DAS της Emblem");
-        }
-        if (Features.isEnabled("ergani")) {
-            setTooltip(btnErgani, "Διαχείριση κωδικών Εργάνη του πελάτη");
-        }
+        setTooltip(btnMypos, "1) Διαχείριση κωδικών myPOS του πελάτη\n2) Είσοδος στο DAS της myPOS");
+        setTooltip(btnSimply, "1) Διαχείριση κωδικών Simply του πελάτη\n2) Είσοδος στο DAS της Simply");
+        setTooltip(btnEmblem, "1) Διαχείριση κωδικών Emblem του πελάτη\n2) Είσοδος στο DAS της Emblem");
+        setTooltip(btnEmblem, "1) Διαχείριση κωδικών Emblem του πελάτη\n2) Είσοδος στο DAS της Emblem");
+        setTooltip(btnErgani, "Διαχείριση κωδικών Εργάνη του πελάτη");
         setTooltip(btnData, "Άνοιγμα φακέλου με δεδομένα πελάτη");
         setTooltip(openFileButton, "1) Αντιγραφή πληροφοριών\n2) Άνοιγμα φακέλου με δεδομένα");
+
 
         this.customerDao = DBHelper.getCustomerDao();
 
@@ -142,9 +131,7 @@ public class CustomersController implements Initializable {
                     btnEmblem.setStyle("-fx-border-color: #005599;");
                 }
                 if (Features.isEnabled("ergani")) {
-                    if (Features.isEnabled("ergani")) {
-                btnErgani.setStyle("-fx-border-color: #005599;");
-            }
+                    btnErgani.setStyle("-fx-border-color: #005599;");
                 }
                 // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
 
@@ -275,7 +262,7 @@ public class CustomersController implements Initializable {
         jobTeamComboBox.getSelectionModel().selectFirst();
 
         // SubJobTeam ComboBox - Initially empty
-        subJobTeamComboBox.getItems().add(new SubJobTeam(0, "Όλες",0));
+        subJobTeamComboBox.getItems().add(new SubJobTeam(0, "Όλες", 0));
         subJobTeamComboBox.getSelectionModel().selectFirst();
 
         // App ComboBox
@@ -309,7 +296,7 @@ public class CustomersController implements Initializable {
         // Listener for JobTeam to dynamically load SubJobTeams
         jobTeamComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             subJobTeamComboBox.getItems().clear();
-            subJobTeamComboBox.getItems().add(new SubJobTeam(0, "Όλες",0));
+            subJobTeamComboBox.getItems().add(new SubJobTeam(0, "Όλες", 0));
             if (newVal != null && newVal.getId() != 0) {
                 subJobTeamComboBox.setDisable(false);
                 subJobTeamComboBox.getItems().addAll(DBHelper.getSubJobTeamDao().getSubJobTeams(newVal.getId()));
@@ -464,8 +451,8 @@ public class CustomersController implements Initializable {
 
             // App Filter
             AppItem appFilter = appComboBox.getSelectionModel().getSelectedItem();
-            if(appFilter != null && appFilter.getId() != 0) {
-                if(!customer.hasApp(appFilter.getId())) {
+            if (appFilter != null && appFilter.getId() != 0) {
+                if (!customer.hasApp(appFilter.getId())) {
                     return false;
                 }
             }
@@ -509,16 +496,19 @@ public class CustomersController implements Initializable {
                 } else {
                     switch (searchField) {
                         case "Όνομα":
-                            if (customer.getName() == null || !customer.getName().toUpperCase().contains(search1) && !customer.getName().toUpperCase().contains(search2)) return false;
+                            if (customer.getName() == null || !customer.getName().toUpperCase().contains(search1) && !customer.getName().toUpperCase().contains(search2))
+                                return false;
                             break;
                         case "Τίτλος":
-                            if (customer.getTitle() == null || !customer.getTitle().toUpperCase().contains(search1) && !customer.getTitle().toUpperCase().contains(search2)) return false;
+                            if (customer.getTitle() == null || !customer.getTitle().toUpperCase().contains(search1) && !customer.getTitle().toUpperCase().contains(search2))
+                                return false;
                             break;
                         case "ΑΦΜ":
                             if (customer.getAfm() == null || !customer.getAfm().contains(search1)) return false;
                             break;
                         case "Πόλη":
-                            if (customer.getTown() == null || !customer.getTown().toUpperCase().contains(search1) && !customer.getTown().toUpperCase().contains(search2)) return false;
+                            if (customer.getTown() == null || !customer.getTown().toUpperCase().contains(search1) && !customer.getTown().toUpperCase().contains(search2))
+                                return false;
                             break;
                         case "Αριθμοί επικοινωνίας":
                             boolean phoneMatch = (customer.getPhone1() != null && customer.getPhone1().contains(search1)) ||
@@ -527,7 +517,8 @@ public class CustomersController implements Initializable {
                             if (!phoneMatch) return false;
                             break;
                         case "Υπεύθυνος":
-                            if (customer.getManager() == null || !customer.getManager().toUpperCase().contains(search1) && !customer.getManager().toUpperCase().contains(search2)) return false;
+                            if (customer.getManager() == null || !customer.getManager().toUpperCase().contains(search1) && !customer.getManager().toUpperCase().contains(search2))
+                                return false;
                             break;
                     }
                 }
@@ -704,35 +695,45 @@ public class CustomersController implements Initializable {
 
 
     public void customerNewTask(ActionEvent actionEvent) {
-        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-        if (selectedCustomer != null) {
-            try {
-                // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Προσθήκη Εργασίας");
-                AddTaskController controller = loader.getController();
-                controller.setCustomerId(selectedCustomer.getCode());
-                controller.setCustomerName(selectedCustomer.getName());
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        if (Features.isEnabled("tasks")) {
+            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+            if (selectedCustomer != null) {
+                try {
+                    // Φόρτωση του FXML για προσθήκη ραντεβού
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("addTask.fxml"));
+                    Dialog<ButtonType> dialog = new Dialog<>();
+                    dialog.setDialogPane(loader.load());
+                    dialog.setTitle("Προσθήκη Εργασίας");
+                    AddTaskController controller = loader.getController();
+                    controller.setCustomerId(selectedCustomer.getCode());
+                    controller.setCustomerName(selectedCustomer.getName());
+                    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
-                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                    // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveTask();
+                    // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+                    Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                        // Εκτελούμε το handleSaveAppointment
+                        boolean success = controller.handleSaveTask();
 
-                    if (!success) {
-                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                        event.consume();
-                    }
-                });
+                        if (!success) {
+                            // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                            event.consume();
+                        }
+                    });
 
-                dialog.showAndWait();
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+                    dialog.showAndWait();
+                } catch (IOException e) {
+                    Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+                }
             }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Εργασιών είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
@@ -842,33 +843,43 @@ public class CustomersController implements Initializable {
 
 
     public void taxisClick(MouseEvent event) {
-        if (event.getButton() == MouseButton.SECONDARY) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addLogin.fxml"));
-                DialogPane dialogPane = loader.load();
+        if (Features.isEnabled("taxis")) {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("addLogin.fxml"));
+                    DialogPane dialogPane = loader.load();
 
-                AddLoginController addLoginController = loader.getController();
+                    AddLoginController addLoginController = loader.getController();
 
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(dialogPane);
-                dialog.setTitle("Login");
-                dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+                    Dialog<ButtonType> dialog = new Dialog<>();
+                    dialog.setDialogPane(dialogPane);
+                    dialog.setTitle("Login");
+                    dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
 
-                // Όταν ο χρήστης πατά το OK, θα καλέσει τη μέθοδο για αποθήκευση
-                dialog.setResultConverter(dialogButton -> {
-                    if (dialogButton == ButtonType.OK) {
-                        addLoginController.tempLogin();
-                    }
-                    return null;
-                });
+                    // Όταν ο χρήστης πατά το OK, θα καλέσει τη μέθοδο για αποθήκευση
+                    dialog.setResultConverter(dialogButton -> {
+                        if (dialogButton == ButtonType.OK) {
+                            addLoginController.tempLogin();
+                        }
+                        return null;
+                    });
 
-                dialog.showAndWait();
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+                    dialog.showAndWait();
+                } catch (IOException e) {
+                    Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+                }
+            } else {
+                Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+                openCustomerInTab(selectedCustomer, "Taxis");
             }
         } else {
-            Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
-            openCustomerInTab(selectedCustomer, "Taxis");
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module Taxis είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
     }
 
@@ -886,8 +897,7 @@ public class CustomersController implements Initializable {
                 } catch (IOException e) {
                     Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
                 }
-            }
-            else {
+            } else {
                 Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
                 openCustomerInTab(selectedCustomer, "myPOS");
             }
@@ -946,8 +956,7 @@ public class CustomersController implements Initializable {
                 } catch (IOException e) {
                     Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
                 }
-            }
-            else {
+            } else {
                 Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
                 openCustomerInTab(selectedCustomer, "Emblem");
             }
@@ -1096,7 +1105,7 @@ public class CustomersController implements Initializable {
      * Centralized method to open a customer's details in a new or existing tab.
      * Handles locking, FXML loading, controller initialization, and optional sub-tab selection.
      *
-     * @param customer The customer to open.
+     * @param customer    The customer to open.
      * @param tabToSelect The specific sub-tab to select upon opening (e.g., "Taxis", "myPOS"), or null.
      */
     private void openCustomerInTab(Customer customer, String tabToSelect) {

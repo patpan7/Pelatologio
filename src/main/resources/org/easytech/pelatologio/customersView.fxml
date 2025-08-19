@@ -12,76 +12,76 @@
 
             <!-- Top φίλτρα -->
             <top>
-            <VBox BorderPane.alignment="CENTER">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-               </VBox.margin>
-               <BorderPane.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </BorderPane.margin>
-               <children>
+                <VBox BorderPane.alignment="CENTER">
+                    <VBox.margin>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
+                    </VBox.margin>
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </BorderPane.margin><!-- Μετρητής Πελατών -->
+                    <Label fx:id="customerCounterLabel" text="Πελάτες: 0">
+                        <VBox.margin>
+                            <Insets left="10.0"/>
+                        </VBox.margin>
+                    </Label>
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <!-- Αναζήτηση -->
+                        <TextField fx:id="filterField" prefWidth="280.0" promptText="Αναζήτηση..."/>
 
-                          <!-- Μετρητής Πελατών -->
-                       <Label fx:id="customerCounterLabel" text="Πελάτες: 0">
-                     <VBox.margin>
-                        <Insets left="10.0" />
-                     </VBox.margin>
-                       </Label>
-                      <HBox alignment="CENTER_LEFT" spacing="10">
-                          <!-- Αναζήτηση -->
-                          <TextField fx:id="filterField" prefWidth="280.0" promptText="Αναζήτηση..." />
+                        <!-- Κουμπί φίλτρου -->
+                        <JFXButton fx:id="filterButton" buttonType="RAISED" minHeight="46.0" styleClass="click-button"
+                                   text="Περισσότερα Φίλτρα">
+                            <graphic>
+                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@icons/filter.png"/>
+                                </ImageView>
+                            </graphic>
+                            <HBox.margin>
+                                <Insets/>
+                            </HBox.margin>
+                        </JFXButton>
 
-                          <!-- Κουμπί φίλτρου -->
-                          <JFXButton fx:id="filterButton" buttonType="RAISED" minHeight="46.0" styleClass="click-button" text="Περισσότερα Φίλτρα">
-                              <graphic>
-                                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                      <Image url="@icons/filter.png" />
-                                  </ImageView>
-                              </graphic>
-                              <HBox.margin>
-                                  <Insets />
-                              </HBox.margin>
-                          </JFXButton>
+                        <!-- Κουμπί προσθήκης -->
+                        <JFXButton buttonType="RAISED" mnemonicParsing="false" onAction="#customerAddNew"
+                                   styleClass="click-button" text="Νέος Πελάτης">
+                            <graphic>
+                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@icons/add.png"/>
+                                </ImageView>
+                            </graphic>
+                            <HBox.margin>
+                                <Insets/>
+                            </HBox.margin>
+                        </JFXButton>
 
-                          <!-- Κουμπί προσθήκης -->
-                          <JFXButton buttonType="RAISED" mnemonicParsing="false" onAction="#customerAddNew" styleClass="click-button" text="Νέος Πελάτης">
-                              <graphic>
-                                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                      <Image url="@icons/add.png" />
-                                  </ImageView>
-                              </graphic>
-                              <HBox.margin>
-                                  <Insets />
-                              </HBox.margin>
-                          </JFXButton>
+                        <!-- Καθαρισμός φίλτρων -->
+                        <JFXButton fx:id="btnClean" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#clean"
+                                   styleClass="click-button" text="">
+                            <graphic>
+                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@icons/clean.png"/>
+                                </ImageView>
+                            </graphic>
+                            <HBox.margin>
+                                <Insets left="5.0"/>
+                            </HBox.margin>
+                        </JFXButton>
+                        <Separator HBox.hgrow="ALWAYS"/>
 
-                          <!-- Καθαρισμός φίλτρων -->
-                          <JFXButton fx:id="btnClean" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#clean" styleClass="click-button" text="">
-                              <graphic>
-                                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                      <Image url="@icons/clean.png" />
-                                  </ImageView>
-                              </graphic>
-                              <HBox.margin>
-                                  <Insets left="5.0" />
-                              </HBox.margin>
-                          </JFXButton>
-                          <Separator HBox.hgrow="ALWAYS" />
-
-                          <!-- Ανανέωση -->
-                          <JFXButton fx:id="btnRefresh" buttonType="RAISED" mnemonicParsing="false" onMouseClicked="#refresh" styleClass="click-button" text="">
-                              <graphic>
-                                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                      <Image url="@icons/refresh.png" />
-                                  </ImageView>
-                              </graphic>
-                              <HBox.margin>
-                                  <Insets left="5.0" />
-                              </HBox.margin>
-                          </JFXButton>
-                      </HBox>
-               </children>
-            </VBox>
+                        <!-- Ανανέωση -->
+                        <JFXButton fx:id="btnRefresh" buttonType="RAISED" mnemonicParsing="false"
+                                   onMouseClicked="#refresh" styleClass="click-button" text="">
+                            <graphic>
+                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@icons/refresh.png"/>
+                                </ImageView>
+                            </graphic>
+                            <HBox.margin>
+                                <Insets left="5.0"/>
+                            </HBox.margin>
+                        </JFXButton>
+                    </HBox>
+                </VBox>
             </top>
 
             <!-- Left Sidebar for Filters -->

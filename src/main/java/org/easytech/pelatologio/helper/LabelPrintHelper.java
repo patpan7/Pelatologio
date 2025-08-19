@@ -21,7 +21,6 @@ import java.util.Map;
 public class LabelPrintHelper {
 
     public static void printCustomerLabel(Customer customer) {
-        if (Features.isEnabled("reports")) {
             try {
                 // Φόρτωση του JasperReport
                 String fullPath = getPath("customer_receipt.jrxml");
@@ -68,19 +67,9 @@ public class LabelPrintHelper {
             } catch (JRException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εκτύπωση.", e.getMessage(), Alert.AlertType.ERROR));
             }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Reports είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
     public static void printLoginLabel(Logins login, Customer customer, String title) {
-        if (Features.isEnabled("reports")) {
             try {
                 // Φόρτωση του JasperReport
                 String fullPath = getPath("login_receipt.jrxml");
@@ -118,17 +107,7 @@ public class LabelPrintHelper {
 
             } catch (JRException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εκτύπωση.", e.getMessage(), Alert.AlertType.ERROR));
-
             }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Reports είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
     private static String getPath(String name) {

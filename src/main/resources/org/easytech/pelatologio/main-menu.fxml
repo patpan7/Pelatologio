@@ -33,13 +33,13 @@
                                 <Separator />
                                 <VBox styleClass="stat-box">
                                    <children>
-                                      <Label styleClass="normal-label" text="myPOS Στατιστικά" />
-                                      <Label fx:id="lbMyposTotal" text="Σύνολο: 0" />
-                                      <Label fx:id="lbMyposVerified" text="Verified: 0" />
-                                      <Label fx:id="lbMyposUnverified" text="Unverified: 0" />
-                                      <Label fx:id="lbMyposActive" text="Active: 0" />
-                                      <Label fx:id="lbMyposBlocked" text="Blocked: 0" />
-                                      <Label fx:id="lbMyposClosed" text="Closed: 0" />
+                                      <Label styleClass="normal-label" text="myPOS Στατιστικά" underline="true" wrapText="true" />
+                                      <Label fx:id="lbMyposTotal" styleClass="normal-label" text="Σύνολο: 0" />
+                                      <Label fx:id="lbMyposVerified" styleClass="normal-label" text="Verified: 0" />
+                                      <Label fx:id="lbMyposUnverified" styleClass="normal-label" text="Unverified: 0" />
+                                      <Label fx:id="lbMyposActive" styleClass="normal-label" text="Active: 0" />
+                                      <Label fx:id="lbMyposBlocked" styleClass="normal-label" text="Blocked: 0" />
+                                      <Label fx:id="lbMyposClosed" styleClass="normal-label" text="Closed: 0" />
                                    </children>
                                 </VBox>
                                 <JFXButton fx:id="btnSimulateCall" buttonType="RAISED" maxWidth="160.0" mnemonicParsing="false" onAction="#simulateCall" styleClass="click-button" text="Simulate Call">
@@ -47,7 +47,7 @@
                                         <Insets top="10.0" />
                                     </VBox.margin>
                                 </JFXButton>
-                        <Separator orientation="VERTICAL" prefHeight="200.0" visible="false" VBox.vgrow="ALWAYS" />
+                        <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
 
                                 <JFXButton fx:id="btnDashboard" buttonType="RAISED" maxWidth="160.0" mnemonicParsing="false" onAction="#handleDashboardClick" styleClass="click-button" text="Dashboard" textAlignment="CENTER">
                                     <graphic>
@@ -265,7 +265,7 @@
                                 <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                 </HBox.margin>
-                                <Label styleClass="normal-label" text="Για παραγγελία" textAlignment="CENTER" underline="true">
+                                <Label fx:id="lblForOrder" styleClass="normal-label" text="Για παραγγελία" textAlignment="CENTER" underline="true">
                                     <VBox.margin>
                                         <Insets bottom="3.0" />
                                     </VBox.margin>
@@ -275,13 +275,13 @@
                                         <Insets />
                                     </VBox.margin>
                                 </ListView>
-                                <Label layoutX="38.0" layoutY="10.0" styleClass="normal-label" text="Αναμονή παραλαβής" textAlignment="CENTER" underline="true" wrapText="true">
+                                <Label fx:id="lblWaitOrders" layoutX="38.0" layoutY="10.0" styleClass="normal-label" text="Αναμονή παραλαβής" textAlignment="CENTER" underline="true" wrapText="true">
                                     <VBox.margin>
                                         <Insets bottom="3.0" />
                                     </VBox.margin>
                                 </Label>
                                 <ListView fx:id="pendingOrdersList" layoutX="15.0" layoutY="42.0" onMouseClicked="#handlePendingOrderSelection" prefHeight="190.0" styleClass="list-view1" VBox.vgrow="ALWAYS" />
-                                <Label layoutX="10.0" layoutY="247.0" styleClass="normal-label" text="Προς παράδοση" textAlignment="CENTER" underline="true" wrapText="true">
+                                <Label fx:id="lblForDelivery" layoutX="10.0" layoutY="247.0" styleClass="normal-label" text="Προς παράδοση" textAlignment="CENTER" underline="true" wrapText="true">
                                     <VBox.margin>
                                         <Insets bottom="3.0" />
                                     </VBox.margin>

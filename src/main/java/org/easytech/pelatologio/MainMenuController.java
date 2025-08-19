@@ -50,6 +50,8 @@ public class MainMenuController implements Initializable {
     @FXML
     private Label lbMyposTotal, lbMyposVerified, lbMyposUnverified, lbMyposActive, lbMyposBlocked, lbMyposClosed;
     @FXML
+    private Label lblForOrder, lblWaitOrders, lblForDelivery;
+    @FXML
     private ListView<Order> ordersList, pendingOrdersList, deliveryOrdersList;
     @FXML
     private Button btnCustomers, btnMyPOS, btnTasks, btnCalendar, btnD11, btnMyDataStatus, btnItems, btnDevices, btnSettings, btnSimplyStatus;
@@ -66,6 +68,39 @@ public class MainMenuController implements Initializable {
         mainTab.setClosable(false);
         setTooltips();
 
+        if (!Features.isEnabled("suppliers")) {
+            btnSuppliers.setVisible(false);
+            btnSuppliers.setManaged(false);
+        }
+
+        if (!Features.isEnabled("tasks")) {
+            btnTasks.setVisible(false);
+            btnTasks.setManaged(false);
+            lbTasks.setVisible(false);
+            lbTasks.setManaged(false);
+            lbAppointments.setVisible(false);
+            lbAppointments.setManaged(false);
+            btnCalendar.setVisible(false);
+            btnCalendar.setManaged(false);
+        }
+
+        if (!Features.isEnabled("orders")) {
+            btnOrders.setVisible(false);
+            btnOrders.setManaged(false);
+            lblForOrder.setVisible(false);
+            lblForOrder.setManaged(false);
+            ordersList.setVisible(false);
+            ordersList.setManaged(false);
+            lblWaitOrders.setVisible(false);
+            lblWaitOrders.setManaged(false);
+            pendingOrdersList.setVisible(false);
+            pendingOrdersList.setManaged(false);
+            lblForDelivery.setVisible(false);
+            lblForDelivery.setManaged(false);
+            deliveryOrdersList.setVisible(false);
+            deliveryOrdersList.setManaged(false);
+        }
+
         if (!Features.isEnabled("mypos")) {
             btnMyPOS.setVisible(false);
             btnMyPOS.setManaged(false);
@@ -80,30 +115,47 @@ public class MainMenuController implements Initializable {
             lbMyposBlocked.setVisible(false);
             lbMyposBlocked.setManaged(false);
             lbMyposClosed.setVisible(false);
-                        lbMyposClosed.setManaged(false);
-        }
-
-        if (!Features.isEnabled("simply")) {
-            btnSimplyStatus.setVisible(false);
-                        lbSimply.setManaged(false);
-        }
-
-        if (!Features.isEnabled("contracts")) {
-            btnSubs.setVisible(false);
-            btnSubs.setManaged(false);
+            lbMyposClosed.setManaged(false);
         }
 
         if (!Features.isEnabled("devices")) {
             btnDevices.setVisible(false);
             btnDevices.setManaged(false);
+            btnItems.setVisible(false);
+            btnItems.setManaged(false);
         }
 
-        if (!Features.isEnabled("tasks")) {
-            btnTasks.setVisible(false);
-            btnTasks.setManaged(false);
-            lbTasks.setVisible(false);
-            lbTasks.setManaged(false);
+        if (!Features.isEnabled("subs")) {
+            btnSubs.setVisible(false);
+            btnSubs.setManaged(false);
         }
+
+        if (!Features.isEnabled("d11")) {
+            btnD11.setVisible(false);
+            btnD11.setManaged(false);
+        }
+
+        if (!Features.isEnabled("simply")) {
+            btnSimplyStatus.setVisible(false);
+            lbSimply.setManaged(false);
+        }
+
+        if (!Features.isEnabled("calls")) {
+            btnCallHistory.setVisible(false);
+            btnCallHistory.setManaged(false);
+            btnSimulateCall.setVisible(false);
+            btnSimulateCall.setManaged(false);
+        }
+
+        if (!Features.isEnabled("partners")) {
+            btnPartners.setVisible(false);
+            btnPartners.setManaged(false);
+            btnPartnerEarnings.setVisible(false);
+            btnPartnerEarnings.setManaged(false);
+            btnCommissions.setVisible(false);
+            btnCommissions.setManaged(false);
+        }
+
 
         if (!Features.isEnabled("offers")) {
             btnOffers.setVisible(false);
