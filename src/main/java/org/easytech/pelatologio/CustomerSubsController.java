@@ -32,7 +32,17 @@ public class CustomerSubsController {
     @FXML
     private TableView<Subscription> subsTable;
     @FXML
-    private TableColumn idColumn, titleColumn, endDateColumn, categoryColumn, priceColumn, sendedColumn;
+    private TableColumn<Subscription, Integer> idColumn;
+    @FXML
+    private TableColumn<Subscription, String> titleColumn;
+    @FXML
+    private TableColumn<Subscription, LocalDate> endDateColumn;
+    @FXML
+    private TableColumn<Subscription, String> categoryColumn;
+    @FXML
+    private TableColumn<Subscription, String> priceColumn;
+    @FXML
+    private TableColumn<Subscription, Boolean> sendedColumn;
     @FXML
     private Button addTaskButton, editTaskButton, deleteTaskButton, renewButton;
 
@@ -42,18 +52,8 @@ public class CustomerSubsController {
 
     @FXML
     public void initialize() {
-        if (!Features.isEnabled("contracts")) {
-            addTaskButton.setVisible(false);
-            addTaskButton.setManaged(false);
-            editTaskButton.setVisible(false);
-            editTaskButton.setManaged(false);
-            deleteTaskButton.setVisible(false);
-            deleteTaskButton.setManaged(false);
-            renewButton.setVisible(false);
-            renewButton.setManaged(false);
-            subsTable.setVisible(false); // Hide the table itself
-            subsTable.setManaged(false);
-        }
+        System.out.println("CustomerSubsController: Initializing...");
+
         setTooltip(addTaskButton, "Προσθήκη νέου συμβολαίου");
         setTooltip(editTaskButton, "Επεξεργασία συμβολαίου");
         setTooltip(deleteTaskButton, "Διαγραφή συμβολαίου");
@@ -66,19 +66,30 @@ public class CustomerSubsController {
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         sendedColumn.setCellValueFactory(new PropertyValueFactory<>("sended"));
 
+        // Custom cell factory for endDateColumn to format LocalDate
+        endDateColumn.setCellFactory(column -> {
+            return new TableCell<Subscription, LocalDate>() {
+                private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                @Override
+                protected void updateItem(LocalDate item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(formatter.format(item));
+                    }
+                }
+            };
+        });
 
         allSubs = FXCollections.observableArrayList();
         subsTable.setItems(allSubs);
 
-
         subsTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) { // Έλεγχος για δύο κλικ
-                // Πάρτε τα δεδομένα από την επιλεγμένη γραμμή
                 Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
-
-                // Έλεγχος αν υπάρχει επιλεγμένο προϊόν
                 if (selectedSub != null) {
-                    // Ανοίξτε το dialog box για επεξεργασία
                     try {
                         handleEditSub();
                     } catch (IOException e) {
@@ -92,7 +103,7 @@ public class CustomerSubsController {
             @Override
             protected void updateItem(Subscription sub, boolean empty) {
                 super.updateItem(sub, empty);
-                if (empty || sub == null) {
+                if (empty || sub == null || sub.getEndDate() == null) { // Added null check for getEndDate()
                     setStyle("");
                 } else {
                     LocalDate today = LocalDate.now();
@@ -125,342 +136,230 @@ public class CustomerSubsController {
                 throw new RuntimeException(ex);
             }
         });
-        renewButton.setOnAction(e -> {
-            handleRenewSub();
-        });
+        renewButton.setOnAction(e -> handleRenewSub());
+        System.out.println("CustomerSubsController: Initialization complete.");
     }
 
 
     private void loadSubs(int customerCode) {
         allSubs.clear();
-        // Φόρτωση όλων των εργασιών από τη βάση
-        DBHelper dbHelper = new DBHelper();
         allSubs.setAll(DBHelper.getSubscriptionDao().getAllCustomerSubs(customerCode));
     }
 
 
     @FXML
     private void handleAddSub() {
-        if (Features.isEnabled("contracts")) {
-            try {
-                // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Προσθήκη Συμβολαίου");
-                AddSubController controller = loader.getController();
-                controller.setCustomerId(customer.getCode());
-                controller.setCustomerName(customer.getName());
-                controller.lock();
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Προσθήκη Συμβολαίου");
+            AddSubController controller = loader.getController();
+            controller.setCustomerId(customer.getCode());
+            controller.setCustomerName(customer.getName());
+            controller.lock();
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
-                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                    // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveSub();
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                boolean success = controller.handleSaveSub();
+                if (!success) {
+                    event.consume();
+                }
+            });
 
-                    if (!success) {
-                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                        event.consume();
-                    }
-                });
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
 
-                dialog.initModality(Modality.NONE);
-                dialog.initOwner(null);
-                dialog.show();
-
-                dialog.setOnHidden(e -> {
-                    if (dialog.getResult() == ButtonType.OK) {
-                        loadSubs(customer.getCode());
-                    }
-                });
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
-            }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Συμβόλαια είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadSubs(customer.getCode());
+                }
+            });
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
     @FXML
     private void handleEditSub() throws IOException {
-        if (Features.isEnabled("contracts")) {
-            // Επεξεργασία επιλεγμένης εργασίας
-            Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
-            if (selectedSub == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Προσοχή");
-                alert.setContentText("Δεν έχει επιλεγεί συμβόλαιο!");
-                Optional<ButtonType> result = alert.showAndWait();
-                return;
-            }
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Επεξεργασία Συμβολαίου");
-                AddSubController controller = loader.getController();
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
+            AlertDialogHelper.showDialog("Προσοχή", "Δεν έχει επιλεγεί συμβόλαιο!", "", Alert.AlertType.ERROR);
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addSub.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Επεξεργασία Συμβολαίου");
+            AddSubController controller = loader.getController();
 
-                // Ορισμός δεδομένων για επεξεργασία
-                controller.setSubForEdit(selectedSub);
-                controller.lock();
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+            controller.setSubForEdit(selectedSub);
+            controller.lock();
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                    // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveSub();
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                boolean success = controller.handleSaveSub();
+                if (!success) {
+                    event.consume();
+                }
+            });
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
 
-                    if (!success) {
-                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                        event.consume();
-                    }
-                });
-                dialog.initModality(Modality.NONE);
-                dialog.initOwner(null);
-                dialog.show();
-
-                dialog.setOnHidden(e -> {
-                    if (dialog.getResult() == ButtonType.OK) {
-                        loadSubs(customer.getCode());
-                    }
-                });
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
-            }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Συμβόλαια είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadSubs(customer.getCode());
+                }
+            });
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
     @FXML
     private void handleDeleteSub() throws SQLException {
-        if (Features.isEnabled("contracts")) {
-            // Διαγραφή επιλεγμένης εργασίας
-            Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
-            if (selectedSub == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Προσοχή");
-                alert.setContentText("Δεν έχει επιλεγεί συμβόλαιο!");
-                Optional<ButtonType> result = alert.showAndWait();
-                return;
-            }
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Επιβεβαίωση");
-            alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedSub.getTitle() + ";");
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                DBHelper dbHelper = new DBHelper();
-                DBHelper.getSubscriptionDao().deleteSub(selectedSub.getId());
-                loadSubs(customer.getCode());
-            }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Συμβόλαια είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
+            AlertDialogHelper.showDialog("Προσοχή", "Δεν έχει επιλεγεί συμβόλαιο!", "", Alert.AlertType.ERROR);
+            return;
+        }
+        Optional<ButtonType> result = AlertDialogHelper.showConfirmationDialog("Επιβεβαίωση", "Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedSub.getTitle() + ";", "");
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            DBHelper.getSubscriptionDao().deleteSub(selectedSub.getId());
+            loadSubs(customer.getCode());
         }
     }
 
     private void handleRenewSub() {
-        if (Features.isEnabled("contracts")) {
-            // Επεξεργασία επιλεγμένης εργασίας
-            Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
-            if (selectedSub == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Προσοχή");
-                alert.setContentText("Δεν έχει επιλεγεί συμβόλαιο!");
-                Optional<ButtonType> result = alert.showAndWait();
-                return;
-            }
-            // Δημιουργία διαλόγου με επιλογές
-            List<String> choices = Arrays.asList("+1 χρόνο", "+2 χρόνια", "+3 χρόνια");
-            ChoiceDialog<String> dialog = new ChoiceDialog<>("+1 χρόνο", choices);
-            dialog.setTitle("Ανανέωση Συμβολαίου");
-            dialog.setHeaderText("Επιλέξτε διάρκεια ανανέωσης");
-            dialog.setContentText("Διάρκεια:");
-
-            // Αν ο χρήστης επιλέξει κάτι
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(selected -> {
-                int yearsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", ""));
-                DBHelper dbHelper = new DBHelper();
-                DBHelper.getSubscriptionDao().renewSub(selectedSub.getId(), yearsToAdd);
-                loadSubs(customer.getCode());
-            });
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Συμβόλαια είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
+            AlertDialogHelper.showDialog("Προσοχή", "Δεν έχει επιλεγεί συμβόλαιο!", "", Alert.AlertType.ERROR);
+            return;
         }
+        List<String> choices = Arrays.asList("+1 χρόνο", "+2 χρόνια", "+3 χρόνια");
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("+1 χρόνο", choices);
+        dialog.setTitle("Ανανέωση Συμβολαίου");
+        dialog.setHeaderText("Επιλέξτε διάρκεια ανανέωσης");
+        dialog.setContentText("Διάρκεια:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(selected -> {
+            int yearsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", ""));
+            DBHelper.getSubscriptionDao().renewSub(selectedSub.getId(), yearsToAdd);
+            loadSubs(customer.getCode());
+        });
     }
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
-        //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
-        if (Features.isEnabled("contracts")) {
-            loadSubs(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
-        }
+        loadSubs(customer.getCode());
     }
 
 
     private void setTooltip(Button button, String text) {
-        Tooltip tooltip = new Tooltip();
-        tooltip.setShowDelay(Duration.seconds(0.3));
-        tooltip.setText(text);
-        button.setTooltip(tooltip);
+        if (button != null) {
+            Tooltip tooltip = new Tooltip(text);
+            tooltip.setShowDelay(Duration.seconds(0.3));
+            button.setTooltip(tooltip);
+        }
     }
 
     public void handleSendMail(ActionEvent event) {
-        if (Features.isEnabled("contracts")) {
-            Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
-            if (selectedSub == null) {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα συμβόλαιο για να στείλετε το e-mail.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-                return;
-            }
-            DBHelper dbHelper = new DBHelper();
-            Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedSub.getCustomerId());
-            String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" +
-                    "<br>Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "." +
-                    "<br>Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν." +
-                    "<br>Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f", Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς." +
-                    "<br>Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας." +
-                    "<br>Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας." +
-                    "<br>" +
-                    "<br><b>Τραπεζικοί Λογαριασμοί:</b>" +
-                    "<br>" +
-                    "<br><b>ΕΘΝΙΚΗ ΤΡΑΠΕΖΑ</b>" +
-                    "<br><b>Λογαριασμός:</b> 29700119679" +
-                    "<br><b>Λογαριασμός (IBAN):</b> GR6201102970000029700119679" +
-                    "<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ" +
-                    "<br><b>EUROBANK</b>" +
-                    "<br><b>Λογαριασμός:</b> 0026.0451.27.0200083481" +
-                    "<br><b>Λογαριασμός (IBAN):</b> GR7902604510000270200083481" +
-                    "<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ" +
-                    "<br><b>myPOS</b>" +
-                    "<br><b>ΑΡ.ΠΟΡΤΟΦΟΛΙΟΥ:</b> 40005794314" +
-                    "<br><b>Όνομα δικαιούχου:</b> GKOUMAS DIMITRIOS " +
-                    "<br><b>IBAN:</b> IE27MPOS99039012868261 " +
-                    "<br><b>ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ:</b> 12868261" +
-                    "<br><b>myPOS Ltd</b>" +
-                    "<br><b>BIC: MPOSIE2D</b>";
-            try {
-                String email = customer.getEmail();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Αποστολή Email");
-                EmailDialogController controller = loader.getController();
-                controller.setCustomer(customer);
-                controller.setEmail(email);
-                controller.setSubject("Υπενθύμιση λήξης συνδρομής " + selectedSub.getTitle());
-                controller.setBody(msg);
-                controller.setCopy(false);
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-                dialog.show();
-                dialog.setOnCloseRequest(evt -> {
-                    if (controller.isSended) {
-                        // Εκτελούμε το handleSendEmail
-                        DBHelper.getSubscriptionDao().updateSubSent(selectedSub.getId());
-                        loadSubs(customer.getCode());
-                    }
-                });
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-            }
-        } else {
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
             Notifications.create()
                     .title("Προσοχή")
-                    .text("Το module Συμβόλαια είναι απενεργοποιημένο.")
+                    .text("Παρακαλώ επιλέξτε ένα συμβόλαιο για να στείλετε το e-mail.")
                     .graphic(null)
-                    .hideAfter(Duration.seconds(3))
+                    .hideAfter(Duration.seconds(5))
                     .position(Pos.TOP_RIGHT)
-                    .showWarning();
+                    .showError();
+            return;
+        }
+        Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedSub.getCustomerId());
+        String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",<br>"
+                + "Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ".<br>"
+                + "Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν.<br>"
+                + "Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f", Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς.<br>"
+                + "Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας.<br>"
+                + "Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας.<br>"
+                + "<br><b>Τραπεζικοί Λογαριασμοί:</b><br>"
+                + "<br><b>ΕΘΝΙΚΗ ΤΡΑΠΕΖΑ</b><br><b>Λογαριασμός:</b> 29700119679<br><b>Λογαριασμός (IBAN):</b> GR6201102970000029700119679<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ<br><b>EUROBANK</b><br><b>Λογαριασμός:</b> 0026.0451.27.0200083481<br><b>Λογαριασμός (IBAN):</b> GR7902604510000270200083481<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ<br><b>myPOS</b><br><b>ΑΡ.ΠΟΡΤΟΦΟΦΟΛΙΟΥ:</b> 40005794314<br><b>Όνομα δικαιούχου:</b> GKOUMAS DIMITRIOS <br><b>IBAN:</b> IE27MPOS99039012868261 <br><b>ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ:</b> 12868261<br><b>myPOS Ltd</b><br><b>BIC: MPOSIE2D</b>";
+        try {
+            String email = customer.getEmail();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Αποστολή Email");
+            EmailDialogController controller = loader.getController();
+            controller.setCustomer(customer);
+            controller.setEmail(email);
+            controller.setSubject("Υπενθύμιση λήξης συνδρομής " + selectedSub.getTitle());
+            controller.setBody(msg);
+            controller.setCopy(false);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            dialog.show();
+            dialog.setOnCloseRequest(evt -> {
+                if (controller.isSended) {
+                    DBHelper.getSubscriptionDao().updateSubSent(selectedSub.getId());
+                    loadSubs(customer.getCode());
+                }
+            });
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 
     public void handleCopy(ActionEvent event) {
-        if (Features.isEnabled("contracts")) {
-            Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
-            if (selectedSub == null) {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ επιλέξτε ένα συμβόλαιο.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-                return;
-            }
-            String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" +
-                    "Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate() + ".\n" +
-                    "Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν.\n" +
-                    "Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f", Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς.\n" +
-                    "Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας.\n" +
-                    "Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας.\n" +
-                    "Με εκτίμηση,\n" +
-                    "\n" +
-                    "EasyTech\n" +
-                    "Γκούμας Δημήτρης \n" +
-                    "Δενδρινού & Γρηγορίου Ε’ 10\n" +
-                    "85100 Ρόδος\n" +
-                    "Τηλ. 22410 36750 \n" +
-                    "Κιν.6944570089\n" +
-                    "\n" +
-                    "Τραπεζικοί Λογαριασμοί:\n" +
-                    "\n" +
-                    "ΕΘΝΙΚΗ ΤΡΑΠΕΖΑ\n" +
-                    "Λογαριασμός: 29700119679\n" +
-                    "Λογαριασμός (IBAN): GR6201102970000029700119679\n" +
-                    "Με Δικαιούχους: ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ\n" +
-                    "EUROBANK\n" +
-                    "Λογαριασμός: 0026.0451.27.0200083481\n" +
-                    "Λογαριασμός (IBAN): GR7902604510000270200083481\n" +
-                    "Με Δικαιούχους: ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ\n" +
-                    "myPOS\n" +
-                    "ΑΡ.ΠΟΡΤΟΦΟΛΙΟΥ: 40005794314\n" +
-                    "Όνομα δικαιούχου: GKOUMAS DIMITRIOS \n" +
-                    "IBAN: IE27MPOS99039012868261 \n" +
-                    "ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ: 12868261\n" +
-                    "myPOS Ltd \n" +
-                    "BIC: MPOSIE2D\n";
-            copyTextToClipboard(msg);
-        } else {
-            Notifications notifications = Notifications.create()
+        Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
+        if (selectedSub == null) {
+            Notifications.create()
                     .title("Προσοχή")
-                    .text("Το module Συμβόλαια είναι απενεργοποιημένο.")
+                    .text("Παρακαλώ επιλέξτε ένα συμβόλαιο.")
                     .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showWarning();
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT)
+                    .showError();
+            return;
         }
-
+        String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" 
+                + "Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate() + ".\n"
+                + "Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν.\n"
+                + "Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f", Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς.\n"
+                + "Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας.\n"
+                + "Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας.\n"
+                + "Με εκτίμηση,\n"
+                + "\n"
+                + "EasyTech\n"
+                + "Γκούμας Δημήτρης \n"
+                + "Δενδρινού & Γρηγορίου Ε’ 10\n"
+                + "85100 Ρόδος\n"
+                + "Τηλ. 22410 36750 \n"
+                + "Κιν.6944570089\n"
+                + "\n"
+                + "Τραπεζικοί Λογαριασμοί:\n"
+                + "\n"
+                + "ΕΘΝΙΚΗ ΤΡΑΠΕΖΑ\n"
+                + "Λογαριασμός: 29700119679\n"
+                + "Λογαριασμός (IBAN): GR6201102970000029700119679\n"
+                + "Με Δικαιούχους: ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ\n"
+                + "EUROBANK\n"
+                + "Λογαριασμός: 0026.0451.27.0200083481\n"
+                + "Λογαριασμός (IBAN): GR7902604510000270200083481\n"
+                + "Με Δικαιούχους: ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ\n"
+                + "myPOS\n"
+                + "ΑΡ.ΠΟΡΤΟΦΟΛΙΟΥ: 40005794314\n"
+                + "Όνομα δικαιούχου: GKOUMAS DIMITRIOS \n"
+                + "IBAN: IE27MPOS99039012868261 \n"
+                + "ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ: 12868261\n"
+                + "myPOS Ltd \n"
+                + "BIC: MPOSIE2D\n";
+        copyTextToClipboard(msg);
     }
 
     // Μέθοδος αντιγραφής κειμένου στο πρόχειρο

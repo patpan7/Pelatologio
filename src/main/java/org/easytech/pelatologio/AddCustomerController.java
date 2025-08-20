@@ -172,13 +172,6 @@ public class AddCustomerController {
         btnTask.setVisible(false);
         tabTaxis.setDisable(true);
         tabMypos.setDisable(true);
-        // Disable tabs based on feature flags
-        if (!Features.isEnabled("taxis")) {
-            tabTaxis.setDisable(true);
-        }
-        if (!Features.isEnabled("mypos")) {
-            tabMypos.setDisable(true);
-        }
         if (!Features.isEnabled("simply")) {
             tabSimply.setDisable(true);
         }
@@ -387,7 +380,7 @@ public class AddCustomerController {
 
         // Προσθήκη ακροατών αλλαγών στα πεδία
         // This is now called from setCustomerForEdit to avoid premature firing
-        // setupFieldListeners(); 
+        // setupFieldListeners();
 
         // Check for active call and show button if necessary
         if (ActiveCallState.hasPendingCall()) {

@@ -1,7 +1,5 @@
 package org.easytech.pelatologio.helper;
 
-import org.easytech.pelatologio.AppSettings;
-
 import java.io.IOException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;

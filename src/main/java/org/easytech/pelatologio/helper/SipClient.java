@@ -1,7 +1,5 @@
 package org.easytech.pelatologio.helper;
 
-import org.easytech.pelatologio.AppSettings;
-
 import javax.sip.*;
 import javax.sip.address.Address;
 import javax.sip.address.AddressFactory;
@@ -10,14 +8,11 @@ import javax.sip.header.*;
 import javax.sip.message.MessageFactory;
 import javax.sip.message.Request;
 import javax.sip.message.Response;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.TooManyListenersException;
 import java.util.function.Consumer;
-import org.easytech.pelatologio.helper.ActiveCallState;
 
 public class SipClient implements SipListener {
 

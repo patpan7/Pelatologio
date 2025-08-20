@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.AppSettings;
 import org.easytech.pelatologio.helper.CustomerFolderManager;
 import org.easytech.pelatologio.helper.EmailSender;
 import org.easytech.pelatologio.models.Customer;

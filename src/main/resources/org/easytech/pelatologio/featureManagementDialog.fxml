@@ -22,8 +22,8 @@
                 <Label styleClass="normal-label" text="Παραγγελίες:" GridPane.rowIndex="2" />
                 <JFXCheckBox fx:id="ordersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                <Label styleClass="normal-label" text="myPOS:" GridPane.rowIndex="3" />
-                <JFXCheckBox fx:id="myposCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <Label styleClass="normal-label" text="Προσφορές:" GridPane.rowIndex="3" />
+                <JFXCheckBox fx:id="offersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                 <Label styleClass="normal-label" text="Συσκευές/Είδη:" GridPane.rowIndex="4" />
                 <JFXCheckBox fx:id="devicesCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="4" />
@@ -31,37 +31,60 @@
                 <Label styleClass="normal-label" text="Συμβόλαια:" GridPane.rowIndex="5" />
                 <JFXCheckBox fx:id="subsCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-                <Label styleClass="normal-label" text="Δ11:" GridPane.rowIndex="6" />
-                <JFXCheckBox fx:id="d11Check" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                <Label styleClass="normal-label" text="Κλήσεις:" GridPane.rowIndex="6" />
+                <JFXCheckBox fx:id="callsCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 
-                <Label styleClass="normal-label" text="Simply:" GridPane.rowIndex="7" />
-                <JFXCheckBox fx:id="simplyCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                <Label styleClass="normal-label" text="Συνεργάτες/Προμήθειες:" GridPane.rowIndex="7" />
+                <JFXCheckBox fx:id="partnersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
 
-                <Label styleClass="normal-label" text="Κλήσεις:" GridPane.rowIndex="8" />
-                <JFXCheckBox fx:id="callsCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                <Label layoutX="10.0" layoutY="346.0" styleClass="normal-label" text="Taxis:" GridPane.rowIndex="8" />
+                <JFXCheckBox fx:id="taxisCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="8" />
 
-                <Label styleClass="normal-label" text="Συνεργάτες/Προμήθειες:" GridPane.rowIndex="9" />
-                <JFXCheckBox fx:id="partnersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                <Label styleClass="normal-label" text="myPOS:" GridPane.rowIndex="9" />
+                <JFXCheckBox fx:id="myposCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="9" />
 
-                <Label styleClass="normal-label" text="Προσφορές:" GridPane.rowIndex="10" />
-                <JFXCheckBox fx:id="offersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <columnConstraints>
-               <ColumnConstraints />
-               <ColumnConstraints />
-            </columnConstraints>
-            <rowConstraints>
+                <Label styleClass="normal-label" text="Simply:" GridPane.rowIndex="10" />
+                <JFXCheckBox fx:id="simplyCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+
+                <Label styleClass="normal-label" text="Emblem:" GridPane.rowIndex="11" />
+                <JFXCheckBox fx:id="emblemCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+
+                <Label styleClass="normal-label" text="Εργάνη:" GridPane.rowIndex="12" />
+                <JFXCheckBox fx:id="erganiCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+
+                <Label styleClass="normal-label" text="Πελατολόγιο:" GridPane.rowIndex="13" />
+                <JFXCheckBox fx:id="pelatologioCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+
+                <Label styleClass="normal-label" text="9POS:" GridPane.rowIndex="14" />
+                <JFXCheckBox fx:id="nineposheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+
+                <Label styleClass="normal-label" text="Megasoft:" GridPane.rowIndex="15" />
+                <JFXCheckBox fx:id="megasoftCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+
+                <Label styleClass="normal-label" text="Δ11:" GridPane.rowIndex="16" />
+                <JFXCheckBox fx:id="d11Check" text="" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+
+
+
+                <columnConstraints>
+                    <ColumnConstraints />
+                    <ColumnConstraints />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
                <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-            </rowConstraints>
+                    <RowConstraints />
+                    <RowConstraints />
+                </rowConstraints>
             </GridPane>
             <JFXButton buttonType="RAISED" onAction="#handleSave" styleClass="click-button" text="Αποθήκευση" />
         </VBox>

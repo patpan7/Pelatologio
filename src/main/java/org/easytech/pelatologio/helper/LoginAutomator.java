@@ -1,6 +1,5 @@
 package org.easytech.pelatologio.helper;
 
-import org.easytech.pelatologio.AppSettings;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Logins;
 import org.openqa.selenium.By;

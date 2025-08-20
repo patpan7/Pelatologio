@@ -1,8 +1,7 @@
-package org.easytech.pelatologio;
+package org.easytech.pelatologio.helper;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
 
 import java.io.*;
 import java.util.Properties;

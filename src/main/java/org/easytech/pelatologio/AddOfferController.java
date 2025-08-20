@@ -23,10 +23,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.ComboBoxHelper;
-import org.easytech.pelatologio.helper.CustomerFolderManager;
-import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Offer;
 

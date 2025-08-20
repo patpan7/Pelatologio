@@ -579,41 +579,30 @@ public class MainMenuController implements Initializable {
     }
 
     public void devicesClick(ActionEvent actionEvent) throws IOException {
-        if (Features.isEnabled("devices")) {
-            for (Tab tab : mainTabPane.getTabs()) {
-                if (tab.getText().equals("Συσκευές")) {
-                    mainTabPane.getSelectionModel().select(tab);
-                    return;
-                }
+        for (Tab tab : mainTabPane.getTabs()) {
+            if (tab.getText().equals("Συσκευές")) {
+                mainTabPane.getSelectionModel().select(tab);
+                return;
             }
-
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("deviceView.fxml"));
-            Parent devicesContent = fxmlLoader.load();
-
-            Tab newTab = new Tab("Συσκευές");
-            newTab.setContent(devicesContent);
-
-            mainTabPane.getTabs().add(newTab);
-            mainTabPane.getSelectionModel().select(newTab);
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Συσκευές είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
         }
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("deviceView.fxml"));
+        Parent devicesContent = fxmlLoader.load();
+
+        Tab newTab = new Tab("Συσκευές");
+        newTab.setContent(devicesContent);
+
+        mainTabPane.getTabs().add(newTab);
+        mainTabPane.getSelectionModel().select(newTab);
     }
 
     public void subsClick(ActionEvent actionEvent) throws IOException {
-        if (Features.isEnabled("contracts")) {
-            for (Tab tab : mainTabPane.getTabs()) {
-                if (tab.getText().equals("Συμβόλαια")) {
-                    mainTabPane.getSelectionModel().select(tab);
-                    return;
-                }
+        for (Tab tab : mainTabPane.getTabs()) {
+            if (tab.getText().equals("Συμβόλαια")) {
+                mainTabPane.getSelectionModel().select(tab);
+                return;
             }
+        }
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("subsView.fxml"));
             Parent subsContent = fxmlLoader.load();
 
@@ -625,15 +614,6 @@ public class MainMenuController implements Initializable {
 
             mainTabPane.getTabs().add(newTab);
             mainTabPane.getSelectionModel().select(newTab);
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Συμβόλαια είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
     public void d11Click(ActionEvent event) {

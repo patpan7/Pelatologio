@@ -1,7 +1,5 @@
 package org.easytech.pelatologio.helper;
 
-import org.easytech.pelatologio.AppSettings;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;

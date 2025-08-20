@@ -2,7 +2,6 @@ package org.easytech.pelatologio.helper;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.easytech.pelatologio.AppSettings;
 import org.easytech.pelatologio.dao.*;
 import org.easytech.pelatologio.dao.impl.*;
 import org.easytech.pelatologio.dao.TrackingDao;

@@ -14,6 +14,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.AppSettings;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Accountant;
 import org.easytech.pelatologio.models.Customer;

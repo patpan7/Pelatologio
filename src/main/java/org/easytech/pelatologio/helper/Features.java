@@ -1,8 +1,6 @@
 package org.easytech.pelatologio.helper;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -10,27 +8,41 @@ import java.util.Properties;
 public class Features {
 
     private static final Map<String, Boolean> FEATURE_FLAGS = new HashMap<>();
-    private static final String PROPERTIES_FILE = "/features.properties";
+    private static final String INTERNAL_PROPERTIES_FILE = "/features.properties"; // Defaults inside JAR
+    private static final String EXTERNAL_PROPERTIES_FILE = "features.properties"; // User settings outside JAR
 
     static {
         loadFeatureFlags();
     }
 
     public static void loadFeatureFlags() {
-        try (InputStream input = Features.class.getResourceAsStream(PROPERTIES_FILE)) {
-            if (input == null) {
-                System.err.println("Sorry, unable to find " + PROPERTIES_FILE);
-                return;
+        Properties props = new Properties();
+
+        // 1. Load default features from inside the JAR
+        try (InputStream input = Features.class.getResourceAsStream(INTERNAL_PROPERTIES_FILE)) {
+            if (input != null) {
+                props.load(input);
+            } else {
+                System.err.println("Default properties file not found: " + INTERNAL_PROPERTIES_FILE);
             }
-            Properties prop = new Properties();
-            prop.load(input);
-            for (String key : prop.stringPropertyNames()) {
-                FEATURE_FLAGS.put(key, Boolean.parseBoolean(prop.getProperty(key)));
-            }
-            System.out.println("Feature flags loaded: " + FEATURE_FLAGS);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
+        // 2. Load user-defined features from external file (overwrites defaults)
+        try (InputStream externalInput = new FileInputStream(EXTERNAL_PROPERTIES_FILE)) {
+            props.load(externalInput);
+        } catch (FileNotFoundException e) {
+            System.out.println("No external features file found. Using defaults.");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        // 3. Populate the map
+        for (String key : props.stringPropertyNames()) {
+            FEATURE_FLAGS.put(key, Boolean.parseBoolean(props.getProperty(key)));
+        }
+        System.out.println("Feature flags loaded: " + FEATURE_FLAGS);
     }
 
     public static boolean isEnabled(String featureName) {
@@ -43,27 +55,18 @@ public class Features {
     }
 
     private static void saveFeatureFlags() {
-        try {
-            Properties prop = new Properties();
-            for (Map.Entry<String, Boolean> entry : FEATURE_FLAGS.entrySet()) {
-                prop.setProperty(entry.getKey(), entry.getValue().toString());
-            }
+        Properties prop = new Properties();
+        for (Map.Entry<String, Boolean> entry : FEATURE_FLAGS.entrySet()) {
+            prop.setProperty(entry.getKey(), entry.getValue().toString());
+        }
 
-            // Get the path to the properties file
-            java.net.URL url = Features.class.getResource(PROPERTIES_FILE);
-            if (url == null) {
-                System.err.println("Cannot save feature flags: properties file not found in classpath.");
-                return;
-            }
-            java.io.File file = new java.io.File(url.toURI());
-            try (java.io.OutputStream output = new java.io.FileOutputStream(file)) {
-                prop.store(output, "Feature Flags");
-                System.out.println("Feature flags saved.");
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        // Write to the external file in the same directory as the application
+        try (OutputStream output = new FileOutputStream(EXTERNAL_PROPERTIES_FILE)) {
+            prop.store(output, "User-defined Feature Flags");
+            System.out.println("Feature flags saved to " + EXTERNAL_PROPERTIES_FILE);
+        } catch (IOException io) {
+            io.printStackTrace();
+            System.err.println("Failed to save feature flags to external file.");
         }
     }
 }

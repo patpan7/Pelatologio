@@ -1,7 +1,5 @@
 package org.easytech.pelatologio.helper;
 
-import org.easytech.pelatologio.AppSettings;
-
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
