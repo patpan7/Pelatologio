@@ -1,15 +1,11 @@
 package org.easytech.pelatologio;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
@@ -17,18 +13,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
-import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.dao.PartnerDao;
 import org.easytech.pelatologio.helper.*;
-import org.easytech.pelatologio.models.*;
+import org.easytech.pelatologio.models.Customer;
+import org.easytech.pelatologio.models.Partner;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -99,9 +93,7 @@ public class AddPartnerController {
                 if (result.get() == saveButton) {
                     handleOkButton();
                     return true;
-                } else if (result.get() == discardButton) {
-                    return true;
-                }
+                } else return result.get() == discardButton;
             }
             return false;
         }

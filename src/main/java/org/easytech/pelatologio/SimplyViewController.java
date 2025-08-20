@@ -307,7 +307,7 @@ public class SimplyViewController {
                 ButtonType result = dialog.getResult();
                 if (result != null && result == ButtonType.OK) {
                     Logins updatedLogin = editController.getUpdatedLogin();
-                    new DBHelper().getLoginDao().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
+                    DBHelper.getLoginDao().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
                     Platform.runLater(() -> loginTable.refresh());
                 }
             });
@@ -557,12 +557,12 @@ public class SimplyViewController {
             int category = 1;
             if (cbContractDuration.getSelectionModel().getSelectedIndex() == 0 && selectedLogin.getTag().contains("Cash"))
                 price = "130";
-            else if (cbContractDuration.getSelectionModel().getSelectedIndex() == 0 && selectedLogin.getTag().contains("Rest")){
+            else if (cbContractDuration.getSelectionModel().getSelectedIndex() == 0 && selectedLogin.getTag().contains("Rest")) {
                 price = "260";
                 category = 2;
             }
-            LocalDate date = LocalDate.now().plusYears(cbContractDuration.getSelectionModel().getSelectedIndex()+1);
-            Subscription newSub = new Subscription(0, selectedLogin.getTag(), date, customer.getCode(),category, price, selectedLogin.getUsername(), "Όχι");
+            LocalDate date = LocalDate.now().plusYears(cbContractDuration.getSelectionModel().getSelectedIndex() + 1);
+            Subscription newSub = new Subscription(0, selectedLogin.getTag(), date, customer.getCode(), category, price, selectedLogin.getUsername(), "Όχι");
             DBHelper.getSubscriptionDao().saveSub(newSub);
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα Simply Cloud.", e.getMessage(), Alert.AlertType.ERROR));

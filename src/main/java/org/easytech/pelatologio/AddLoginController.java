@@ -97,7 +97,7 @@ public class AddLoginController {
             String tag = tagField.getSelectionModel().getSelectedItem().toString();
             Logins newLogin = new Logins(username, password, tag, phone);
             DBHelper dbHelper = new DBHelper();
-            int loginId = DBHelper.getLoginDao().addLogin(customer.getCode(),newLogin,appicationId); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
+            int loginId = DBHelper.getLoginDao().addLogin(customer.getCode(), newLogin, appicationId); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
             System.out.println("Login added successfully with ID: " + loginId);
             if (loginId != 0 && tag.contains("Cash") || tag.contains("Rest"))
                 DBHelper.getSimplyStatusDao().addSimplySetupProgress(loginId);
@@ -136,7 +136,8 @@ public class AddLoginController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
         try {
@@ -167,7 +168,8 @@ public class AddLoginController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return false;
         }
         return true;

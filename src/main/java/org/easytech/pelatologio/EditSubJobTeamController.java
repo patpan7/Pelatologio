@@ -23,7 +23,7 @@ public class EditSubJobTeamController {
 
 
     private SubJobTeam subJobTeam;
-    private ObservableList<JobTeam> jobTeamList = FXCollections.observableArrayList();
+    private final ObservableList<JobTeam> jobTeamList = FXCollections.observableArrayList();
     private FilteredList<JobTeam> filteredJobTeams;
 
     @FXML

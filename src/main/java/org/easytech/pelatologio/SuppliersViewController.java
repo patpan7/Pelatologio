@@ -10,8 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.TextField;
 import javafx.scene.control.*;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -27,11 +27,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.stream.IntStream;
 
-public class SuppliersController implements Initializable {
+public class SuppliersViewController implements Initializable {
     @FXML
     public TableColumn nameColumn, phoneColumn, mobileColumn, emailColumn;
     @FXML

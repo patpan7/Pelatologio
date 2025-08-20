@@ -1,6 +1,5 @@
 package org.easytech.pelatologio;
 
-import com.jfoenix.controls.JFXComboBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -23,8 +22,9 @@ public class AddSubJobTeamController {
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
 
     private Customer customer;
-    private ObservableList<JobTeam> jobTeamList = FXCollections.observableArrayList();
+    private final ObservableList<JobTeam> jobTeamList = FXCollections.observableArrayList();
     private FilteredList<JobTeam> filteredJobTeams;
+
     // Μέθοδος για να ορίσεις τον πελάτη
     public void setCustomer(Customer customer) {
         this.customer = customer;
@@ -88,7 +88,7 @@ public class AddSubJobTeamController {
         String name = nameField.getText();
         int jobTeamId = jobTeamField.getSelectionModel().getSelectedItem().getId();
         System.out.println("jobteamid " + jobTeamId);
-        SubJobTeam newSubJobTeam = new SubJobTeam(0,name,jobTeamId);
+        SubJobTeam newSubJobTeam = new SubJobTeam(0, name, jobTeamId);
         if (!name.isEmpty()) {
             DBHelper.getSubJobTeamDao().saveSubJobTeam(newSubJobTeam); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
 

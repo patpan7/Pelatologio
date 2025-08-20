@@ -18,6 +18,7 @@ public class AppSettings {
     public String SimplyPass;
     public String fanvilUser;
     public String fanvilPass;
+
     private AppSettings() {
         init();
     }
@@ -36,11 +37,13 @@ public class AppSettings {
         fanvilUser = AppSettings.loadSetting("fanvil.user");
         fanvilPass = AppSettings.loadSetting("fanvil.pass");
     }
+
     public static void saveSetting(String key, String value) {
         Properties prop = new Properties();
         try (InputStream input = new FileInputStream(FILE_NAME)) {
             prop.load(input);
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
 
         try (OutputStream output = new FileOutputStream(FILE_NAME)) {
             prop.setProperty(key, value);

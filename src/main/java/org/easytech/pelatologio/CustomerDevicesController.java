@@ -57,7 +57,7 @@ public class CustomerDevicesController {
         devicesTable.setItems(devicesList);
 
         devicesTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2){
+            if (event.getClickCount() == 2) {
                 handleEditDevice(null);
             }
         });
@@ -74,6 +74,7 @@ public class CustomerDevicesController {
             devicesList.addAll(DBHelper.getDeviceDao().getCustomerDevices(customerId));
         }
     }
+
     public void handleAddDevice(ActionEvent event) {
         if (Features.isEnabled("devices")) {
             try {
@@ -135,7 +136,8 @@ public class CustomerDevicesController {
                             .graphic(null)
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT);
-                    notifications.showError();});
+                    notifications.showError();
+                });
                 return;
             }
 

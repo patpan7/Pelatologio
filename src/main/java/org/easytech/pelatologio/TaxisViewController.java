@@ -40,9 +40,12 @@ public class TaxisViewController {
     private static final By DEFAULT_PASSWORD_LOCATOR = By.id("password");
     private static final By DEFAULT_SUBMIT_LOCATOR = By.name("btn_login");
 
-    @FXML private Button btnTaxis, btnAuthorizations, btnMyData, btnESend, btnAfm1, btnAfm2, btnTameiakes, btnGemi;
-    @FXML private TableView<Logins> loginTable;
-    @FXML private TableColumn<Logins, String> usernameColumn, passwordColumn, tagColumn;
+    @FXML
+    private Button btnTaxis, btnAuthorizations, btnMyData, btnESend, btnAfm1, btnAfm2, btnTameiakes, btnGemi;
+    @FXML
+    private TableView<Logins> loginTable;
+    @FXML
+    private TableColumn<Logins, String> usernameColumn, passwordColumn, tagColumn;
 
     private Customer customer;
     private ObservableList<Logins> loginList;
@@ -89,8 +92,8 @@ public class TaxisViewController {
     public void handleAddLogin(ActionEvent event) {
         try {
             var loader = new FXMLLoader(getClass().getResource("addLogin.fxml"));
-            var dialogPane = (DialogPane)loader.load();
-            var controller = (AddLoginController)loader.getController();
+            var dialogPane = (DialogPane) loader.load();
+            var controller = (AddLoginController) loader.getController();
 
             controller.setCustomer(customer);
             //controller.setUsername(customer.getEmail());
@@ -118,7 +121,9 @@ public class TaxisViewController {
         } catch (IOException e) {
             showErrorDialog("Προέκυψε σφάλμα κατά την προσθήκη του login.", e.getMessage());
         }
-    }    public void handleDeleteLogin(ActionEvent event) {
+    }
+
+    public void handleDeleteLogin(ActionEvent event) {
         var selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
             showNotification("Προσοχή", "Παρακαλώ επιλέξτε ένα login προς διαγραφή.");
@@ -145,8 +150,8 @@ public class TaxisViewController {
 
         try {
             var loader = new FXMLLoader(getClass().getResource("editLogin.fxml"));
-            var dialogPane = (DialogPane)loader.load();
-            var controller = (EditLoginController)loader.getController();
+            var dialogPane = (DialogPane) loader.load();
+            var controller = (EditLoginController) loader.getController();
 
             controller.setLogin(selectedLogin);
             var dialog = createDialog(dialogPane, "Επεξεργασία Login");
@@ -156,7 +161,7 @@ public class TaxisViewController {
             dialog.setResultConverter(buttonType -> {
                 if (buttonType == ButtonType.OK) {
                     try {
-                        if (!new DBHelper().getLoginDao().updateLogin(controller.getUpdatedLogin())) {
+                        if (!DBHelper.getLoginDao().updateLogin(controller.getUpdatedLogin())) {
                             showErrorDialog("Αποτυχία ενημέρωσης", "Η ενημέρωση του login απέτυχε.");
                         }
                     } catch (Exception e) {
@@ -171,7 +176,9 @@ public class TaxisViewController {
         } catch (IOException e) {
             showErrorDialog("Προέκυψε σφάλμα κατά την ενημέρωση.", e.getMessage());
         }
-    }    public void setCustomer(Customer customer) {
+    }
+
+    public void setCustomer(Customer customer) {
         this.customer = customer;
         loadLoginsForCustomer(customer.getCode());
     }
@@ -200,8 +207,7 @@ public class TaxisViewController {
     }
 
     public void esendOpen(ActionEvent actionEvent) {
-        openLoginPage(ESEND_URL, By.id("idEMAIL"), By.name("PASSWD"),
-                By.cssSelector("input.btn.btn-primary[value='Σύνδεση']"));
+        openLoginPage(ESEND_URL, By.id("idEMAIL"), By.name("PASSWD"), By.cssSelector("input.btn.btn-primary[value='Σύνδεση']"));
     }
 
     public void afm1Open(ActionEvent actionEvent) {
@@ -243,14 +249,7 @@ public class TaxisViewController {
             return;
         }
         try {
-            new LoginAutomator(true).openAndFillLoginForm(
-                    url,
-                    selectedLogin.getUsername(),
-                    selectedLogin.getPassword(),
-                    usernameLocator,
-                    passwordLocator,
-                    submitLocator
-            );
+            new LoginAutomator(true).openAndFillLoginForm(url, selectedLogin.getUsername(), selectedLogin.getPassword(), usernameLocator, passwordLocator, submitLocator);
         } catch (IOException e) {
             showErrorDialog("Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage());
         }
@@ -263,14 +262,7 @@ public class TaxisViewController {
             return;
         }
         try {
-            new LoginAutomator(true).openAndFillLoginFormAuthorizations(
-                    url,
-                    selectedLogin.getUsername(),
-                    selectedLogin.getPassword(),
-                    usernameLocator,
-                    passwordLocator,
-                    submitLocator
-            );
+            new LoginAutomator(true).openAndFillLoginFormAuthorizations(url, selectedLogin.getUsername(), selectedLogin.getPassword(), usernameLocator, passwordLocator, submitLocator);
         } catch (IOException e) {
             showErrorDialog("Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage());
         }
@@ -281,28 +273,15 @@ public class TaxisViewController {
         content.putString(login.getTag() + "\nUsername: " + login.getUsername() + "\nPassword: " + login.getPassword());
         Clipboard.getSystemClipboard().setContent(content);
 
-        Notifications.create()
-                .title("Αντιγραφή στο πρόχειρο")
-                .text("Τα στοιχεία του login αντιγράφηκαν")
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT)
-                .showInformation();
+        Notifications.create().title("Αντιγραφή στο πρόχειρο").text("Τα στοιχεία του login αντιγράφηκαν").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT).showInformation();
     }
 
     private void showNotification(String title, String message) {
-        Platform.runLater(() -> Notifications.create()
-                .title(title)
-                .text(message)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT)
-                .showError());
+        Platform.runLater(() -> Notifications.create().title(title).text(message).graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT).showError());
     }
 
     private void showErrorDialog(String header, String content) {
-        Platform.runLater(() -> AlertDialogHelper.showDialog(
-                "Σφάλμα", header, content, Alert.AlertType.ERROR));
+        Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", header, content, Alert.AlertType.ERROR));
     }
 
     private void setTooltip(Button button, String text) {

@@ -47,7 +47,7 @@ public class CallLogViewController implements Initializable {
     private TableColumn<CallLog, String> colNotes;
 
     private CallLogDao callLogDao;
-    private ObservableList<CallLog> masterData = FXCollections.observableArrayList();
+    private final ObservableList<CallLog> masterData = FXCollections.observableArrayList();
     private FilteredList<CallLog> filteredData;
 
     @Override
@@ -74,10 +74,8 @@ public class CallLogViewController implements Initializable {
                 String lowerCaseFilter = newValue.toLowerCase();
                 if (callLog.getCallerNumber().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
-                } else if (callLog.getCallerName() != null && callLog.getCallerName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-                return false;
+                } else
+                    return callLog.getCallerName() != null && callLog.getCallerName().toLowerCase().contains(lowerCaseFilter);
             });
         });
 

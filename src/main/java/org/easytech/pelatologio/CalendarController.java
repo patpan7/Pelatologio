@@ -92,8 +92,7 @@ public class CalendarController {
                         if (appointment.getCustomerId() != 0) {
                             title = appointment.getCustomerName() + " " + appointment.getTitle();
                             entry = new Entry<>(appointment.getCustomerName() + " " + appointment.getTitle());
-                        }
-                        else
+                        } else
                             entry = new Entry<>(appointment.getTitle());
                         entry.setId(String.valueOf(appointment.getId()));
                         entry.setInterval(appointment.getStartTime(), appointment.getEndTime());
@@ -163,7 +162,6 @@ public class CalendarController {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
-
 
 
     private void addDragAndDropListener(Entry<Tasks> entry) {

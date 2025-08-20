@@ -45,7 +45,7 @@ public class OffersController implements Initializable {
     @FXML
     private Button addOfferButton, editOfferButton, deleteOfferButton;
 
-    private ObservableList<Offer> allOffers = FXCollections.observableArrayList();
+    private final ObservableList<Offer> allOffers = FXCollections.observableArrayList();
 
     private TabPane mainTabPane;
 
@@ -288,7 +288,8 @@ public class OffersController implements Initializable {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
         try {
@@ -298,7 +299,7 @@ public class OffersController implements Initializable {
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Προσθήκη Εργασίας");
             AddTaskController controller = loader.getController();
-            controller.setTaskTitle("Προσφορά "+ selectedOffer.getId() +": "+ selectedOffer.getCustomerName());
+            controller.setTaskTitle("Προσφορά " + selectedOffer.getId() + ": " + selectedOffer.getCustomerName());
             controller.setCustomerName(selectedOffer.getCustomerName());
             controller.setCustomerId(selectedOffer.getCustomerId());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -335,13 +336,14 @@ public class OffersController implements Initializable {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
-        String msg ="Επωνυμία: "+selectedOffer.getCustomerName() +
-                "\nΣας αποστείλαμε μια νέα προσφορά"+
+        String msg = "Επωνυμία: " + selectedOffer.getCustomerName() +
+                "\nΣας αποστείλαμε μια νέα προσφορά" +
                 "\nΜπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου:" +
-                "\nhttp://dgou.dynns.com:8090/portal/offer.php?id="+selectedOffer.getId()+
+                "\nhttp://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() +
                 "\n\nΜπορείτε δείτε τους τραπεζικούς μας λογαριασμούς στην παρακάτω διεύθυνση:" +
                 "\nhttp://dgou.dynns.com:8090/portal/bank_accounts.php" +
                 "\n\nΓια οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας." +
@@ -376,9 +378,9 @@ public class OffersController implements Initializable {
             controller.setCustomer(customer);
             controller.setEmail(email);
             controller.setSubject("Προσφορά " + selectedOffer.getId() + ": " + selectedOffer.getCustomerName());
-            controller.setBody("<h3>"+selectedOffer.getDescription() + "</h3>" +
+            controller.setBody("<h3>" + selectedOffer.getDescription() + "</h3>" +
                     "<br><br><h3>Μπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου: </h3>" +
-                    "<a href=http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId()+"><b><h2>Αποδοχή ή Απόρριψη προσφορά "+selectedOffer.getId()+"</b><h2></a>" +
+                    "<a href=http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() + "><b><h2>Αποδοχή ή Απόρριψη προσφορά " + selectedOffer.getId() + "</b><h2></a>" +
                     //"<br>http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() +
                     "<br><br><h3>Μπορείτε δείτε τους τραπεζικούς μας λογαριασμούς </h3>" +
                     "<a href=http://dgou.dynns.com:8090/portal/bank_accounts.php><b><h2>Τραπεζικοί λογαριασμοί</b></h2></a>" +
@@ -409,17 +411,17 @@ public class OffersController implements Initializable {
     }
 
     @FXML
-    private void handleAccept (ActionEvent event) {
+    private void handleAccept(ActionEvent event) {
         toggleAns("Αποδοχή Χειρ.");
     }
 
     @FXML
-    private void handleReject (ActionEvent event) {
+    private void handleReject(ActionEvent event) {
         toggleAns("Απόρριψη Χειρ.");
     }
 
     @FXML
-    private void handleArchive (ActionEvent event) {
+    private void handleArchive(ActionEvent event) {
         Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
         if (selectedOffer == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
@@ -444,7 +446,8 @@ public class OffersController implements Initializable {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();});
+                notifications.showConfirm();
+            });
             loadOffers(); // Φορτώνει ξανά τις εργασίες
         } else {
             Platform.runLater(() -> {
@@ -454,7 +457,8 @@ public class OffersController implements Initializable {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
         }
     }
 
@@ -483,7 +487,8 @@ public class OffersController implements Initializable {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();});
+                notifications.showConfirm();
+            });
             loadOffers(); // Φορτώνει ξανά τις εργασίες
         } else {
             Platform.runLater(() -> {
@@ -493,7 +498,8 @@ public class OffersController implements Initializable {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
         }
     }
 

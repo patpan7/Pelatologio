@@ -30,7 +30,6 @@ import org.easytech.pelatologio.models.Logins;
 import org.openqa.selenium.By;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,10 +55,14 @@ public class MyposViewController {
     private Button btnLogin, btnRegister;
 
     // For myPOS Details Table
-    @FXML private TableView<CustomerMyPosDetails> myposDetailsTable;
-    @FXML private TableColumn<CustomerMyPosDetails, String> clientIdColumn;
-    @FXML private TableColumn<CustomerMyPosDetails, String> verificationStatusColumn;
-    @FXML private TableColumn<CustomerMyPosDetails, String> accountStatusColumn;
+    @FXML
+    private TableView<CustomerMyPosDetails> myposDetailsTable;
+    @FXML
+    private TableColumn<CustomerMyPosDetails, String> clientIdColumn;
+    @FXML
+    private TableColumn<CustomerMyPosDetails, String> verificationStatusColumn;
+    @FXML
+    private TableColumn<CustomerMyPosDetails, String> accountStatusColumn;
     private ObservableList<CustomerMyPosDetails> detailsList;
     private CustomerMyPosDetailsDao myPosDetailsDao;
     @FXML

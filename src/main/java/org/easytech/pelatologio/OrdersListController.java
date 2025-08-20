@@ -42,9 +42,9 @@ public class OrdersListController implements Initializable {
     @FXML
     private Button addOrderButton, editOrderButton, deleteOrderButton, completeOrderButton, uncompletedOrderButton;
     @FXML
-    private ComboBox <Supplier> supplierFilterComboBox;
+    private ComboBox<Supplier> supplierFilterComboBox;
 
-    private ObservableList<Order> allOrders = FXCollections.observableArrayList();
+    private final ObservableList<Order> allOrders = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -53,7 +53,7 @@ public class OrdersListController implements Initializable {
         setTooltip(editOrderButton, "Επεξεργασία παραγγελίας");
         setTooltip(deleteOrderButton, "Διαγραφή παραγγελίας");
         setTooltip(completeOrderButton, "Σημείωση παραγγελίας ως ολοκληρωμένη");
-        setTooltip(uncompletedOrderButton,"Σημείωση παραγγελίας ως σε επεξεργασία");
+        setTooltip(uncompletedOrderButton, "Σημείωση παραγγελίας ως σε επεξεργασία");
 
         // Σύνδεση στηλών πίνακα με πεδία του Order
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -134,7 +134,7 @@ public class OrdersListController implements Initializable {
 
         DBHelper dbHelper = new DBHelper();
         List<Supplier> suppliers = DBHelper.getSupplierDao().getSuppliersFromOrders();
-        supplierFilterComboBox.getItems().add(new Supplier(-1, "Όλα","","","","","","","","","", false)); // Προσθήκη επιλογής "Όλα"
+        supplierFilterComboBox.getItems().add(new Supplier(-1, "Όλα", "", "", "", "", "", "", "", "", "", false)); // Προσθήκη επιλογής "Όλα"
         supplierFilterComboBox.getItems().addAll(suppliers);
         supplierFilterComboBox.getSelectionModel().selectFirst();
         supplierFilterComboBox.setConverter(new StringConverter<>() {
@@ -154,7 +154,6 @@ public class OrdersListController implements Initializable {
 
 
         supplierFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateOrdersTable());
-
 
 
         showAllCheckbox.setOnAction(e -> updateOrdersTable());
@@ -213,7 +212,8 @@ public class OrdersListController implements Initializable {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 
@@ -227,7 +227,8 @@ public class OrdersListController implements Initializable {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();});
+                notifications.showConfirm();
+            });
             loadOrders(); // Φορτώνει ξανά τις εργασίες
         } else {
             System.out.println("Failed to update order completion status.");
@@ -238,10 +239,10 @@ public class OrdersListController implements Initializable {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
         }
     }
-
 
 
     private void loadOrders() {
@@ -299,42 +300,41 @@ public class OrdersListController implements Initializable {
     }
 
 
-
     @FXML
     private void handleAddOrder() {
-            try {
-                // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("addOrder.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Προσθήκη Παραγγελίας");
-                AddOrderController controller = loader.getController();
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        try {
+            // Φόρτωση του FXML για προσθήκη ραντεβού
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addOrder.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Προσθήκη Παραγγελίας");
+            AddOrderController controller = loader.getController();
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-                // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
-                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.addEventFilter(ActionEvent.ACTION, event -> {
-                    // Εκτελούμε το handleSaveAppointment
-                    boolean success = controller.handleSaveOrder();
+            // Προσθέτουμε προσαρμοσμένη λειτουργία στο "OK"
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                // Εκτελούμε το handleSaveAppointment
+                boolean success = controller.handleSaveOrder();
 
-                    if (!success) {
-                        // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
-                        event.consume();
-                    }
-                });
+                if (!success) {
+                    // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
+                    event.consume();
+                }
+            });
 
-                dialog.initModality(Modality.NONE);
-                dialog.initOwner(null);
-                dialog.show();
+            dialog.initModality(Modality.NONE);
+            dialog.initOwner(null);
+            dialog.show();
 
-                dialog.setOnHidden(e -> {
-                    if (dialog.getResult() == ButtonType.OK) {
-                        loadOrders();
-                    }
-                });
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
-            }
+            dialog.setOnHidden(e -> {
+                if (dialog.getResult() == ButtonType.OK) {
+                    loadOrders();
+                }
+            });
+        } catch (IOException e) {
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
+        }
     }
 
     @FXML
@@ -397,7 +397,7 @@ public class OrdersListController implements Initializable {
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Επιβεβαίωση");
-        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την παραγγελία " + selectedOrder.getTitle() + ";" );
+        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την παραγγελία " + selectedOrder.getTitle() + ";");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper.getOrderDao().deleteOrder(selectedOrder.getId());

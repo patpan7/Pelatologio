@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <?import com.jfoenix.controls.JFXCheckBox?>
-<?import javafx.geometry.Insets?>
-<VBox spacing="10" style="-fx-padding: 10;" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.helper.CallNotesController">
-    <children>
-      <Label fx:id="lbCustomer" layoutX="20.0" layoutY="20.0" style="-fx-font-weight: bold;" styleClass="header-label" text="Πελάτης: " />
-        <Label style="-fx-font-weight: bold;" styleClass="normal-label" text="Σημειώσεις Κλήσης" />
-        <HBox fx:id="manualCallTypeBox" spacing="10" visible="false">
-            <children>
-                <RadioButton fx:id="incomingRadio" text="Εισερχόμενη" />
-                <RadioButton fx:id="outgoingRadio" text="Εξερχόμενη" />
-            </children>
-        </HBox>
-        <TextArea fx:id="notesTextArea" wrapText="true" VBox.vgrow="ALWAYS" />
-        <HBox spacing="10">
-            <Label style="-fx-font-weight: bold;" styleClass="normal-label" text="Προσθήκη:"/>
-            <JFXCheckBox fx:id="createTaskCheckBox" styleClass="normal-label" text="Εργασία"/>
-            <JFXCheckBox fx:id="createOfferCheckBox" styleClass="normal-label" text="Προσφορά"/>
-            <JFXCheckBox fx:id="createOrderCheckBox" styleClass="normal-label" text="Παραγγελία"/>
-        </HBox>
-        <Button fx:id="saveAndEndCallButton" onAction="#handleSaveAndEndCall" styleClass="click-button" text="Αποθήκευση και Τερματισμός Κλήσης" />
-    </children>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<VBox spacing="10" style="-fx-padding: 10;" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.helper.CallNotesController">
+    <Label fx:id="lbCustomer" layoutX="20.0" layoutY="20.0" style="-fx-font-weight: bold;" styleClass="header-label"
+           text="Πελάτης: "/>
+    <Label style="-fx-font-weight: bold;" styleClass="normal-label" text="Σημειώσεις Κλήσης"/>
+    <HBox fx:id="manualCallTypeBox" spacing="10" visible="false">
+        <RadioButton fx:id="incomingRadio" text="Εισερχόμενη"/>
+        <RadioButton fx:id="outgoingRadio" text="Εξερχόμενη"/>
+    </HBox>
+    <TextArea fx:id="notesTextArea" wrapText="true" VBox.vgrow="ALWAYS"/>
+    <HBox spacing="10">
+        <Label style="-fx-font-weight: bold;" styleClass="normal-label" text="Προσθήκη:"/>
+        <JFXCheckBox fx:id="createTaskCheckBox" styleClass="normal-label" text="Εργασία"/>
+        <JFXCheckBox fx:id="createOfferCheckBox" styleClass="normal-label" text="Προσφορά"/>
+        <JFXCheckBox fx:id="createOrderCheckBox" styleClass="normal-label" text="Παραγγελία"/>
+    </HBox>
+    <Button fx:id="saveAndEndCallButton" onAction="#handleSaveAndEndCall" styleClass="click-button"
+            text="Αποθήκευση και Τερματισμός Κλήσης"/>
 </VBox>

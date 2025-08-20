@@ -12,7 +12,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -33,7 +32,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 public class AddOrderController {
 
@@ -386,7 +384,7 @@ public class AddOrderController {
         ENGLISH_TO_GREEK.put('\u004A', '\u039E');  // uppercase J
         ENGLISH_TO_GREEK.put('\u004B', '\u039A');  // uppercase K
         ENGLISH_TO_GREEK.put('\u004C', '\u039B');  // uppercase L
-        
+
         ENGLISH_TO_GREEK.put('\u004E', '\u039D');  // uppercase N
         ENGLISH_TO_GREEK.put('\u004F', '\u039F');  // uppercase O
         ENGLISH_TO_GREEK.put('\u0050', '\u03A0');  // uppercase P

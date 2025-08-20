@@ -16,9 +16,9 @@ import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.Features;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Subscription;
-import org.easytech.pelatologio.helper.Features;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -40,7 +40,7 @@ public class CustomerSubsController {
 
     Customer customer;
 
-        @FXML
+    @FXML
     public void initialize() {
         if (!Features.isEnabled("contracts")) {
             addTaskButton.setVisible(false);
@@ -139,7 +139,7 @@ public class CustomerSubsController {
     }
 
 
-        @FXML
+    @FXML
     private void handleAddSub() {
         if (Features.isEnabled("contracts")) {
             try {
@@ -189,7 +189,7 @@ public class CustomerSubsController {
         }
     }
 
-        @FXML
+    @FXML
     private void handleEditSub() throws IOException {
         if (Features.isEnabled("contracts")) {
             // Επεξεργασία επιλεγμένης εργασίας
@@ -246,7 +246,7 @@ public class CustomerSubsController {
         }
     }
 
-        @FXML
+    @FXML
     private void handleDeleteSub() throws SQLException {
         if (Features.isEnabled("contracts")) {
             // Διαγραφή επιλεγμένης εργασίας
@@ -260,7 +260,7 @@ public class CustomerSubsController {
             }
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Επιβεβαίωση");
-            alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedSub.getTitle() + ";" );
+            alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedSub.getTitle() + ";");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 DBHelper dbHelper = new DBHelper();
@@ -278,7 +278,7 @@ public class CustomerSubsController {
         }
     }
 
-    private void handleRenewSub () {
+    private void handleRenewSub() {
         if (Features.isEnabled("contracts")) {
             // Επεξεργασία επιλεγμένης εργασίας
             Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
@@ -344,56 +344,56 @@ public class CustomerSubsController {
                 notifications.showError();
                 return;
             }
-        DBHelper dbHelper = new DBHelper();
-        Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedSub.getCustomerId());
-        String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" +
-                "<br>Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "." +
-                "<br>Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν." +
-                "<br>Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f",Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς." +
-                "<br>Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας." +
-                "<br>Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας." +
-                "<br>" +
-                "<br><b>Τραπεζικοί Λογαριασμοί:</b>" +
-                "<br>" +
-                "<br><b>ΕΘΝΙΚΗ ΤΡΑΠΕΖΑ</b>" +
-                "<br><b>Λογαριασμός:</b> 29700119679" +
-                "<br><b>Λογαριασμός (IBAN):</b> GR6201102970000029700119679" +
-                "<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ" +
-                "<br><b>EUROBANK</b>" +
-                "<br><b>Λογαριασμός:</b> 0026.0451.27.0200083481" +
-                "<br><b>Λογαριασμός (IBAN):</b> GR7902604510000270200083481" +
-                "<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ" +
-                "<br><b>myPOS</b>" +
-                "<br><b>ΑΡ.ΠΟΡΤΟΦΟΛΙΟΥ:</b> 40005794314" +
-                "<br><b>Όνομα δικαιούχου:</b> GKOUMAS DIMITRIOS " +
-                "<br><b>IBAN:</b> IE27MPOS99039012868261 " +
-                "<br><b>ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ:</b> 12868261" +
-                "<br><b>myPOS Ltd</b>" +
-                "<br><b>BIC: MPOSIE2D</b>";
-        try {
-            String email = customer.getEmail();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Αποστολή Email");
-            EmailDialogController controller = loader.getController();
-            controller.setCustomer(customer);
-            controller.setEmail(email);
-            controller.setSubject("Υπενθύμιση λήξης συνδρομής " + selectedSub.getTitle());
-            controller.setBody(msg);
-            controller.setCopy(false);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            dialog.show();
-            dialog.setOnCloseRequest(evt -> {
-                if (controller.isSended) {
-                    // Εκτελούμε το handleSendEmail
-                    DBHelper.getSubscriptionDao().updateSubSent(selectedSub.getId());
-                    loadSubs(customer.getCode());
-                }
-            });
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-        }
+            DBHelper dbHelper = new DBHelper();
+            Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedSub.getCustomerId());
+            String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" +
+                    "<br>Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "." +
+                    "<br>Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν." +
+                    "<br>Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f", Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς." +
+                    "<br>Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας." +
+                    "<br>Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας." +
+                    "<br>" +
+                    "<br><b>Τραπεζικοί Λογαριασμοί:</b>" +
+                    "<br>" +
+                    "<br><b>ΕΘΝΙΚΗ ΤΡΑΠΕΖΑ</b>" +
+                    "<br><b>Λογαριασμός:</b> 29700119679" +
+                    "<br><b>Λογαριασμός (IBAN):</b> GR6201102970000029700119679" +
+                    "<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ" +
+                    "<br><b>EUROBANK</b>" +
+                    "<br><b>Λογαριασμός:</b> 0026.0451.27.0200083481" +
+                    "<br><b>Λογαριασμός (IBAN):</b> GR7902604510000270200083481" +
+                    "<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ" +
+                    "<br><b>myPOS</b>" +
+                    "<br><b>ΑΡ.ΠΟΡΤΟΦΟΛΙΟΥ:</b> 40005794314" +
+                    "<br><b>Όνομα δικαιούχου:</b> GKOUMAS DIMITRIOS " +
+                    "<br><b>IBAN:</b> IE27MPOS99039012868261 " +
+                    "<br><b>ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ:</b> 12868261" +
+                    "<br><b>myPOS Ltd</b>" +
+                    "<br><b>BIC: MPOSIE2D</b>";
+            try {
+                String email = customer.getEmail();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(loader.load());
+                dialog.setTitle("Αποστολή Email");
+                EmailDialogController controller = loader.getController();
+                controller.setCustomer(customer);
+                controller.setEmail(email);
+                controller.setSubject("Υπενθύμιση λήξης συνδρομής " + selectedSub.getTitle());
+                controller.setBody(msg);
+                controller.setCopy(false);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+                dialog.show();
+                dialog.setOnCloseRequest(evt -> {
+                    if (controller.isSended) {
+                        // Εκτελούμε το handleSendEmail
+                        DBHelper.getSubscriptionDao().updateSubSent(selectedSub.getId());
+                        loadSubs(customer.getCode());
+                    }
+                });
+            } catch (IOException e) {
+                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
+            }
         } else {
             Notifications.create()
                     .title("Προσοχή")
@@ -418,10 +418,10 @@ public class CustomerSubsController {
                 notifications.showError();
                 return;
             }
-            String msg = "Αγαπητέ/ή "+selectedSub.getCustomerName()+",\n" +
-                    "Σας υπενθυμίζουμε ότι η συνδρομή σας στο "+selectedSub.getTitle().trim()+" λήγει στις "+selectedSub.getEndDate()+ ".\n" +
+            String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" +
+                    "Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate() + ".\n" +
                     "Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν.\n" +
-                    "Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f",Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς.\n" +
+                    "Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f", Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς.\n" +
                     "Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας.\n" +
                     "Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας.\n" +
                     "Με εκτίμηση,\n" +

@@ -81,7 +81,7 @@ public class ErganiViewController {
         loginTable.setItems(loginList);
 
         loginTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2){
+            if (event.getClickCount() == 2) {
                 handleEditLogin(null);
             }
         });
@@ -94,7 +94,7 @@ public class ErganiViewController {
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
-        loginList.addAll(DBHelper.getLoginDao().getLogins(customerId,5));
+        loginList.addAll(DBHelper.getLoginDao().getLogins(customerId, 5));
         if (loginTable.getItems().size() == 1)
             loginTable.getSelectionModel().select(0);
     }
@@ -124,10 +124,9 @@ public class ErganiViewController {
             okButton.addEventFilter(ActionEvent.ACTION, e -> {
                 if (!addLoginController.validateInputs()) {
                     e.consume(); // Εμποδίζει το κλείσιμο του dialog
-                }
-                else {
+                } else {
                     // Εάν οι εισαγωγές είναι έγκυρες, συνεχίστε με την αποθήκευση
-                    addLoginController.handleSaveLogin(event,5);
+                    addLoginController.handleSaveLogin(event, 5);
                 }
             });
 
@@ -196,7 +195,7 @@ public class ErganiViewController {
                 ButtonType result = dialog.getResult();
                 if (result != null && result == ButtonType.OK) {
                     Logins updatedLogin = editController.getUpdatedLogin();
-                    new DBHelper().getLoginDao().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
+                    DBHelper.getLoginDao().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
                     Platform.runLater(() -> loginTable.refresh());
                 }
             });
@@ -210,19 +209,19 @@ public class ErganiViewController {
         Logins selectedLogin = checkSelectedLogin();
         if (selectedLogin == null) return;
 
-        LabelPrintHelper.printLoginLabel(selectedLogin,customer,"Στοιχεία "+selectedLogin.getTag());
+        LabelPrintHelper.printLoginLabel(selectedLogin, customer, "Στοιχεία " + selectedLogin.getTag());
     }
 
     public void handleCopy(ActionEvent event) {
         Logins selectedLogin = checkSelectedLogin();
         if (selectedLogin == null) return;
 
-        String msg ="Στοιχεία εισόδου " + selectedLogin.getTag() +
-                "\nΕπωνυμία: "+customer.getName()+
-                "\nΑΦΜ: "+customer.getAfm()+
-                "\nEmail: "+selectedLogin.getUsername()+
-                "\nΚωδικός: "+selectedLogin.getPassword()+
-                "\nΚινητό: "+customer.getMobile()+
+        String msg = "Στοιχεία εισόδου " + selectedLogin.getTag() +
+                "\nΕπωνυμία: " + customer.getName() +
+                "\nΑΦΜ: " + customer.getAfm() +
+                "\nEmail: " + selectedLogin.getUsername() +
+                "\nΚωδικός: " + selectedLogin.getPassword() +
+                "\nΚινητό: " + customer.getMobile() +
                 "\n";
         copyTextToClipboard(msg);
     }
@@ -238,7 +237,7 @@ public class ErganiViewController {
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Προσθήκη Εργασίας");
             AddTaskController controller = loader.getController();
-            controller.setTaskTitle(selectedLogin.getTag() +": "+ customer.getName());
+            controller.setTaskTitle(selectedLogin.getTag() + ": " + customer.getName());
             controller.setCustomerName(customer.getName());
             controller.setCustomerId(customer.getCode());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -302,7 +301,7 @@ public class ErganiViewController {
         }
     }
 
-        public void registerErgani(ActionEvent actionEvent) {
+    public void registerErgani(ActionEvent actionEvent) {
         if (Features.isEnabled("ergani")) {
             Logins selectedLogin = checkSelectedLogin();
             if (selectedLogin == null) return;
@@ -396,7 +395,7 @@ public class ErganiViewController {
         }
     }
 
-    public void loginErgani (ActionEvent actionEvent) {
+    public void loginErgani(ActionEvent actionEvent) {
         if (Features.isEnabled("ergani")) {
             Logins selectedLogin = checkSelectedLogin();
             if (selectedLogin == null) {
@@ -421,6 +420,7 @@ public class ErganiViewController {
             showErrorNotification(WARNING_TITLE, "Το module Ergani είναι απενεργοποιημένο.");
         }
     }
+
     // Μέθοδος αποστολής email
     private void sendEmail(String subject, String msg) {
         // Κώδικας για αποστολή email

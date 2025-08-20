@@ -14,7 +14,8 @@ import java.util.List;
 
 public class PartnerEarningStatementDialogController {
 
-    @FXML private TextArea statementTextArea;
+    @FXML
+    private TextArea statementTextArea;
 
     public void setStatementData(List<PartnerEarning> earnings, Partner selectedPartner) {
         StringBuilder sb = new StringBuilder();

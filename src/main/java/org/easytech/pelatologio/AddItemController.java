@@ -4,10 +4,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -154,7 +150,8 @@ public class AddItemController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(3))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
             int itemId = DBHelper.getItemDao().insertItem(name, description);
@@ -170,16 +167,17 @@ public class AddItemController {
                     notifications.showInformation();
                 });
             } else {
-                    // Εμφάνιση σφάλματος
-                    Platform.runLater(() -> {
-                        Notifications notifications = Notifications.create()
-                                .title("Σφάλμα")
-                                .text("Παρουσιάστηκε σφάλμα κατά την εισαγωγή του είδους στη βάση δεδομένων.")
-                                .graphic(null)
-                                .hideAfter(Duration.seconds(3))
-                                .position(Pos.TOP_RIGHT);
-                        notifications.showError();});
-                }
+                // Εμφάνιση σφάλματος
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Σφάλμα")
+                            .text("Παρουσιάστηκε σφάλμα κατά την εισαγωγή του είδους στη βάση δεδομένων.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(3))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showError();
+                });
+            }
         }
     }
 

@@ -7,7 +7,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import org.easytech.pelatologio.models.JobTeam;
-import org.easytech.pelatologio.models.Recommendation;
 
 public class EditJobTeamController {
     @FXML

@@ -11,7 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.easytech.pelatologio.dao.PartnerEarningDao;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
@@ -30,25 +29,42 @@ import java.util.Optional;
 
 public class PartnerEarningsController {
 
-    @FXML private TableView<PartnerEarning> earningsTable;
-    @FXML private TableColumn<PartnerEarning, String> partnerColumn;
-    @FXML private TableColumn<PartnerEarning, String> customerColumn;
-    @FXML private TableColumn<PartnerEarning, String> supplierColumn;
-    @FXML private TableColumn<PartnerEarning, LocalDate> earningDateColumn;
-    @FXML private TableColumn<PartnerEarning, BigDecimal> earningAmountColumn;
-    @FXML private TableColumn<PartnerEarning, String> invoiceStatusColumn;
-    @FXML private TableColumn<PartnerEarning, String> invoiceRefColumn;
-    @FXML private TableColumn<PartnerEarning, String> paymentStatusColumn;
-    @FXML private TableColumn<PartnerEarning, LocalDate> paymentDateColumn;
+    @FXML
+    private TableView<PartnerEarning> earningsTable;
+    @FXML
+    private TableColumn<PartnerEarning, String> partnerColumn;
+    @FXML
+    private TableColumn<PartnerEarning, String> customerColumn;
+    @FXML
+    private TableColumn<PartnerEarning, String> supplierColumn;
+    @FXML
+    private TableColumn<PartnerEarning, LocalDate> earningDateColumn;
+    @FXML
+    private TableColumn<PartnerEarning, BigDecimal> earningAmountColumn;
+    @FXML
+    private TableColumn<PartnerEarning, String> invoiceStatusColumn;
+    @FXML
+    private TableColumn<PartnerEarning, String> invoiceRefColumn;
+    @FXML
+    private TableColumn<PartnerEarning, String> paymentStatusColumn;
+    @FXML
+    private TableColumn<PartnerEarning, LocalDate> paymentDateColumn;
 
-    @FXML private ComboBox<Partner> partnerFilterComboBox;
-    @FXML private ComboBox<String> invoiceStatusFilterComboBox;
-    @FXML private ComboBox<String> paymentStatusFilterComboBox;
-    @FXML private JFXButton btnCalculateCommissions;
+    @FXML
+    private ComboBox<Partner> partnerFilterComboBox;
+    @FXML
+    private ComboBox<String> invoiceStatusFilterComboBox;
+    @FXML
+    private ComboBox<String> paymentStatusFilterComboBox;
+    @FXML
+    private JFXButton btnCalculateCommissions;
 
-    @FXML private Label totalEarningsLabel;
-    @FXML private Label totalUnpaidLabel;
-    @FXML private Label totalPaidLabel;
+    @FXML
+    private Label totalEarningsLabel;
+    @FXML
+    private Label totalUnpaidLabel;
+    @FXML
+    private Label totalPaidLabel;
 
     private PartnerEarningDao partnerEarningDao;
     private ObservableList<PartnerEarning> masterData;
@@ -118,7 +134,7 @@ public class PartnerEarningsController {
                 }
             }
         });
-                paymentDateColumn.setCellFactory(column -> new DatePickerCellFactory()); // Correct way to set custom cell factory
+        paymentDateColumn.setCellFactory(column -> new DatePickerCellFactory()); // Correct way to set custom cell factory
 
         // Set onEditCommit handlers
         invoiceStatusColumn.setOnEditCommit(this::handleEditCommit);
@@ -177,8 +193,11 @@ public class PartnerEarningsController {
             public String toString(Partner partner) {
                 return partner == null ? "" : partner.getName();
             }
+
             @Override
-            public Partner fromString(String string) { return null; } // Not needed for selection
+            public Partner fromString(String string) {
+                return null;
+            } // Not needed for selection
         });
 
         // Setup Invoice Status Filter ComboBox
@@ -254,10 +273,10 @@ public class PartnerEarningsController {
             AlertDialogHelper.showDialog("Προσοχή", "Επιλέξτε τουλάχιστον μία οφειλή.", "", Alert.AlertType.WARNING);
             return;
         }
-        
+
         // Confirm with user
         Optional<ButtonType> result = AlertDialogHelper.showConfirmationDialog(
-            "Επιβεβαίωση", "Σήμανση Τιμολογίου ως Ελήφθη", "Είστε σίγουροι ότι θέλετε να σημάνετε τα επιλεγμένα τιμολόγια ως 'Ελήφθη';"
+                "Επιβεβαίωση", "Σήμανση Τιμολογίου ως Ελήφθη", "Είστε σίγουροι ότι θέλετε να σημάνετε τα επιλεγμένα τιμολόγια ως 'Ελήφθη';"
         );
         if (result.isPresent() && result.get() == ButtonType.OK) {
             for (PartnerEarning earning : selectedEarnings) {
@@ -278,7 +297,7 @@ public class PartnerEarningsController {
 
         // Confirm with user
         Optional<ButtonType> result = AlertDialogHelper.showConfirmationDialog(
-            "Επιβεβαίωση", "Σήμανση ως Πληρωμένο", "Είστε σίγουροι ότι θέλετε να σημάνετε τις επιλεγμένες οφειλές ως 'Πληρωμένο';"
+                "Επιβεβαίωση", "Σήμανση ως Πληρωμένο", "Είστε σίγουροι ότι θέλετε να σημάνετε τις επιλεγμένες οφειλές ως 'Πληρωμένο';"
         );
         if (result.isPresent() && result.get() == ButtonType.OK) {
             for (PartnerEarning earning : selectedEarnings) {
@@ -326,10 +345,10 @@ public class PartnerEarningsController {
 
         // Save to DB
         partnerEarningDao.updateEarningStatus(
-            earning.getId(),
-            earning.getPartnerInvoiceStatus(),
-            earning.getPaymentToPartnerStatus(),
-            earning.getPaymentToPartnerDate()
+                earning.getId(),
+                earning.getPartnerInvoiceStatus(),
+                earning.getPaymentToPartnerStatus(),
+                earning.getPaymentToPartnerDate()
         );
         earningsTable.refresh(); // Refresh the table to show the updated value
     }
@@ -341,15 +360,14 @@ public class PartnerEarningsController {
         public DatePickerCellFactory() {
             this.datePicker = new DatePicker();
             this.datePicker.setConverter(new StringConverter<LocalDate>() {
-                String pattern = "dd/MM/yyyy";
-                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+                final String pattern = "dd/MM/yyyy";
+                final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
 
                 @Override
                 public String toString(LocalDate date) {
                     if (date != null) {
                         return dateFormatter.format(date);
-                    }
-                    else {
+                    } else {
                         return "";
                     }
                 }
@@ -358,8 +376,7 @@ public class PartnerEarningsController {
                 public LocalDate fromString(String string) {
                     if (string != null && !string.isEmpty()) {
                         return LocalDate.parse(string, dateFormatter);
-                    }
-                    else {
+                    } else {
                         return null;
                     }
                 }
@@ -408,14 +425,14 @@ public class PartnerEarningsController {
         }
     }
 
-    
+
     @FXML
     void handleCalculateCommissions(ActionEvent event) throws SQLException {
         CommissionService commissionService = new CommissionService();
         CommissionService.CalculationResult result = commissionService.calculatePartnerEarnings();
 
         String message = String.format("Υπολογισμός Ολοκληρώθηκε:\nΔημιουργήθηκαν: %d οφειλές\nΠαραλείφθηκαν: %d οφειλές\n\nΛεπτομέρειες:\n%s",
-        result.getCreatedCount(), result.getSkippedCount(), result.getDetails());
+                result.getCreatedCount(), result.getSkippedCount(), result.getDetails());
 
         AlertDialogHelper.showInfoDialog("Υπολογισμός Προμηθειών", message);
         loadEarnings(); // Refresh the table to show new earnings

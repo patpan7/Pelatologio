@@ -14,12 +14,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.easytech.pelatologio.dao.PartnerDao;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.DBHelper;
-import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Partner;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -241,9 +239,7 @@ public class PartnersController implements Initializable {
                         || (partner.getEmail2() != null && (partner.getEmail2().toUpperCase().contains(search1) || partner.getEmail2().toUpperCase().contains(search2)))
                         || (partner.getTown() != null && (partner.getTown().toUpperCase().contains(search1) || partner.getTown().toUpperCase().contains(search2)))
                         || (partner.getAddress() != null && (partner.getAddress().toUpperCase().contains(search1) || partner.getAddress().toUpperCase().contains(search2)));
-                if (!textMatch) {
-                    return false;
-                }
+                return textMatch;
             }
 
             return true; // If all filters pass

@@ -112,12 +112,8 @@ public class OfferDaoImpl implements OfferDao {
             stmt.setBoolean(7, offer.getArchived());
             stmt.setInt(8, offer.getId());
 
-            if (stmt.executeUpdate() > 0) {
-                return true; // Ενημερώθηκε επιτυχώς
-            } else {
-                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
-                return false;
-            }
+            // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+            return stmt.executeUpdate() > 0; // Ενημερώθηκε επιτυχώς
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

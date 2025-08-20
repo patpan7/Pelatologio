@@ -35,7 +35,7 @@ public class SipClient implements SipListener {
     private String sipTransport;
 
     private ListeningPoint listeningPoint;
-    private Consumer<String> onIncomingCallCallback;
+    private final Consumer<String> onIncomingCallCallback;
 
     public SipClient(Consumer<String> onIncomingCallCallback) {
         this.onIncomingCallCallback = onIncomingCallCallback;
@@ -345,7 +345,7 @@ public class SipClient implements SipListener {
 
     @Override
     public void processIOException(IOExceptionEvent exceptionEvent) {
-        System.err.println("SIP IOException: " + exceptionEvent.getHost() + ":" + exceptionEvent.getPort() + " - " + exceptionEvent.toString());
+        System.err.println("SIP IOException: " + exceptionEvent.getHost() + ":" + exceptionEvent.getPort() + " - " + exceptionEvent);
     }
 
     @Override

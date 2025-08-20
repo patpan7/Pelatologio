@@ -5,11 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import org.easytech.pelatologio.dao.RecommendationDao;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Recommendation;
-import org.easytech.pelatologio.models.TaskCategory;
 
 public class AddRecomController {
     @FXML
@@ -73,7 +71,7 @@ public class AddRecomController {
     public void handleSave(ActionEvent event) {
         String name = nameField.getText();
 
-        Recommendation newRecommendation = new Recommendation(0,name);
+        Recommendation newRecommendation = new Recommendation(0, name);
 
         if (!name.isEmpty()) {
             DBHelper.getRecommendationDao().saveRecommendation(newRecommendation); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper

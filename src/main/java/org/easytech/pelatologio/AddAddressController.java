@@ -85,9 +85,9 @@ public class AddAddressController {
         String postcode = postcodeField.getText();
         String store = storeField.getText();
 
-        CustomerAddress newCustomerAddress = new CustomerAddress(customer.getCode(),address,town,postcode,store);
+        CustomerAddress newCustomerAddress = new CustomerAddress(customer.getCode(), address, town, postcode, store);
 
-        if (!address.isEmpty() && !town.isEmpty()&& !postcode.isEmpty() && !store.isEmpty()) {
+        if (!address.isEmpty() && !town.isEmpty() && !postcode.isEmpty() && !store.isEmpty()) {
             DBHelper dbHelper = new DBHelper();
             DBHelper.getAddressDao().addAddress(customer.getCode(), newCustomerAddress); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
 

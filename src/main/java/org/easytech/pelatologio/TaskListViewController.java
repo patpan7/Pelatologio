@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class TaskListController implements Initializable {
+public class TaskListViewController implements Initializable {
     @FXML
     StackPane stackPane;
     @FXML
@@ -51,7 +51,7 @@ public class TaskListController implements Initializable {
     @FXML
     private Button addCategoryButton, addTaskButton, editTaskButton, deleteTaskButton, completeTaskButton, uncompletedTaskButton;
 
-    private ObservableList<Tasks> allTasks = FXCollections.observableArrayList();
+    private final ObservableList<Tasks> allTasks = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

@@ -68,11 +68,7 @@ public class TaskDaoImpl implements TaskDao {
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setBoolean(1, isCompleted);
             stmt.setInt(2, taskId);
-            if (stmt.executeUpdate() > 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

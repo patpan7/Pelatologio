@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css"
            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="org.easytech.pelatologio.TaskListController">
+           fx:controller="org.easytech.pelatologio.TaskListViewController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" styleClass="pane">
         <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
             <center>
@@ -110,19 +110,25 @@
                             <TableColumn fx:id="dueDateColumn" maxWidth="220.0" minWidth="110.0" prefWidth="110.0"
                                          text="Ημερομηνία"/>
                             <TableColumn fx:id="customerColumn" minWidth="230.0" prefWidth="230.0" text="Πελάτης"/>
-                            <TableColumn fx:id="calendarColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Ημερ."/>
+                            <TableColumn fx:id="calendarColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0"
+                                         text="Ημερ."/>
                         </columns>
                         <contextMenu>
                             <ContextMenu>
                                 <items>
-                                    <MenuItem onAction="#handleEditTask" styleClass="menu-item" text="Επεξεργασία" />
-                                    <MenuItem mnemonicParsing="false" onAction="#handleAddTask" styleClass="menu-item" text="Προσθήκη" />
-                                    <MenuItem mnemonicParsing="false" onAction="#handleDeleteTask" styleClass="menu-item" text="Διαγραφή" />
-                                    <SeparatorMenuItem />
-                                    <MenuItem mnemonicParsing="false" onAction="#toggleComplete" styleClass="menu-item" text="Ολοκλήρωση" />
-                                    <MenuItem mnemonicParsing="false" onAction="#toggleRecall" styleClass="menu-item" text="Ανάκληση" />
-                                    <SeparatorMenuItem />
-                                    <MenuItem mnemonicParsing="false" onAction="#handleAddOffer" styleClass="menu-item" text="Δημιουργία Προσφοράς" />
+                                    <MenuItem onAction="#handleEditTask" styleClass="menu-item" text="Επεξεργασία"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleAddTask" styleClass="menu-item"
+                                              text="Προσθήκη"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleDeleteTask"
+                                              styleClass="menu-item" text="Διαγραφή"/>
+                                    <SeparatorMenuItem/>
+                                    <MenuItem mnemonicParsing="false" onAction="#toggleComplete" styleClass="menu-item"
+                                              text="Ολοκλήρωση"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#toggleRecall" styleClass="menu-item"
+                                              text="Ανάκληση"/>
+                                    <SeparatorMenuItem/>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleAddOffer" styleClass="menu-item"
+                                              text="Δημιουργία Προσφοράς"/>
                                 </items>
                             </ContextMenu>
                         </contextMenu>

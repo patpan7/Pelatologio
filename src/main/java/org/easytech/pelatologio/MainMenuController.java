@@ -12,12 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.control.ProgressIndicator;
+import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -31,7 +26,6 @@ import org.easytech.pelatologio.models.CallLog;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Order;
 import org.openqa.selenium.By;
-import org.easytech.pelatologio.helper.Features;
 
 import java.io.IOException;
 import java.net.URL;
@@ -283,7 +277,7 @@ public class MainMenuController implements Initializable {
                 final String tasksCount = Features.isEnabled("tasks") ? String.valueOf(DBHelper.getTaskDao().getTasksCount()) : "N/A";
                 final String appointmentsCount = String.valueOf(DBHelper.getTaskDao().getAppointmentsCount());
                 final String simplyCount = Features.isEnabled("simply") ? String.valueOf(DBHelper.getLoginDao().getLoginsCount(2)) : "N/A";
-                
+
                 // myPOS Stats
                 if (Features.isEnabled("mypos")) {
                     final int myposTotal = DBHelper.getCustomerMyPosDetailsDao().getTotalCount();
@@ -419,8 +413,8 @@ public class MainMenuController implements Initializable {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("suppliersView.fxml"));
         Parent suppliersContent = fxmlLoader.load();
 
-        SuppliersController suppliersController = fxmlLoader.getController();
-        suppliersController.setMainTabPane(mainTabPane);
+        SuppliersViewController suppliersViewController = fxmlLoader.getController();
+        suppliersViewController.setMainTabPane(mainTabPane);
 
         Tab newTab = new Tab("Προμηθευτές");
         newTab.setContent(suppliersContent);
@@ -438,7 +432,7 @@ public class MainMenuController implements Initializable {
                 }
             }
 
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("tasksView.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("tasksListView.fxml"));
             Parent tasksContent = fxmlLoader.load();
 
             Tab newTab = new Tab("Εργασίες");
@@ -505,7 +499,7 @@ public class MainMenuController implements Initializable {
         }
     }
 
-        public void myposdasClick(MouseEvent event) {
+    public void myposdasClick(MouseEvent event) {
         if (Features.isEnabled("mypos")) {
             if (event.getButton() == MouseButton.SECONDARY) {
                 try {
@@ -623,7 +617,7 @@ public class MainMenuController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("subsView.fxml"));
             Parent subsContent = fxmlLoader.load();
 
-            SubsController subsController = fxmlLoader.getController();
+            SubsViewController subsController = fxmlLoader.getController();
             subsController.setMainTabPane(mainTabPane);
 
             Tab newTab = new Tab("Συμβόλαια");
@@ -858,8 +852,7 @@ public class MainMenuController implements Initializable {
                 if (Integer.valueOf(customer.getCode()).equals(tab.getUserData())) {
                     mainTabPane.getSelectionModel().select(tab);
                     // If a specific sub-tab needs to be selected, find the controller and call the method
-                    if (tab.getContent().getUserData() instanceof AddCustomerController) {
-                        AddCustomerController controller = (AddCustomerController) tab.getContent().getUserData();
+                    if (tab.getContent().getUserData() instanceof AddCustomerController controller) {
                     }
                     return; // Tab found and selected, exit the method
                 }

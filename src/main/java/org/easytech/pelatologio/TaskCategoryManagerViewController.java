@@ -40,7 +40,7 @@ public class TaskCategoryManagerViewController {
         taskCategoryTable.setItems(categoriesList);
 
         taskCategoryTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2){
+            if (event.getClickCount() == 2) {
                 handleEdit(null);
             }
         });
@@ -96,7 +96,8 @@ public class TaskCategoryManagerViewController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 
@@ -127,7 +128,8 @@ public class TaskCategoryManagerViewController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 

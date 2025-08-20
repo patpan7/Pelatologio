@@ -223,7 +223,7 @@ public class PrismaWinAutomation {
             if (fullPath == null) return; // Αν η εικόνα δεν υπάρχει, σταματά
 
             long startTime = System.currentTimeMillis();
-            while (System.currentTimeMillis() - startTime < timeoutSeconds * 1000) {
+            while (System.currentTimeMillis() - startTime < timeoutSeconds * 1000L) {
                 if (screen.exists(fullPath, 0.5) != null) {
                     screen.click(fullPath);
                     System.out.println("✅ Βρέθηκε και πάτησε το: " + imagePath);
@@ -259,7 +259,7 @@ public class PrismaWinAutomation {
             if (fullPath == null) return;
 
             long startTime = System.currentTimeMillis();
-            while (System.currentTimeMillis() - startTime < timeoutSeconds * 1000) {
+            while (System.currentTimeMillis() - startTime < timeoutSeconds * 1000L) {
                 if (screen.exists(fullPath, 0.5) != null) {
                     screen.paste(fullPath, text);
                     System.out.println("✅ Βρέθηκε και πληκτρολόγησε στο: " + imagePath);
@@ -291,7 +291,7 @@ public class PrismaWinAutomation {
     // 📌 Μικρή καθυστέρηση χωρίς Thread.sleep()
     private static void waitForSeconds(int seconds) {
         try {
-            Thread.sleep(seconds * 1000);
+            Thread.sleep(seconds * 1000L);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

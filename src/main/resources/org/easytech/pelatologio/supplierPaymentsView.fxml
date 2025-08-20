@@ -2,37 +2,35 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-
-<BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SupplierPaymentsController">
-   <top>
-      <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </BorderPane.margin>
-         <children>
-            <JFXButton onAction="#handleAddPayment" styleClass="click-button" text="Προσθήκη Πληρωμής" />
-            <JFXButton onAction="#handleEditPayment" styleClass="click-button" text="Επεξεργασία" />
-            <JFXButton onAction="#handleDeletePayment" styleClass="click-button" text="Διαγραφή" />
-         </children>
-      </HBox>
-   </top>
-   <center>
-      <TableView fx:id="paymentsTable" BorderPane.alignment="CENTER">
-         <columns>
-            <TableColumn fx:id="customerColumn" prefWidth="200.0" text="Πελάτης" />
-            <TableColumn fx:id="dateColumn" prefWidth="120.0" text="Ημερομηνία" />
-            <TableColumn fx:id="amountColumn" prefWidth="120.0" text="Ποσό" />
-            <TableColumn fx:id="descriptionColumn" prefWidth="250.0" text="Περιγραφή" />
-            <TableColumn fx:id="calculatedColumn" prefWidth="100.0" text="Υπολογίστηκε" />
-         </columns>
-         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
-      </TableView>
-   </center>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="pane" stylesheets="@external.css"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.easytech.pelatologio.SupplierPaymentsViewController">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </BorderPane.margin>
+            <children>
+                <JFXButton onAction="#handleAddPayment" styleClass="click-button" text="Προσθήκη Πληρωμής"/>
+                <JFXButton onAction="#handleEditPayment" styleClass="click-button" text="Επεξεργασία"/>
+                <JFXButton onAction="#handleDeletePayment" styleClass="click-button" text="Διαγραφή"/>
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <TableView fx:id="paymentsTable" BorderPane.alignment="CENTER">
+            <columns>
+                <TableColumn fx:id="customerColumn" prefWidth="200.0" text="Πελάτης"/>
+                <TableColumn fx:id="dateColumn" prefWidth="120.0" text="Ημερομηνία"/>
+                <TableColumn fx:id="amountColumn" prefWidth="120.0" text="Ποσό"/>
+                <TableColumn fx:id="descriptionColumn" prefWidth="250.0" text="Περιγραφή"/>
+                <TableColumn fx:id="calculatedColumn" prefWidth="100.0" text="Υπολογίστηκε"/>
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+    </center>
 </BorderPane>

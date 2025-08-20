@@ -5,8 +5,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-
-<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CustomersController">
+<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css"
+           xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.easytech.pelatologio.CustomersController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" styleClass="pane">
         <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
 
@@ -86,22 +87,25 @@
 
             <!-- Left Sidebar for Filters -->
             <left>
-                <VBox fx:id="filterPane" alignment="TOP_LEFT" managed="false" prefWidth="250.0" spacing="10.0" style="-fx-padding: 10;" visible="false">
-                    <Label styleClass="normal-label" text="Φίλτρα" />
-                    <Separator prefWidth="200.0" />
-                    <Label styleClass="normal-label" text="Αναζήτηση σε" />
-                    <JFXComboBox fx:id="searchFieldComboBox" prefWidth="280.0" promptText="Όλα τα πεδία" />
-                    <Label styleClass="normal-label" text="Κατάσταση" />
-                    <JFXComboBox fx:id="statusComboBox" prefWidth="280.0" promptText="Επιλογή Κατάστασης" />
-                    <Label styleClass="normal-label" text="Σύσταση" />
-                    <JFXComboBox fx:id="recommendationComboBox" prefWidth="280.0" promptText="Επιλογή Σύστασης" />
-                    <Label styleClass="normal-label" text="Ομάδα" />
-                    <JFXComboBox fx:id="jobTeamComboBox" prefWidth="280.0" promptText="Επιλογή Ομάδας" />
-                    <Label styleClass="normal-label" text="Υπο-ομάδα" />
-                    <JFXComboBox fx:id="subJobTeamComboBox" disable="true" prefWidth="280.0" promptText="Επιλογή Υπο-ομάδας" />
-                    <Label styleClass="normal-label" text="Εφαρμογή" />
-                    <JFXComboBox fx:id="appComboBox" prefWidth="280.0" promptText="Επιλογή Εφαρμογής" />
-                    <JFXButton fx:id="clearAdvancedFiltersButton" buttonType="RAISED" styleClass="click-button" text="Καθαρισμός Φίλτρων" />
+                <VBox fx:id="filterPane" alignment="TOP_LEFT" managed="false" prefWidth="250.0" spacing="10.0"
+                      style="-fx-padding: 10;" visible="false">
+                    <Label styleClass="normal-label" text="Φίλτρα"/>
+                    <Separator prefWidth="200.0"/>
+                    <Label styleClass="normal-label" text="Αναζήτηση σε"/>
+                    <JFXComboBox fx:id="searchFieldComboBox" prefWidth="280.0" promptText="Όλα τα πεδία"/>
+                    <Label styleClass="normal-label" text="Κατάσταση"/>
+                    <JFXComboBox fx:id="statusComboBox" prefWidth="280.0" promptText="Επιλογή Κατάστασης"/>
+                    <Label styleClass="normal-label" text="Σύσταση"/>
+                    <JFXComboBox fx:id="recommendationComboBox" prefWidth="280.0" promptText="Επιλογή Σύστασης"/>
+                    <Label styleClass="normal-label" text="Ομάδα"/>
+                    <JFXComboBox fx:id="jobTeamComboBox" prefWidth="280.0" promptText="Επιλογή Ομάδας"/>
+                    <Label styleClass="normal-label" text="Υπο-ομάδα"/>
+                    <JFXComboBox fx:id="subJobTeamComboBox" disable="true" prefWidth="280.0"
+                                 promptText="Επιλογή Υπο-ομάδας"/>
+                    <Label styleClass="normal-label" text="Εφαρμογή"/>
+                    <JFXComboBox fx:id="appComboBox" prefWidth="280.0" promptText="Επιλογή Εφαρμογής"/>
+                    <JFXButton fx:id="clearAdvancedFiltersButton" buttonType="RAISED" styleClass="click-button"
+                               text="Καθαρισμός Φίλτρων"/>
                 </VBox>
             </left>
 
@@ -110,35 +114,51 @@
                 <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                     <TableView fx:id="customerTable" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="codeColumn" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="true" text="Id" />
-                            <TableColumn fx:id="nameColumn" minWidth="260.0" prefWidth="328.0" resizable="true" text="Όνομα" />
-                            <TableColumn fx:id="titleColumn" maxWidth="300.0" minWidth="100.0" prefWidth="100.0" resizable="true" text="Τίτλος" />
-                            <TableColumn fx:id="afmColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="true" sortable="false" text="ΑΦΜ" />
-                            <TableColumn fx:id="phone1Column" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="Τηλέφωνο 1" />
-                            <TableColumn fx:id="mobileColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="Κινητό" />
-                            <TableColumn fx:id="townColumn" maxWidth="145.0" minWidth="90.0" prefWidth="90.0" resizable="true" text="Πόλη" />
-                            <TableColumn fx:id="emailColumn" maxWidth="320.0" minWidth="160.0" prefWidth="160.0" sortable="false" text="E-mail" />
-                            <TableColumn fx:id="balanceColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="true" text="Υπόλοιπο" />
+                            <TableColumn fx:id="codeColumn" maxWidth="60.0" minWidth="60.0" prefWidth="60.0"
+                                         resizable="true" text="Id"/>
+                            <TableColumn fx:id="nameColumn" minWidth="260.0" prefWidth="328.0" resizable="true"
+                                         text="Όνομα"/>
+                            <TableColumn fx:id="titleColumn" maxWidth="300.0" minWidth="100.0" prefWidth="100.0"
+                                         resizable="true" text="Τίτλος"/>
+                            <TableColumn fx:id="afmColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0"
+                                         resizable="true" sortable="false" text="ΑΦΜ"/>
+                            <TableColumn fx:id="phone1Column" maxWidth="120.0" minWidth="120.0" prefWidth="120.0"
+                                         sortable="false" text="Τηλέφωνο 1"/>
+                            <TableColumn fx:id="mobileColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0"
+                                         sortable="false" text="Κινητό"/>
+                            <TableColumn fx:id="townColumn" maxWidth="145.0" minWidth="90.0" prefWidth="90.0"
+                                         resizable="true" text="Πόλη"/>
+                            <TableColumn fx:id="emailColumn" maxWidth="320.0" minWidth="160.0" prefWidth="160.0"
+                                         sortable="false" text="E-mail"/>
+                            <TableColumn fx:id="balanceColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0"
+                                         resizable="true" text="Υπόλοιπο"/>
                         </columns>
                         <contextMenu>
                             <ContextMenu>
                                 <items>
-                                    <MenuItem onAction="#handleEditOption" styleClass="menu-item" text="Επεξεργασία" />
-                                    <MenuItem mnemonicParsing="false" onAction="#customerAddNew" styleClass="menu-item" text="Προσθήκη" />
-                                    <MenuItem mnemonicParsing="false" onAction="#customerDelete" styleClass="menu-item" text="Διαγραφή" />
-                                    <SeparatorMenuItem />
-                                    <MenuItem mnemonicParsing="false" onAction="#unlock" styleClass="menu-item" text="Ξεκλείδωμα" />
-                                    <SeparatorMenuItem />
-                                    <MenuItem mnemonicParsing="false" onAction="#customerNewTask" styleClass="menu-item" text="Νέα Εργασία" />
-                                    <SeparatorMenuItem />
-                                    <MenuItem mnemonicParsing="false" onAction="#customerInfo" styleClass="menu-item" text="Αντιγραφή Στοιχείων" />
-                                    <MenuItem mnemonicParsing="false" onAction="#customerLabel" styleClass="menu-item" text="Ετικέτα Πελάτη" />
-                                    <MenuItem mnemonicParsing="false" onAction="#viberOpen" styleClass="menu-item" text="Επικοινωνία Viber" />
+                                    <MenuItem onAction="#handleEditOption" styleClass="menu-item" text="Επεξεργασία"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#customerAddNew" styleClass="menu-item"
+                                              text="Προσθήκη"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#customerDelete" styleClass="menu-item"
+                                              text="Διαγραφή"/>
+                                    <SeparatorMenuItem/>
+                                    <MenuItem mnemonicParsing="false" onAction="#unlock" styleClass="menu-item"
+                                              text="Ξεκλείδωμα"/>
+                                    <SeparatorMenuItem/>
+                                    <MenuItem mnemonicParsing="false" onAction="#customerNewTask" styleClass="menu-item"
+                                              text="Νέα Εργασία"/>
+                                    <SeparatorMenuItem/>
+                                    <MenuItem mnemonicParsing="false" onAction="#customerInfo" styleClass="menu-item"
+                                              text="Αντιγραφή Στοιχείων"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#customerLabel" styleClass="menu-item"
+                                              text="Ετικέτα Πελάτη"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#viberOpen" styleClass="menu-item"
+                                              text="Επικοινωνία Viber"/>
                                 </items>
                             </ContextMenu>
                         </contextMenu>
                         <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                         </columnResizePolicy>
                     </TableView>
                 </VBox>
@@ -148,61 +168,68 @@
             <bottom>
                 <HBox alignment="CENTER" spacing="10" BorderPane.alignment="CENTER">
                     <BorderPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                     </BorderPane.margin>
-                    <JFXButton fx:id="btnTaxis" onMouseClicked="#taxisClick" prefWidth="130" styleClass="click-button" text="Taxis">
+                    <JFXButton fx:id="btnTaxis" onMouseClicked="#taxisClick" prefWidth="130" styleClass="click-button"
+                               text="Taxis">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
-                                <Image url="@icons/gsis.png" />
+                                <Image url="@icons/gsis.png"/>
                             </ImageView>
                         </graphic>
                     </JFXButton>
-                    <JFXButton fx:id="btnMypos" onMouseClicked="#myposClick" prefWidth="130" styleClass="click-button" text="myPOS">
+                    <JFXButton fx:id="btnMypos" onMouseClicked="#myposClick" prefWidth="130" styleClass="click-button"
+                               text="myPOS">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
-                                <Image url="@icons/mypos1.png" />
+                                <Image url="@icons/mypos1.png"/>
                             </ImageView>
                         </graphic>
                     </JFXButton>
-                    <JFXButton fx:id="btnSimply" onMouseClicked="#simplyClick" prefWidth="130" styleClass="click-button" text="Simply">
+                    <JFXButton fx:id="btnSimply" onMouseClicked="#simplyClick" prefWidth="130" styleClass="click-button"
+                               text="Simply">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
-                                <Image url="@icons/simply1.png" />
+                                <Image url="@icons/simply1.png"/>
                             </ImageView>
                         </graphic>
                     </JFXButton>
-                    <JFXButton fx:id="btnEmblem" onMouseClicked="#emblemClick" prefWidth="130" styleClass="click-button" text="Emblem">
+                    <JFXButton fx:id="btnEmblem" onMouseClicked="#emblemClick" prefWidth="130" styleClass="click-button"
+                               text="Emblem">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
-                                <Image url="@icons/emblem.png" />
+                                <Image url="@icons/emblem.png"/>
                             </ImageView>
                         </graphic>
                     </JFXButton>
-                    <JFXButton fx:id="btnErgani" onMouseClicked="#erganiClick" prefWidth="140.0" styleClass="click-button" text="Ergani">
+                    <JFXButton fx:id="btnErgani" onMouseClicked="#erganiClick" prefWidth="140.0"
+                               styleClass="click-button" text="Ergani">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
-                                <Image url="@icons/ergani.png" />
+                                <Image url="@icons/ergani.png"/>
                             </ImageView>
                         </graphic>
                     </JFXButton>
-                    <JFXButton fx:id="btnAnydesk" onMouseClicked="#anydeskClick" prefWidth="140.0" styleClass="click-button" text="Anydesk">
+                    <JFXButton fx:id="btnAnydesk" onMouseClicked="#anydeskClick" prefWidth="140.0"
+                               styleClass="click-button" text="Anydesk">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
-                                <Image url="@icons/anydesk.png" />
+                                <Image url="@icons/anydesk.png"/>
                             </ImageView>
                         </graphic>
                     </JFXButton>
-                    <JFXButton fx:id="btnData" onAction="#folderClick" prefWidth="140.0" styleClass="click-button" text="Data">
+                    <JFXButton fx:id="btnData" onAction="#folderClick" prefWidth="140.0" styleClass="click-button"
+                               text="Data">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
-                                <Image url="@icons/folder.png" />
+                                <Image url="@icons/folder.png"/>
                             </ImageView>
                         </graphic>
                     </JFXButton>
                     <JFXButton fx:id="openFileButton" prefWidth="140.0" styleClass="click-button" text="My Files">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
-                                <Image url="@icons/document.png" />
+                                <Image url="@icons/document.png"/>
                             </ImageView>
                         </graphic>
                     </JFXButton>

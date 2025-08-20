@@ -1,33 +1,28 @@
 package org.easytech.pelatologio;
 
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.dao.CallLogDao;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.CallNotesController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.CallLog;
 import org.easytech.pelatologio.models.Customer;
-import org.easytech.pelatologio.models.Order;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Optional;
 
 public class CustomerCallLogController {
     @FXML
@@ -36,7 +31,7 @@ public class CustomerCallLogController {
     private TableColumn colStartTime, colEndTime, colDuration, colCallType, colCallerNumber, colNotes;
 
     private CallLogDao callLogDao;
-    private ObservableList<CallLog> masterData = FXCollections.observableArrayList();
+    private final ObservableList<CallLog> masterData = FXCollections.observableArrayList();
     private FilteredList<CallLog> filteredData;
     private Customer customer;
 
@@ -104,6 +99,7 @@ public class CustomerCallLogController {
             // Handle error
         }
     }
+
     public void setCustomer(Customer customer) {
         this.customer = customer;
         loadCallLogs();

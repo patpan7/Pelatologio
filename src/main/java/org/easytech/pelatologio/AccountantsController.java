@@ -169,12 +169,7 @@ public class AccountantsController implements Initializable {
         String search2 = new String(chars2);
 
         // Εφαρμογή φίλτρου
-        filteredData.setPredicate(accountant ->
-                (accountant.getName() != null && (accountant.getName().toUpperCase().contains(search1) || accountant.getName().toUpperCase().contains(search2)))
-                        || (accountant.getPhone() != null && (accountant.getPhone().contains(search1) || accountant.getPhone().contains(search2)))
-                        || (accountant.getMobile() != null && (accountant.getMobile().contains(search1) || accountant.getMobile().contains(search2)))
-                        || (accountant.getEmail() != null && (accountant.getEmail().toUpperCase().contains(search1) || accountant.getEmail().toUpperCase().contains(search2)))
-        );
+        filteredData.setPredicate(accountant -> (accountant.getName() != null && (accountant.getName().toUpperCase().contains(search1) || accountant.getName().toUpperCase().contains(search2))) || (accountant.getPhone() != null && (accountant.getPhone().contains(search1) || accountant.getPhone().contains(search2))) || (accountant.getMobile() != null && (accountant.getMobile().contains(search1) || accountant.getMobile().contains(search2))) || (accountant.getEmail() != null && (accountant.getEmail().toUpperCase().contains(search1) || accountant.getEmail().toUpperCase().contains(search2))));
     }
 
     public void accountantAddNew(ActionEvent actionEvent) throws IOException {
@@ -205,9 +200,7 @@ public class AccountantsController implements Initializable {
                 refreshTableData(); // Ανανεώνει τη λίστα πελατών
                 filteredData = new FilteredList<>(observableList, b -> true);
 
-                filterField.textProperty().addListener((observable, oldValue, newValue) ->
-                        applyFilters(newValue)
-                );
+                filterField.textProperty().addListener((observable, oldValue, newValue) -> applyFilters(newValue));
 
                 applyFilters(filterField.getText());
 

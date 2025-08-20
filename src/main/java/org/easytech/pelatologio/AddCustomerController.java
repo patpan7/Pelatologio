@@ -18,7 +18,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -27,11 +30,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
-import org.easytech.pelatologio.helper.ComboBoxHelper;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.*;
-import org.easytech.pelatologio.helper.Features;
 
 import java.awt.*;
 import java.io.File;
@@ -109,11 +110,11 @@ public class AddCustomerController {
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
     private Customer customer;
     private FilteredList<Accountant> filteredAccountants;
-    private ObservableList<Recommendation> recommendationList = FXCollections.observableArrayList();
+    private final ObservableList<Recommendation> recommendationList = FXCollections.observableArrayList();
     private FilteredList<Recommendation> filteredRecommendations;
-    private ObservableList<JobTeam> jobTeamList = FXCollections.observableArrayList();
+    private final ObservableList<JobTeam> jobTeamList = FXCollections.observableArrayList();
     private FilteredList<JobTeam> filteredJobTeams;
-    private ObservableList<SubJobTeam> subJobTeamList = FXCollections.observableArrayList();
+    private final ObservableList<SubJobTeam> subJobTeamList = FXCollections.observableArrayList();
     private FilteredList<SubJobTeam> filteredSubJobTeams;
     private CustomersController customersController;
     private Consumer<String> originateCallCallback;
@@ -401,9 +402,8 @@ public class AddCustomerController {
         if (value instanceof JobTeam) {
             // Αν είναι ήδη αντικείμενο Recommendation, το παίρνουμε.
             selectedJobTeam = (JobTeam) value;
-        } else if (value instanceof String) {
+        } else if (value instanceof String typedValue) {
             // Αν είναι String, ψάχνουμε στη λίστα για το αντίστοιχο αντικείμενο.
-            String typedValue = (String) value;
             selectedJobTeam = jobTeamList.stream()
                     .filter(r -> r.getName().equalsIgnoreCase(typedValue))
                     .findFirst().orElse(null);
@@ -431,7 +431,7 @@ public class AddCustomerController {
 
 
     private void setupTabs() {
-        if (Features.isEnabled("taxis")){
+        if (Features.isEnabled("taxis")) {
             tabToFxml.put(tabTaxis, "taxisView.fxml");
             tabToContainer.put(tabTaxis, taxisContainer);
         }
@@ -616,8 +616,6 @@ public class AddCustomerController {
         }
     }
 
-    
-
 
     public void setInitialAFM(String afm) {
         tfAfm.setText(afm); // Ορισμός αρχικής τιμής στο πεδίο ΑΦΜ
@@ -752,10 +750,7 @@ public class AddCustomerController {
         taBalanceReason.setText(customer.getBalanceReason());
         tfBalanceMega.setText(DBHelper.getMegasoftDao().getMegasoftBalance(customer.getAfm()));
 
-        if (customer.getActive())
-            checkboxActive.setSelected(true);
-        else
-            checkboxActive.setSelected(false);
+        checkboxActive.setSelected(customer.getActive());
 
         // Add listeners after populating the fields to avoid premature firing
         Platform.runLater(() -> {
@@ -1183,9 +1178,8 @@ public class AddCustomerController {
         if (value instanceof Recommendation) {
             // Αν είναι ήδη αντικείμενο Recommendation, το παίρνουμε.
             selectedRec = (Recommendation) value;
-        } else if (value instanceof String) {
+        } else if (value instanceof String typedValue) {
             // Αν είναι String, ψάχνουμε στη λίστα για το αντίστοιχο αντικείμενο.
-            String typedValue = (String) value;
             selectedRec = recommendationList.stream()
                     .filter(r -> r.getName().equalsIgnoreCase(typedValue))
                     .findFirst().orElse(null);
@@ -1202,9 +1196,8 @@ public class AddCustomerController {
         if (value instanceof SubJobTeam) {
             // Αν είναι ήδη αντικείμενο Recommendation, το παίρνουμε.
             selectedSubJob = (SubJobTeam) value;
-        } else if (value instanceof String) {
+        } else if (value instanceof String typedValue) {
             // Αν είναι String, ψάχνουμε στη λίστα για το αντίστοιχο αντικείμενο.
-            String typedValue = (String) value;
             selectedSubJob = subJobTeamList.stream()
                     .filter(r -> r.getName().equalsIgnoreCase(typedValue))
                     .findFirst().orElse(null);
@@ -1310,7 +1303,7 @@ public class AddCustomerController {
         customer.setActive(isActive);
         SubJobTeam subjobTeam = tfSubJobTeam.getSelectionModel().getSelectedItem();
         if (subjobTeam == null) {
-            subjobTeam = new SubJobTeam(0, "",0); // Create a new SubJobTeam with ID 0 if none is selected
+            subjobTeam = new SubJobTeam(0, "", 0); // Create a new SubJobTeam with ID 0 if none is selected
             subjobTeam.setId(0); // Set to 0 if no sub-job team is selected
         }
         customer.setSubJobTeam(subjobTeam == null ? 0 : subjobTeam.getId());
@@ -1607,7 +1600,6 @@ public class AddCustomerController {
         }
     }
 
-    
 
     public void acsVoucher(MouseEvent actionEvent) {
         if (actionEvent.getButton() == MouseButton.PRIMARY) {
@@ -1772,9 +1764,7 @@ public class AddCustomerController {
                 if (result.get() == saveButton) {
                     handleOkButton();
                     return true;
-                } else if (result.get() == discardButton) {
-                    return true;
-                }
+                } else return result.get() == discardButton;
             }
             return false;
         }

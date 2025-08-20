@@ -2,11 +2,7 @@ package org.easytech.pelatologio;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.DBHelper;
@@ -16,12 +12,18 @@ import java.time.LocalDate;
 
 public class EditPartnerEarningStatusDialogController {
 
-    @FXML private ComboBox<String> invoiceStatusComboBox;
-    @FXML private ComboBox<String> paymentStatusComboBox;
-    @FXML private DatePicker paymentDatePicker;
-    @FXML private TextField invoiceRefField;
-    @FXML private Button okButton;
-    @FXML private Button cancelButton;
+    @FXML
+    private ComboBox<String> invoiceStatusComboBox;
+    @FXML
+    private ComboBox<String> paymentStatusComboBox;
+    @FXML
+    private DatePicker paymentDatePicker;
+    @FXML
+    private TextField invoiceRefField;
+    @FXML
+    private Button okButton;
+    @FXML
+    private Button cancelButton;
 
     private PartnerEarning partnerEarning;
 
@@ -65,10 +67,10 @@ public class EditPartnerEarningStatusDialogController {
 
         // Save to DB
         DBHelper.getPartnerEarningDao().updateEarningStatus(
-            partnerEarning.getId(),
-            partnerEarning.getPartnerInvoiceStatus(),
-            partnerEarning.getPaymentToPartnerStatus(),
-            partnerEarning.getPaymentToPartnerDate()
+                partnerEarning.getId(),
+                partnerEarning.getPartnerInvoiceStatus(),
+                partnerEarning.getPaymentToPartnerStatus(),
+                partnerEarning.getPaymentToPartnerDate()
         );
 
         // Close the dialog

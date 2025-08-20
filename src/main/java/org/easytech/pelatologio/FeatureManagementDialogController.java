@@ -9,17 +9,28 @@ import org.easytech.pelatologio.helper.Features;
 
 public class FeatureManagementDialogController {
 
-    @FXML private CheckBox suppliersCheck;
-    @FXML private CheckBox tasksCheck;
-    @FXML private CheckBox ordersCheck;
-    @FXML private CheckBox myposCheck;
-    @FXML private CheckBox devicesCheck;
-    @FXML private CheckBox subsCheck;
-    @FXML private CheckBox d11Check;
-    @FXML private CheckBox simplyCheck;
-    @FXML private CheckBox callsCheck;
-    @FXML private CheckBox partnersCheck;
-    @FXML private CheckBox offersCheck;
+    @FXML
+    private CheckBox suppliersCheck;
+    @FXML
+    private CheckBox tasksCheck;
+    @FXML
+    private CheckBox ordersCheck;
+    @FXML
+    private CheckBox myposCheck;
+    @FXML
+    private CheckBox devicesCheck;
+    @FXML
+    private CheckBox subsCheck;
+    @FXML
+    private CheckBox d11Check;
+    @FXML
+    private CheckBox simplyCheck;
+    @FXML
+    private CheckBox callsCheck;
+    @FXML
+    private CheckBox partnersCheck;
+    @FXML
+    private CheckBox offersCheck;
 
     @FXML
     public void initialize() {

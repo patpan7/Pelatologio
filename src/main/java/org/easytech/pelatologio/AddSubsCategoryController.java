@@ -71,7 +71,7 @@ public class AddSubsCategoryController {
     public void handleSave(ActionEvent event) {
         String name = nameField.getText();
 
-        SubsCategory newSubsCategory = new SubsCategory(0,name);
+        SubsCategory newSubsCategory = new SubsCategory(0, name);
 
         if (!name.isEmpty()) {
             DBHelper dbHelper = new DBHelper();

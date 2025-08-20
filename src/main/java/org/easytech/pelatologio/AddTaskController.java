@@ -12,7 +12,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -31,10 +30,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.IntStream;
 
 public class AddTaskController {
 
@@ -177,7 +173,6 @@ public class AddTaskController {
         durationComboBox.getSelectionModel().select(1); // Προεπιλογή 30 λεπτά
     }
 
-    
 
     public boolean handleSaveTask() {
         try {
@@ -189,10 +184,11 @@ public class AddTaskController {
                             .graphic(null)
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT);
-                    notifications.showError();});
+                    notifications.showError();
+                });
                 return false;
             }
-            if (is_calendar.isSelected()){
+            if (is_calendar.isSelected()) {
                 if (startHourComboBox.getValue() == null || startHourComboBox.getValue() == null ||
                         startMinuteComboBox.getValue() == null || durationComboBox.getValue() == null ||
                         categoryComboBox.getValue() == null) {
@@ -203,7 +199,8 @@ public class AddTaskController {
                                 .graphic(null)
                                 .hideAfter(Duration.seconds(5))
                                 .position(Pos.TOP_RIGHT);
-                        notifications.showError();});
+                        notifications.showError();
+                    });
                     return false; // Αποτυχία
                 }
             }
@@ -213,7 +210,7 @@ public class AddTaskController {
             LocalDate date = dueDatePicker.getValue();
             int startHour = Integer.parseInt(startHourComboBox.getValue());
             int startMinute = Integer.parseInt(startMinuteComboBox.getValue());
-            LocalDateTime startDateTime = LocalDateTime.from(dueDatePicker.getValue().atTime(startHour, startMinute));
+            LocalDateTime startDateTime = dueDatePicker.getValue().atTime(startHour, startMinute);
             int duration = 0; // Προεπιλεγμένη τιμή για τη διάρκεια
             String durationString = String.valueOf(durationComboBox.getValue());
             if (durationString != null && !durationString.isEmpty()) {
@@ -277,7 +274,8 @@ public class AddTaskController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();});
+                notifications.showConfirm();
+            });
             return true;
 
         } catch (Exception e) {
@@ -392,5 +390,5 @@ public class AddTaskController {
         is_calendar.setSelected(true);
     }
 
-    
+
 }

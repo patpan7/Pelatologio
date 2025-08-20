@@ -1,10 +1,10 @@
 package org.easytech.pelatologio.models;
 
 public class ErganiRegistration {
-    private String program;
-    private String years;
-    private String email;
-    private String entrance;
+    private final String program;
+    private final String years;
+    private final String email;
+    private final String entrance;
 
     public ErganiRegistration(String program, String years, String email, String entrance) {
         this.program = program;

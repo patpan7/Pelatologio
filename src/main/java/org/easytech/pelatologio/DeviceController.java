@@ -42,7 +42,7 @@ public class DeviceController implements Initializable {
     private CheckBox showAllCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox;
 
     @FXML
-    private ComboBox <Item> itemFilterComboBox;
+    private ComboBox<Item> itemFilterComboBox;
     @FXML
     private ComboBox<String> rateFilterComboBox;
     @FXML
@@ -50,7 +50,7 @@ public class DeviceController implements Initializable {
     @FXML
     private Button addDeviceButton;
 
-    private ObservableList<Device> allDevices = FXCollections.observableArrayList();
+    private final ObservableList<Device> allDevices = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -123,7 +123,7 @@ public class DeviceController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        itemFilterComboBox.getItems().add(new Item(0,"Όλα",""));
+        itemFilterComboBox.getItems().add(new Item(0, "Όλα", ""));
         itemFilterComboBox.getItems().addAll(items);
         itemFilterComboBox.getSelectionModel().selectFirst();
         itemFilterComboBox.setConverter(new StringConverter<>() {
@@ -185,7 +185,7 @@ public class DeviceController implements Initializable {
 
     private void updateDevicesTable() {
         // Ξεκινάμε με όλες τις εργασίες
-        ObservableList<Device> filteredDevices  = FXCollections.observableArrayList(allDevices);
+        ObservableList<Device> filteredDevices = FXCollections.observableArrayList(allDevices);
 
         // Φιλτράρισμα βάσει Πελάτη
         if (!showAllCheckbox.isSelected()) {
@@ -315,7 +315,7 @@ public class DeviceController implements Initializable {
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Επιβεβαίωση");
-        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την συσκευή " + selectedDevice.getSerial() + ";" );
+        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την συσκευή " + selectedDevice.getSerial() + ";");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
@@ -328,15 +328,14 @@ public class DeviceController implements Initializable {
                             .graphic(null)
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT);
-                    notifications.showInformation();});
+                    notifications.showInformation();
+                });
                 loadDevices();
-            }
-            else {
+            } else {
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Προσοχή");
                 alert.setContentText("Η συσκευή δεν μπορεί να διαγραφεί επειδή είναι δεσμευμένη σε πελάτη!");
                 alert.showAndWait();
-                return;
             }
         }
     }

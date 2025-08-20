@@ -42,7 +42,7 @@ public class AddSupplierController {
     @FXML
     private AnchorPane ordersContainer, paymentsContainer;
     @FXML
-    private TextField tfName, tfTitle,tfAfm, tfPhone, tfMobile, tfContact, tfEmail, tfEmail2, tfSite;
+    private TextField tfName, tfTitle, tfAfm, tfPhone, tfMobile, tfContact, tfEmail, tfEmail2, tfSite;
     @FXML
     private ProgressIndicator progressIndicator;
     @FXML
@@ -55,14 +55,14 @@ public class AddSupplierController {
     private JFXCheckBox hasCommissionsCheck;
 
     private OrdersSupViewController orderSupViewController;
-    private SupplierPaymentsController supplierPaymentsController;
+    private SupplierPaymentsViewController supplierPaymentsController;
 
     int code = 0;
 
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
     private Supplier supplier;
 
-    private SuppliersController suppliersController;
+    private SuppliersViewController suppliersViewController;
 
 
     private Consumer<Supplier> callback; // Callback function
@@ -81,8 +81,8 @@ public class AddSupplierController {
         this.mainTabPane = mainTabPane;
     }
 
-    public void setSuppliersController(SuppliersController controller) {
-        this.suppliersController = controller;
+    public void setSuppliersController(SuppliersViewController controller) {
+        this.suppliersViewController = controller;
     }
 
 
@@ -390,8 +390,8 @@ public class AddSupplierController {
     }
 
     private void openSupplierTab(int supplierId) {
-        if (suppliersController != null) {
-            suppliersController.openSupplierTab(supplierId);
+        if (suppliersViewController != null) {
+            suppliersViewController.openSupplierTab(supplierId);
         }
     }
 

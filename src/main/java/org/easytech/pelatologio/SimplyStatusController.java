@@ -24,7 +24,6 @@ import org.easytech.pelatologio.models.SimplyStatus;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -71,7 +70,7 @@ public class SimplyStatusController implements Initializable {
     @FXML
     private Button addContractButton, renewButton;
 
-    private ObservableList<SimplyStatus> allSimplyStatus = FXCollections.observableArrayList();
+    private final ObservableList<SimplyStatus> allSimplyStatus = FXCollections.observableArrayList();
 
     private TabPane mainTabPane;
 

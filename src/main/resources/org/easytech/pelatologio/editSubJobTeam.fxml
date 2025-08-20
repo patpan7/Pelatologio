@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
-<?import com.jfoenix.controls.JFXComboBox?>
 <DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EditSubJobTeamController">
     <content>
@@ -18,7 +18,7 @@
             </TextField>
             <JFXComboBox fx:id="jobTeamField" promptText="Ομάδα" VBox.vgrow="ALWAYS">
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                 </VBox.margin>
             </JFXComboBox>
         </VBox>

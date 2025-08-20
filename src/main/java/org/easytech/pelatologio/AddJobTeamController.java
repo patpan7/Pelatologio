@@ -8,7 +8,6 @@ import javafx.scene.input.ClipboardContent;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.JobTeam;
-import org.easytech.pelatologio.models.Recommendation;
 
 public class AddJobTeamController {
     @FXML
@@ -72,7 +71,7 @@ public class AddJobTeamController {
     public void handleSave(ActionEvent event) {
         String name = nameField.getText();
 
-        JobTeam newJobTeam = new JobTeam(0,name);
+        JobTeam newJobTeam = new JobTeam(0, name);
 
         if (!name.isEmpty()) {
             DBHelper.getJobTeamDao().saveJobTeam(newJobTeam); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper

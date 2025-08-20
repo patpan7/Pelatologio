@@ -106,7 +106,7 @@ public class LoginDaoImpl implements LoginDao {
         try (Connection conn = getConnection()){
             try (
                 PreparedStatement pstmt1 = conn.prepareStatement(query1);
-                PreparedStatement pstmt2 = conn.prepareStatement(query2);
+                PreparedStatement pstmt2 = conn.prepareStatement(query2)
 
             ){
                 pstmt1.setInt(1, id);

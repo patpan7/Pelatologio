@@ -12,10 +12,8 @@ import javafx.scene.control.*;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.dao.RecommendationDao;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Recommendation;
-import org.easytech.pelatologio.models.TaskCategory;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -37,13 +35,13 @@ public class RecomManagerViewController {
     public void initialize() {
         recomList = FXCollections.observableArrayList();
 
-       // Ρύθμιση στήλης Τηλέφωνο
+        // Ρύθμιση στήλης Τηλέφωνο
         recomColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
 
         recomTable.setItems(recomList);
 
         recomTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2){
+            if (event.getClickCount() == 2) {
                 handleEdit(null);
             }
         });
@@ -99,7 +97,8 @@ public class RecomManagerViewController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 
@@ -130,7 +129,8 @@ public class RecomManagerViewController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 

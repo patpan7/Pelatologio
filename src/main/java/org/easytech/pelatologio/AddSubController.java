@@ -11,7 +11,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -29,10 +28,7 @@ import org.easytech.pelatologio.models.Subscription;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.IntStream;
 
 public class AddSubController {
 
@@ -140,7 +136,6 @@ public class AddSubController {
         dueDatePicker.setValue(LocalDate.now());
     }
 
-    
 
     public boolean handleSaveSub() {
         try {
@@ -152,7 +147,8 @@ public class AddSubController {
                             .graphic(null)
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT);
-                    notifications.showError();});
+                    notifications.showError();
+                });
                 return false;
             }
 
@@ -167,8 +163,8 @@ public class AddSubController {
             DBHelper dbHelper = new DBHelper();
 
             if (sub == null) {
-                 //Δημιουργία νέας εργασίας
-                Subscription newSub = new Subscription(0, title, date, selectedCustomer.getCode(),category, price, note, "Όχι");
+                //Δημιουργία νέας εργασίας
+                Subscription newSub = new Subscription(0, title, date, selectedCustomer.getCode(), category, price, note, "Όχι");
                 DBHelper.getSubscriptionDao().saveSub(newSub);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
@@ -188,7 +184,8 @@ public class AddSubController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();});
+                notifications.showConfirm();
+            });
             return true;
 
         } catch (Exception e) {
@@ -288,5 +285,5 @@ public class AddSubController {
         noteField.setText(username);
     }
 
-    
+
 }

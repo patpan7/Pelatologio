@@ -57,7 +57,7 @@ public class AddressViewController {
         addressTable.setItems(customerAddressList);
 
         addressTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2){
+            if (event.getClickCount() == 2) {
                 handleEditLogin(null);
             }
         });
@@ -73,6 +73,7 @@ public class AddressViewController {
         if (addressTable.getItems().size() == 1)
             addressTable.getSelectionModel().select(0);
     }
+
     public void handleAddLogin(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addAddress.fxml"));
@@ -113,7 +114,8 @@ public class AddressViewController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 
@@ -145,7 +147,8 @@ public class AddressViewController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 

@@ -82,7 +82,7 @@ public class CustomersController implements Initializable {
     private JFXComboBox<SubJobTeam> subJobTeamComboBox; // New ComboBox for sub-teams
     @FXML
     private JFXButton clearAdvancedFiltersButton;
-    private Integer activeAppFilter = null; // null σημαίνει κανένα φίλτρο εφαρμογής
+    private final Integer activeAppFilter = null; // null σημαίνει κανένα φίλτρο εφαρμογής
 
     ObservableList<Customer> observableList;
     FilteredList<Customer> filteredData;
@@ -186,7 +186,7 @@ public class CustomersController implements Initializable {
 
             // Δημιουργία MenuItem για κάθε αρχείο στον φάκελο
             File[] files = folder.listFiles((dir, name) -> name.endsWith(".txt"));
-            if (files != null && files.length > 0) {
+            if (files != null) {
                 for (File file : files) {
                     String displayName = file.getName().replace(".txt", "");
                     MenuItem fileItem = new MenuItem(displayName);
@@ -490,9 +490,7 @@ public class CustomersController implements Initializable {
                             || (customer.getTown() != null && (customer.getTown().toUpperCase().contains(search1) || customer.getTown().toUpperCase().contains(search2)))
                             || (customer.getAddress() != null && (customer.getAddress().toUpperCase().contains(search1) || customer.getAddress().toUpperCase().contains(search2)))
                             || (customer.getMyPosClientId() != null && (customer.getMyPosClientId().contains(search1) || customer.getMyPosClientId().contains(search2)));
-                    if (!textMatch) {
-                        return false;
-                    }
+                    return textMatch;
                 } else {
                     switch (searchField) {
                         case "Όνομα":
@@ -1136,8 +1134,7 @@ public class CustomersController implements Initializable {
                 if (Integer.valueOf(customer.getCode()).equals(tab.getUserData())) {
                     mainTabPane.getSelectionModel().select(tab);
                     // If a specific sub-tab needs to be selected, find the controller and call the method
-                    if (tabToSelect != null && tab.getContent().getUserData() instanceof AddCustomerController) {
-                        AddCustomerController controller = (AddCustomerController) tab.getContent().getUserData();
+                    if (tabToSelect != null && tab.getContent().getUserData() instanceof AddCustomerController controller) {
                         selectSubTab(controller, tabToSelect);
                     }
                     return; // Tab found and selected, exit the method

@@ -1,6 +1,5 @@
 package org.easytech.pelatologio;
 
-import atlantafx.base.theme.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.ScheduledService;
@@ -73,17 +72,19 @@ public class MainMenu extends Application {
                 // Ενημέρωσε το TableView ή όποιο στοιχείο UI χρησιμοποιείς
                 Notifications notifications = Notifications.create()
                         .title("Ενημέρωση")
-                        .text("Νέα ενημέρωση στην προσφορά #" + offer.getId()+
-                                "\nΚατάσταση: "+offer.getStatus()+
-                                "\nΠελάτης: "+offer.getCustomerName())
+                        .text("Νέα ενημέρωση στην προσφορά #" + offer.getId() +
+                                "\nΚατάσταση: " + offer.getStatus() +
+                                "\nΠελάτης: " + offer.getCustomerName())
                         .graphic(null)
                         .hideAfter(Duration.seconds(10))
                         .position(Pos.TOP_RIGHT);
-                notifications.showInformation();});
+                notifications.showInformation();
+            });
             DBHelper.getOfferDao().updateOfferStatus(offer.getId(), offer.getStatus());
             // Ενημέρωσε το TableView ή όποιο στοιχείο UI χρησιμοποιείς
         }
     }
+
     private static LocalDateTime lastCheck = LocalDateTime.now();
 
     public static void startPolling() {
@@ -150,8 +151,7 @@ public class MainMenu extends Application {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 snoozeAppointment(appointment);
-            }
-            else if (result.isPresent() && result.get() == postponeButton) {
+            } else if (result.isPresent() && result.get() == postponeButton) {
                 try {
                     FXMLLoader loader = new FXMLLoader(MainMenu.class.getResource("calendarView.fxml"));
                     Parent root = loader.load();

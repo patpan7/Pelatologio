@@ -169,12 +169,8 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
             stmt.setString(6, sub.getPrice());
             stmt.setInt(7, sub.getId());
 
-            if (stmt.executeUpdate() > 0) {
-                return true; // Ενημερώθηκε επιτυχώς
-            } else {
-                // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
-                return false;
-            }
+            // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
+            return stmt.executeUpdate() > 0; // Ενημερώθηκε επιτυχώς
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

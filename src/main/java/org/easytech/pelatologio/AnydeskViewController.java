@@ -13,8 +13,6 @@ import org.easytech.pelatologio.dao.impl.AnydeskDaoImpl;
 import org.easytech.pelatologio.models.Anydesk;
 import org.easytech.pelatologio.models.Customer;
 
-import java.awt.Desktop;
-import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -42,8 +40,8 @@ public class AnydeskViewController {
     private Button deleteButton;
 
     private Customer currentCustomer;
-    private AnydeskDao anydeskDao = new AnydeskDaoImpl();
-    private ObservableList<Anydesk> anydeskList = FXCollections.observableArrayList();
+    private final AnydeskDao anydeskDao = new AnydeskDaoImpl();
+    private final ObservableList<Anydesk> anydeskList = FXCollections.observableArrayList();
 
     public void setCustomer(Customer customer) {
         this.currentCustomer = customer;

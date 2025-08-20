@@ -54,7 +54,7 @@ public class CustomerTasksController {
         setTooltip(editTaskButton, "Επεξεργασία εργασίας");
         setTooltip(deleteTaskButton, "Διαγραφή εργασίας");
         setTooltip(completeTaskButton, "Σημείωση εργασίας ως ολοκληρωμένη");
-        setTooltip(uncompletedTaskButton,"Σημείωση εργασίας ως σε επεξεργασία");
+        setTooltip(uncompletedTaskButton, "Σημείωση εργασίας ως σε επεξεργασία");
 
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -119,7 +119,6 @@ public class CustomerTasksController {
     }
 
 
-
     private void toggleComplete(boolean complete) {
         if (Features.isEnabled("tasks")) {
             Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
@@ -131,7 +130,8 @@ public class CustomerTasksController {
                             .graphic(null)
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT);
-                    notifications.showError();});
+                    notifications.showError();
+                });
                 return;
             }
 
@@ -145,7 +145,8 @@ public class CustomerTasksController {
                             .graphic(null)
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT);
-                    notifications.showConfirm();});
+                    notifications.showConfirm();
+                });
                 loadTasks(customer.getCode()); // Φορτώνει ξανά τις εργασίες
             } else {
                 System.out.println("Failed to update task completion status.");
@@ -156,7 +157,8 @@ public class CustomerTasksController {
                             .graphic(null)
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT);
-                    notifications.showError();});
+                    notifications.showError();
+                });
             }
         } else {
             Notifications.create()
@@ -170,7 +172,6 @@ public class CustomerTasksController {
     }
 
 
-
     private void loadTasks(int customerCode) {
         if (Features.isEnabled("tasks")) {
             allTasks.clear();
@@ -181,7 +182,7 @@ public class CustomerTasksController {
     }
 
 
-        @FXML
+    @FXML
     private void handleAddTask() {
         if (Features.isEnabled("tasks")) {
             try {
@@ -302,7 +303,7 @@ public class CustomerTasksController {
             }
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Επιβεβαίωση");
-            alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedTasks.getTitle() + ";" );
+            alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την εργασία " + selectedTasks.getTitle() + ";");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 DBHelper dbHelper = new DBHelper();

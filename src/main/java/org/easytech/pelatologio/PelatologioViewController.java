@@ -65,7 +65,7 @@ public class PelatologioViewController {
         loginTable.setItems(loginList);
 
         loginTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2){
+            if (event.getClickCount() == 2) {
                 handleEditLogin(null);
             }
         });
@@ -78,7 +78,7 @@ public class PelatologioViewController {
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
         DBHelper dbHelper = new DBHelper();
-        loginList.addAll(DBHelper.getLoginDao().getLogins(customerId,6));
+        loginList.addAll(DBHelper.getLoginDao().getLogins(customerId, 6));
         if (loginTable.getItems().size() == 1)
             loginTable.getSelectionModel().select(0);
     }
@@ -108,10 +108,9 @@ public class PelatologioViewController {
             okButton.addEventFilter(ActionEvent.ACTION, e -> {
                 if (!addLoginController.validateInputs()) {
                     e.consume(); // Εμποδίζει το κλείσιμο του dialog
-                }
-                else {
+                } else {
                     // Εάν οι εισαγωγές είναι έγκυρες, συνεχίστε με την αποθήκευση
-                    addLoginController.handleSaveLogin(event,6);
+                    addLoginController.handleSaveLogin(event, 6);
                 }
             });
 
@@ -192,19 +191,19 @@ public class PelatologioViewController {
         Logins selectedLogin = checkSelectedLogin();
         if (selectedLogin == null) return;
 
-        LabelPrintHelper.printLoginLabel(selectedLogin,customer,"Στοιχεία "+selectedLogin.getTag());
+        LabelPrintHelper.printLoginLabel(selectedLogin, customer, "Στοιχεία " + selectedLogin.getTag());
     }
 
     public void handleCopy(ActionEvent event) {
         Logins selectedLogin = checkSelectedLogin();
         if (selectedLogin == null) return;
 
-        String msg ="Στοιχεία εισόδου " + selectedLogin.getTag() +
-                "\nΕπωνυμία: "+customer.getName()+
-                "\nΑΦΜ: "+customer.getAfm()+
-                "\nEmail: "+selectedLogin.getUsername()+
-                "\nΚωδικός: "+selectedLogin.getPassword()+
-                "\nΚινητό: "+customer.getMobile()+
+        String msg = "Στοιχεία εισόδου " + selectedLogin.getTag() +
+                "\nΕπωνυμία: " + customer.getName() +
+                "\nΑΦΜ: " + customer.getAfm() +
+                "\nEmail: " + selectedLogin.getUsername() +
+                "\nΚωδικός: " + selectedLogin.getPassword() +
+                "\nΚινητό: " + customer.getMobile() +
                 "\n";
         copyTextToClipboard(msg);
     }
@@ -220,7 +219,7 @@ public class PelatologioViewController {
             dialog.setDialogPane(loader.load());
             dialog.setTitle("Προσθήκη Εργασίας");
             AddTaskController controller = loader.getController();
-            controller.setTaskTitle("Πελατολόγιο "+ selectedLogin.getTag() +": "+ customer.getName());
+            controller.setTaskTitle("Πελατολόγιο " + selectedLogin.getTag() + ": " + customer.getName());
             controller.setCustomerName(customer.getName());
             controller.setCustomerId(customer.getCode());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -290,21 +289,21 @@ public class PelatologioViewController {
 
         if (event.getButton() == MouseButton.SECONDARY) { // Right-click for copying to clipboard
 
-                String msg = "Νέος Πελάτης Πελατολόγιο" +
-                        "\nΕπωνυμία: " + customer.getName() +
-                        "\nΑΦΜ: " + customer.getAfm() +
-                        "\nEmail: " + selectedLogin.getUsername() +
-                        "\nΚωδικός: " + selectedLogin.getPassword() +
-                        "\nΚινητό: " + customer.getMobile() +
-                        "\n";
-                copyTextToClipboard(msg);
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showInformation();
+            String msg = "Νέος Πελάτης Πελατολόγιο" +
+                    "\nΕπωνυμία: " + customer.getName() +
+                    "\nΑΦΜ: " + customer.getAfm() +
+                    "\nEmail: " + selectedLogin.getUsername() +
+                    "\nΚωδικός: " + selectedLogin.getPassword() +
+                    "\nΚινητό: " + customer.getMobile() +
+                    "\n";
+            copyTextToClipboard(msg);
+            Notifications notifications = Notifications.create()
+                    .title("Προσοχή")
+                    .text("Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT);
+            notifications.showInformation();
         } else {
             try {
                 LoginAutomator loginAutomation = new LoginAutomator(true);

@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class AfmLookupService {
 
@@ -30,7 +31,7 @@ public class AfmLookupService {
 
             // Αποστολή του αιτήματος
             try (OutputStream outputStream = connection.getOutputStream()) {
-                outputStream.write(soapRequest.getBytes("UTF-8"));
+                outputStream.write(soapRequest.getBytes(StandardCharsets.UTF_8));
             }
 
             // Λήψη της απάντησης

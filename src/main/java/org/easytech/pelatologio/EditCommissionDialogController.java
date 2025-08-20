@@ -6,31 +6,33 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
+import javafx.util.StringConverter;
 import org.easytech.pelatologio.dao.CommissionDao;
+import org.easytech.pelatologio.helper.ComboBoxHelper;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Commission;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Partner;
-import javafx.util.StringConverter;
 import org.easytech.pelatologio.models.Supplier;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.easytech.pelatologio.helper.ComboBoxHelper;
 
 public class EditCommissionDialogController {
 
-    @FXML private ComboBox<Partner> partnerComboBox;
-    @FXML private ComboBox<Customer> customerComboBox;
-    @FXML private ComboBox<Supplier> supplierComboBox;
-    @FXML private TextField rateField;
-    @FXML private DatePicker startDatePicker;
-    @FXML private DatePicker endDatePicker;
+    @FXML
+    private ComboBox<Partner> partnerComboBox;
+    @FXML
+    private ComboBox<Customer> customerComboBox;
+    @FXML
+    private ComboBox<Supplier> supplierComboBox;
+    @FXML
+    private TextField rateField;
+    @FXML
+    private DatePicker startDatePicker;
+    @FXML
+    private DatePicker endDatePicker;
 
     private Commission commission;
     private CommissionDao commissionDao;
@@ -52,11 +54,13 @@ public class EditCommissionDialogController {
             public String toString(Partner partner) {
                 return partner == null ? "" : partner.getName();
             }
+
             @Override
-            public Partner fromString(String string) { return null; } // Not needed for selection
+            public Partner fromString(String string) {
+                return null;
+            } // Not needed for selection
         });
 
-        
 
         // Load Customers
         List<Customer> customers = DBHelper.getCustomerDao().getCustomers();
@@ -84,7 +88,6 @@ public class EditCommissionDialogController {
 
         ComboBoxHelper.setupFilter(customerComboBox, filteredCustomers);
 
-        
 
         // Load Suppliers that participate in commissions
         supplierComboBox.getItems().addAll(DBHelper.getSupplierDao().getCommissionSuppliers());
@@ -93,14 +96,16 @@ public class EditCommissionDialogController {
             public String toString(Supplier supplier) {
                 return supplier == null ? "" : supplier.getName();
             }
+
             @Override
-            public Supplier fromString(String string) { return null; }
+            public Supplier fromString(String string) {
+                return null;
+            }
         });
 
-        
+
     }
 
-    
 
     public void setCommission(Commission commission) {
         this.commission = commission;
@@ -112,19 +117,19 @@ public class EditCommissionDialogController {
 
             // Find and select the correct items in the ComboBoxes based on their IDs
             partnerComboBox.getItems().stream()
-                .filter(p -> p.getId() == commission.getPartnerId())
-                .findFirst()
-                .ifPresent(partnerComboBox::setValue);
+                    .filter(p -> p.getId() == commission.getPartnerId())
+                    .findFirst()
+                    .ifPresent(partnerComboBox::setValue);
 
             customerComboBox.getItems().stream()
-                .filter(c -> c.getCode() == commission.getCustomerId())
-                .findFirst()
-                .ifPresent(customerComboBox::setValue);
+                    .filter(c -> c.getCode() == commission.getCustomerId())
+                    .findFirst()
+                    .ifPresent(customerComboBox::setValue);
 
             supplierComboBox.getItems().stream()
-                .filter(s -> s.getId() == commission.getSupplierId())
-                .findFirst()
-                .ifPresent(supplierComboBox::setValue);
+                    .filter(s -> s.getId() == commission.getSupplierId())
+                    .findFirst()
+                    .ifPresent(supplierComboBox::setValue);
         }
     }
 
@@ -143,7 +148,7 @@ public class EditCommissionDialogController {
         if (commission == null) {
             commission = new Commission();
         }
-        
+
         // Set commission properties from the UI fields
         commission.setPartnerId(partnerComboBox.getValue().getId());
         commission.setCustomerId(customerComboBox.getValue().getCode());
@@ -160,5 +165,5 @@ public class EditCommissionDialogController {
         return true; // Indicate success
     }
 
-    
+
 }

@@ -1,13 +1,12 @@
 package org.easytech.pelatologio;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import org.easytech.pelatologio.dao.RecommendationDao;
 import org.easytech.pelatologio.models.Recommendation;
-import org.easytech.pelatologio.models.TaskCategory;
 
 public class EditRecomController {
     @FXML

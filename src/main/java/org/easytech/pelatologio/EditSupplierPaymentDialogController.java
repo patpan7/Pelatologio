@@ -11,15 +11,18 @@ import org.easytech.pelatologio.models.Supplier;
 import org.easytech.pelatologio.models.SupplierPayment;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 public class EditSupplierPaymentDialogController {
 
-    @FXML private ComboBox<Customer> customerComboBox;
-    @FXML private DatePicker paymentDatePicker;
-    @FXML private TextField amountField;
-    @FXML private TextArea descriptionArea;
+    @FXML
+    private ComboBox<Customer> customerComboBox;
+    @FXML
+    private DatePicker paymentDatePicker;
+    @FXML
+    private TextField amountField;
+    @FXML
+    private TextArea descriptionArea;
 
     private Supplier supplier;
     private SupplierPayment payment;
@@ -52,8 +55,11 @@ public class EditSupplierPaymentDialogController {
             public String toString(Customer customer) {
                 return customer == null ? "" : customer.getName();
             }
+
             @Override
-            public Customer fromString(String string) { return null; }
+            public Customer fromString(String string) {
+                return null;
+            }
         });
     }
 
@@ -64,9 +70,9 @@ public class EditSupplierPaymentDialogController {
             amountField.setText(payment.getAmount().toPlainString());
             descriptionArea.setText(payment.getDescription());
             customerComboBox.getItems().stream()
-                .filter(c -> c.getCode() == payment.getCustomerId())
-                .findFirst()
-                .ifPresent(customerComboBox::setValue);
+                    .filter(c -> c.getCode() == payment.getCustomerId())
+                    .findFirst()
+                    .ifPresent(customerComboBox::setValue);
         }
     }
 

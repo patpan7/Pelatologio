@@ -7,10 +7,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -104,7 +104,7 @@ public class CustomerOffersController {
 
             // Δημιουργία MenuItem για κάθε αρχείο στον φάκελο
             File[] files = folder.listFiles();
-            if (files != null && files.length > 0) {
+            if (files != null) {
                 for (File file : files) {
                     String displayName = file.getName();
                     MenuItem fileItem = new MenuItem(displayName);
@@ -387,9 +387,9 @@ public class CustomerOffersController {
                 return;
             }
             String msg = "Επωνυμία: " + selectedOffer.getCustomerName() +
-                    "\nΣας αποστείλαμε μια νέα προσφορά"+
+                    "\nΣας αποστείλαμε μια νέα προσφορά" +
                     "\nΜπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου:" +
-                    "\nhttp://dgou.dynns.com:8090/portal/offer.php?id="+selectedOffer.getId()+
+                    "\nhttp://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() +
                     "\n\nΜπορείτε δείτε τους τραπεζικούς μας λογαριασμούς στην παρακάτω διεύθυνση:" +
                     "\nhttp://dgou.dynns.com:8090/portal/bank_accounts.php" +
                     "\n\nΓια οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας." +
@@ -432,9 +432,9 @@ public class CustomerOffersController {
             controller.setCustomer(customer);
             controller.setEmail(email);
             controller.setSubject("Προσφορά " + selectedOffer.getId() + ": " + selectedOffer.getCustomerName());
-            controller.setBody("<h3>"+selectedOffer.getDescription() + "</h3>" +
+            controller.setBody("<h3>" + selectedOffer.getDescription() + "</h3>" +
                     "<br><br><h3>Μπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου: </h3>" +
-                    "<a href=http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId()+"><b><h2>Αποδοχή ή Απόρριψη προσφορά "+selectedOffer.getId()+"</b><h2></a>" +
+                    "<a href=http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() + "><b><h2>Αποδοχή ή Απόρριψη προσφορά " + selectedOffer.getId() + "</b><h2></a>" +
                     //"<br>http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() +
                     "<br><br><h3>Μπορείτε δείτε τους τραπεζικούς μας λογαριασμούς </h3>" +
                     "<a href=http://dgou.dynns.com:8090/portal/bank_accounts.php><b><h2>Τραπεζικοί λογαριασμοί</b></h2></a>" +
@@ -466,12 +466,12 @@ public class CustomerOffersController {
     }
 
     @FXML
-    private void handleAccept (ActionEvent event) {
+    private void handleAccept(ActionEvent event) {
         toggleAns("Αποδοχή Χειρ.");
     }
 
     @FXML
-    private void handleReject (ActionEvent event) {
+    private void handleReject(ActionEvent event) {
         toggleAns("Απόρριψη Χειρ.");
     }
 
@@ -501,7 +501,8 @@ public class CustomerOffersController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();});
+                notifications.showConfirm();
+            });
             loadOffers(customer.getCode()); // Φορτώνει ξανά τις εργασίες
         } else {
             System.out.println("Failed to update task completion status.");
@@ -512,10 +513,10 @@ public class CustomerOffersController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
         }
     }
-
 
 
     private void setTooltip(Button button, String text) {

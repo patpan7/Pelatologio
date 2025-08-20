@@ -10,12 +10,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -29,7 +28,6 @@ import org.easytech.pelatologio.helper.ComboBoxHelper;
 import org.easytech.pelatologio.helper.CustomerFolderManager;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
-import org.easytech.pelatologio.models.Item;
 import org.easytech.pelatologio.models.Offer;
 
 import java.awt.*;
@@ -38,11 +36,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class AddOfferController {
 
@@ -195,7 +190,6 @@ public class AddOfferController {
         });
     }
 
-    
 
     public boolean handleSaveOffer() {
         try {
@@ -225,7 +219,7 @@ public class AddOfferController {
 
             if (offer == null) {
                 //Δημιουργία νέας εργασίας
-                Offer newOffer = new Offer(0, offerDate, description, hours, status, selectedCustomer.getCode(), null, null, paths, "Όχι",false);
+                Offer newOffer = new Offer(0, offerDate, description, hours, status, selectedCustomer.getCode(), null, null, paths, "Όχι", false);
                 DBHelper.getOfferDao().saveOffer(newOffer);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
@@ -360,5 +354,5 @@ public class AddOfferController {
         btnSelectFile.setDisable(true);
     }
 
-    
+
 }

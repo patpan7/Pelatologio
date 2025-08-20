@@ -40,7 +40,7 @@ public class SubsCategoryManagerViewController {
         subsCategoryTable.setItems(categoriesList);
 
         subsCategoryTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2){
+            if (event.getClickCount() == 2) {
                 handleEdit(null);
             }
         });
@@ -97,7 +97,8 @@ public class SubsCategoryManagerViewController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 
@@ -129,7 +130,8 @@ public class SubsCategoryManagerViewController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 

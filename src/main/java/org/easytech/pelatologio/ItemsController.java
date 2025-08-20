@@ -159,7 +159,8 @@ public class ItemsController implements Initializable {
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
             Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.setOnAction(event -> {controller.handleOkButton();
+            okButton.setOnAction(event -> {
+                controller.handleOkButton();
                 refreshTableData();
             });
             // Add a key listener to save when Enter is pressed
@@ -178,50 +179,50 @@ public class ItemsController implements Initializable {
     public void itemUpdate(ActionEvent actionEvent) throws IOException {
         Item selectedItem = itemsTable.getSelectionModel().getSelectedItem();
         try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("newItem.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Ενημέρωση Είδους");
-                dialog.initModality(Modality.WINDOW_MODAL);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("newItem.fxml"));
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(loader.load());
+            dialog.setTitle("Ενημέρωση Είδους");
+            dialog.initModality(Modality.WINDOW_MODAL);
 
-                AddItemController controller = loader.getController();
+            AddItemController controller = loader.getController();
 
-                // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
-                controller.setItemData(selectedItem);
+            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
+            controller.setItemData(selectedItem);
 
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-                Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setOnAction(event -> {
-                    controller.handleOkButton();
-                    // Reinitialize the table and apply the search filter when OK is pressed
-                    //tableInit();
-                    refreshTableData();
-                    filteredData = new FilteredList<>(observableList, b -> true);
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setOnAction(event -> {
+                controller.handleOkButton();
+                // Reinitialize the table and apply the search filter when OK is pressed
+                //tableInit();
+                refreshTableData();
+                filteredData = new FilteredList<>(observableList, b -> true);
 
-                    filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-                        applyFilters(newValue);
-                    });
-
-                    applyFilters(filterField.getText());
-
-                    SortedList<Item> sortedData = new SortedList<>(filteredData);
-                    sortedData.comparatorProperty().bind(itemsTable.comparatorProperty());
-                    itemsTable.setItems(sortedData);
+                filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+                    applyFilters(newValue);
                 });
 
-                // Προσθήκη listener για το κλείσιμο του παραθύρου
-                dialog.setOnHidden(event -> {
-                    DBHelper.getCustomerDao().customerUnlock(selectedItem.getId());
-                });
+                applyFilters(filterField.getText());
 
-                // Add a key listener to save when Enter is pressed
-                dialog.getDialogPane().setOnKeyPressed(event -> {
-                    if (event.getCode() == KeyCode.ENTER) {
-                        okButton.fire();  // Triggers the OK button action
-                    }
-                });
-                dialog.show();
+                SortedList<Item> sortedData = new SortedList<>(filteredData);
+                sortedData.comparatorProperty().bind(itemsTable.comparatorProperty());
+                itemsTable.setItems(sortedData);
+            });
+
+            // Προσθήκη listener για το κλείσιμο του παραθύρου
+            dialog.setOnHidden(event -> {
+                DBHelper.getCustomerDao().customerUnlock(selectedItem.getId());
+            });
+
+            // Add a key listener to save when Enter is pressed
+            dialog.getDialogPane().setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    okButton.fire();  // Triggers the OK button action
+                }
+            });
+            dialog.show();
 
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την ενημέρωση.", e.getMessage(), Alert.AlertType.ERROR));

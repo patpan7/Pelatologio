@@ -21,14 +21,20 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public class SupplierPaymentsController {
+public class SupplierPaymentsViewController {
 
-    @FXML private TableView<SupplierPayment> paymentsTable;
-    @FXML private TableColumn<SupplierPayment, String> customerColumn;
-    @FXML private TableColumn<SupplierPayment, LocalDate> dateColumn;
-    @FXML private TableColumn<SupplierPayment, BigDecimal> amountColumn;
-    @FXML private TableColumn<SupplierPayment, String> descriptionColumn;
-    @FXML private TableColumn<SupplierPayment, Boolean> calculatedColumn;
+    @FXML
+    private TableView<SupplierPayment> paymentsTable;
+    @FXML
+    private TableColumn<SupplierPayment, String> customerColumn;
+    @FXML
+    private TableColumn<SupplierPayment, LocalDate> dateColumn;
+    @FXML
+    private TableColumn<SupplierPayment, BigDecimal> amountColumn;
+    @FXML
+    private TableColumn<SupplierPayment, String> descriptionColumn;
+    @FXML
+    private TableColumn<SupplierPayment, Boolean> calculatedColumn;
 
     private Supplier supplier;
     private ObservableList<SupplierPayment> paymentList;
@@ -122,11 +128,11 @@ public class SupplierPaymentsController {
             Optional<ButtonType> result = dialog.showAndWait();
             if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                 Notifications.create()
-                    .title("Success")
-                    .text("Payment saved successfully.")
-                    .position(Pos.TOP_RIGHT)
-                    .hideAfter(Duration.seconds(5))
-                    .showInformation();
+                        .title("Success")
+                        .text("Payment saved successfully.")
+                        .position(Pos.TOP_RIGHT)
+                        .hideAfter(Duration.seconds(5))
+                        .showInformation();
                 loadPayments();
             }
 

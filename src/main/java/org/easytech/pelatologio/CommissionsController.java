@@ -70,7 +70,7 @@ public class CommissionsController {
 
     private void loadCommissions() {
         commissionList.clear();
-        List<Commission> allCommissions = commissionDao.getAllCommissions(); 
+        List<Commission> allCommissions = commissionDao.getAllCommissions();
         commissionList.addAll(allCommissions);
     }
 
@@ -99,11 +99,11 @@ public class CommissionsController {
             Optional<ButtonType> result = new Dialog().showAndWait();
             if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                 Notifications.create()
-                    .title("Επιτυχία")
-                    .text("Η σύμβαση αποθηκεύτηκε με επιτυχία.")
-                    .position(Pos.TOP_RIGHT)
-                    .hideAfter(Duration.seconds(5))
-                    .showInformation();
+                        .title("Επιτυχία")
+                        .text("Η σύμβαση αποθηκεύτηκε με επιτυχία.")
+                        .position(Pos.TOP_RIGHT)
+                        .hideAfter(Duration.seconds(5))
+                        .showInformation();
                 loadCommissions();
             }
         }

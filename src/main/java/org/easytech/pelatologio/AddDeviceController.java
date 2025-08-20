@@ -12,7 +12,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -20,17 +19,17 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.ComboBoxHelper;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
-import org.easytech.pelatologio.helper.ComboBoxHelper;
 import org.easytech.pelatologio.models.Device;
 import org.easytech.pelatologio.models.Item;
-import org.easytech.pelatologio.models.Partner;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class AddDeviceController {
 
@@ -51,8 +50,8 @@ public class AddDeviceController {
     @FXML
     private Button addSerialButton;
 
-    private ObservableList<String> serialNumbers = FXCollections.observableArrayList();
-    private ObservableList<String> rateList = FXCollections.observableArrayList();
+    private final ObservableList<String> serialNumbers = FXCollections.observableArrayList();
+    private final ObservableList<String> rateList = FXCollections.observableArrayList();
 
     private Device device;
     private int customerId;
@@ -181,9 +180,6 @@ public class AddDeviceController {
         rateField.setItems(rateList);
     }
 
-    
-
-    
 
     @FXML
     private void handleMouseClick(MouseEvent event) {
@@ -205,7 +201,8 @@ public class AddDeviceController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             return;
         }
 
@@ -218,7 +215,8 @@ public class AddDeviceController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             serialField.setText("");
             return;
         }
@@ -269,7 +267,7 @@ public class AddDeviceController {
             if (serialField.getText() != null) {
                 String serial = serialField.getText().trim();
                 if (!serial.isEmpty()) {
-                    if (!serialNumbers.contains(serial)){
+                    if (!serialNumbers.contains(serial)) {
                         serialNumbers.add(serial);
                         serialField.clear();
                     }
@@ -288,8 +286,7 @@ public class AddDeviceController {
 
             if (value instanceof Customer) {
                 selectedCustomer = (Customer) value;
-            } else if (value instanceof String) {
-                String customerName = (String) value;
+            } else if (value instanceof String customerName) {
                 selectedCustomer = customerComboBox.getItems().stream()
                         .filter(c -> c.getName().equalsIgnoreCase(customerName))
                         .findFirst()
@@ -302,8 +299,7 @@ public class AddDeviceController {
 
             if (itemValue instanceof Item) {
                 selectedItem = (Item) itemValue;
-            } else if (itemValue instanceof String) {
-                String itemName = (String) itemValue;
+            } else if (itemValue instanceof String itemName) {
                 selectedItem = itemComboBox.getItems().stream()
                         .filter(i -> i.getName().equalsIgnoreCase(itemName))
                         .findFirst()
@@ -385,7 +381,7 @@ public class AddDeviceController {
             if (serialField.getText() != null) {
                 String serial = serialField.getText().trim();
                 if (!serial.isEmpty()) {
-                    if (!serialNumbers.contains(serial)){
+                    if (!serialNumbers.contains(serial)) {
                         serialNumbers.add(serial);
                         serialField.clear();
                     }
@@ -501,5 +497,5 @@ public class AddDeviceController {
         alert.showAndWait();
     }
 
-    
+
 }

@@ -71,7 +71,7 @@ public class AddTaskCategoryController {
     public void handleSave(ActionEvent event) {
         String name = nameField.getText();
 
-        TaskCategory newTaskCategory = new TaskCategory(0,name);
+        TaskCategory newTaskCategory = new TaskCategory(0, name);
 
         if (!name.isEmpty()) {
             DBHelper dbHelper = new DBHelper();

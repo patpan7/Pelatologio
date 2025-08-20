@@ -66,12 +66,15 @@ public class EmailDialogController {
     public void setEmail(String text) {
         emailField.setText(text);
     }
+
     public void setSubject(String text) {
         subjectField.setText(text);
     }
+
     public void setBody(String text) {
         bodyArea.setText(text);
     }
+
     public void setAttachments(List<File> attachments) {
         this.attachments.addAll(attachments);
         attachmentList.getItems().addAll(attachments);
@@ -129,7 +132,8 @@ public class EmailDialogController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
             progressBar.setVisible(false); // Απόκρυψη προόδου σε περίπτωση σφάλματος
             return;
         }
@@ -148,14 +152,14 @@ public class EmailDialogController {
                 emailSender.sendEmailWithAttachments(email, subject, body, attachments);
 
                 // Ενημέρωση του UI με επιτυχία (πρέπει να γίνει στο JavaFX thread)
-                    Platform.runLater(() -> {
-                        Notifications notifications = Notifications.create()
-                                .title("Επιτυχία")
-                                .text("Το email στάλθηκε με επιτυχία.")
-                                .graphic(null)
-                                .hideAfter(Duration.seconds(5))
-                                .position(Pos.TOP_RIGHT);
-                        notifications.showConfirm();
+                Platform.runLater(() -> {
+                    Notifications notifications = Notifications.create()
+                            .title("Επιτυχία")
+                            .text("Το email στάλθηκε με επιτυχία.")
+                            .graphic(null)
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT);
+                    notifications.showConfirm();
                     subjectField.setText("");
                     bodyArea.setText("");
                     attachmentList.getItems().clear();
@@ -176,8 +180,9 @@ public class EmailDialogController {
                             .graphic(null)
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT);
-                    notifications.showError();});
-                    progressBar.setVisible(false); // Απόκρυψη προόδου
+                    notifications.showError();
+                });
+                progressBar.setVisible(false); // Απόκρυψη προόδου
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }).start();

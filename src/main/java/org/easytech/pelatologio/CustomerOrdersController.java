@@ -30,7 +30,7 @@ public class CustomerOrdersController {
     @FXML
     private Button addOrderButton, editOrderButton, deleteOrderButton, completeOrderButton, uncompletedOrderButton;
 
-    private ObservableList<Order> allOrders = FXCollections.observableArrayList();
+    private final ObservableList<Order> allOrders = FXCollections.observableArrayList();
     private Customer customer;
 
     @FXML
@@ -230,7 +230,7 @@ public class CustomerOrdersController {
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Επιβεβαίωση");
-        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την παραγγελία " + selectedOrder.getTitle() + ";" );
+        alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την παραγγελία " + selectedOrder.getTitle() + ";");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper dbHelper = new DBHelper();
@@ -242,6 +242,7 @@ public class CustomerOrdersController {
     public void toggleComplete(ActionEvent event) {
         toggleComplete(true);
     }
+
     public void toggleRecall(ActionEvent event) {
         toggleComplete(false);
     }
@@ -270,7 +271,8 @@ public class CustomerOrdersController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();});
+                notifications.showConfirm();
+            });
             loadOrders(customer.getCode()); // Φορτώνει ξανά τις εργασίες
         } else {
             System.out.println("Failed to update order completion status.");
@@ -281,7 +283,8 @@ public class CustomerOrdersController {
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT);
-                notifications.showError();});
+                notifications.showError();
+            });
         }
     }
 
@@ -294,6 +297,7 @@ public class CustomerOrdersController {
         this.customer = customer;
         loadOrders(customer.getCode());
     }
+
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();
         tooltip.setShowDelay(Duration.seconds(0.3));
