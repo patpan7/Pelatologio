@@ -55,12 +55,53 @@ public class CommissionDaoImpl implements CommissionDao {
 
     @Override
     public void deleteCommission(int commissionId) {
-        String sql = "DELETE FROM Commissions WHERE id = ?";
-        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, commissionId);
-            pstmt.executeUpdate();
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false); // Start transaction
+
+            // First delete related records in PartnerEarnings
+            String deleteEarningsSql = "DELETE FROM PartnerEarnings WHERE commission_id = ?";
+            try (PreparedStatement earningsStmt = conn.prepareStatement(deleteEarningsSql)) {
+                earningsStmt.setInt(1, commissionId);
+                earningsStmt.executeUpdate();
+            }
+
+            // Then delete the commission
+            String deleteCommissionSql = "DELETE FROM Commissions WHERE id = ?";
+            try (PreparedStatement commissionStmt = conn.prepareStatement(deleteCommissionSql)) {
+                commissionStmt.setInt(1, commissionId);
+                commissionStmt.executeUpdate();
+            }
+
+            conn.commit(); // Commit transaction if both deletes succeed
         } catch (SQLException e) {
-            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Rollback if any error occurs
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    try {
+                        throw new SQLException("Failed to rollback transaction", ex);
+                    } catch (SQLException exc) {
+                        throw new RuntimeException(exc);
+                    }
+                }
+            }
+            try {
+                throw e; // Re-throw the exception to be handled by the caller
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true); // Reset auto-commit
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

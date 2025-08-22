@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class MyposViewController {
+public class MyposViewController implements CustomerTabController {
     private static final String WARNING_TITLE = "Προσοχή";
     private static final String SELECT_LOGIN_MSG = "Παρακαλώ επιλέξτε ένα login.";
     @FXML
@@ -71,6 +71,7 @@ public class MyposViewController {
 
 
     Customer customer;
+    private Runnable onDataSaved;
 
     private ObservableList<Logins> loginList;
 
@@ -139,6 +140,7 @@ public class MyposViewController {
                 } else {
                     // Εάν οι εισαγωγές είναι έγκυρες, συνεχίστε με την αποθήκευση
                     addLoginController.handleSaveLogin(event, 1);
+                    notifyDataSaved();
                 }
             });
 
@@ -176,6 +178,7 @@ public class MyposViewController {
 
             // Διαγραφή από τη λίστα και ενημέρωση του πίνακα
             loginTable.getItems().remove(selectedLogin);
+            notifyDataSaved();
         }
     }
 
@@ -210,6 +213,7 @@ public class MyposViewController {
                     Logins updatedLogin = editController.getUpdatedLogin();
                     DBHelper.getLoginDao().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
                     Platform.runLater(() -> loginTable.refresh());
+                    notifyDataSaved();
                 }
             });
 
@@ -278,11 +282,24 @@ public class MyposViewController {
         }
     }
 
+    @Override
     public void setCustomer(Customer customer) {
         this.customer = customer;
         loadLoginsForCustomer(customer.getCode());
         loadMyPosDetailsForCustomer();
     }
+
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSaved = callback;
+    }
+
+    private void notifyDataSaved() {
+        if (onDataSaved != null) {
+            onDataSaved.run();
+        }
+    }
+
 
     public void myposloginOpen(ActionEvent event) {
         Logins selectedLogin = checkSelectedLogin();

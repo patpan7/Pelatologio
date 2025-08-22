@@ -14,6 +14,7 @@ import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CustomerTabController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Order;
@@ -22,7 +23,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class CustomerOrdersController {
+public class CustomerOrdersController implements CustomerTabController {
     @FXML
     private TableView<Order> ordersTable;
     @FXML
@@ -32,6 +33,7 @@ public class CustomerOrdersController {
 
     private final ObservableList<Order> allOrders = FXCollections.observableArrayList();
     private Customer customer;
+    private Runnable onDataSaved;
 
     @FXML
     public void initialize() {
@@ -155,6 +157,7 @@ public class CustomerOrdersController {
                     // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
                     event.consume();
                 }
+                notifyDataSaved();
             });
 
             dialog.initModality(Modality.NONE);
@@ -202,6 +205,7 @@ public class CustomerOrdersController {
                     // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
                     event.consume();
                 }
+                notifyDataSaved();
             });
             dialog.initModality(Modality.NONE);
             dialog.initOwner(null);
@@ -236,6 +240,7 @@ public class CustomerOrdersController {
             DBHelper dbHelper = new DBHelper();
             DBHelper.getOrderDao().deleteOrder(selectedOrder.getId());
             loadOrders(customer.getCode());
+            notifyDataSaved();
         }
     }
 
@@ -293,10 +298,23 @@ public class CustomerOrdersController {
         allOrders.setAll(DBHelper.getOrderDao().getAllOrdersCust(id));
     }
 
+    @Override
     public void setCustomer(Customer customer) {
         this.customer = customer;
         loadOrders(customer.getCode());
     }
+
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSaved = callback;
+    }
+
+    private void notifyDataSaved() {
+        if (onDataSaved != null) {
+            onDataSaved.run();
+        }
+    }
+
 
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();

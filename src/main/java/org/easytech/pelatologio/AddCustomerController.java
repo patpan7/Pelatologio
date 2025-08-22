@@ -41,6 +41,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class AddCustomerController {
     private TabPane mainTabPane;
@@ -50,7 +51,7 @@ public class AddCustomerController {
     @FXML
     private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, pelatologioContainer, nineposContainer, devicesContainer, invoicesContainer, tasksContainer, subsContainer, offersContainer, ordersContainer, callLogContainer, notesContainer;
     @FXML
-    private Tab tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabPelatologio, tabNinepos, tabDevices, tabInvoices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabCallLog, tabNotes;
+    private Tab tabMain, tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabPelatologio, tabNinepos, tabDevices, tabInvoices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabCallLog, tabNotes;
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone, tfBalance, tfBalanceMega;
     @FXML
@@ -80,7 +81,7 @@ public class AddCustomerController {
     @FXML
     public JFXCheckBox checkboxActive;
     @FXML
-    Button btnPhone1, btnPhone2, btnMobile, btnPhoneManager, btnAccPhone, btnAccMobile, startCallLogButton, btnAnydesk;
+    Button btnPhone1, btnPhone2, btnMobile, btnPhoneManager, btnAccPhone, btnAccMobile, startCallLogButton, btnAnydesk, btnManageApps;
 
 
     private TaxisViewController taxisViewController;
@@ -100,12 +101,16 @@ public class AddCustomerController {
 
     private final Map<Tab, String> tabToFxml = new HashMap<>();
     private final Map<Tab, AnchorPane> tabToContainer = new HashMap<>();
-    private final Set<Tab> loadedTabs = new HashSet<>();
 
 
     int code = 0;
     private boolean hasUnsavedChanges = false;
     private boolean isLoading = false; // Flag to prevent listeners from firing during data load
+
+    // ΝΕΟ: Ενεργά δυναμικά tabs (app tabs) για αυτό το session
+    private final Map<CustomerFeature, Tab> activeFeatureTabs = new LinkedHashMap<>();
+    // ΝΕΟ: cache για lazy-load περιεχομένου
+    private final Set<Tab> loadedTabs = new HashSet<>();
 
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
     private Customer customer;
@@ -140,9 +145,13 @@ public class AddCustomerController {
         setupTabs();
         tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
             if (!loadedTabs.contains(newTab)) {
-                loadTabContent(newTab);
+                //loadTabContent(newTab);
+                loadTabContentIfNeeded(newTab);
             }
         });
+        // Action για "Προσθήκη εφαρμογής"
+        btnManageApps.setOnAction(e -> openAddFeatureDialog());
+
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
         btnAddressAdd.setDisable(true);
         btnAddToMegasoft.setDisable(true);
@@ -170,45 +179,45 @@ public class AddCustomerController {
         checkboxActive.setVisible(false);
         checkboxActive.setDisable(true);
         btnTask.setVisible(false);
-        tabTaxis.setDisable(true);
-        tabMypos.setDisable(true);
-        if (!Features.isEnabled("simply")) {
-            tabSimply.setDisable(true);
-        }
-        if (!Features.isEnabled("emblem")) {
-            tabEmblem.setDisable(true);
-        }
-        if (!Features.isEnabled("ergani")) {
-            tabErgani.setDisable(true);
-        }
-        if (!Features.isEnabled("pelatologio")) {
-            tabPelatologio.setDisable(true);
-        }
-        if (!Features.isEnabled("ninepos")) {
-            tabNinepos.setDisable(true);
-        }
-        if (!Features.isEnabled("devices")) {
-            tabDevices.setDisable(true);
-        }
-        if (!Features.isEnabled("megasoft")) {
-            tabInvoices.setDisable(true);
-        }
-        tabInvoices.setDisable(true);
-        if (!Features.isEnabled("tasks")) {
-            tabTasks.setDisable(true);
-        }
-        if (!Features.isEnabled("subs")) {
-            tabSubs.setDisable(true);
-        }
-        if (!Features.isEnabled("offers")) {
-            tabOffers.setDisable(true);
-        }
-        if (!Features.isEnabled("orders")) {
-            tabOrders.setDisable(true);
-        }
-        if (!Features.isEnabled("calls")) {
-            tabCallLog.setDisable(true);
-        }
+//        tabTaxis.setDisable(true);
+//        tabMypos.setDisable(true);
+//        if (!Features.isEnabled("simply")) {
+//            tabSimply.setDisable(true);
+//        }
+//        if (!Features.isEnabled("emblem")) {
+//            tabEmblem.setDisable(true);
+//        }
+//        if (!Features.isEnabled("ergani")) {
+//            tabErgani.setDisable(true);
+//        }
+//        if (!Features.isEnabled("pelatologio")) {
+//            tabPelatologio.setDisable(true);
+//        }
+//        if (!Features.isEnabled("ninepos")) {
+//            tabNinepos.setDisable(true);
+//        }
+//        if (!Features.isEnabled("devices")) {
+//            tabDevices.setDisable(true);
+//        }
+//        if (!Features.isEnabled("megasoft")) {
+//            tabInvoices.setDisable(true);
+//        }
+//        tabInvoices.setDisable(true);
+//        if (!Features.isEnabled("tasks")) {
+//            tabTasks.setDisable(true);
+//        }
+//        if (!Features.isEnabled("subs")) {
+//            tabSubs.setDisable(true);
+//        }
+//        if (!Features.isEnabled("offers")) {
+//            tabOffers.setDisable(true);
+//        }
+//        if (!Features.isEnabled("orders")) {
+//            tabOrders.setDisable(true);
+//        }
+//        if (!Features.isEnabled("calls")) {
+//            tabCallLog.setDisable(true);
+//        }
 
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
@@ -344,11 +353,37 @@ public class AddCustomerController {
             }
         });
         ComboBoxHelper.setupFilter(tfAccName, filteredAccountants);
+        // Initialize recommendation list and setup ComboBox
         recommendationList.clear();
-        recommendationList.addAll(DBHelper.getRecommendationDao().getRecommendations());
-//        tfRecommendation.setItems(recommendationList);
+        List<Recommendation> recommendations = DBHelper.getRecommendationDao().getRecommendations();
+        if (recommendations != null) {
+            recommendationList.addAll(recommendations);
+        }
+
+        // Setup filtered list
         filteredRecommendations = new FilteredList<>(recommendationList);
         tfRecommendation.setItems(filteredRecommendations);
+
+        // Setup StringConverter for the ComboBox
+        tfRecommendation.setConverter(new StringConverter<Recommendation>() {
+            @Override
+            public String toString(Recommendation recommendation) {
+                return recommendation != null ? recommendation.getName() : "";
+            }
+
+            @Override
+            public Recommendation fromString(String string) {
+                if (string == null || string.trim().isEmpty()) {
+                    return null;
+                }
+                return recommendationList.stream()
+                        .filter(rec -> rec != null && string.equals(rec.getName()))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+        // Setup filtering
         ComboBoxHelper.setupFilter(tfRecommendation, filteredRecommendations);
 
         jobTeamList.clear();
@@ -492,65 +527,17 @@ public class AddCustomerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent content = loader.load();
 
+            // Set the customer on the controller
             Object controller = loader.getController();
-            switch (tab.getId()) {
-                case "tabTaxis" -> {
-                    taxisViewController = (TaxisViewController) controller;
-                    taxisViewController.setCustomer(customer);
-                }
-                case "tabMypos" -> {
-                    myposViewController = (MyposViewController) controller;
-                    myposViewController.setCustomer(customer);
-                }
-                case "tabSimply" -> {
-                    simplyViewController = (SimplyViewController) controller;
-                    simplyViewController.setCustomer(customer);
-                }
-                case "tabEmblem" -> {
-                    emblemViewController = (EmblemViewController) controller;
-                    emblemViewController.setCustomer(customer);
-                }
-                case "tabErgani" -> {
-                    erganiViewController = (ErganiViewController) controller;
-                    erganiViewController.setCustomer(customer);
-                }
-                case "tabPelatologio" -> {
-                    pelatologioViewController = (PelatologioViewController) controller;
-                    pelatologioViewController.setCustomer(customer);
-                }
-                case "tabNinepos" -> {
-                    nineposViewController = (NineposViewController) controller;
-                    nineposViewController.setCustomer(customer);
-                }
-                case "tabDevices" -> {
-                    customerDevicesController = (CustomerDevicesController) controller;
-                    customerDevicesController.setCustomer(customer);
-                }
-                case "tabInvoices" -> {
-                    invoicesViewController = (InvoicesViewController) controller;
-                    invoicesViewController.setCustomer(customer);
-                }
-                case "tabTasks" -> {
-                    customerTasksController = (CustomerTasksController) controller;
-                    customerTasksController.setCustomer(customer);
-                }
-                case "tabSubs" -> {
-                    customerSubsController = (CustomerSubsController) controller;
-                    customerSubsController.setCustomer(customer);
-                }
-                case "tabOffers" -> {
-                    customerOffersController = (CustomerOffersController) controller;
-                    customerOffersController.setCustomer(customer);
-                }
-                case "tabOrders" -> {
-                    customerOrdersController = (CustomerOrdersController) controller;
-                    customerOrdersController.setCustomer(customer);
-                }
-                case "tabCallLog" -> {
-                    customerCallLogController = (CustomerCallLogController) controller;
-                    customerCallLogController.setCustomer(customer);
-                }
+            if (controller instanceof CustomerTabController) {
+                ((CustomerTabController) controller).setCustomer(customer);
             }
+
+            // Special handling for specific controllers
+            if (tab == tabTaxis && controller instanceof TaxisViewController) {
+                ((TaxisViewController) controller).setCustomer(customer);
+            }
+            // Add similar blocks for other specific controllers...
 
             container.getChildren().setAll(content);
             AnchorPane.setTopAnchor(content, 0.0);
@@ -718,10 +705,188 @@ public class AddCustomerController {
     }
 
 
-    public void setCustomerForEdit(Customer customer) {
-        this.isLoading = true; // Start loading data
+//    public void setCustomerForEdit(Customer customer) {
+//        this.isLoading = true; // Start loading data
+//
+//        // Ρύθμιση των πεδίων με τα υπάρχοντα στοιχεία του πελάτη
+//        tfName.setText(customer.getName());
+//        tfTitle.setText(customer.getTitle());
+//        tfJob.setText(customer.getJob());
+//        tfAfm.setText(customer.getAfm());
+//        tfPhone1.setText(customer.getPhone1());
+//        tfPhone2.setText(customer.getPhone2());
+//        tfMobile.setText(customer.getMobile());
+//        tfAddress.setText(customer.getAddress());
+//        tfTown.setText(customer.getTown());
+//        tfPostCode.setText(customer.getPostcode());
+//        tfEmail.setText(customer.getEmail());
+//        tfEmail2.setText(customer.getEmail2());
+//        tfManager.setText(customer.getManager());
+//        tfManagerPhone.setText(customer.getManagerPhone());
+//        taNotes.setText(customer.getNotes());
+//        tfAccName1.setText(customer.getAccName1());
+//        tfAccEmail1.setText(customer.getAccEmail1());
+//        tfBalance.setText(customer.getBalance());
+//        taBalanceReason.setText(customer.getBalanceReason());
+//        tfBalanceMega.setText(DBHelper.getMegasoftDao().getMegasoftBalance(customer.getAfm()));
+//
+//        checkboxActive.setSelected(customer.getActive());
+//
+//        // Add listeners after populating the fields to avoid premature firing
+//        Platform.runLater(() -> {
+//            setupFieldListeners();
+//            this.hasUnsavedChanges = false; // Reset again after listeners are set
+//            updateTabTitle("");
+//        });
+//
+//
+//        btnAddressAdd.setDisable(false);
+//
+//
+//        btnData.setDisable(false);
+//        btnData.setVisible(true);
+//        btnLabel.setDisable(false);
+//        btnLabel.setVisible(true);
+//        btnCopy.setDisable(false);
+//        btnCopy.setVisible(true);
+//
+//        btnAcs.setDisable(false);
+//        btnAcs.setVisible(true);
+//
+//        btnAnydesk.setDisable(false);
+//        btnAnydesk.setVisible(true);
+//        tfBalance.setDisable(false);
+//        tfBalance.setVisible(true);
+//        lblBlance.setVisible(true);
+//        tfBalanceMega.setDisable(false);
+//        tfBalanceMega.setVisible(true);
+//        lblBlanceMega.setVisible(true);
+//        checkboxActive.setVisible(true);
+//        checkboxActive.setDisable(false);
+//
+//        if (Features.isEnabled("taxis")) {
+//            tabTaxis.setDisable(false);
+//        }
+//        if (Features.isEnabled("mypos")) {
+//            tabMypos.setDisable(false);
+//        }
+//        if (Features.isEnabled("simply")) {
+//            tabSimply.setDisable(false);
+//        }
+//        if (Features.isEnabled("emblem")) {
+//            tabEmblem.setDisable(false);
+//        }
+//        if (Features.isEnabled("ergani")) {
+//            tabErgani.setDisable(false);
+//        }
+//        if (Features.isEnabled("pelatologio")) {
+//            tabPelatologio.setDisable(false);
+//        }
+//        if (Features.isEnabled("ninepos")) {
+//            tabNinepos.setDisable(false);
+//        }
+//        if (Features.isEnabled("devices")) {
+//            tabDevices.setDisable(false);
+//        }
+//        if (Features.isEnabled("megasoft")) {
+//            tabInvoices.setDisable(false);
+//            btnAddToMegasoft.setDisable(false);
+//            btnAddToMegasoft.setVisible(true);
+//        }
+//        if (Features.isEnabled("tasks")) {
+//            tabTasks.setDisable(false);
+//            btnTask.setDisable(false);
+//            btnTask.setVisible(true);
+//        }
+//        if (Features.isEnabled("subs")) {
+//            tabSubs.setDisable(false);
+//        }
+//        if (Features.isEnabled("offers")) {
+//            tabOffers.setDisable(false);
+//        }
+//        if (Features.isEnabled("calls")) {
+//            tabCallLog.setDisable(false);
+//            startCallLogButton.setDisable(false);
+//            startCallLogButton.setVisible(true);
+//        }
+//        if (Features.isEnabled("orders")) {
+//            tabOrders.setDisable(false);
+//        }
+//
+//        startCallLogButton.setOnAction(e -> handleStartCallLogging());
+//        // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
+//        this.code = customer.getCode();
+//        this.customer = customer;
+//
+//
+//        // Find and select the parent job team based on the sub job team ID
+//        if (customer.getSubJobTeam() != 0) {
+//            int parentTeamId = DBHelper.getJobTeamDao().getParentTeamIdBySubTeamId(customer.getSubJobTeam());
+//            if (parentTeamId != 0) {
+//                for (JobTeam jobTeam : jobTeamList) {
+//                    if (jobTeam.getId() == parentTeamId) {
+//                        tfJobTeam.getSelectionModel().select(jobTeam);
+//                        // The listener of tfJobTeam has now populated the sub-teams.
+//                        // We can now select the correct sub-team directly.
+//                        for (SubJobTeam s : subJobTeamList) {
+//                            if (s.getId() == customer.getSubJobTeam()) {
+//                                tfSubJobTeam.getSelectionModel().select(s);
+//                                break;
+//                            }
+//                        }
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//        hasTabs();
+//        setAccountant();
+//        setRecommendation();
+//        setJobTeam();
+//
+//        this.isLoading = false; // Finish loading data
+//        this.hasUnsavedChanges = false; // Ensure it's clean after loading
+//        updateTabTitle("");
+//        lblCode.setText("Κωδικός: " + customer.getCode());
+//    }
+//
 
-        // Ρύθμιση των πεδίων με τα υπάρχοντα στοιχεία του πελάτη
+    /**
+     * Καλείται όταν ανοίγεις πελάτη για επεξεργασία.
+     */
+    public void setCustomerForEdit(Customer customer) {
+        this.isLoading = true;
+        this.customer = customer;
+
+        // (1) Γέμισμα των πεδίων σου όπως ήδη κάνεις
+        populateFieldsFromCustomer(customer);
+
+        // (1.1) Φόρτωση και επιλογή του λογιστή
+        setAccountant();
+
+        // (2) Rebuild των dynamic app tabs με βάση:
+        //     - global feature flag
+        //     - ύπαρξη δεδομένων για τον πελάτη
+        rebuildFeatureTabs();
+
+        for (Tab tab : tabPane.getTabs()) {
+            if (tabToFxml.containsKey(tab)) {
+                loadTabContent(tab);
+            }
+        }
+
+        this.isLoading = false;
+        this.hasUnsavedChanges = false;
+        updateTabTitle("");
+    }
+
+    /**
+     * Γεμίζει τα πεδία με τα δεδομένα του πελάτη και ρυθμίζει το UI σύμφωνα με τα ενεργά features.
+     */
+    private void populateFieldsFromCustomer(Customer customer) {
+        this.isLoading = true; // Απενεργοποιούμε προσωρινά listeners
+
+        // === 1. Γέμισμα βασικών πεδίων ===
         tfName.setText(customer.getName());
         tfTitle.setText(customer.getTitle());
         tfJob.setText(customer.getJob());
@@ -745,29 +910,19 @@ public class AddCustomerController {
 
         checkboxActive.setSelected(customer.getActive());
 
-        // Add listeners after populating the fields to avoid premature firing
-        Platform.runLater(() -> {
-            setupFieldListeners();
-            this.hasUnsavedChanges = false; // Reset again after listeners are set
-            updateTabTitle("");
-        });
-
-
+        // === 2. Ενεργοποίηση βασικών κουμπιών (πάντα διαθέσιμα) ===
         btnAddressAdd.setDisable(false);
-
-
         btnData.setDisable(false);
         btnData.setVisible(true);
         btnLabel.setDisable(false);
         btnLabel.setVisible(true);
         btnCopy.setDisable(false);
         btnCopy.setVisible(true);
-
         btnAcs.setDisable(false);
         btnAcs.setVisible(true);
-
         btnAnydesk.setDisable(false);
         btnAnydesk.setVisible(true);
+
         tfBalance.setDisable(false);
         tfBalance.setVisible(true);
         lblBlance.setVisible(true);
@@ -777,61 +932,51 @@ public class AddCustomerController {
         checkboxActive.setVisible(true);
         checkboxActive.setDisable(false);
 
-        if (Features.isEnabled("taxis")) {
-            tabTaxis.setDisable(false);
+        // === 3. Set recommendation ===
+        setRecommendation();
+
+        // === 4. Dynamic tabs ===
+        for (CustomerFeature feature : CustomerFeature.values()) {
+            if (!feature.isGloballyEnabled()) continue;
+
+            boolean hasData = feature.isPresentFor(customer);
+            Tab tab = activeFeatureTabs.get(feature);
+
+            if (hasData) {
+                if (tab == null) {
+                    tab = new Tab(feature.title);
+                    tab.setId("tab_" + feature.featureFlag);
+                    tab.setContent(new Label("Φόρτωση..."));
+                    insertTabAfterStaticOnes(tab);
+                    activeFeatureTabs.put(feature, tab);
+                }
+                if (!tabPane.getTabs().contains(tab)) {
+                    tabPane.getTabs().add(tab); // Προσθήκη στο TabPane
+                }
+            } else {
+                if (tab != null && tabPane.getTabs().contains(tab)) {
+                    tabPane.getTabs().remove(tab); // Αφαίρεση από το TabPane
+                }
+            }
         }
-        if (Features.isEnabled("mypos")) {
-            tabMypos.setDisable(false);
-        }
-        if (Features.isEnabled("simply")) {
-            tabSimply.setDisable(false);
-        }
-        if (Features.isEnabled("emblem")) {
-            tabEmblem.setDisable(false);
-        }
-        if (Features.isEnabled("ergani")) {
-            tabErgani.setDisable(false);
-        }
-        if (Features.isEnabled("pelatologio")) {
-            tabPelatologio.setDisable(false);
-        }
-        if (Features.isEnabled("ninepos")) {
-            tabNinepos.setDisable(false);
-        }
-        if (Features.isEnabled("devices")) {
-            tabDevices.setDisable(false);
-        }
-        if (Features.isEnabled("megasoft")) {
-            tabInvoices.setDisable(false);
+
+        // === 4. Ειδικά κουμπιά ανά feature ===
+        if (CustomerFeature.INVOICES.isGloballyEnabled()) {
             btnAddToMegasoft.setDisable(false);
             btnAddToMegasoft.setVisible(true);
         }
-        if (Features.isEnabled("tasks")) {
-            tabTasks.setDisable(false);
-            btnTask.setDisable(false);
-            btnTask.setVisible(true);
-        }
-        if (Features.isEnabled("subs")) {
-            tabSubs.setDisable(false);
-        }
-        if (Features.isEnabled("offers")) {
-            tabOffers.setDisable(false);
-        }
-        if (Features.isEnabled("calls")) {
-            tabCallLog.setDisable(false);
+        if (CustomerFeature.CALLS.isGloballyEnabled()) {
             startCallLogButton.setDisable(false);
             startCallLogButton.setVisible(true);
+            startCallLogButton.setOnAction(e -> handleStartCallLogging());
         }
-        if (Features.isEnabled("orders")) {
-            tabOrders.setDisable(false);
+        if (CustomerFeature.TASKS.isGloballyEnabled()) {
+            btnTask.setDisable(false);
+            btnTask.setVisible(true);
+            // btnTask.setOnAction(e -> handleTask());
         }
 
-        startCallLogButton.setOnAction(e -> handleStartCallLogging());
-        // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
-        this.code = customer.getCode();
-        this.customer = customer;
-
-
+        // === 5. Job team ===
         // Find and select the parent job team based on the sub job team ID
         if (customer.getSubJobTeam() != 0) {
             int parentTeamId = DBHelper.getJobTeamDao().getParentTeamIdBySubTeamId(customer.getSubJobTeam());
@@ -852,15 +997,318 @@ public class AddCustomerController {
                 }
             }
         }
-        hasTabs();
-        setAccountant();
-        setRecommendation();
-        setJobTeam();
 
-        this.isLoading = false; // Finish loading data
-        this.hasUnsavedChanges = false; // Ensure it's clean after loading
-        updateTabTitle("");
+        // === 6. Αποθήκευση πελάτη για μελλοντική χρήση ===
+        this.customer = customer;
+        this.code = customer.getCode();
+
+        this.isLoading = false;
+        this.hasUnsavedChanges = false;
+        updateTabTitle(""); // αν χρησιμοποιείται
         lblCode.setText("Κωδικός: " + customer.getCode());
+    }
+
+
+    /**
+     * Αναδημιουργεί τα δυναμικά tabs:
+     * - εμφανίζει μόνο όσα Features είναι ενεργά ΚΑΙ έχουν δεδομένα για τον πελάτη
+     * - αφαιρεί όσα δεν πρέπει να υπάρχουν
+     */
+    private void rebuildFeatureTabs() {
+        Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+
+        // Remove all dynamic tabs (keep only static tabs)
+        List<Tab> allTabs = new ArrayList<>(tabPane.getTabs());
+        List<Tab> staticTabs = allTabs.stream()
+                .filter(tab -> tab == tabMain || tab == tabOrders || tab == tabOffers ||
+                        tab == tabTasks || tab == tabNotes || tab == tabAccountant)
+                .collect(Collectors.toList());
+
+        // Clear and re-add only static tabs in the correct order
+        tabPane.getTabs().setAll(staticTabs);
+        activeFeatureTabs.clear();
+        loadedTabs.clear();
+
+        // Add dynamic tabs after the main tab
+        int insertIndex = 1; // After the main tab (index 0)
+
+        for (CustomerFeature feature : CustomerFeature.values()) {
+            if (!feature.isGloballyEnabled() || !feature.isPresentFor(customer)) {
+                continue;
+            }
+
+            Tab tab = new Tab(feature.title);
+            tab.setId("tab_" + feature.featureFlag);
+            tab.setClosable(false);
+            tab.getStyleClass().add("tabHas");
+            tab.setContent(new Label("Φόρτωση..."));
+
+            tabPane.getTabs().add(insertIndex, tab);
+            activeFeatureTabs.put(feature, tab);
+            insertIndex++; // Move the insert position for the next tab
+        }
+
+        // Restore the selected tab if it still exists
+        if (selectedTab != null && tabPane.getTabs().contains(selectedTab)) {
+            tabPane.getSelectionModel().select(selectedTab);
+        }
+    }
+
+    /**
+     * Προσθέτει ένα tab μετά τα "σταθερά" tabs (Main/Orders/Offers/Tasks/Notes). Ρύθμισέ το όπως θες.
+     */
+    private void insertTabAfterStaticOnes(Tab tab) {
+        // Παράδειγμα: βάζουμε τα dynamic tabs μετά το tabNotes
+        int insertIndex = tabPane.getTabs().indexOf(tabNotes) + 1;
+        if (insertIndex <= 0) insertIndex = tabPane.getTabs().size();
+        tabPane.getTabs().add(insertIndex, tab);
+    }
+
+    /**
+     * Lazy-load περιεχομένου για ένα tab, όταν αυτό επιλέγεται για πρώτη φορά.
+     */
+    private void loadTabContentIfNeeded(Tab tab) {
+        // Είναι dynamic tab;
+        CustomerFeature feature = activeFeatureTabs.entrySet().stream()
+                .filter(e -> e.getValue() == tab)
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
+
+        if (feature == null) {
+            // Σταθερά tabs (Main/Orders/Offers/Tasks/Notes) τα διαχειρίζεσαι όπως ήδη
+            loadTabContent(tab);
+            return;
+        }
+
+        // Φόρτωσε FXML → Controller → setCustomer
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(feature.fxml));
+            Parent content = loader.load();
+
+            Object controller = loader.getController();
+            if (controller instanceof CustomerTabController ctc) {
+                ctc.setCustomer(customer);
+                // Optional: ενημέρωση όταν αποθηκευτούν κωδικοί/δεδομένα
+                ctc.setOnDataSaved(() -> Platform.runLater(this::rebuildFeatureTabs));
+            } else {
+                // Αν ένας controller δεν υλοποιεί το interface, συνεχίζει να δουλεύει,
+                // αλλά χάνεις το auto-callback on save.
+            }
+
+            // Anchor στο container του tab
+            AnchorPane wrapper = new AnchorPane(content);
+            AnchorPane.setTopAnchor(content, 0.0);
+            AnchorPane.setRightAnchor(content, 0.0);
+            AnchorPane.setBottomAnchor(content, 0.0);
+            AnchorPane.setLeftAnchor(content, 0.0);
+            tab.setContent(wrapper);
+
+            loadedTabs.add(tab);
+        } catch (IOException e) {
+            tab.setContent(new Label("⚠️ Σφάλμα φόρτωσης FXML"));
+            e.printStackTrace();
+        }
+    }
+
+    // List of feature flags that should be excluded from the add dialog (static tabs)
+    private static final Set<String> EXCLUDED_FEATURES = Set.of(
+            "devices",    // Συσκευές
+            "megasoft",   // Τιμολόγια
+            "tasks",      // Εργασίες
+            "subs",       // Συνδρομές
+            "offers",     // Προσφορές
+            "orders"       // Παραγγελίες
+    );
+
+    /**
+     * Διάλογος για προσωρινή προσθήκη app tab ώστε να περάσεις κωδικούς.
+     */
+    private void openAddFeatureDialog() {
+        // Get available features, excluding static tabs and already active tabs
+        List<CustomerFeature> candidates = Arrays.stream(CustomerFeature.values())
+                .filter(CustomerFeature::isGloballyEnabled)
+                .filter(f -> !activeFeatureTabs.containsKey(f))
+                .filter(f -> !EXCLUDED_FEATURES.contains(f.featureFlag))
+                .sorted(Comparator.comparing(f -> f.title))
+                .collect(Collectors.toList());
+
+        if (candidates.isEmpty()) {
+            Alert a = new Alert(Alert.AlertType.INFORMATION, "Δεν υπάρχουν διαθέσιμες εφαρμογές για προσθήκη.");
+            a.showAndWait();
+            return;
+        }
+
+        // Create custom dialog
+        Dialog<CustomerFeature> dialog = new Dialog<>();
+        dialog.setTitle("Προσθήκη εφαρμογής");
+        dialog.setHeaderText("Επιλέξτε εφαρμογή για προσωρινή εμφάνιση");
+
+        // Set the button types
+        ButtonType selectButtonType = new ButtonType("Επιλογή", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(selectButtonType, ButtonType.CANCEL);
+
+        // Create layout
+        VBox content = new VBox(10);
+        //content.setPadding(new Insets(10));
+
+        // Add search field
+        TextField searchField = new TextField();
+        searchField.setPromptText("Αναζήτηση...");
+        searchField.setPrefWidth(300);
+
+        // Create list view
+        ListView<CustomerFeature> listView = new ListView<>();
+        ObservableList<CustomerFeature> features = FXCollections.observableArrayList(candidates);
+        listView.setItems(features);
+        listView.setCellFactory(lv -> new ListCell<CustomerFeature>() {
+            @Override
+            protected void updateItem(CustomerFeature item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item.title);
+                    // You can add icons here if you have them
+                    // ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/icons/" + item.name().toLowerCase() + ".png")));
+                    // icon.setFitWidth(16);
+                    // icon.setFitHeight(16);
+                    // setGraphic(icon);
+                }
+            }
+        });
+        listView.setPrefHeight(300);
+
+        // Filter functionality
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == null || newVal.trim().isEmpty()) {
+                listView.setItems(features);
+            } else {
+                String lowerCaseFilter = newVal.toLowerCase();
+                listView.setItems(features.filtered(feature ->
+                        feature.title.toLowerCase().contains(lowerCaseFilter) ||
+                                feature.name().toLowerCase().contains(lowerCaseFilter)
+                ));
+            }
+        });
+
+        // Handle selection
+        listView.getSelectionModel().selectFirst();
+        listView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                dialog.setResult(listView.getSelectionModel().getSelectedItem());
+                dialog.close();
+            }
+        });
+
+        // Set result converter
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == selectButtonType) {
+                return listView.getSelectionModel().getSelectedItem();
+            }
+            return null;
+        });
+
+        // Add components to layout
+        content.getChildren().addAll(searchField, listView);
+        dialog.getDialogPane().setContent(content);
+
+        // Set dialog size
+        dialog.getDialogPane().setPrefSize(350, 400);
+
+        // Show and wait for selection
+        Optional<CustomerFeature> result = dialog.showAndWait();
+        result.ifPresent(this::showFeatureTemporarily);
+    }
+
+
+    /**
+     * Προσωρινή εμφάνιση tab για να περάσεις κωδικό (δεν απαιτεί ύπαρξη δεδομένων στη βάση).
+     */
+    private void showFeatureTemporarily(CustomerFeature feature) {
+        // Αν υπάρχει ήδη ως μόνιμο, απλά επίλεξέ το
+        if (activeFeatureTabs.containsKey(feature)) {
+            tabPane.getSelectionModel().select(activeFeatureTabs.get(feature));
+            return;
+        }
+
+        // Δημιούργησε προσωρινό tab
+        Tab tab = new Tab(feature.title + " (προσωρινά)");
+        tab.setId("tab_" + feature.featureFlag + "_temp");
+        tab.getStyleClass().add("tabTemp"); // CSS: π.χ. αχνό χρώμα για προσωρινό
+
+        // Placeholder μέχρι να φορτώσουμε FXML on select
+        tab.setContent(new Label("Εισαγωγή κωδικού..."));
+
+        insertTabAfterStaticOnes(tab);
+        // ΣΗΜΕΙΩΣΗ: δεν το βάζουμε στο activeFeatureTabs (άρα δεν θεωρείται “μόνιμο”)
+        // Θα φορτωθεί όταν γίνει select:
+        // - Αν ο controller αποθηκεύσει κωδικό, την επόμενη φορά που θα ανοίξει ο πελάτης,
+        //   το tab θα είναι μόνιμο (λόγω FeatureTab#isPresentFor(customer) == true).
+        tabPane.getSelectionModel().select(tab);
+
+        // Lazy-load τώρα (προαιρετικά) για πιο άμεση εμπειρία:
+        loadTemporaryTabContent(feature, tab);
+    }
+
+    /**
+     * Φόρτωση FXML για προσωρινό tab και πέρασμα customer.
+     */
+    private void loadTemporaryTabContent(CustomerFeature feature, Tab tab) {
+        try {
+            // Create a reference to the customer to use in the Platform.runLater
+            Customer currentCustomer = this.customer;
+
+            // Normalize the FXML path (handle both relative and absolute paths)
+            String fxmlPath = feature.fxml;
+            if (fxmlPath.startsWith("/")) {
+                // Absolute path
+                fxmlPath = fxmlPath.substring(1); // Remove leading slash
+            } else {
+                // Relative path, prepend package path
+                fxmlPath = "/org/easytech/pelatologio/" + fxmlPath;
+            }
+
+            System.out.println("Loading FXML from: " + fxmlPath); // Debug log
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent content = loader.load();
+
+            // Create the wrapper and set content first
+            AnchorPane wrapper = new AnchorPane(content);
+            AnchorPane.setTopAnchor(content, 0.0);
+            AnchorPane.setRightAnchor(content, 0.0);
+            AnchorPane.setBottomAnchor(content, 0.0);
+            AnchorPane.setLeftAnchor(content, 0.0);
+            tab.setContent(wrapper);
+
+            // Set the customer after the UI is fully initialized
+            Platform.runLater(() -> {
+                try {
+                    Object controller = loader.getController();
+                    if (controller instanceof CustomerTabController ctc) {
+                        ctc.setCustomer(currentCustomer);
+                        ctc.setOnDataSaved(() -> Platform.runLater(this::rebuildFeatureTabs));
+                    }
+                    // Force a layout pass to ensure everything is properly sized
+                    wrapper.requestLayout();
+                    System.out.println("Successfully loaded tab for: " + feature.featureFlag); // Debug log
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    String errorMsg = "⚠️ Σφάλμα αρχικοποίησης: " + e.getMessage();
+                    System.err.println(errorMsg);
+                    tab.setContent(new Label(errorMsg));
+                }
+            });
+
+            loadedTabs.add(tab);
+        } catch (Exception e) {
+            String errorMsg = "⚠️ Σφάλμα φόρτωσης FXML: " + e.getMessage() + " (Path: " + feature.fxml + ")";
+            System.err.println(errorMsg);
+            e.printStackTrace();
+            tab.setContent(new Label(errorMsg));
+        }
     }
 
 
@@ -943,34 +1391,58 @@ public class AddCustomerController {
     }
 
     private void setRecommendation() {
-        recommendationList.clear();
-        recommendationList.addAll(DBHelper.getRecommendationDao().getRecommendations());
-        filteredRecommendations = new FilteredList<>(recommendationList);
-        tfRecommendation.setItems(filteredRecommendations);
-        //tfRecommendation.setItems(recommendationList);
-
-        tfRecommendation.setConverter(new StringConverter<Recommendation>() {
-            @Override
-            public String toString(Recommendation recommendation) {
-                return recommendation != null ? recommendation.getName() : "";
+        try {
+            // Clear and reload recommendations
+            recommendationList.clear();
+            List<Recommendation> recommendations = DBHelper.getRecommendationDao().getRecommendations();
+            if (recommendations != null && !recommendations.isEmpty()) {
+                recommendationList.addAll(recommendations);
             }
 
-            @Override
-            public Recommendation fromString(String string) {
-                return recommendationList.stream()
-                        .filter(recommendation -> recommendation.getName().equals(string))
-                        .findFirst()
-                        .orElse(null);
-            }
-        });
+            // Initialize filtered list
+            filteredRecommendations = new FilteredList<>(recommendationList);
 
-        for (Recommendation rec : recommendationList) {
-            if (rec.getId() == customer.getRecommendation()) {
-                tfRecommendation.getSelectionModel().select(rec);
-                break;
+            // Set up the ComboBox
+            tfRecommendation.setItems(filteredRecommendations);
+
+            // Set up the converter
+            tfRecommendation.setConverter(new StringConverter<Recommendation>() {
+                @Override
+                public String toString(Recommendation recommendation) {
+                    return recommendation != null ? recommendation.getName() : "";
+                }
+
+                @Override
+                public Recommendation fromString(String string) {
+                    if (string == null || string.trim().isEmpty()) {
+                        return null;
+                    }
+                    return recommendationList.stream()
+                            .filter(rec -> rec != null && string.equals(rec.getName()))
+                            .findFirst()
+                            .orElse(null);
+                }
+            });
+
+            // Select the current recommendation if it exists
+            if (customer != null && customer.getRecommendation() > 0) {
+                for (Recommendation rec : recommendationList) {
+                    if (rec.getId() == customer.getRecommendation()) {
+                        Platform.runLater(() -> {
+                            tfRecommendation.getSelectionModel().select(rec);
+                        });
+                        break;
+                    }
+                }
             }
+
+            // Set up filtering
+            ComboBoxHelper.setupFilter(tfRecommendation, filteredRecommendations);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error setting up recommendations: " + e.getMessage());
         }
-        ComboBoxHelper.setupFilter(tfRecommendation, filteredRecommendations);
     }
 
 
@@ -1167,15 +1639,16 @@ public class AddCustomerController {
         String accName1 = (tfAccName1.getText() != null ? tfAccName1.getText() : "");
         String accEmail1 = (tfAccEmail1.getText() != null ? tfAccEmail1.getText() : "");
         Recommendation selectedRec = null;
-        Object value = tfRecommendation.getValue(); // Παίρνουμε την τιμή ως γενικό Object
+        Object value = tfRecommendation.getValue();        // Handle different possible types of value
         if (value instanceof Recommendation) {
-            // Αν είναι ήδη αντικείμενο Recommendation, το παίρνουμε.
             selectedRec = (Recommendation) value;
-        } else if (value instanceof String typedValue) {
-            // Αν είναι String, ψάχνουμε στη λίστα για το αντίστοιχο αντικείμενο.
+        } else if (value != null) {
+            // If it's a String or any other type, try to find by name
+            String searchName = value.toString();
             selectedRec = recommendationList.stream()
-                    .filter(r -> r.getName().equalsIgnoreCase(typedValue))
-                    .findFirst().orElse(null);
+                    .filter(rec -> rec != null && rec.getName() != null && rec.getName().equals(searchName))
+                    .findFirst()
+                    .orElse(null);
         }
         // Παίρνουμε το ID με ασφάλεια, αφού έχουμε βρει το σωστό αντικείμενο.
         int selectedRecommendation = (selectedRec != null) ? selectedRec.getId() : 0;
@@ -1395,17 +1868,17 @@ public class AddCustomerController {
     }
 
     public void copyClick(ActionEvent event) {
-        String msg = "Στοιχεία πελάτη" +
-                "\nΕπωνυμία: " + customer.getName() +
-                "\nΤίτλος: " + customer.getTitle() +
-                "\nΕπάγγελμα: " + customer.getJob() +
-                "\nΔιεύθυνση: " + customer.getAddress() +
-                "\nΠόλη: " + customer.getTown() +
-                "\nΤ.Κ.: " + customer.getPostcode() +
-                "\nΑΦΜ: " + customer.getAfm() +
-                "\nEmail: " + customer.getEmail() +
-                "\nΤηλέφωνο: " + customer.getPhone1() +
-                "\nΚινητό: " + customer.getMobile();
+        String msg = "Στοιχεία πελάτη"
+                + "\nΕπωνυμία: " + customer.getName()
+                + "\nΤίτλος: " + customer.getTitle()
+                + "\nΕπάγγελμα: " + customer.getJob()
+                + "\nΔιεύθυνση: " + customer.getAddress()
+                + "\nΠόλη: " + customer.getTown()
+                + "\nΤ.Κ.: " + customer.getPostcode()
+                + "\nΑΦΜ: " + customer.getAfm()
+                + "\nEmail: " + customer.getEmail()
+                + "\nΤηλέφωνο: " + customer.getPhone1()
+                + "\nΚινητό: " + customer.getMobile();
         copyTextToClipboard(msg);
     }
 
@@ -1879,5 +2352,9 @@ public class AddCustomerController {
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα των κατηγοριών εργασιών.", e.getMessage(), Alert.AlertType.ERROR));
         }
+    }
+
+    public void handleManageApps(ActionEvent actionEvent) {
+
     }
 }

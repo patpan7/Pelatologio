@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CustomerOffersController {
+public class CustomerOffersController implements CustomerTabController {
     @FXML
     private TableView<Offer> offersTable;
     @FXML
@@ -40,6 +40,7 @@ public class CustomerOffersController {
     private ObservableList<Offer> allOffers;
 
     Customer customer;
+    private Runnable onDataSaved;
 
     @FXML
     public void initialize() {
@@ -151,18 +152,15 @@ public class CustomerOffersController {
 
 
     private void loadOffers(int customerCode) {
-        if (Features.isEnabled("offers")) {
             allOffers.clear();
             // Φόρτωση όλων των εργασιών από τη βάση
             DBHelper dbHelper = new DBHelper();
             allOffers.setAll(DBHelper.getOfferDao().getAllCustomerOffers(customerCode));
-        }
     }
 
 
     @FXML
     private void handleAddOffer() {
-        if (Features.isEnabled("offers")) {
             try {
                 // Φόρτωση του FXML για προσθήκη ραντεβού
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("addOffer.fxml"));
@@ -185,6 +183,7 @@ public class CustomerOffersController {
                         // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
                         event.consume();
                     }
+                    notifyDataSaved();
                 });
 
                 dialog.initModality(Modality.NONE);
@@ -199,20 +198,10 @@ public class CustomerOffersController {
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
             }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Προσφορές είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
     @FXML
     private void handleEditOffer() throws IOException {
-        if (Features.isEnabled("offers")) {
             // Επεξεργασία επιλεγμένης εργασίας
             Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
             if (selectedOffer == null) {
@@ -244,6 +233,7 @@ public class CustomerOffersController {
                         // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
                         event.consume();
                     }
+                    notifyDataSaved();
                 });
                 dialog.initModality(Modality.NONE);
                 dialog.initOwner(null);
@@ -257,20 +247,10 @@ public class CustomerOffersController {
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
             }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Προσφορές είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
     @FXML
     private void handleDeleteOffer() throws SQLException {
-        if (Features.isEnabled("offers")) {
             // Διαγραφή επιλεγμένης εργασίας
             Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
             if (selectedOffer == null) {
@@ -289,17 +269,9 @@ public class CustomerOffersController {
                 DBHelper.getOfferDao().deleteOffer(selectedOffer.getId());
                 loadOffers(customer.getCode());
             }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Προσφορές είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
+    @Override
     public void setCustomer(Customer customer) {
         this.customer = customer;
         //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
@@ -308,9 +280,20 @@ public class CustomerOffersController {
         }
     }
 
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSaved = callback;
+    }
+
+    private void notifyDataSaved() {
+        if (onDataSaved != null) {
+            onDataSaved.run();
+        }
+    }
+
+
 
     public void handleAddTask(ActionEvent evt) {
-        if (Features.isEnabled("offers")) {
             Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
             if (selectedOffer == null) {
                 // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
@@ -356,19 +339,9 @@ public class CustomerOffersController {
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη εργασίας.", e.getMessage(), Alert.AlertType.ERROR));
             }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Προσφορές είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
     public void handleShareOffer(ActionEvent evt) {
-        if (Features.isEnabled("offers")) {
             Offer selectedOffer = offersTable.getSelectionModel().getSelectedItem();
             if (selectedOffer == null) {
                 // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
@@ -392,15 +365,6 @@ public class CustomerOffersController {
                     "\n\nΓια οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας." +
                     "\nΕυχαριστώ πολύ";
             copyTextToClipboard(msg);
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Προσφορές είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
 

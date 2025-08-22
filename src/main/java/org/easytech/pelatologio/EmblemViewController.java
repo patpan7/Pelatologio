@@ -24,7 +24,7 @@ import org.openqa.selenium.By;
 import java.io.IOException;
 import java.util.Optional;
 
-public class EmblemViewController {
+public class EmblemViewController implements CustomerTabController {
     private static final String WARNING_TITLE = "Προσοχή";
     private static final String SELECT_LOGIN_MSG = "Παρακαλώ επιλέξτε ένα login.";
 
@@ -46,6 +46,7 @@ public class EmblemViewController {
 
 
     Customer customer;
+    private Runnable onDataSaved;
 
     private ObservableList<Logins> loginList;
 
@@ -95,11 +96,24 @@ public class EmblemViewController {
             loginTable.getSelectionModel().select(0);
     }
 
+    @Override
     public void setCustomer(Customer customer) {
         this.customer = customer;
         //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
         loadLoginsForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
     }
+
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSaved = callback;
+    }
+
+    private void notifyDataSaved() {
+        if (onDataSaved != null) {
+            onDataSaved.run();
+        }
+    }
+
 
     public void handleAddLogin(ActionEvent event) {
         try {
@@ -123,6 +137,7 @@ public class EmblemViewController {
                 } else {
                     // Εάν οι εισαγωγές είναι έγκυρες, συνεχίστε με την αποθήκευση
                     addLoginController.handleSaveLogin(event, 4);
+                    notifyDataSaved();
                 }
             });
 
@@ -159,6 +174,7 @@ public class EmblemViewController {
 
             // Διαγραφή από τη λίστα και ενημέρωση του πίνακα
             loginTable.getItems().remove(selectedLogin);
+            notifyDataSaved();
         }
     }
 
@@ -192,6 +208,7 @@ public class EmblemViewController {
                     Logins updatedLogin = editController.getUpdatedLogin();
                     DBHelper.getLoginDao().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
                     Platform.runLater(() -> loginTable.refresh());
+                    notifyDataSaved();
                 }
             });
         } catch (IOException e) {

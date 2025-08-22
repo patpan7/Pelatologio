@@ -762,7 +762,7 @@ public class CustomerDaoImpl implements CustomerDao {
     public List<Customer> getCustomersWithBalance() {
         List<Customer> customerList = new ArrayList<>();
         Customer customer = null;
-        String query = "SELECT * FROM customers where balance <> ''";
+        String query = "SELECT * FROM customers where balance <> '' AND balance <> '0'";
         try (Connection conn = getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
 

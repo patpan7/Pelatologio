@@ -13,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CustomerTabController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.helper.Features;
 import org.easytech.pelatologio.models.Customer;
@@ -22,7 +23,7 @@ import org.easytech.pelatologio.models.Logins;
 import java.io.IOException;
 import java.util.Optional;
 
-public class CustomerDevicesController {
+public class CustomerDevicesController implements CustomerTabController {
     @FXML
     private Label customerLabel;
 
@@ -39,6 +40,7 @@ public class CustomerDevicesController {
 
 
     Customer customer;
+    private Runnable onDataSaved;
 
     private ObservableList<Device> devicesList;
 
@@ -76,7 +78,6 @@ public class CustomerDevicesController {
     }
 
     public void handleAddDevice(ActionEvent event) {
-        if (Features.isEnabled("devices")) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("addDevice.fxml"));
                 DialogPane dialogPane = loader.load();
@@ -100,6 +101,7 @@ public class CustomerDevicesController {
                         event.consume();
                     }
                     loadDevicesForCustomer(customer.getCode());
+                    notifyDataSaved();
                 });
                 dialog.initModality(Modality.NONE);
                 dialog.initOwner(null);
@@ -113,19 +115,9 @@ public class CustomerDevicesController {
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
             }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Συσκευές είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
     public void handleDeleteDevice(ActionEvent event) {
-        if (Features.isEnabled("devices")) {
             Device selectedDevice = devicesTable.getSelectionModel().getSelectedItem();
             if (selectedDevice == null) {
                 // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
@@ -162,6 +154,7 @@ public class CustomerDevicesController {
                         notifications.showInformation();
                     });
                     devicesTable.getItems().remove(selectedDevice);
+                    notifyDataSaved();
                 } else {
                     Platform.runLater(() -> {
                         Notifications notifications = Notifications.create()
@@ -174,19 +167,9 @@ public class CustomerDevicesController {
                     });
                 }
             }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Συσκευές είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
     public void handleEditDevice(ActionEvent event) {
-        if (Features.isEnabled("devices")) {
             Device selectedDevice = devicesTable.getSelectionModel().getSelectedItem();
             if (selectedDevice == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -217,6 +200,7 @@ public class CustomerDevicesController {
                         event.consume();
                     }
                     loadDevicesForCustomer(customer.getCode());
+                    notifyDataSaved();
                 });
                 dialog.initModality(Modality.NONE);
                 dialog.initOwner(null);
@@ -225,19 +209,9 @@ public class CustomerDevicesController {
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
             }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Συσκευές είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
     public void handleAddTask(ActionEvent evt) {
-        if (Features.isEnabled("devices")) {
             Device selectedDevice = devicesTable.getSelectionModel().getSelectedItem();
             if (selectedDevice == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -277,17 +251,9 @@ public class CustomerDevicesController {
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
             }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Συσκευές είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
+    @Override
     public void setCustomer(Customer customer) {
         this.customer = customer;
         //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
@@ -295,6 +261,18 @@ public class CustomerDevicesController {
             loadDevicesForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
         }
     }
+
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSaved = callback;
+    }
+
+    private void notifyDataSaved() {
+        if (onDataSaved != null) {
+            onDataSaved.run();
+        }
+    }
+
 
 
     private void setTooltip(Button button, String text) {

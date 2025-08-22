@@ -315,6 +315,9 @@ public class MainMenuController implements Initializable {
                     ordersList.getItems().setAll(pendingOrders);
                     pendingOrdersList.getItems().setAll(unreceivedOrders);
                     deliveryOrdersList.getItems().setAll(undeliveredOrders);
+                    lbTasks.setText("Εκκρεμείς εργασίες: " + tasksCount);
+                    lbAppointments.setText("Ραντεβού ημέρας: " + appointmentsCount);
+                    lbSimply.setText("Πελάτες Simply: " + simplyCount);
                 });
                 return null;
             }

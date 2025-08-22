@@ -13,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CustomerTabController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.helper.Features;
 import org.easytech.pelatologio.models.Customer;
@@ -22,7 +23,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class CustomerTasksController {
+public class CustomerTasksController implements CustomerTabController {
     @FXML
     private TableView<Tasks> tasksTable;
     @FXML
@@ -33,6 +34,7 @@ public class CustomerTasksController {
     private ObservableList<Tasks> allTasks;
 
     Customer customer;
+    private Runnable onDataSaved;
 
     @FXML
     public void initialize() {
@@ -207,6 +209,7 @@ public class CustomerTasksController {
                         // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
                         event.consume();
                     }
+                    notifyDataSaved();
                 });
 
                 dialog.initModality(Modality.NONE);
@@ -265,6 +268,7 @@ public class CustomerTasksController {
                         // Αν υπάρχει σφάλμα, σταματάμε το κλείσιμο του διαλόγου
                         event.consume();
                     }
+                    notifyDataSaved();
                 });
                 dialog.initModality(Modality.NONE);
                 dialog.initOwner(null);
@@ -291,8 +295,7 @@ public class CustomerTasksController {
 
     @FXML
     private void handleDeleteTask() throws SQLException {
-        if (Features.isEnabled("tasks")) {
-            // Διαγραφή επιλεγμένης εργασίας
+        // Διαγραφή επιλεγμένης εργασίας
             Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
             if (selectedTasks == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -309,21 +312,12 @@ public class CustomerTasksController {
                 DBHelper dbHelper = new DBHelper();
                 DBHelper.getTaskDao().deleteTask(selectedTasks.getId());
                 loadTasks(customer.getCode());
+                notifyDataSaved();
             }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Εργασίες είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
     @FXML
     private void handleAddOffer() throws SQLException {
-        if (Features.isEnabled("tasks")) {
             try {
                 Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
                 // Φόρτωση του FXML για προσθήκη ραντεβού
@@ -357,17 +351,9 @@ public class CustomerTasksController {
             } catch (IOException e) {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήκη.", e.getMessage(), Alert.AlertType.ERROR));
             }
-        } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Εργασίες είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
-        }
     }
 
+    @Override
     public void setCustomer(Customer customer) {
         this.customer = customer;
         //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
@@ -375,6 +361,18 @@ public class CustomerTasksController {
             loadTasks(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
         }
     }
+
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSaved = callback;
+    }
+
+    private void notifyDataSaved() {
+        if (onDataSaved != null) {
+            onDataSaved.run();
+        }
+    }
+
 
 
     private void setTooltip(Button button, String text) {

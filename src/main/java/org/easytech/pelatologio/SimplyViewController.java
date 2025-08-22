@@ -26,10 +26,11 @@ import org.openqa.selenium.By;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class SimplyViewController {
+public class SimplyViewController implements CustomerTabController {
     private static final String WARNING_TITLE = "Προσοχή";
     private static final String SELECT_LOGIN_MSG = "Παρακαλώ επιλέξτε ένα login.";
 
@@ -53,6 +54,7 @@ public class SimplyViewController {
     private Customer customer;
     private ObservableList<Logins> loginList;
     private boolean isInitializing = false;
+    private Runnable onDataSavedCallback;
 
     @FXML
     public void initialize() {
@@ -205,19 +207,45 @@ public class SimplyViewController {
         }
     }
 
-    public void loadLoginsForCustomer(int customerId) {
-        loginList.clear();
-        loginList.addAll(DBHelper.getLoginDao().getLogins(customerId, 2));
+    private void loadLoginsForCustomer(int customerId) {
+        if (customerId <= 0) {
+            return; // Invalid customer ID
+        }
+        
+        progressBox.setVisible(true);
+        new Thread(() -> {
+            try {
+                List<Logins> logins = DBHelper.getLoginDao().getLogins(customerId, 2); // 2 is the app ID for Simply
+                Platform.runLater(() -> {
+                    loginList.clear();
+                    loginList.addAll(logins);
+                    progressBox.setVisible(false);
+                    if (!loginList.isEmpty()) {
+                        loginTable.getSelectionModel().select(0);
+                        updateUIWithSelectedLogin();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> {
+                    progressBox.setVisible(false);
+                    showErrorNotification("Σφάλμα", "Δεν ήταν δυνατή η φόρτωση των logins: " + e.getMessage());
+                });
+            }
+        }).start();
+    }
 
-        if (!loginList.isEmpty()) {
-            loginTable.getSelectionModel().select(0);
-            updateUIWithSelectedLogin();
+    @Override
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+        if (customer != null) {
+            loadLoginsForCustomer(customer.getCode());
         }
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-        loadLoginsForCustomer(customer.getCode());
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSavedCallback = callback;
     }
 
     public void handleAddLogin(ActionEvent event) {

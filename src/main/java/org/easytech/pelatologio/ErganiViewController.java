@@ -25,7 +25,7 @@ import org.easytech.pelatologio.models.Logins;
 import java.io.IOException;
 import java.util.Optional;
 
-public class ErganiViewController {
+public class ErganiViewController implements CustomerTabController {
     private static final String WARNING_TITLE = "Προσοχή";
     private static final String SELECT_LOGIN_MSG = "Παρακαλώ επιλέξτε ένα login.";
 
@@ -44,27 +44,19 @@ public class ErganiViewController {
     private TableColumn<Logins, String> phoneColumn;
 
     Customer customer;
+    private Runnable onDataSaved;
 
     private ObservableList<Logins> loginList;
 
     @FXML
     public void initialize() {
-        if (!Features.isEnabled("ergani")) {
             btnErganiRegister.setVisible(false);
             btnErganiRegister.setManaged(false);
             btnErganiLogin.setVisible(false);
             btnErganiLogin.setManaged(false);
             btnErganiOffer.setVisible(false);
             btnErganiOffer.setManaged(false);
-        }
-        if (!Features.isEnabled("ergani")) {
-            btnErganiRegister.setVisible(false);
-            btnErganiRegister.setManaged(false);
-            btnErganiLogin.setVisible(false);
-            btnErganiLogin.setManaged(false);
-            btnErganiOffer.setVisible(false);
-            btnErganiOffer.setManaged(false);
-        }
+
         setTooltip(btnErganiRegister, "Εγγραφή πελάτη στο Ergani");
         setTooltip(btnErganiLogin, "Πρόσβαση στο Ergani");
 
@@ -99,11 +91,23 @@ public class ErganiViewController {
             loginTable.getSelectionModel().select(0);
     }
 
+    @Override
     public void setCustomer(Customer customer) {
         this.customer = customer;
         //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
         loadLoginsForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
     }
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSaved = callback;
+    }
+
+    private void notifyDataSaved() {
+        if (onDataSaved != null) {
+            onDataSaved.run();
+        }
+    }
+
 
     public void handleAddLogin(ActionEvent event) {
         try {
@@ -127,6 +131,7 @@ public class ErganiViewController {
                 } else {
                     // Εάν οι εισαγωγές είναι έγκυρες, συνεχίστε με την αποθήκευση
                     addLoginController.handleSaveLogin(event, 5);
+                    notifyDataSaved();
                 }
             });
 
@@ -163,6 +168,7 @@ public class ErganiViewController {
 
             // Διαγραφή από τη λίστα και ενημέρωση του πίνακα
             loginTable.getItems().remove(selectedLogin);
+            notifyDataSaved();
         }
     }
 
@@ -197,6 +203,7 @@ public class ErganiViewController {
                     Logins updatedLogin = editController.getUpdatedLogin();
                     DBHelper.getLoginDao().updateLogin(updatedLogin); // Χρήση νέου instance για thread safety
                     Platform.runLater(() -> loginTable.refresh());
+                    notifyDataSaved();
                 }
             });
 

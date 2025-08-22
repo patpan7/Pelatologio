@@ -15,6 +15,7 @@ import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CustomerTabController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.helper.Features;
 import org.easytech.pelatologio.models.Customer;
@@ -28,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class CustomerSubsController {
+public class CustomerSubsController implements CustomerTabController {
     @FXML
     private TableView<Subscription> subsTable;
     @FXML
@@ -49,6 +50,7 @@ public class CustomerSubsController {
     private ObservableList<Subscription> allSubs;
 
     Customer customer;
+    private Runnable onDataSaved;
 
     @FXML
     public void initialize() {
@@ -166,6 +168,7 @@ public class CustomerSubsController {
                 if (!success) {
                     event.consume();
                 }
+                notifyDataSaved();
             });
 
             dialog.initModality(Modality.NONE);
@@ -206,6 +209,7 @@ public class CustomerSubsController {
                 if (!success) {
                     event.consume();
                 }
+                notifyDataSaved();
             });
             dialog.initModality(Modality.NONE);
             dialog.initOwner(null);
@@ -232,6 +236,7 @@ public class CustomerSubsController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DBHelper.getSubscriptionDao().deleteSub(selectedSub.getId());
             loadSubs(customer.getCode());
+            notifyDataSaved();
         }
     }
 
@@ -252,13 +257,27 @@ public class CustomerSubsController {
             int yearsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", ""));
             DBHelper.getSubscriptionDao().renewSub(selectedSub.getId(), yearsToAdd);
             loadSubs(customer.getCode());
+            notifyDataSaved();
         });
     }
 
+    @Override
     public void setCustomer(Customer customer) {
         this.customer = customer;
         loadSubs(customer.getCode());
     }
+
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSaved = callback;
+    }
+
+    private void notifyDataSaved() {
+        if (onDataSaved != null) {
+            onDataSaved.run();
+        }
+    }
+
 
 
     private void setTooltip(Button button, String text) {

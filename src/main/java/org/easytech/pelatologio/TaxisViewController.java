@@ -17,6 +17,7 @@ import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CustomerTabController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.helper.LoginAutomator;
 import org.easytech.pelatologio.models.Customer;
@@ -25,7 +26,7 @@ import org.openqa.selenium.By;
 
 import java.io.IOException;
 
-public class TaxisViewController {
+public class TaxisViewController implements CustomerTabController {
     // Constants
     private static final String TAXISNET_URL = "https://www1.aade.gr/saadeapps3/comregistry/#!/arxiki";
     private static final String AUTHORIZATIONS_URL = "https://www1.gsis.gr/taxisnet/mytaxisnet/protected/authorizations.htm";
@@ -48,6 +49,7 @@ public class TaxisViewController {
     private TableColumn<Logins, String> usernameColumn, passwordColumn, tagColumn;
 
     private Customer customer;
+    private Runnable onDataSaved;
     private ObservableList<Logins> loginList;
 
     @FXML
@@ -112,6 +114,8 @@ public class TaxisViewController {
             dialog.setResultConverter(buttonType -> {
                 if (buttonType == ButtonType.OK) {
                     controller.handleSaveLogin(event, 3);
+                    // Κλήση callback για ενημέρωση tabs
+                    notifyDataSaved();
                 }
                 return null;
             });
@@ -138,6 +142,7 @@ public class TaxisViewController {
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             DBHelper.getLoginDao().deleteLogin(selectedLogin.getId());
             loginTable.getItems().remove(selectedLogin);
+            notifyDataSaved();
         }
     }
 
@@ -163,6 +168,7 @@ public class TaxisViewController {
                     try {
                         if (!DBHelper.getLoginDao().updateLogin(controller.getUpdatedLogin())) {
                             showErrorDialog("Αποτυχία ενημέρωσης", "Η ενημέρωση του login απέτυχε.");
+                            notifyDataSaved();
                         }
                     } catch (Exception e) {
                         showErrorDialog("Προέκυψε σφάλμα", e.getMessage());
@@ -178,9 +184,21 @@ public class TaxisViewController {
         }
     }
 
+    @Override
     public void setCustomer(Customer customer) {
         this.customer = customer;
         loadLoginsForCustomer(customer.getCode());
+    }
+
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSaved = callback;
+    }
+
+    private void notifyDataSaved() {
+        if (onDataSaved != null) {
+            onDataSaved.run();
+        }
     }
 
     // Button handlers

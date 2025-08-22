@@ -10,6 +10,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CustomerTabController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.helper.LoginAutomator;
 import org.easytech.pelatologio.models.Customer;
@@ -18,7 +19,7 @@ import org.openqa.selenium.By;
 
 import java.io.IOException;
 
-public class AddLoginController {
+public class AddLoginController implements CustomerTabController {
 
     @FXML
     private TextField usernameField;
@@ -33,12 +34,20 @@ public class AddLoginController {
     private TextField currentTextField; // Αναφορά στο τρέχον TextField
 
     private Customer customer;
+    private Runnable onDataSaved;
 
     // Μέθοδος για να ορίσεις τον πελάτη
+    @Override
     public void setCustomer(Customer customer) {
         this.customer = customer;
         phoneField.setText(customer.getMobile());
     }
+
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSaved = callback;
+    }
+
 
     @FXML
     public void initialize() {

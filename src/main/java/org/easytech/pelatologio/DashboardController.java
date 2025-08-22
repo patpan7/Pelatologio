@@ -80,9 +80,17 @@ public class DashboardController {
 
         if (Features.isEnabled("tasks")) {
             loadTasks();
+        } else {
+            tasksTableView.getItems().clear();
+            // Optionally add a placeholder or message
+            tasksTableView.setPlaceholder(new Label("Tasks module is disabled."));
         }
-        if (Features.isEnabled("contracts")) {
+        if (Features.isEnabled("subs")) {
             loadSubscriptions();
+        } else {
+            subscriptionsTableView.getItems().clear();
+            // Optionally add a placeholder or message
+            subscriptionsTableView.setPlaceholder(new Label("Contracts module is disabled."));
         }
         loadBalance();
         loadChartData();
@@ -102,7 +110,7 @@ public class DashboardController {
             });
         }
 
-        if (Features.isEnabled("contracts")) {
+        if (Features.isEnabled("subs")) {
             subscriptionsTableView.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
                     Subscription selectedSub = subscriptionsTableView.getSelectionModel().getSelectedItem();
@@ -135,32 +143,21 @@ public class DashboardController {
     }
 
     private void loadTasks() {
-        if (Features.isEnabled("tasks")) {
-            taskCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-            taskDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        taskCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        taskDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
 
-            List<Tasks> todaysTasks = DBHelper.getTaskDao().getTodaysTasks();
-            tasksTableView.getItems().setAll(todaysTasks);
-        } else {
-            tasksTableView.getItems().clear();
-            // Optionally add a placeholder or message
-            // tasksTableView.setPlaceholder(new Label("Tasks module is disabled."));
-        }
+        List<Tasks> todaysTasks = DBHelper.getTaskDao().getTodaysTasks();
+        tasksTableView.getItems().setAll(todaysTasks);
     }
 
     private void loadSubscriptions() {
-        if (Features.isEnabled("contracts")) {
-            subsCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-            subsTypeColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
-            subsExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+        subsCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        subsTypeColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+        subsExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
 
-            List<Subscription> expiringSubs = DBHelper.getSubscriptionDao().getExpiringSubscriptions(30);
-            subscriptionsTableView.getItems().setAll(expiringSubs);
-        } else {
-            subscriptionsTableView.getItems().clear();
-            // Optionally add a placeholder or message
-            // subscriptionsTableView.setPlaceholder(new Label("Contracts module is disabled."));
-        }
+        List<Subscription> expiringSubs = DBHelper.getSubscriptionDao().getExpiringSubscriptions(30);
+        subscriptionsTableView.getItems().setAll(expiringSubs);
+        System.out.println("ok");
     }
 
 

@@ -15,6 +15,7 @@ import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Commission;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -90,22 +91,32 @@ public class CommissionsController {
     }
 
     @FXML
-    void handleDeleteCommission(ActionEvent event) {
+    void handleDeleteCommission(ActionEvent event) throws SQLException {
         Commission selected = commissionsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirm Deletion");
-            alert.setHeaderText("Are you sure you want to delete this commission?");
-            Optional<ButtonType> result = new Dialog().showAndWait();
-            if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+            alert.setTitle("Επιβεβαίωση Διαγραφής");
+            alert.setHeaderText("Είστε σίγουροι ότι θέλετε να διαγράψετε αυτήν την προμήθεια;");
+            alert.setContentText("Παρακαλώ επιβεβαιώστε τη διαγραφή.");
+            
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                commissionDao.deleteCommission(selected.getId());
                 Notifications.create()
                         .title("Επιτυχία")
-                        .text("Η σύμβαση αποθηκεύτηκε με επιτυχία.")
+                        .text("Η προμήθεια διαγράφηκε με επιτυχία.")
                         .position(Pos.TOP_RIGHT)
                         .hideAfter(Duration.seconds(5))
                         .showInformation();
                 loadCommissions();
             }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Παρακαλώ επιλέξτε μια προμήθεια για διαγραφή.")
+                    .position(Pos.TOP_RIGHT)
+                    .hideAfter(Duration.seconds(5))
+                    .showWarning();
         }
     }
 

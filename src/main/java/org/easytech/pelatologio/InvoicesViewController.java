@@ -9,11 +9,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
+import org.easytech.pelatologio.helper.CustomerTabController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Invoice;
 
-public class InvoicesViewController {
+public class InvoicesViewController implements CustomerTabController {
 
     @FXML
     private TableView<Invoice> table;
@@ -32,6 +33,7 @@ public class InvoicesViewController {
     private TableColumn<Invoice, String> invoiceParColumn;
 
     Customer customer;
+    private Runnable onDataSaved;
 
     private ObservableList<Invoice> invoceList;
 
@@ -60,10 +62,16 @@ public class InvoicesViewController {
             table.getSelectionModel().select(0);
     }
 
+    @Override
     public void setCustomer(Customer customer) {
         this.customer = customer;
         //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
         loadLoginsForCustomer(customer.getAfm()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
+    }
+
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSaved = callback;
     }
 
     private void showErrorNotification(String title, String message) {
