@@ -1,185 +1,205 @@
-/* ------------------ Βελτιωμένα Κουμπιά ----------------- */
-.click-button {
-    -fx-background-color: #2563EB; /* πιο καθαρό και φωτεινό μπλε */
-    -fx-background-radius: 8px;
-    -fx-text-fill: white;
-    -fx-font-size: 16px; /* αρχικό σου μέγεθος γραμματοσειράς */
-    -fx-padding: 12px 24px;
-    -fx-font-weight: bold;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 6, 0, 0, 2);
+/* dark-external.css - Dark theme for Pelatologio
+   Keep selectors compatible with external.css so FXML/class names δουλεύουν χωρίς αλλαγές.
+*/
+
+/* Root tokens */
+.root {
+    -fx-primary: #4FB3FF;    /* φωτεινό blue accent */
+    -fx-secondary: #2EA0FF;
+    -fx-accent: #00CFDE;
+    -fx-background: #0B1220; /* κύριο background */
+    -fx-surface: #0F1724;    /* κάρτες / panels */
+    -fx-surface-2: #111827;  /* ελαφρώς πιο σκούρο surface */
+    -fx-text: #E6EEF3;       /* κύριο κείμενο */
+    -fx-muted: #9AA6B2;      /* δευτερεύον κείμενο */
+    -fx-border: rgba(255,255,255,0.06);
+    -fx-selected: rgba(79,179,255,0.18);
+    -fx-hover: rgba(79,179,255,0.10);
+
+    -fx-font-family: "Inter", "Roboto", "Segoe UI", Arial, sans-serif;
+    -fx-font-size: 13px;
 }
 
-.click-button:hover {
-    -fx-background-color: #3B82F6; /* πιο έντονο μπλε για hover */
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 8, 0, 0, 3);
-    -fx-translate-y: -1px;
+/* App background - use on top-level panes */
+.root, .scene {
+    -fx-background-color: linear-gradient(#07101a, #09121b);
 }
 
-.click-button:pressed {
-    -fx-background-color: #1E40AF; /* πιο βαθύ μπλε για pressed */
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 1);
+/* Panels / Dialogs / Cards */
+.dialog-pane, .pane, .stack-pane, .anchor-pane {
+    -fx-background-color: -fx-surface;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.7), 12, 0.5, 0, 4);
+    -fx-border-color: -fx-border;
 }
 
+/* Text / Label colors */
+.label {
+    -fx-text-fill: -fx-text;
 }
-
-/* ------------------ Σύγχρονα Text Fields ----------------- */
-.text-field, .text-area {
-    -fx-background-color: white;
-    -fx-border-color: #B6CCFE;
-    -fx-border-width: 1.5px;
-    -fx-border-radius: 6px;
+.label.header {
     -fx-font-size: 16px;
-    -fx-padding: 8px 12px;
-    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);
-}
-
-.text-field:focused, .text-area:focused {
-    -fx-border-color: #1D4E89;
-    -fx-effect: dropshadow(three-pass-box, rgba(42,111,151,0.15), 6, 0, 0, 2);
-}
-
-/* ------------------ Πίνακες ----------------- */
-.table-view {
-    -fx-background-color: white;
-    -fx-border-color: #B6CCFE;
-    -fx-border-radius: 8px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 6, 0, 0, 2);
-}
-
-.table-view .column-header {
-    -fx-background-color: #1D4E89;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-padding: 12px 15px;
-}
-
-.table-row-cell {
-    -fx-border-color: #F1F5F9;
-}
-
-.table-row-cell:selected {
-    -fx-background-color: #1D4E89;
-    -fx-text-fill: white;
-}
-
-/* ------------------ Λίστες ----------------- */
-.list-view1 {
-    -fx-background-color: white;
-    -fx-border-color: #B6CCFE;
-    -fx-border-radius: 8px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 6, 0, 0, 2);
-}
-
-.list-cell {
-    -fx-padding: 10px 15px;
-    -fx-border-color: #F1F5F9;
-    -fx-font-size: 14px;
-}
-
-.list-cell:hover {
-    -fx-background-color: #F8FAFC;
-}
-
-/* ------------------ Header ----------------- */
-.header-box {
-    -fx-background-color: white;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 3);
-    -fx-padding: 15px 30px;
-}
-
-.header-label {
-    -fx-text-fill: #1D4E89;
-    -fx-font-size: 28px;
     -fx-font-weight: 700;
 }
 
-/* ------------------ Sidebar ----------------- */
-.orders-accordion {
-    -fx-background-color: white;
-    -fx-border-color: #B6CCFE;
-    -fx-border-radius: 8px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 6, 0, 0, 2);
-}
-
-.order-pane {
-    -fx-background-color: white;
-    -fx-border-color: #F1F5F9;
-}
-
-.order-pane > .title {
-    -fx-background-color: #1D4E89;
-    -fx-text-fill: white;
+/* Buttons */
+.button {
+    -fx-background-color: linear-gradient(to bottom, rgba(95,172,255,0.98), -fx-primary);
+    -fx-text-fill: #061425;
     -fx-font-weight: 600;
-    -fx-padding: 12px 15px;
+    -fx-padding: 6 14;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(79,179,255,0.12), 8, 0.5, 0, 2);
+}
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, rgba(120,190,255,1), rgba(95,172,255,0.98));
+    -fx-translate-y: -1;
+}
+.button:pressed {
+    -fx-background-color: linear-gradient(to bottom, rgba(56,140,215,1), rgba(44,115,188,1));
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 4, 0.5, 0, 2);
+    -fx-translate-y: 0;
+}
+.button.secondary {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(255,255,255,0.06);
+    -fx-text-fill: -fx-primary;
 }
 
-/* ------------------ Menu Χρήστη ----------------- */
-.user-menu {
-    -fx-background-color: #1D4E89;
-    -fx-text-fill: white;
-    -fx-padding: 8px 15px;
-    -fx-background-radius: 20px;
+/* Inputs */
+.text-field, .text-area, .combo-box, .password-field, .date-picker .text-field {
+    -fx-background-color: -fx-surface-2;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: rgba(255,255,255,0.04);
+    -fx-border-width: 1;
+    -fx-padding: 6 10;
+    -fx-text-fill: -fx-text;
+    -fx-prompt-text-fill: rgba(255,255,255,0.25);
 }
 
-.menu-item {
-    -fx-padding: 10px 20px;
-    -fx-font-size: 14px;
-    -fx-background-radius: 6px;
+/* Focus state for inputs */
+.text-field:focused, .text-area:focused, .combo-box:focused {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(gaussian, rgba(79,179,255,0.12), 10, 0.5, 0, 2);
 }
 
-.menu-item:hover {
-    -fx-background-color: #E7E5E4;
+/* Table views */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+    -fx-padding: 6;
 }
 
-/* ------------------ Status Bar ----------------- */
-.status-bar {
-    -fx-background-color: white;
-    -fx-border-color: #F1F5F9;
-    -fx-padding: 8px 20px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 6, 0, 0, 2);
+/* Header */
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(#0F1724, #0B1522);
+    -fx-padding: 8 6;
+    -fx-background-radius: 8 8 0 0;
+}
+.table-view .column-header, .table-view .column-header .label {
+    -fx-font-weight: 700;
+    -fx-text-fill: -fx-text;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
 }
 
-.version-label {
-    -fx-text-fill: #64748B;
+/* Table cells */
+.table-view .table-cell {
+    -fx-padding: 10 12;
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-text;
+    -fx-border-color: transparent;
+}
+
+/* Alternate row shading */
+.table-row-cell:odd {
+    -fx-background-color: transparent;
+}
+.table-row-cell:even {
+    -fx-background-color: rgba(255,255,255,0.02);
+}
+
+/* Hover & selection */
+.table-row-cell:hover {
+    -fx-background-color: -fx-hover;
+}
+.table-row-cell:selected {
+    -fx-background-color: -fx-selected;
+    -fx-text-fill: -fx-text;
+}
+
+/* Compact table option */
+.table-view.compact .table-cell {
+    -fx-padding: 6 8;
     -fx-font-size: 12px;
 }
 
-/* ------------------ Tabs ----------------- */
+/* ComboBox popup items */
+.combo-box .list-cell {
+    -fx-padding: 8 10;
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-text;
+    -fx-background-color: transparent;
+}
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(79,179,255,0.06);
+}
+
+/* Tooltips */
+.tooltip {
+    -fx-background-color: rgba(9,12,16,0.95);
+    -fx-text-fill: -fx-text;
+    -fx-padding: 6 8;
+    -fx-background-radius: 6;
+}
+
+/* TitledPane */
+.titled-pane > .title {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -fx-text;
+}
+
+/* Tabs */
 .tab-pane {
     -fx-background-color: transparent;
 }
-
-.tab-pane .tab .tab-close-button {
-    -fx-background-color: red; /* Κόκκινο background */
-    -fx-padding: 10px; /* Μεγαλύτερο padding */
-    -fx-scale-x: 1.5;
-    -fx-scale-y: 1.5;
-}
-
-.tabHas {
-    -fx-background-color: transparent;
-    -fx-font-size: 20px; /* Μεγαλύτερη γραμματοσειρά */
-    -fx-padding: 10px 10px 10px 10px; /* Μεγαλύτερο padding (πάνω-κάτω, αριστερά-δεξιά) */
-    -fx-text-fill: -fx-text;
-    -fx-background-radius: 10px 10px 0 0;
-    -fx-border-color: #ff0000;
-    -fx-border-radius: 10px 10px 0 0;
-    -fx-border-width: 2px;
-}
-
 .tab {
-    -fx-background-color: #E2E8F0;
-    -fx-background-radius: 8px 8px 0 0;
-    -fx-padding: 12px 25px;
-    -fx-font-weight: 500;
+    -fx-background-color: transparent;
+    -fx-font-size: 13px;
+    -fx-padding: 8 12;
 }
-
 .tab:selected {
-    -fx-background-color: #1D4E89;
-    -fx-text-fill: white;
-    -fx-font-weight: bold; /* Εντονο κείμενο όταν η καρτέλα είναι επιλεγμένη */
+    -fx-background-color: -fx-primary;
+}
+.tab:selected .tab-label {
+    -fx-text-fill: #061425;
 }
 
-.tab:hover {
-    -fx-background-color: #CBD5E1;
+/* Cards */
+.card {
+    -fx-padding: 8;
+    -fx-background-color: -fx-surface;
+    -fx-border-color: rgba(255,255,255,0.03);
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 6, 0.5, 0, 2);
+}
+
+/* Disabled state */
+.button:disabled, .text-field:disabled, .combo-box:disabled {
+    -fx-opacity: 0.5;
+}
+
+/* Small helper text */
+.small {
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-muted;
 }

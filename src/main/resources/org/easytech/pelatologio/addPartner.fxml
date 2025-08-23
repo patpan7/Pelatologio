@@ -205,6 +205,20 @@
                 </HBox>
             </ScrollPane>
         </Tab>
+        <Tab fx:id="tabCustomers" closable="false" text="Πελάτες">
+            <VBox styleClass="pane" VBox.vgrow="ALWAYS">
+                <TableView fx:id="tblPartnerCustomers" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colCustomerCode" text="Κωδικός" />
+                        <TableColumn fx:id="colCustomerName" text="Ονοματεπώνυμο" />
+                        <TableColumn fx:id="colCustomerAfm" text="ΑΦΜ" />
+                        <TableColumn fx:id="colContractDate" text="Ημ/νία Σύμβασης" />
+                        <TableColumn fx:id="colTotalPaid" text="Σύνολο Πληρωμών" />
+                        <TableColumn fx:id="colCommission" text="Προμήθεια" />
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
         <Tab fx:id="tabNotes" closable="false" text="Σημειώσεις">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
                 <VBox VBox.vgrow="ALWAYS">

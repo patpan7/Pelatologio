@@ -76,12 +76,6 @@ public class DBHelper {
             commissionDao = new CommissionDaoImpl(dataSource);
             supplierPaymentDao = new SupplierPaymentDaoImpl(dataSource);
             partnerEarningDao = new PartnerEarningDaoImpl(dataSource);
-            commissionDao = new CommissionDaoImpl(dataSource);
-            supplierPaymentDao = new SupplierPaymentDaoImpl(dataSource);
-            partnerEarningDao = new PartnerEarningDaoImpl(dataSource);
-            //commissionDao = new CommissionDaoImpl(dataSource);
-            //supplierPaymentDao = new SupplierPaymentDaoImpl(dataSource);
-            partnerEarningDao = new PartnerEarningDaoImpl(dataSource);
             partnerDao = new PartnerDaoImpl(dataSource);
 
         } catch (ClassNotFoundException e) {

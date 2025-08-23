@@ -19,6 +19,7 @@ import org.easytech.pelatologio.models.Partner;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class PartnersController implements Initializable {
@@ -31,6 +32,7 @@ public class PartnersController implements Initializable {
     private TextField filterField;
 
     private TabPane mainTabPane; // Injected from MainMenuController
+    private Consumer<Integer> openCustomerCallback; // Callback for opening customer tab
     ObservableList<Partner> partnerList;
     FilteredList<Partner> filteredData;
     private final PartnerDao partnerDao = DBHelper.getPartnerDao();
@@ -50,6 +52,10 @@ public class PartnersController implements Initializable {
 
     public void setMainTabPane(TabPane mainTabPane) {
         this.mainTabPane = mainTabPane;
+    }
+
+    public void setOpenCustomerCallback(Consumer<Integer> callback) {
+        this.openCustomerCallback = callback;
     }
 
     private void setupTable() {
@@ -177,6 +183,7 @@ public class PartnersController implements Initializable {
             // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
             controller.setPartnerForEdit(selectedPartner);
             controller.setMainTabPane(mainTabPane, partnerTab);
+            controller.setOpenCustomerCallback(this.openCustomerCallback); // Pass the callback
             // Προσθήκη του tab στο TabPane
             Platform.runLater(() -> {
                 mainTabPane.getTabs().add(partnerTab);

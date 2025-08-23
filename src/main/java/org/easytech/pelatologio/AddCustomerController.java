@@ -861,8 +861,10 @@ public class AddCustomerController {
         // (1) Γέμισμα των πεδίων σου όπως ήδη κάνεις
         populateFieldsFromCustomer(customer);
 
-        // (1.1) Φόρτωση και επιλογή του λογιστή
+        // (1.1) Φόρτωση και επιλογή λογιστή, σύσταση, job team
         setAccountant();
+        setRecommendation();
+        setJobTeam();
 
         // (2) Rebuild των dynamic app tabs με βάση:
         //     - global feature flag

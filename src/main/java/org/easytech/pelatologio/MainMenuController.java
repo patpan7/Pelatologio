@@ -921,6 +921,7 @@ public class MainMenuController implements Initializable {
 
         PartnersController partnersController = fxmlLoader.getController();
         partnersController.setMainTabPane(mainTabPane);
+        partnersController.setOpenCustomerCallback(this::openCustomerDetailsTabSimple); // Set the callback
 
         Tab newTab = new Tab("Συνεργάτες");
         newTab.setContent(customersContent);

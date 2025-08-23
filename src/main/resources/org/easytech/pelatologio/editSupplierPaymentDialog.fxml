@@ -11,9 +11,6 @@
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
             <GridPane hgap="10.0" vgap="10.0">
-                <Label styleClass="normal-label" text="Πελάτης:" GridPane.rowIndex="0" />
-                <ComboBox fx:id="customerComboBox" prefHeight="47.0" prefWidth="325.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-
                 <Label prefWidth="140.0" styleClass="normal-label" text="Ημερομηνία Πληρωμής:" wrapText="true" GridPane.rowIndex="1" />
                 <DatePicker fx:id="paymentDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
@@ -33,6 +30,17 @@
                     <RowConstraints />
                 </rowConstraints>
             </GridPane>
+            <Label styleClass="normal-label" text="Πελάτες:" />
+            <TableView fx:id="allocationsTable" editable="true" prefHeight="320.0" VBox.vgrow="NEVER">
+                <columns>
+                    <TableColumn fx:id="customerNameColumn" prefWidth="380.0" text="Πελάτης" />
+                    <TableColumn fx:id="allocatedColumn" prefWidth="160.0" text="Ποσό πληρωμής" />
+                </columns>
+            <columnResizePolicy>
+               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+            </TableView>
+            <Label style="-fx-font-style: italic; -fx-font-size: 11;" text="Σημείωση: Άφησε κενό ή 0 για πελάτες χωρίς ποσό." />
         </VBox>
     </content>
     <ButtonType buttonData="OK_DONE" text="OK" />

@@ -3,6 +3,8 @@ package org.easytech.pelatologio.dao.impl;
 import com.zaxxer.hikari.HikariDataSource;
 import org.easytech.pelatologio.dao.PartnerDao;
 import org.easytech.pelatologio.models.Partner;
+import org.easytech.pelatologio.models.PartnerCustomer;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +112,63 @@ public class PartnerDaoImpl implements PartnerDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<PartnerCustomer> getByPartnerId(int partnerId) {
+        List<PartnerCustomer> customers = new ArrayList<>();
+        String sql = """
+                SELECT c.code, c.name,c.afm, c.phone1 as phone, c.email, com.start_date as contractDate,
+                    ISNULL(SUM(sp.amount), 0) as totalPaid,
+                    ISNULL(SUM(pe.earning_amount), 0) as commission
+                FROM 
+                    Commissions com
+                JOIN 
+                    Customers c ON com.customer_id = c.code
+                LEFT JOIN 
+                    SupplierPayments sp ON com.customer_id = sp.customer_id AND com.supplier_id = sp.supplier_id
+                LEFT JOIN 
+                    PartnerEarnings pe ON sp.id = pe.supplier_payment_id AND com.partner_id = pe.partner_id
+                WHERE 
+                    com.partner_id = ?
+                GROUP BY 
+                    c.code, c.name, c.afm, c.phone1, c.email, com.start_date
+                ORDER BY 
+                    c.name
+                """;
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, partnerId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                customers.add(mapRowToPartnerCustomer(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customers;
+    }
+
+    private PartnerCustomer mapRowToPartnerCustomer(ResultSet rs) throws SQLException {
+        PartnerCustomer customer = new PartnerCustomer();
+        customer.setCode(rs.getString("code"));
+        customer.setName(rs.getString("name"));
+        customer.setAfm(rs.getString("afm"));
+        customer.setPhone(rs.getString("phone"));
+        customer.setEmail(rs.getString("email"));
+
+        Date contractDate = rs.getDate("contractDate");
+        if (contractDate != null) {
+            customer.setContractDate(contractDate.toLocalDate());
+        }
+
+        customer.setTotalPaid(rs.getBigDecimal("totalPaid"));
+        customer.setCommission(rs.getBigDecimal("commission"));
+
+        return customer;
     }
 
     private Partner mapRowToPartner(ResultSet rs) throws SQLException {

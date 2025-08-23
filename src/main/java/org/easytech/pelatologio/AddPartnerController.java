@@ -1,9 +1,24 @@
 package org.easytech.pelatologio;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Alert.AlertType;
+import javafx.geometry.Insets;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.IntegerStringConverter;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,12 +28,29 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import org.easytech.pelatologio.dao.PartnerDao;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Partner;
+import org.easytech.pelatologio.models.PartnerCustomer;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import java.io.IOException;
 
 import java.awt.*;
 import java.io.File;
@@ -37,7 +69,26 @@ public class AddPartnerController {
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone;
     @FXML
+    private Tab tabNotes;
+    @FXML
     private TextArea taNotes;
+    
+    @FXML
+    private Tab tabCustomers;
+    @FXML
+    private TableView<PartnerCustomer> tblPartnerCustomers;
+    @FXML
+    private TableColumn<PartnerCustomer, String> colCustomerCode;
+    @FXML
+    private TableColumn<PartnerCustomer, String> colCustomerName;
+    @FXML
+    private TableColumn<PartnerCustomer, String> colCustomerAfm;
+    @FXML
+    private TableColumn<PartnerCustomer, LocalDate> colContractDate;
+    @FXML
+    private TableColumn<PartnerCustomer, BigDecimal> colTotalPaid;
+    @FXML
+    private TableColumn<PartnerCustomer, BigDecimal> colCommission;
     @FXML
     private Button btnAfmSearch;
     @FXML
@@ -55,6 +106,11 @@ public class AddPartnerController {
     private Runnable onSaveCallback;
 
     private PartnersController partnersController;
+    private Consumer<Integer> openCustomerCallback;
+
+    public void setOpenCustomerCallback(Consumer<Integer> callback) {
+        this.openCustomerCallback = callback;
+    }
 
     // Θα περάσουμε το TabPane από τον MainMenuController
     public void setMainTabPane(TabPane mainTabPane, Tab myTab) {
@@ -106,6 +162,87 @@ public class AddPartnerController {
         updateTabTitle(""); // Αφαίρεση αστερίσκου
     }
 
+    private void initializePartnerCustomersTable() {
+        colCustomerCode.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCode()));
+        colCustomerName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+        colCustomerAfm.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAfm()));
+        colContractDate.setCellValueFactory(cellData -> {
+            LocalDate date = cellData.getValue().getContractDate();
+            return new SimpleObjectProperty<>(date);
+        });
+        
+        // Format currency columns
+        colTotalPaid.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getTotalPaid()));
+        colTotalPaid.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(BigDecimal amount, boolean empty) {
+                super.updateItem(amount, empty);
+                if (empty || amount == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%.2f €", amount.doubleValue()));
+                }
+            }
+        });
+        
+        colCommission.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCommission()));
+        colCommission.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(BigDecimal amount, boolean empty) {
+                super.updateItem(amount, empty);
+                if (empty || amount == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%.2f €", amount.doubleValue()));
+                }
+            }
+        });
+        
+        // Set column widths
+        colCustomerCode.prefWidthProperty().bind(tblPartnerCustomers.widthProperty().multiply(0.15));
+        colCustomerName.prefWidthProperty().bind(tblPartnerCustomers.widthProperty().multiply(0.25));
+        colCustomerAfm.prefWidthProperty().bind(tblPartnerCustomers.widthProperty().multiply(0.15));
+        colContractDate.prefWidthProperty().bind(tblPartnerCustomers.widthProperty().multiply(0.15));
+        colTotalPaid.prefWidthProperty().bind(tblPartnerCustomers.widthProperty().multiply(0.15));
+        colCommission.prefWidthProperty().bind(tblPartnerCustomers.widthProperty().multiply(0.15));
+    }
+    
+    private void loadPartnerCustomers() {
+        if (currentPartner.getId() <= 0) return;
+        System.out.println("Loading customers for partner ID: " + code);
+        // Show loading indicator
+        tblPartnerCustomers.setPlaceholder(new Label("Φόρτωση δεδομένων..."));
+        
+        // Run database operation in background thread
+        new Thread(() -> {
+            try {
+                List<PartnerCustomer> customers = partnerDao.getByPartnerId(code);
+                System.out.println("Loaded " + customers.size() + " customers for partner ID " + code);
+                // Update UI on JavaFX Application Thread
+                Platform.runLater(() -> {
+                    if (customers.isEmpty()) {
+                        tblPartnerCustomers.setPlaceholder(new Label("Δεν βρέθηκαν πελάτες για αυτόν τον συνεργάτη"));
+                    } else {
+                        tblPartnerCustomers.getItems().setAll(customers);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Show error on JavaFX Application Thread
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Σφάλμα");
+                    alert.setHeaderText("Σφάλμα φόρτωσης πελατών");
+                    alert.setContentText("Παρουσιάστηκε σφάλμα κατά τη φόρτωση των πελατών: " + 
+                                     (e.getMessage() != null ? e.getMessage() : "Άγνωστο σφάλμα"));
+                    alert.showAndWait();
+                    
+                    tblPartnerCustomers.setPlaceholder(new Label("Σφάλμα κατά τη φόρτωση των δεδομένων"));
+                });
+            }
+        }).start();
+    }
+
     private void updateTabTitle(String suffix) {
         if (myTab != null) {
             String title = myTab.getText().replace("*", "");
@@ -116,6 +253,30 @@ public class AddPartnerController {
     public void initialize() {
         this.partnerDao = DBHelper.getPartnerDao();
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
+        
+        // Initialize partner customers table
+        initializePartnerCustomersTable();
+        
+        // Add listener to tab selection to load data when tab is selected
+        tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+            if (newTab == tabCustomers) {
+                loadPartnerCustomers();
+            }
+        });
+
+        tblPartnerCustomers.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                PartnerCustomer selectedCustomer = tblPartnerCustomers.getSelectionModel().getSelectedItem();
+                if (selectedCustomer != null && openCustomerCallback != null) {
+                    try {
+                        int customerId = Integer.parseInt(selectedCustomer.getCode());
+                        openCustomerCallback.accept(customerId);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Invalid customer code format: " + selectedCustomer.getCode());
+                    }
+                }
+            }
+        });
 
 
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
