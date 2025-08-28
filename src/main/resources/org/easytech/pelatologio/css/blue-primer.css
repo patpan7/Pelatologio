@@ -1,0 +1,112 @@
+/* Blue Primer Theme - Based on Atlantafx Primer Light */
+@import url("atlantafx/base/theme/primer-light.css");
+
+:root {
+    /* === Κύρια παλέτα === */
+    -color-accent: #1976d2;          /* Κύριο μπλε */
+    -color-accent-hover: #1565c0;
+    -color-accent-pressed: #0d47a1;
+    -color-accent-text: white;
+
+    /* === Βασικά χρώματα === */
+    -color-bg-default: #f5f8fc;      /* Φόντο εφαρμογής */
+    -color-bg-secondary: #e3f2fd;    /* Δευτερεύον φόντο */
+    -color-bg-tertiary: #bbdefb;     /* Τριτεύον */
+
+    -color-fg-default: #0d47a1;      /* Βασικό κείμενο */
+    -color-fg-muted: #5472d3;        /* Λιγότερο έντονο */
+    -color-fg-disabled: #90a4ae;
+
+    /* === Καταστάσεις === */
+    -color-success: #4cafef;
+    -color-success-hover: #42a5f5;
+    -color-warning: #ffa000;
+    -color-danger: #ff5252;
+    -color-info: #2196f3;
+
+    /* === Borders & Highlights === */
+    -color-border: #90caf9;
+    -color-border-strong: #42a5f5;
+    -color-focus: #1565c0;
+}
+
+/* === Κουμπιά === */
+.button {
+    -fx-background-color: -color-accent;
+    -fx-text-fill: -color-accent-text;
+    -fx-font-weight: 600;
+    -fx-background-radius: 6px;
+}
+
+.button:hover {
+    -fx-background-color: -color-accent-hover;
+}
+
+.button:pressed {
+    -fx-background-color: -color-accent-pressed;
+}
+
+/* === TextField & TextArea === */
+.text-field,
+.text-area {
+    -fx-background-color: white;
+    -fx-border-color: -color-border;
+    -fx-text-fill: -color-fg-default;
+}
+
+.text-field:focused,
+.text-area:focused {
+    -fx-border-color: -color-focus;
+    -fx-effect: dropshadow(three-pass-box, rgba(21, 101, 192, 0.3), 5, 0, 0, 2);
+}
+
+/* === Labels === */
+.label {
+    -fx-text-fill: -color-fg-default;
+}
+
+/* === ListView & TableView === */
+.list-cell,
+.table-row-cell {
+    -fx-background-color: -color-bg-default;
+    -fx-text-fill: -color-fg-default;
+}
+
+.list-cell:filled:selected,
+.table-row-cell:filled:selected {
+    -fx-background-color: -color-accent;
+    -fx-text-fill: white;
+}
+
+/* === TabPane === */
+.tab-pane .tab-header-background {
+    -fx-background-color: -color-bg-secondary;
+}
+
+.tab {
+    -fx-background-radius: 6px 6px 0 0;
+}
+
+.tab:selected {
+    -fx-background-color: -color-accent;
+    -fx-text-fill: white;
+}
+
+/* === ScrollBar === */
+.scroll-bar:vertical,
+.scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.thumb {
+    -fx-background-color: -color-border;
+    -fx-background-radius: 4px;
+}
+
+/* === Tooltips === */
+.tooltip {
+    -fx-background-color: -color-bg-tertiary;
+    -fx-text-fill: -color-fg-default;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 12px;
+}
