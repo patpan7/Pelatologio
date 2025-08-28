@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.FXCollections?>
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import java.lang.*?>
-<DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddLoginController">
+
+<DialogPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddLoginController">
     <content>
         <VBox alignment="CENTER">
-            <Label styleClass="normal-label" text="Προσθήκη Νέου Login"/>
+            <Label text="Προσθήκη Νέου Login" />
             <TextField fx:id="usernameField" promptText="Username">
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
             </TextField>
             <TextField fx:id="passwordField" accessibleRole="TEXT_FIELD" promptText="Password">
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
             </TextField>
             <ComboBox fx:id="tagField" editable="true" promptText="Tag">
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
                 <items>
                     <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Taxis"/>
-                        <String fx:value="Ανεύρεση ΑΦΜ"/>
-                        <String fx:value="myPOS"/>
-                        <String fx:value="Cash"/>
-                        <String fx:value="Rest"/>
-                        <String fx:value="Full"/>
-                        <String fx:value="Invoice"/>
-                        <String fx:value="Emblem"/>
-                        <String fx:value="Εργάνη"/>
-                        <String fx:value="Πελατολόγιο"/>
-                        <String fx:value="NinePOS"/>
+                        <String fx:value="Taxis" />
+                        <String fx:value="Ανεύρεση ΑΦΜ" />
+                        <String fx:value="myPOS" />
+                        <String fx:value="Cash" />
+                        <String fx:value="Rest" />
+                        <String fx:value="Full" />
+                        <String fx:value="Invoice" />
+                        <String fx:value="Emblem" />
+                        <String fx:value="Εργάνη" />
+                        <String fx:value="Πελατολόγιο" />
+                        <String fx:value="NinePOS" />
                     </FXCollections>
                 </items>
 
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
             </ComboBox>
             <TextField fx:id="phoneField" promptText="Τηλέφωνο">
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </VBox.margin>
             </TextField>
         </VBox>

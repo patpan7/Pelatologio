@@ -5,9 +5,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<VBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+<VBox alignment="TOP_CENTER"   xmlns="http://javafx.com/javafx/17.0.12"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CustomerTasksController">
-    <VBox alignment="TOP_CENTER" styleClass="card" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+    <VBox alignment="TOP_CENTER"  HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
         <TableView fx:id="tasksTable" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="titleColumn" maxWidth="500.0" minWidth="250.0" prefWidth="250.0" text="Τίτλος"/>
@@ -21,18 +21,18 @@
             <contextMenu>
                 <ContextMenu>
                     <items>
-                        <MenuItem onAction="#handleEditTask" styleClass="menu-item" text="Επεξεργασία"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleAddTask" styleClass="menu-item"
+                        <MenuItem onAction="#handleEditTask" text="Επεξεργασία"/>
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddTask"
                                   text="Προσθήκη"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteTask" styleClass="menu-item"
+                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteTask"
                                   text="Διαγραφή"/>
                         <SeparatorMenuItem/>
-                        <MenuItem mnemonicParsing="false" onAction="#toggleComplete" styleClass="menu-item"
+                        <MenuItem mnemonicParsing="false" onAction="#toggleComplete"
                                   text="Ολοκλήρωση"/>
-                        <MenuItem mnemonicParsing="false" onAction="#toggleRecall" styleClass="menu-item"
+                        <MenuItem mnemonicParsing="false" onAction="#toggleRecall"
                                   text="Ανάκληση"/>
                         <SeparatorMenuItem/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleAddOffer" styleClass="menu-item"
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddOffer"
                                   text="Δημιουργία Προσφοράς"/>
                     </items>
                 </ContextMenu>
@@ -42,8 +42,8 @@
             </columnResizePolicy>
         </TableView>
         <HBox alignment="CENTER_RIGHT" spacing="10">
-            <JFXButton fx:id="completeTaskButton" buttonType="RAISED" mnemonicParsing="false" prefWidth="230.0"
-                       styleClass="click-button" text="Ολοκλήρωση">
+            <Button fx:id="completeTaskButton"  mnemonicParsing="false" prefWidth="230.0"
+                       text="Ολοκλήρωση">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@icons/complete.png"/>
@@ -52,9 +52,9 @@
                 <HBox.margin>
                     <Insets/>
                 </HBox.margin>
-            </JFXButton>
-            <JFXButton fx:id="uncompletedTaskButton" buttonType="RAISED" mnemonicParsing="false" prefWidth="230.0"
-                       styleClass="click-button" text="Ανάκληση">
+            </Button>
+            <Button fx:id="uncompletedTaskButton"  mnemonicParsing="false" prefWidth="230.0"
+                       text="Ανάκληση">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@icons/pending.png"/>
@@ -63,9 +63,9 @@
                 <HBox.margin>
                     <Insets/>
                 </HBox.margin>
-            </JFXButton>
+            </Button>
             <Separator visible="false" HBox.hgrow="ALWAYS"/>
-            <JFXButton fx:id="addTaskButton" buttonType="RAISED" prefWidth="220.0" styleClass="click-button"
+            <Button fx:id="addTaskButton"  prefWidth="220.0"
                        text="Προσθήκη">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -75,8 +75,8 @@
                 <HBox.margin>
                     <Insets/>
                 </HBox.margin>
-            </JFXButton>
-            <JFXButton fx:id="editTaskButton" buttonType="RAISED" prefWidth="220.0" styleClass="click-button"
+            </Button>
+            <Button fx:id="editTaskButton"  prefWidth="220.0"
                        text="Επεξεργασία">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -86,8 +86,8 @@
                 <HBox.margin>
                     <Insets/>
                 </HBox.margin>
-            </JFXButton>
-            <JFXButton fx:id="deleteTaskButton" buttonType="RAISED" prefWidth="220.0" styleClass="click-button"
+            </Button>
+            <Button fx:id="deleteTaskButton"  prefWidth="220.0"
                        text="Διαγραφή">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -97,7 +97,7 @@
                 <HBox.margin>
                     <Insets/>
                 </HBox.margin>
-            </JFXButton>
+            </Button>
             <VBox.margin>
                 <Insets bottom="5.0" top="5.0"/>
             </VBox.margin>
@@ -107,3 +107,4 @@
         </VBox.margin>
     </VBox>
 </VBox>
+

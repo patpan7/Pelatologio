@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<DialogPane stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.easytech.pelatologio.ProposalDialogController">
+    <content>
+        <VBox alignment="TOP_CENTER" spacing="15.0">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+            <Label text="Στοιχεία Πρότασης Σύμβασης"/>
+            <GridPane hgap="10.0" vgap="10.0">
+                <children>
+                    <Label text="Προμήθεια ανά συναλλαγή:" GridPane.rowIndex="0"/>
+                    <TextField fx:id="commissionField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <Label text="Τιμή POS (€):" GridPane.rowIndex="1"/>
+                    <TextField fx:id="posPriceField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <Label text="Μηνιαία Συνδρομή (€):" GridPane.rowIndex="2"/>
+                    <TextField fx:id="monthlyFeeField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                    <Label text="Τύπος Σύνδεσης:" GridPane.rowIndex="3"/>
+                    <ComboBox fx:id="integrationTypeComboBox" prefHeight="47.0" prefWidth="300.0"
+                              GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                    <Label fx:id="erpLabel" text="Όνομα ERP:" GridPane.rowIndex="4"/>
+                    <TextField fx:id="erpNameField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+                    <Label text="Επισύναψη (Α1):" GridPane.rowIndex="5"/>
+                    <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                        <Button fx:id="attachmentButton" onAction="#handleChooseAttachment" text="Επιλογή Αρχείου..."/>
+                        <Label fx:id="attachmentLabel" text="Δεν έχει επιλεγεί αρχείο"/>
+                    </HBox>
+                </children>
+                <columnConstraints>
+                    <ColumnConstraints/>
+                    <ColumnConstraints/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                </rowConstraints>
+            </GridPane>
+            <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                <Button onAction="#handleSendProposal" text="Αποστολή Πρότασης"/>
+                <Button onAction="#handleCancel" text="Άκυρο"/>
+            </HBox>
+        </VBox>
+    </content>
+</DialogPane>

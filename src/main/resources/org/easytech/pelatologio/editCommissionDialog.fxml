@@ -3,7 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+<DialogPane   xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EditCommissionDialogController">
     <content>
         <VBox spacing="10.0">
@@ -23,25 +23,25 @@
                     <RowConstraints/>
                     <RowConstraints/>
                 </rowConstraints>
-                <Label styleClass="normal-label" text="Συνεργάτης:" GridPane.rowIndex="0"/>
+                <Label text="Συνεργάτης:" GridPane.rowIndex="0"/>
                 <ComboBox fx:id="partnerComboBox" maxWidth="400.0" minHeight="47.0" GridPane.columnIndex="1"
                           GridPane.rowIndex="0"/>
 
-                <Label styleClass="normal-label" text="Πελάτης:" GridPane.rowIndex="1"/>
+                <Label text="Πελάτης:" GridPane.rowIndex="1"/>
                 <ComboBox fx:id="customerComboBox" maxWidth="400.0" minHeight="47.0" GridPane.columnIndex="1"
                           GridPane.rowIndex="1"/>
 
-                <Label styleClass="normal-label" text="Προμηθευτής:" GridPane.rowIndex="2"/>
+                <Label text="Προμηθευτής:" GridPane.rowIndex="2"/>
                 <ComboBox fx:id="supplierComboBox" maxWidth="400.0" minHeight="47.0" GridPane.columnIndex="1"
                           GridPane.rowIndex="2"/>
 
-                <Label styleClass="normal-label" text="Ποσοστό (%):" GridPane.rowIndex="3"/>
+                <Label text="Ποσοστό (%):" GridPane.rowIndex="3"/>
                 <TextField fx:id="rateField" maxWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-                <Label styleClass="normal-label" text="Ημ/νία Έναρξης:" GridPane.rowIndex="4"/>
+                <Label text="Ημ/νία Έναρξης:" GridPane.rowIndex="4"/>
                 <DatePicker fx:id="startDatePicker" maxWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
-                <Label styleClass="normal-label" text="Ημ/νία Λήξης:" GridPane.rowIndex="5"/>
+                <Label text="Ημ/νία Λήξης:" GridPane.rowIndex="5"/>
                 <DatePicker fx:id="endDatePicker" maxWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
             </GridPane>
         </VBox>
@@ -51,3 +51,4 @@
         <ButtonType buttonData="CANCEL_CLOSE" text="Cancel"/>
     </buttonTypes>
 </DialogPane>
+

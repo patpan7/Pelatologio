@@ -37,6 +37,8 @@ module org.easytech.pelatologio {
     requires javafx.graphics;
     requires java.desktop;
     requires javafx.base;
+    requires org.apache.pdfbox;
+    requires com.google.gson;
 //    requires org.apache.poi.ooxml.schemas;
 //    requires docx4j;
 //    requires org.apache.poi.ooxml;
@@ -48,4 +50,5 @@ module org.easytech.pelatologio {
     exports org.easytech.pelatologio.helper;
     exports org.easytech.pelatologio.batches;
     opens org.easytech.pelatologio.batches to javafx.fxml;
+    opens org.easytech.pelatologio.models.actions to com.google.gson;
 }

@@ -1,102 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXCheckBox?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddOfferController">
+
+<DialogPane expanded="true" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddOfferController">
     <content>
         <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
             <VBox alignment="TOP_CENTER">
-                <Label styleClass="header-label" text="Διαχείριση Προσφοράς"/>
+                <Label text="Διαχείριση Προσφοράς" />
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
-                    <Label prefWidth="290.0" styleClass="normal-label" text="Ημερομηνία Προσοράς:">
+                    <Label prefWidth="290.0" text="Ημερομηνία Προσοράς:">
                         <opaqueInsets>
-                            <Insets/>
+                            <Insets />
                         </opaqueInsets>
                     </Label>
-                    <DatePicker fx:id="dueDatePicker" prefWidth="325.0"/>
+                    <DatePicker fx:id="dueDatePicker" prefWidth="325.0" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
 
-                    <Label prefWidth="290.0" styleClass="normal-label" text="Περιγραφή:"/>
-                    <TextArea fx:id="descriptionField" onMouseClicked="#handleMouseClick" prefHeight="100"
-                              prefWidth="325.0" wrapText="true"/>
+                    <Label prefWidth="290.0" text="Περιγραφή:" />
+                    <TextArea fx:id="descriptionField" onMouseClicked="#handleMouseClick" prefHeight="100" prefWidth="325.0" wrapText="true" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
-                    <Label prefWidth="290.0" styleClass="normal-label" text="Ώρες:"/>
-                    <TextField fx:id="hoursField" prefWidth="325.0"/>
+                    <Label prefWidth="290.0" text="Ώρες:" />
+                    <TextField fx:id="hoursField" prefWidth="325.0" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="57.0">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
-                    <Label prefWidth="290.0" styleClass="normal-label" text="Κατάσταση:"/>
-                    <TextField fx:id="statusField" prefWidth="325.0"/>
+                    <Label prefWidth="290.0" text="Κατάσταση:" />
+                    <TextField fx:id="statusField" prefWidth="325.0" />
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
-                    <Label prefWidth="290.0" styleClass="normal-label" text="Πελάτης:"/>
-                    <ComboBox fx:id="customerComboBox" editable="true" prefWidth="325.0" promptText="Επιλογή Πελάτη"/>
-                    <JFXButton fx:id="btnCustomer" buttonType="RAISED" mnemonicParsing="false" onAction="#showCustomer"
-                               styleClass="click-button" text="">
+                    <Label prefWidth="290.0" text="Πελάτης:" />
+                    <ComboBox fx:id="customerComboBox" editable="true" prefWidth="325.0" promptText="Επιλογή Πελάτη" />
+                    <Button fx:id="btnCustomer" mnemonicParsing="false" onAction="#showCustomer" text="">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/users.png"/>
+                                <Image url="@icons/users.png" />
                             </ImageView>
                         </graphic>
                         <HBox.margin>
-                            <Insets left="5.0" right="10.0"/>
+                            <Insets left="5.0" right="10.0" />
                         </HBox.margin>
-                    </JFXButton>
+                    </Button>
                 </HBox>
                 <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="110.0">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
-                    <Label prefWidth="290.0" styleClass="normal-label" text="Αρχείο:"/>
+                    <Label prefWidth="290.0" text="Αρχείο:" />
                     <ListView fx:id="attachmentList" prefHeight="100.0" prefWidth="325.0">
                         <HBox.margin>
-                            <Insets/>
+                            <Insets />
                         </HBox.margin>
                     </ListView>
-                    <JFXButton fx:id="btnSelectFile" buttonType="RAISED" mnemonicParsing="false" onAction="#selectFile"
-                               styleClass="click-button" text="">
+                    <Button fx:id="btnSelectFile" mnemonicParsing="false" onAction="#selectFile" text="">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/file.png"/>
+                                <Image url="@icons/file.png" />
                             </ImageView>
                         </graphic>
                         <HBox.margin>
-                            <Insets left="5.0" right="10.0"/>
+                            <Insets left="5.0" right="10.0" />
                         </HBox.margin>
-                    </JFXButton>
+                    </Button>
                 </HBox>
                 <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="382.0">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
-                    <Label prefWidth="290.0" styleClass="normal-label" text="Αρχειοθέτηση:"/>
-                    <JFXCheckBox fx:id="isArchived" styleClass="normal-label" text="">
+                    <Label prefWidth="290.0" text="Αρχειοθέτηση:" />
+                    <CheckBox fx:id="isArchived" text="">
                         <HBox.margin>
-                            <Insets bottom="5.0" right="10.0" top="5.0"/>
+                            <Insets bottom="5.0" right="10.0" top="5.0" />
                         </HBox.margin>
-                    </JFXCheckBox>
+                    </CheckBox>
                 </HBox>
             </VBox>
         </ScrollPane>

@@ -5,9 +5,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<VBox alignment="TOP_CENTER" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+<VBox alignment="TOP_CENTER"   xmlns="http://javafx.com/javafx/17.0.12"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CustomerOffersController">
-    <VBox alignment="TOP_CENTER" styleClass="card" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+    <VBox alignment="TOP_CENTER"  HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
         <TableView fx:id="offersTable" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID"/>
@@ -23,15 +23,15 @@
             <contextMenu>
                 <ContextMenu>
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleAddTask" styleClass="menu-item"
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddTask" 
                                   text="Προσθήκη εργασίας"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleShareOffer" styleClass="menu-item"
+                        <MenuItem mnemonicParsing="false" onAction="#handleShareOffer" 
                                   text="Αντιγραφή συνδέσμου"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleSendEmail" styleClass="menu-item"
+                        <MenuItem mnemonicParsing="false" onAction="#handleSendEmail" 
                                   text="Αποστολή E-mail"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleAccept" styleClass="menu-item"
+                        <MenuItem mnemonicParsing="false" onAction="#handleAccept" 
                                   text="Αποδοχή"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleReject" styleClass="menu-item"
+                        <MenuItem mnemonicParsing="false" onAction="#handleReject" 
                                   text="Απόρριψη"/>
                     </items>
                 </ContextMenu>
@@ -41,8 +41,8 @@
             </columnResizePolicy>
         </TableView>
         <HBox alignment="CENTER_RIGHT" spacing="10">
-            <JFXButton fx:id="createOfferButton" buttonType="RAISED" layoutX="317.0" layoutY="10.0"
-                       styleClass="click-button" text="Δημηουργία Προσφοράς">
+            <JFXButton fx:id="createOfferButton" layoutX="317.0" layoutY="10.0"
+                        text="Δημηουργία Προσφοράς">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                         <image>
@@ -52,7 +52,7 @@
                 </graphic>
             </JFXButton>
             <Separator visible="false" HBox.hgrow="ALWAYS"/>
-            <JFXButton fx:id="addOfferButton" buttonType="RAISED" prefWidth="220.0" styleClass="click-button"
+            <JFXButton fx:id="addOfferButton" prefWidth="220.0" 
                        text="Προσθήκη">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -63,7 +63,7 @@
                     <Insets/>
                 </HBox.margin>
             </JFXButton>
-            <JFXButton fx:id="editOfferButton" buttonType="RAISED" prefWidth="220.0" styleClass="click-button"
+            <JFXButton fx:id="editOfferButton" prefWidth="220.0" 
                        text="Επεξεργασία">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -74,7 +74,7 @@
                     <Insets/>
                 </HBox.margin>
             </JFXButton>
-            <JFXButton fx:id="deleteOfferButton" buttonType="RAISED" prefWidth="220.0" styleClass="click-button"
+            <JFXButton fx:id="deleteOfferButton" prefWidth="220.0" 
                        text="Διαγραφή">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">

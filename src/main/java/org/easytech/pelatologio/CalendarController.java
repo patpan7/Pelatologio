@@ -39,10 +39,8 @@ public class CalendarController {
     @FXML
     public void initialize() {
         Platform.runLater(() -> stackPane.requestFocus());
-        // Ανάκτηση ημερολογίων από τη βάση
         loadEvents();
 
-        // Ρυθμίσεις εμφάνισης
         calendarView.setShowSearchField(true);
         calendarView.setShowToolBar(true);
 
@@ -53,8 +51,8 @@ public class CalendarController {
             }
             return null;
         });
-
     }
+
 
     private void loadEvents() {
         // Φόρτωση όλων των συμβάντων από τη βάση

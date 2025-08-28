@@ -51,7 +51,7 @@ public class AddCustomerController {
     @FXML
     private AnchorPane taxisContainer, myposContainer, simplyContainer, emblemContainer, erganiContainer, pelatologioContainer, nineposContainer, devicesContainer, invoicesContainer, tasksContainer, subsContainer, offersContainer, ordersContainer, callLogContainer, notesContainer;
     @FXML
-    private Tab tabMain, tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabPelatologio, tabNinepos, tabDevices, tabInvoices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabCallLog, tabNotes;
+    private Tab tabMain, tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabPelatologio, tabNinepos, tabEdps, tabDevices, tabInvoices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabCallLog, tabNotes;
     @FXML
     private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone, tfBalance, tfBalanceMega;
     @FXML
@@ -79,25 +79,25 @@ public class AddCustomerController {
     @FXML
     private Label lblBlance, lblBlanceMega, lblCode;
     @FXML
-    public JFXCheckBox checkboxActive;
+    public CheckBox checkboxActive;
     @FXML
     Button btnPhone1, btnPhone2, btnMobile, btnPhoneManager, btnAccPhone, btnAccMobile, startCallLogButton, btnAnydesk, btnManageApps;
-
-
-    private TaxisViewController taxisViewController;
-    private MyposViewController myposViewController;
-    private SimplyViewController simplyViewController;
-    private EmblemViewController emblemViewController;
-    private ErganiViewController erganiViewController;
-    private PelatologioViewController pelatologioViewController;
-    private NineposViewController nineposViewController;
-    private CustomerDevicesController customerDevicesController;
-    private InvoicesViewController invoicesViewController;
-    private CustomerTasksController customerTasksController;
-    private CustomerSubsController customerSubsController;
-    private CustomerOffersController customerOffersController;
-    private CustomerOrdersController customerOrdersController;
-    private CustomerCallLogController customerCallLogController;
+//
+//
+//    private TaxisViewController taxisViewController;
+//    private MyposViewController myposViewController;
+//    private SimplyViewController simplyViewController;
+//    private EmblemViewController emblemViewController;
+//    private ErganiViewController erganiViewController;
+//    private PelatologioViewController pelatologioViewController;
+//    private NineposViewController nineposViewController;
+//    private CustomerDevicesController customerDevicesController;
+//    private InvoicesViewController invoicesViewController;
+//    private CustomerTasksController customerTasksController;
+//    private CustomerSubsController customerSubsController;
+//    private CustomerOffersController customerOffersController;
+//    private CustomerOrdersController customerOrdersController;
+//    private CustomerCallLogController customerCallLogController;
 
     private final Map<Tab, String> tabToFxml = new HashMap<>();
     private final Map<Tab, AnchorPane> tabToContainer = new HashMap<>();
@@ -142,7 +142,7 @@ public class AddCustomerController {
 
     public void initialize() {
         Platform.runLater(() -> tabPane.requestFocus());
-        setupTabs();
+        //setupTabs();
         tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
             if (!loadedTabs.contains(newTab)) {
                 //loadTabContent(newTab);
@@ -179,45 +179,6 @@ public class AddCustomerController {
         checkboxActive.setVisible(false);
         checkboxActive.setDisable(true);
         btnTask.setVisible(false);
-//        tabTaxis.setDisable(true);
-//        tabMypos.setDisable(true);
-//        if (!Features.isEnabled("simply")) {
-//            tabSimply.setDisable(true);
-//        }
-//        if (!Features.isEnabled("emblem")) {
-//            tabEmblem.setDisable(true);
-//        }
-//        if (!Features.isEnabled("ergani")) {
-//            tabErgani.setDisable(true);
-//        }
-//        if (!Features.isEnabled("pelatologio")) {
-//            tabPelatologio.setDisable(true);
-//        }
-//        if (!Features.isEnabled("ninepos")) {
-//            tabNinepos.setDisable(true);
-//        }
-//        if (!Features.isEnabled("devices")) {
-//            tabDevices.setDisable(true);
-//        }
-//        if (!Features.isEnabled("megasoft")) {
-//            tabInvoices.setDisable(true);
-//        }
-//        tabInvoices.setDisable(true);
-//        if (!Features.isEnabled("tasks")) {
-//            tabTasks.setDisable(true);
-//        }
-//        if (!Features.isEnabled("subs")) {
-//            tabSubs.setDisable(true);
-//        }
-//        if (!Features.isEnabled("offers")) {
-//            tabOffers.setDisable(true);
-//        }
-//        if (!Features.isEnabled("orders")) {
-//            tabOrders.setDisable(true);
-//        }
-//        if (!Features.isEnabled("calls")) {
-//            tabCallLog.setDisable(true);
-//        }
 
         // Δημιουργία του βασικού ContextMenu χωρίς την επιλογή "Δοκιμή Email"
         ContextMenu contextMenu = new ContextMenu();
@@ -415,7 +376,7 @@ public class AddCustomerController {
 
         // Προσθήκη ακροατών αλλαγών στα πεδία
         // This is now called from setCustomerForEdit to avoid premature firing
-        // setupFieldListeners();
+        setupFieldListeners();
 
         // Check for active call and show button if necessary
         if (ActiveCallState.hasPendingCall()) {
@@ -458,64 +419,64 @@ public class AddCustomerController {
     }
 
 
-    private void setupTabs() {
-        if (Features.isEnabled("taxis")) {
-            tabToFxml.put(tabTaxis, "taxisView.fxml");
-            tabToContainer.put(tabTaxis, taxisContainer);
-        }
-        if (Features.isEnabled("mypos")) {
-            tabToFxml.put(tabMypos, "myposView.fxml");
-            tabToContainer.put(tabMypos, myposContainer);
-        }
-        if (Features.isEnabled("simply")) {
-            tabToFxml.put(tabSimply, "simplyView.fxml");
-            tabToContainer.put(tabSimply, simplyContainer);
-        }
-        if (Features.isEnabled("emblem")) {
-            tabToFxml.put(tabEmblem, "emblemView.fxml");
-            tabToContainer.put(tabEmblem, emblemContainer);
-        }
-        if (Features.isEnabled("ergani")) {
-            tabToFxml.put(tabErgani, "erganiView.fxml");
-            tabToContainer.put(tabErgani, erganiContainer);
-        }
-        if (Features.isEnabled("pelatologio")) {
-            tabToFxml.put(tabPelatologio, "pelatologioView.fxml");
-            tabToContainer.put(tabPelatologio, pelatologioContainer);
-        }
-        if (Features.isEnabled("ninepos")) {
-            tabToFxml.put(tabNinepos, "nineposView.fxml");
-            tabToContainer.put(tabNinepos, nineposContainer);
-        }
-        if (Features.isEnabled("devices")) {
-            tabToFxml.put(tabDevices, "customerDevicesView.fxml");
-            tabToContainer.put(tabDevices, devicesContainer);
-        }
-        if (Features.isEnabled("megasoft")) {
-            tabToFxml.put(tabInvoices, "invoicesView.fxml");
-            tabToContainer.put(tabInvoices, invoicesContainer);
-        }
-        if (Features.isEnabled("tasks")) {
-            tabToFxml.put(tabTasks, "customerTasksView.fxml");
-            tabToContainer.put(tabTasks, tasksContainer);
-        }
-        if (Features.isEnabled("subs")) {
-            tabToFxml.put(tabSubs, "customerSubsView.fxml");
-            tabToContainer.put(tabSubs, subsContainer);
-        }
-        if (Features.isEnabled("offers")) {
-            tabToFxml.put(tabOffers, "customerOffersView.fxml");
-            tabToContainer.put(tabOffers, offersContainer);
-        }
-        if (Features.isEnabled("orders")) {
-            tabToFxml.put(tabOrders, "ordersCustView.fxml");
-            tabToContainer.put(tabOrders, ordersContainer);
-        }
-        if (Features.isEnabled("calls")) {
-            tabToFxml.put(tabCallLog, "customerCallLogView.fxml");
-            tabToContainer.put(tabCallLog, callLogContainer);
-        }
-    }
+//    private void setupTabs() {
+//        if (Features.isEnabled("taxis")) {
+//            tabToFxml.put(tabTaxis, "taxisView.fxml");
+//            tabToContainer.put(tabTaxis, taxisContainer);
+//        }
+//        if (Features.isEnabled("mypos")) {
+//            tabToFxml.put(tabMypos, "myposView.fxml");
+//            tabToContainer.put(tabMypos, myposContainer);
+//        }
+//        if (Features.isEnabled("simply")) {
+//            tabToFxml.put(tabSimply, "simplyView.fxml");
+//            tabToContainer.put(tabSimply, simplyContainer);
+//        }
+//        if (Features.isEnabled("emblem")) {
+//            tabToFxml.put(tabEmblem, "emblemView.fxml");
+//            tabToContainer.put(tabEmblem, emblemContainer);
+//        }
+//        if (Features.isEnabled("ergani")) {
+//            tabToFxml.put(tabErgani, "erganiView.fxml");
+//            tabToContainer.put(tabErgani, erganiContainer);
+//        }
+//        if (Features.isEnabled("pelatologio")) {
+//            tabToFxml.put(tabPelatologio, "pelatologioView.fxml");
+//            tabToContainer.put(tabPelatologio, pelatologioContainer);
+//        }
+//        if (Features.isEnabled("ninepos")) {
+//            tabToFxml.put(tabNinepos, "nineposView.fxml");
+//            tabToContainer.put(tabNinepos, nineposContainer);
+//        }
+//        if (Features.isEnabled("devices")) {
+//            tabToFxml.put(tabDevices, "customerDevicesView.fxml");
+//            tabToContainer.put(tabDevices, devicesContainer);
+//        }
+//        if (Features.isEnabled("megasoft")) {
+//            tabToFxml.put(tabInvoices, "invoicesView.fxml");
+//            tabToContainer.put(tabInvoices, invoicesContainer);
+//        }
+//        if (Features.isEnabled("tasks")) {
+//            tabToFxml.put(tabTasks, "customerTasksView.fxml");
+//            tabToContainer.put(tabTasks, tasksContainer);
+//        }
+//        if (Features.isEnabled("subs")) {
+//            tabToFxml.put(tabSubs, "customerSubsView.fxml");
+//            tabToContainer.put(tabSubs, subsContainer);
+//        }
+//        if (Features.isEnabled("offers")) {
+//            tabToFxml.put(tabOffers, "customerOffersView.fxml");
+//            tabToContainer.put(tabOffers, offersContainer);
+//        }
+//        if (Features.isEnabled("orders")) {
+//            tabToFxml.put(tabOrders, "ordersCustView.fxml");
+//            tabToContainer.put(tabOrders, ordersContainer);
+//        }
+//        if (Features.isEnabled("calls")) {
+//            tabToFxml.put(tabCallLog, "customerCallLogView.fxml");
+//            tabToContainer.put(tabCallLog, callLogContainer);
+//        }
+//    }
 
     private void loadTabContent(Tab tab) {
         String fxmlPath = tabToFxml.get(tab);
@@ -863,8 +824,8 @@ public class AddCustomerController {
 
         // (1.1) Φόρτωση και επιλογή λογιστή, σύσταση, job team
         setAccountant();
-        setRecommendation();
-        setJobTeam();
+//        setRecommendation();
+//        setJobTeam();
 
         // (2) Rebuild των dynamic app tabs με βάση:
         //     - global feature flag
@@ -1003,11 +964,11 @@ public class AddCustomerController {
         // === 6. Αποθήκευση πελάτη για μελλοντική χρήση ===
         this.customer = customer;
         this.code = customer.getCode();
-
+        lblCode.setText("Κωδικός: " + customer.getCode());
         this.isLoading = false;
         this.hasUnsavedChanges = false;
         updateTabTitle(""); // αν χρησιμοποιείται
-        lblCode.setText("Κωδικός: " + customer.getCode());
+
     }
 
 
@@ -1563,6 +1524,11 @@ public class AddCustomerController {
                 tabSimply.getStyleClass().add("tabHas");
             }
         }
+        if (Features.isEnabled("edps")) {
+            if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 8)) {
+                tabEdps.getStyleClass().add("tabHas");
+            }
+        }
         if (Features.isEnabled("emblem")) {
             if (DBHelper.getCustomerDao().hasApp(customer.getCode(), 4)) {
                 tabEmblem.getStyleClass().add("tabHas");
@@ -1762,6 +1728,7 @@ public class AddCustomerController {
         String accEmail1 = tfAccEmail1.getText() == null ? "" : tfAccEmail1.getText();
         customer.setAccEmail1(accEmail1);
         Recommendation selectedRecommendation = tfRecommendation.getSelectionModel().getSelectedItem();
+        int selectedRecId = selectedRecommendation != null ? selectedRecommendation.getId() : 0;
         customer.setRecommendation(selectedRecommendation == null ? 0 : selectedRecommendation.getId());
         String balance = tfBalance.getText();
         customer.setBalance(balance);
@@ -1774,6 +1741,7 @@ public class AddCustomerController {
             subjobTeam = new SubJobTeam(0, "", 0); // Create a new SubJobTeam with ID 0 if none is selected
             subjobTeam.setId(0); // Set to 0 if no sub-job team is selected
         }
+        int subJobTeamId = subjobTeam == null ? 0 : subjobTeam.getId();
         customer.setSubJobTeam(subjobTeam == null ? 0 : subjobTeam.getId());
 
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
@@ -1801,7 +1769,7 @@ public class AddCustomerController {
         customer.setPhone2(phone2);
         customer.setManagerPhone(managerPhone);
 
-        DBHelper.getCustomerDao().updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation.getId(), balance, balanceReason, isActive, subjobTeam.getId());
+        DBHelper.getCustomerDao().updateCustomer(code, name, title, job, afm, phone1, phone2, mobile, address, town, posCode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecId, balance, balanceReason, isActive, subJobTeamId);
 
         String accName = tfAccName.getValue() != null ? tfAccName.getValue().toString() : "";
         String accPhone = tfAccPhone.getText();
@@ -2038,6 +2006,22 @@ public class AddCustomerController {
             PrismaWinAutomation.addCustomer(customer);
     }
 
+//    // --- NEW GENERIC TAB SELECTION METHOD ---
+//    public void selectTab(CustomerFeature feature) {
+//        if (feature.isGloballyEnabled()) {
+//            temporarilyEnableTab(feature);
+//        }
+//    }
+
+//    private void temporarilyEnableTab(CustomerFeature feature) {
+//        Tab tab = featureToTabMap.get(feature);
+//        if (tab != null && !tabPane.getTabs().contains(tab)) {
+//            tabPane.getTabs().add(tab);
+//        }
+//        // Always select the tab, even if it was already visible
+//        Platform.runLater(() -> tabPane.getSelectionModel().select(tab));
+//    }
+
     public void selectTaxisTab() {
         if (Features.isEnabled("taxis")) {
             Platform.runLater(() -> tabPane.getSelectionModel().select(tabTaxis));
@@ -2065,6 +2049,12 @@ public class AddCustomerController {
     public void selectErganiTab() {
         if (Features.isEnabled("ergani")) {
             Platform.runLater(() -> tabPane.getSelectionModel().select(tabErgani));
+        }
+    }
+
+    public void selectEdpsTab() {
+        if (Features.isEnabled("edps")) {
+            Platform.runLater(() -> tabPane.getSelectionModel().select(tabEdps));
         }
     }
 
@@ -2184,11 +2174,12 @@ public class AddCustomerController {
         // ComboBoxes
         tfAccName.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged(tfAccName));
         tfRecommendation.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged(tfRecommendation));
+
+        tfSubJobTeam.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged(tfSubJobTeam));
         tfJobTeam.valueProperty().addListener((obs, oldVal, newVal) -> {
             markAsChanged(tfJobTeam);
             handleJobTeamSelection();
         });
-        tfSubJobTeam.valueProperty().addListener((obs, oldVal, newVal) -> markAsChanged(tfSubJobTeam));
     }
 
     private void markAsChanged(Object source) {

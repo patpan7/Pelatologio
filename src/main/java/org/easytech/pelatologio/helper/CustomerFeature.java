@@ -95,6 +95,12 @@ NOTES(
         "Σημειώσεις",
         "notesView.fxml",
         c -> true
+),
+EDPS(
+        "edps",
+        "EDPS",
+        "edpsView.fxml",
+        c -> DBHelper.getCustomerProjectDao().hasProjects(c.getCode(), 8) // Assuming 1 is the ApplicationID for EDPS
 );
 
     public final String featureFlag;

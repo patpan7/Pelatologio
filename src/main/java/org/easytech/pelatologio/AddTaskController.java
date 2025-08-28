@@ -1,7 +1,5 @@
 package org.easytech.pelatologio;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -53,9 +51,9 @@ public class AddTaskController {
     @FXML
     private ComboBox<TaskCategory> categoryComboBox;
     @FXML
-    private JFXButton btnCustomer;
+    private Button btnCustomer;
     @FXML
-    private JFXCheckBox is_completed, is_ergent, is_wait, is_calendar;
+    private CheckBox is_completed, is_ergent, is_wait, is_calendar;
 
     private Tasks tasks;
     private int customerId;

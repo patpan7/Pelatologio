@@ -5,11 +5,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
-<DialogPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/"
+<DialogPane xmlns="http://javafx.com/javafx/"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddSubsCategoryController">
     <content>
         <VBox alignment="CENTER">
-            <Label styleClass="normal-label" text="Επεξεργασία Κατηγορίας Συμβολαίου"/>
+            <Label text="Επεξεργασία Κατηγορίας Συμβολαίου"/>
             <TextField fx:id="nameField" promptText="Κατηγορία Συμβολαίου">
                 <VBox.margin>
                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>

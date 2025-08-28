@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css"
+<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0"  
            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.easytech.pelatologio.ItemsController">
-    <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" styleClass="pane">
-        <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
+    <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" >
+        <BorderPane fx:id="rootPane"  StackPane.alignment="CENTER">
             <center>
                 <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                     <BorderPane.margin>
@@ -20,7 +19,7 @@
                         <VBox.margin>
                             <Insets bottom="10.0" left="20.0" right="20.0"/>
                         </VBox.margin>
-                        <Label alignment="CENTER" contentDisplay="CENTER" styleClass="normal-label" text="Αναζήτηση">
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="Αναζήτηση">
                             <opaqueInsets>
                                 <Insets/>
                             </opaqueInsets>
@@ -33,8 +32,8 @@
                                 <Insets/>
                             </opaqueInsets>
                         </TextField>
-                        <JFXButton fx:id="btnClear" buttonType="RAISED" mnemonicParsing="false" onAction="#clean"
-                                   styleClass="click-button" text="">
+                        <Button fx:id="btnClear" mnemonicParsing="false" onAction="#clean"
+                                text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/clean.png"/>
@@ -43,16 +42,16 @@
                             <HBox.margin>
                                 <Insets left="5.0"/>
                             </HBox.margin>
-                        </JFXButton>
+                        </Button>
                         <Separator prefWidth="200.0" visible="false" HBox.hgrow="ALWAYS"/>
-                        <JFXButton buttonType="RAISED" mnemonicParsing="false" onAction="#itemAddNew"
-                                   styleClass="click-button" text="Προσθήκη Νέου Είδους">
+                        <Button mnemonicParsing="false" onAction="#itemAddNew"
+                                text="Προσθήκη Νέου Είδους">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/add.png"/>
                                 </ImageView>
                             </graphic>
-                        </JFXButton>
+                        </Button>
                     </HBox>
                     <TableView fx:id="itemsTable" VBox.vgrow="ALWAYS">
                         <columns>
@@ -66,8 +65,8 @@
                         <contextMenu>
                             <ContextMenu>
                                 <items>
-                                    <MenuItem onAction="#handleEditOption" styleClass="menu-item" text="Επεξεργασία"/>
-                                    <MenuItem mnemonicParsing="false" onAction="#itemAddNew" styleClass="menu-item"
+                                    <MenuItem onAction="#handleEditOption" text="Επεξεργασία"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#itemAddNew"
                                               text="Προσθήκη"/>
                                 </items>
                             </ContextMenu>

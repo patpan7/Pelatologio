@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+<AnchorPane prefHeight="800.0" prefWidth="1200.0"  xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.DashboardController">
     <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
           AnchorPane.topAnchor="0.0">
@@ -105,24 +105,22 @@
                 </HBox.margin>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
-                <children>
-                    <Label text="Πελάτες ανά σύσταση">
-                        <font>
-                            <Font name="System Bold" size="16.0"/>
-                        </font>
-                    </Label>
-                    <BarChart fx:id="recommendationChart" categoryGap="1.0" VBox.vgrow="ALWAYS">
-                        <xAxis>
-                            <CategoryAxis side="BOTTOM"/>
-                        </xAxis>
-                        <yAxis>
-                            <NumberAxis side="LEFT"/>
-                        </yAxis>
-                    </BarChart>
-                </children>
                 <HBox.margin>
                     <Insets left="5.0" right="5.0"/>
                 </HBox.margin>
+                <Label text="Πελάτες ανά σύσταση">
+                    <font>
+                        <Font name="System Bold" size="16.0"/>
+                    </font>
+                </Label>
+                <BarChart fx:id="recommendationChart" categoryGap="1.0" VBox.vgrow="ALWAYS">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT"/>
+                    </yAxis>
+                </BarChart>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                 <Label text="Τελευταίες κλήσεις">
@@ -137,13 +135,11 @@
             </VBox>
         </HBox>
         <HBox VBox.vgrow="ALWAYS">
-            <children>
-                <PieChart fx:id="jobTeamPieChart" title="Πελάτες ανά Ομάδα" HBox.hgrow="ALWAYS"/>
-                <PieChart fx:id="subJobTeamPieChart" title="Πελάτες ανά Υπο-ομάδα" HBox.hgrow="ALWAYS"/>
-            </children>
             <VBox.margin>
                 <Insets top="10.0"/>
             </VBox.margin>
+            <PieChart fx:id="jobTeamPieChart" title="Πελάτες ανά Ομάδα" HBox.hgrow="ALWAYS"/>
+            <PieChart fx:id="subJobTeamPieChart" title="Πελάτες ανά Υπο-ομάδα" HBox.hgrow="ALWAYS"/>
         </HBox>
     </VBox>
 </AnchorPane>

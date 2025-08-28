@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="pane" stylesheets="@external.css"
+<BorderPane prefHeight="600.0" prefWidth="800.0"  
             xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.easytech.pelatologio.SupplierPaymentsViewController">
     <top>
@@ -13,9 +12,9 @@
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
             </BorderPane.margin>
             <children>
-                <JFXButton onAction="#handleAddPayment" styleClass="click-button" text="Προσθήκη Πληρωμής"/>
-                <JFXButton onAction="#handleEditPayment" styleClass="click-button" text="Επεξεργασία"/>
-                <JFXButton onAction="#handleDeletePayment" styleClass="click-button" text="Διαγραφή"/>
+                <Button onAction="#handleAddPayment"  text="Προσθήκη Πληρωμής"/>
+                <Button onAction="#handleEditPayment"  text="Επεξεργασία"/>
+                <Button onAction="#handleDeletePayment"  text="Διαγραφή"/>
             </children>
         </HBox>
     </top>

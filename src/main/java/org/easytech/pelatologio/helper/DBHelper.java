@@ -36,6 +36,10 @@ public class DBHelper {
     private static SupplierPaymentDao supplierPaymentDao;
     private static PartnerEarningDao partnerEarningDao;
     private static PartnerDao partnerDao;
+    private static ApplicationStepDao applicationStepDao;
+    private static CustomerProjectDao customerProjectDao;
+    private static ProjectStepProgressDao customerProjectTaskDao;
+    private static ApplicationDao applicationDao;
 
     static {
         try {
@@ -51,32 +55,62 @@ public class DBHelper {
             config.setMaxLifetime(1800000); // 30 λεπτά μέγιστη διάρκεια ζωής σύνδεσης
             dataSource = new HikariDataSource(config);
 
-            // Initialize DAOs
+            // --- Core DAOs (Always Initialized) ---
             customerDao = new CustomerDaoImpl(dataSource);
-            loginDao = new LoginDaoImpl(dataSource);
-            taskDao = new TaskDaoImpl(dataSource);
-            itemDao = new ItemDaoImpl(dataSource);
-            deviceDao = new DeviceDaoImpl(dataSource);
-            accountantDao = new AccountantDaoImpl(dataSource);
-            subscriptionDao = new SubscriptionDaoImpl(dataSource);
-            offerDao = new OfferDaoImpl(dataSource);
-            addressDao = new AddressDaoImpl(dataSource);
-            megasoftDao = new MegasoftDaoImpl(dataSource);
-            orderDao = new OrderDaoImpl(dataSource);
             supplierDao = new SupplierDaoImpl(dataSource);
-            invoiceDao = new InvoiceDaoImpl(dataSource);
-            trackingDao = new TrackingDaoImpl(dataSource);
-            simplyStatusDao = new SimplyStatusDaoImpl(dataSource);
-            callLogDao = new CallLogDaoImpl(dataSource);
+            accountantDao = new AccountantDaoImpl(dataSource);
+            addressDao = new AddressDaoImpl(dataSource);
             recommendationDao = new RecommendationDaoImpl(dataSource);
             jobTeamDao = new JobTeamDaoImpl(dataSource);
             subJobTeamDao = new SubJobTeamDaoImpl(dataSource);
-            appItemDao = new AppItemDaoImpl(dataSource);
-            customerMyPosDetailsDao = new CustomerMyPosDetailsDaoImpl(dataSource);
-            commissionDao = new CommissionDaoImpl(dataSource);
-            supplierPaymentDao = new SupplierPaymentDaoImpl(dataSource);
-            partnerEarningDao = new PartnerEarningDaoImpl(dataSource);
-            partnerDao = new PartnerDaoImpl(dataSource);
+            applicationDao = new ApplicationDaoImpl(dataSource); // Needed for feature management
+
+            // --- Conditional DAOs based on Features ---
+            if (Features.isEnabled("tasks")) {
+                taskDao = new TaskDaoImpl(dataSource);
+            }
+            if (Features.isEnabled("devices")) {
+                deviceDao = new DeviceDaoImpl(dataSource);
+                itemDao = new ItemDaoImpl(dataSource);
+                appItemDao = new AppItemDaoImpl(dataSource);
+            }
+            if (Features.isEnabled("subs")) {
+                subscriptionDao = new SubscriptionDaoImpl(dataSource);
+            }
+            if (Features.isEnabled("offers")) {
+                offerDao = new OfferDaoImpl(dataSource);
+            }
+            if (Features.isEnabled("megasoft")) {
+                megasoftDao = new MegasoftDaoImpl(dataSource);
+                invoiceDao = new InvoiceDaoImpl(dataSource);
+            }
+            if (Features.isEnabled("orders")) {
+                orderDao = new OrderDaoImpl(dataSource);
+            }
+            if (Features.isEnabled("simply")) {
+                simplyStatusDao = new SimplyStatusDaoImpl(dataSource);
+            }
+            if (Features.isEnabled("calls")) {
+                callLogDao = new CallLogDaoImpl(dataSource);
+            }
+            if (Features.isEnabled("mypos")) {
+                customerMyPosDetailsDao = new CustomerMyPosDetailsDaoImpl(dataSource);
+            }
+            if (Features.isEnabled("partners")) {
+                partnerDao = new PartnerDaoImpl(dataSource);
+                commissionDao = new CommissionDaoImpl(dataSource);
+                supplierPaymentDao = new SupplierPaymentDaoImpl(dataSource);
+                partnerEarningDao = new PartnerEarningDaoImpl(dataSource);
+            }
+            if (Features.isEnabled("edps")) { // Assuming 'edps' is the feature key
+                applicationStepDao = new ApplicationStepDaoImpl(dataSource);
+                customerProjectDao = new CustomerProjectDaoImpl(dataSource);
+                customerProjectTaskDao = new ProjectStepProgressDaoImpl(dataSource);
+            }
+
+            // This DAO seems general purpose, might need to always be on
+            trackingDao = new TrackingDaoImpl(dataSource);
+            loginDao = new LoginDaoImpl(dataSource); // For app logins
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -182,6 +216,19 @@ public class DBHelper {
 
     public static PartnerDao getPartnerDao() {
         return partnerDao;
+    }
+
+    public static ApplicationStepDao getApplicationStepDao() {
+        return applicationStepDao;
+    }
+    public static CustomerProjectDao getCustomerProjectDao() {
+        return customerProjectDao;
+    }
+    public static ProjectStepProgressDao getCustomerProjectTaskDao() {
+        return customerProjectTaskDao;
+    }
+    public static ApplicationDao getApplicationDao() {
+        return applicationDao;
     }
     // This method is no longer needed as DAOs handle their own connections
     // but keeping it for compatibility if other parts of the code still use it directly.

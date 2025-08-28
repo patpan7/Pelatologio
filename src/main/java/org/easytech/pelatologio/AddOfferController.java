@@ -1,6 +1,5 @@
 package org.easytech.pelatologio;
 
-import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -49,7 +48,7 @@ public class AddOfferController {
     @FXML
     private ComboBox<Customer> customerComboBox;
     @FXML
-    private JFXButton btnCustomer, btnSelectFile;
+    private Button btnCustomer, btnSelectFile;
     @FXML
     private CheckBox isArchived;
 

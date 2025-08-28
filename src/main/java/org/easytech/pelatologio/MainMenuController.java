@@ -1,6 +1,8 @@
 package org.easytech.pelatologio;
 
-import com.jfoenix.controls.JFXButton;
+import atlantafx.base.theme.PrimerDark;
+import atlantafx.base.theme.PrimerLight;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -36,7 +38,7 @@ import java.util.ResourceBundle;
 
 public class MainMenuController implements Initializable {
     @FXML
-    public JFXButton btnSubs, btnDashboard, btnAccountants, btnSuppliers, btnOffers, btnOrders, btnPartners, btnCallHistory, btnPartnerEarnings, btnCommissions;
+    public Button btnSubs, btnDashboard, btnAccountants, btnSuppliers, btnOffers, btnOrders, btnPartners, btnCallHistory, btnPartnerEarnings, btnCommissions, btnEdpsManagement;
 
     @FXML
     private StackPane stackPane;
@@ -56,6 +58,8 @@ public class MainMenuController implements Initializable {
     private Button btnCustomers, btnMyPOS, btnTasks, btnCalendar, btnD11, btnMyDataStatus, btnItems, btnDevices, btnSettings, btnSimplyStatus;
     @FXML
     private ProgressIndicator loadingIndicator;
+    @FXML
+    private ToggleButton themeToggle;
 
     private CustomerDao customerDao;
     private SipClient sipClient;
@@ -606,17 +610,17 @@ public class MainMenuController implements Initializable {
                 return;
             }
         }
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("subsView.fxml"));
-            Parent subsContent = fxmlLoader.load();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("subsView.fxml"));
+        Parent subsContent = fxmlLoader.load();
 
-            SubsViewController subsController = fxmlLoader.getController();
-            subsController.setMainTabPane(mainTabPane);
+        SubsViewController subsController = fxmlLoader.getController();
+        subsController.setMainTabPane(mainTabPane);
 
-            Tab newTab = new Tab("Συμβόλαια");
-            newTab.setContent(subsContent);
+        Tab newTab = new Tab("Συμβόλαια");
+        newTab.setContent(subsContent);
 
-            mainTabPane.getTabs().add(newTab);
-            mainTabPane.getSelectionModel().select(newTab);
+        mainTabPane.getTabs().add(newTab);
+        mainTabPane.getSelectionModel().select(newTab);
     }
 
     public void d11Click(ActionEvent event) {
@@ -972,6 +976,40 @@ public class MainMenuController implements Initializable {
         mainTabPane.getSelectionModel().select(newTab);
     }
 
+    public void handleEdpsManagement(ActionEvent actionEvent) {
+        if (Features.isEnabled("edps")) {
+            for (Tab tab : mainTabPane.getTabs()) {
+                if (tab.getText().equals("Διαχείριση EDPS")) {
+                    mainTabPane.getSelectionModel().select(tab);
+                    return;
+                }
+            }
+
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("edpsManagementView.fxml"));
+                Parent edpsManagementContent = fxmlLoader.load();
+
+                EdpsManagementController controller = fxmlLoader.getController();
+                controller.setMainTabPane(mainTabPane);
+                Tab newTab = new Tab("Διαχείριση EDPS");
+                newTab.setContent(edpsManagementContent);
+
+                mainTabPane.getTabs().add(newTab);
+                mainTabPane.getSelectionModel().select(newTab);
+            } catch (IOException e) {
+                AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα της διαχείρισης EDPS.", e.getMessage(), Alert.AlertType.ERROR);
+            }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module EDPS είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
+        }
+    }
+
     private void openFeatureManagement() {
         // Create a custom dialog
         Dialog<String> passwordDialog = new Dialog<>();
@@ -1028,6 +1066,18 @@ public class MainMenuController implements Initializable {
                 AlertDialogHelper.showDialog("Σφάλμα", "Λανθασμένος κωδικός πρόσβασης.", "", Alert.AlertType.ERROR);
             }
         });
+    }
+
+
+    @FXML
+    private void toggleTheme(ActionEvent event) {
+        if (themeToggle.isSelected()) {
+            Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+            themeToggle.setText("Light Mode");
+        } else {
+            Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+            themeToggle.setText("Dark Mode");
+        }
     }
 }
 

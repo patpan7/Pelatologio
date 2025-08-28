@@ -1,42 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css"
+<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0"  
            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.easytech.pelatologio.DeviceController">
-    <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" styleClass="pane">
-        <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
+    <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
+        <BorderPane fx:id="rootPane"  StackPane.alignment="CENTER">
             <center>
                 <VBox spacing="10">
                     <HBox alignment="CENTER_LEFT">
-                        <Label styleClass="normal-label" text="Φίλτρα:">
+                        <Label text="Φίλτρα:">
                             <HBox.margin>
                                 <Insets right="5.0"/>
                             </HBox.margin>
                         </Label>
-                        <JFXCheckBox fx:id="showAllCheckbox" selected="true" styleClass="normal-label" text="Όλες">
+                        <CheckBox fx:id="showAllCheckbox" selected="true" text="Όλες">
                             <HBox.margin>
                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                             </HBox.margin>
-                        </JFXCheckBox>
-                        <JFXCheckBox fx:id="showWithCustomerCheckbox" styleClass="normal-label" text="Με πελάτη">
+                        </CheckBox>
+                        <CheckBox fx:id="showWithCustomerCheckbox" text="Με πελάτη">
                             <HBox.margin>
                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                             </HBox.margin>
-                        </JFXCheckBox>
-                        <JFXCheckBox fx:id="showWithoutCustomerCheckbox" styleClass="normal-label" text="Χωρίς πελάτη">
+                        </CheckBox>
+                        <CheckBox fx:id="showWithoutCustomerCheckbox" text="Χωρίς πελάτη">
                             <HBox.margin>
                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                             </HBox.margin>
-                        </JFXCheckBox>
+                        </CheckBox>
                         <Separator orientation="VERTICAL"/>
-                        <Label styleClass="normal-label" text="Είδος:">
+                        <Label text="Είδος:">
                             <HBox.margin>
                                 <Insets left="10.0" right="10.0"/>
                             </HBox.margin>
@@ -54,7 +53,7 @@
                         <VBox.margin>
                             <Insets bottom="10.0" left="20.0" right="20.0"/>
                         </VBox.margin>
-                        <Label alignment="CENTER" contentDisplay="CENTER" styleClass="normal-label" text="S/N">
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="S/N">
                             <font>
                                 <Font name="System Bold" size="30.0"/>
                             </font>
@@ -73,8 +72,8 @@
                                 <Insets left="10.0" right="5.0"/>
                             </HBox.margin>
                         </TextField>
-                        <JFXButton fx:id="btnClear" buttonType="RAISED" mnemonicParsing="false" onAction="#clean"
-                                   styleClass="click-button" text="">
+                        <Button fx:id="btnClear"  mnemonicParsing="false" onAction="#clean"
+                                   text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/clean.png"/>
@@ -83,9 +82,9 @@
                             <HBox.margin>
                                 <Insets left="5.0" right="10.0"/>
                             </HBox.margin>
-                        </JFXButton>
+                        </Button>
                         <Separator orientation="VERTICAL"/>
-                        <Label styleClass="normal-label" text="Ποσοστό:">
+                        <Label text="Ποσοστό:">
                             <HBox.margin>
                                 <Insets left="10.0" right="10.0"/>
                             </HBox.margin>
@@ -96,10 +95,10 @@
                                 <Insets left="10.0" right="10.0"/>
                             </HBox.margin>
                         </ComboBox>
-                        <Label fx:id="countLabel" styleClass="normal-label" text="Label"/>
+                        <Label fx:id="countLabel" text="Label"/>
                         <Separator visible="false" HBox.hgrow="ALWAYS"/>
-                        <JFXButton fx:id="addDeviceButton" buttonType="RAISED" mnemonicParsing="false"
-                                   styleClass="click-button" text="Προσθήκη S/N">
+                        <Button fx:id="addDeviceButton"  mnemonicParsing="false"
+                                   text="Προσθήκη S/N">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/add.png"/>
@@ -108,7 +107,7 @@
                             <HBox.margin>
                                 <Insets left="10.0" right="10.0"/>
                             </HBox.margin>
-                        </JFXButton>
+                        </Button>
                     </HBox>
                     <TableView fx:id="devicesTable" VBox.vgrow="ALWAYS">
                         <columns>
@@ -126,11 +125,11 @@
                         <contextMenu>
                             <ContextMenu>
                                 <items>
-                                    <MenuItem onAction="#handleEditDevice" styleClass="menu-item" text="Επεξεργασία"/>
-                                    <MenuItem mnemonicParsing="false" onAction="#handleAddDevice" styleClass="menu-item"
+                                    <MenuItem onAction="#handleEditDevice" text="Επεξεργασία"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleAddDevice"
                                               text="Προσθήκη"/>
                                     <MenuItem mnemonicParsing="false" onAction="#handleDeleteDevice"
-                                              styleClass="menu-item" text="Διαγραφή"/>
+                                              text="Διαγραφή"/>
                                 </items>
                             </ContextMenu>
                         </contextMenu>
@@ -146,3 +145,4 @@
         </BorderPane>
     </ScrollPane>
 </StackPane>
+

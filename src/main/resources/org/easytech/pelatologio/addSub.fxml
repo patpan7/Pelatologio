@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<DialogPane expanded="true" styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+<DialogPane expanded="true"  stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddSubController">
     <content>
         <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
             <VBox alignment="TOP_CENTER">
-                <Label styleClass="header-label" text="Διαχείριση Συμβολαίου"/>
+                <Label text="Διαχείριση Συμβολαίου"/>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label prefWidth="235.0" styleClass="normal-label" text="Τίτλος:"/>
+                    <Label prefWidth="235.0" text="Τίτλος:"/>
                     <TextField fx:id="titleField" prefWidth="325.0"/>
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label prefWidth="235.0" styleClass="normal-label" text="Κατηγορία:"/>
+                    <Label prefWidth="235.0" text="Κατηγορία:"/>
                     <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="325.0"/>
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label prefWidth="235.0" styleClass="normal-label" text="Ημερομηνία Λήξης:">
+                    <Label prefWidth="235.0" text="Ημερομηνία Λήξης:">
                         <opaqueInsets>
                             <Insets/>
                         </opaqueInsets>
@@ -41,17 +40,17 @@
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label prefWidth="235.0" styleClass="normal-label" text="Τιμή:"/>
+                    <Label prefWidth="235.0" text="Τιμή:"/>
                     <TextField fx:id="priceField" prefWidth="325.0"/>
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label prefWidth="235.0" styleClass="normal-label" text="Πελάτης:"/>
+                    <Label prefWidth="235.0" text="Πελάτης:"/>
                     <ComboBox fx:id="customerComboBox" editable="true" prefWidth="325.0" promptText="Επιλογή Πελάτη"/>
-                    <JFXButton fx:id="btnCustomer" buttonType="RAISED" mnemonicParsing="false" onAction="#showCustomer"
-                               styleClass="click-button" text="">
+                    <Button fx:id="btnCustomer"  mnemonicParsing="false" onAction="#showCustomer"
+                            text="">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@icons/users.png"/>
@@ -60,14 +59,14 @@
                         <HBox.margin>
                             <Insets left="5.0" right="10.0"/>
                         </HBox.margin>
-                    </JFXButton>
+                    </Button>
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
 
-                    <Label prefWidth="235.0" styleClass="normal-label" text="Σημείωση:"/>
+                    <Label prefWidth="235.0" text="Σημείωση:"/>
                     <TextArea fx:id="noteField" onMouseClicked="#handleMouseClick" prefHeight="100" prefWidth="325.0"
                               wrapText="true"/>
                 </HBox>
@@ -75,3 +74,4 @@
         </ScrollPane>
     </content>
 </DialogPane>
+

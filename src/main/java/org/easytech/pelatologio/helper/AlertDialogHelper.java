@@ -30,4 +30,12 @@ public class AlertDialogHelper {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    public static void showErrorDialog(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null); // No header for info dialogs
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

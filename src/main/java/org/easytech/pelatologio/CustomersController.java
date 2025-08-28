@@ -51,7 +51,7 @@ import java.util.stream.IntStream;
 public class CustomersController implements Initializable {
     @FXML
     public TableColumn codeColumn, nameColumn, titleColumn, afmColumn, phone1Column, mobileColumn, townColumn, emailColumn;
-    public JFXButton btnClean;
+    public Button btnClean;
     @FXML
     private TableColumn<Customer, BigDecimal> balanceColumn;
     @FXML
@@ -63,9 +63,9 @@ public class CustomersController implements Initializable {
     @FXML
     TextField filterField;
     @FXML
-    JFXComboBox<String> searchFieldComboBox;
+    ComboBox<String> searchFieldComboBox;
     @FXML
-    JFXComboBox<AppItem> appComboBox;
+    ComboBox<AppItem> appComboBox;
     @FXML
     Button btnTaxis, btnMypos, btnSimply, btnEmblem, btnErgani, btnData, openFileButton;
     @FXML
@@ -73,15 +73,15 @@ public class CustomersController implements Initializable {
     @FXML
     private VBox filterPane; // The new advanced filter pane
     @FXML
-    private JFXComboBox<String> statusComboBox;
+    private ComboBox<String> statusComboBox;
     @FXML
-    private JFXComboBox<Recommendation> recommendationComboBox;
+    private ComboBox<Recommendation> recommendationComboBox;
     @FXML
-    private JFXComboBox<JobTeam> jobTeamComboBox;
+    private ComboBox<JobTeam> jobTeamComboBox;
     @FXML
-    private JFXComboBox<SubJobTeam> subJobTeamComboBox; // New ComboBox for sub-teams
+    private ComboBox<SubJobTeam> subJobTeamComboBox; // New ComboBox for sub-teams
     @FXML
-    private JFXButton clearAdvancedFiltersButton;
+    private Button clearAdvancedFiltersButton;
     private final Integer activeAppFilter = null; // null σημαίνει κανένα φίλτρο εφαρμογής
 
     ObservableList<Customer> observableList;
@@ -203,8 +203,7 @@ public class CustomersController implements Initializable {
             // Εμφάνιση του ContextMenu πάνω από το κουμπί
             double buttonX = openFileButton.localToScene(openFileButton.getBoundsInLocal()).getMinX();
             double buttonY = openFileButton.localToScene(openFileButton.getBoundsInLocal()).getMinY() - 2 * openFileButton.getHeight();
-            contextMenu.show(openFileButton, openFileButton.getScene().getWindow().getX() + buttonX,
-                    openFileButton.getScene().getWindow().getY() + buttonY);
+            contextMenu.show(openFileButton, openFileButton.getScene().getWindow().getX() + buttonX, openFileButton.getScene().getWindow().getY() + buttonY);
         });
     }
 
@@ -475,21 +474,7 @@ public class CustomersController implements Initializable {
                 //String search1 = filterText; // Simplified for clarity, assuming no greek/english conversion needed for now
 
                 if (searchField == null || searchField.equals("Όλα τα πεδία")) {
-                    boolean textMatch = (customer.getName() != null && (customer.getName().toUpperCase().contains(search1) || customer.getName().toUpperCase().contains(search2)))
-                            || (customer.getTitle() != null && (customer.getTitle().toUpperCase().contains(search1) || customer.getTitle().toUpperCase().contains(search2)))
-                            || (customer.getJob() != null && (customer.getJob().toUpperCase().contains(search1) || customer.getJob().toUpperCase().contains(search2)))
-                            || (String.valueOf(customer.getCode()).contains(search1) || String.valueOf(customer.getCode()).contains(search2))
-                            || (customer.getPhone1() != null && (customer.getPhone1().contains(search1) || customer.getPhone1().contains(search2)))
-                            || (customer.getPhone2() != null && (customer.getPhone2().contains(search1) || customer.getPhone2().contains(search2)))
-                            || (customer.getMobile() != null && (customer.getMobile().contains(search1) || customer.getMobile().contains(search2)))
-                            || (customer.getAfm() != null && (customer.getAfm().contains(search1) || customer.getAfm().contains(search2)))
-                            || (customer.getManager() != null && (customer.getManager().toUpperCase().contains(search1) || customer.getManager().toUpperCase().contains(search2)))
-                            || (customer.getManagerPhone() != null && (customer.getManagerPhone().toUpperCase().contains(search1) || customer.getManagerPhone().toUpperCase().contains(search2)))
-                            || (customer.getEmail() != null && (customer.getEmail().toUpperCase().contains(search1) || customer.getEmail().toUpperCase().contains(search2)))
-                            || (customer.getEmail2() != null && (customer.getEmail2().toUpperCase().contains(search1) || customer.getEmail2().toUpperCase().contains(search2)))
-                            || (customer.getTown() != null && (customer.getTown().toUpperCase().contains(search1) || customer.getTown().toUpperCase().contains(search2)))
-                            || (customer.getAddress() != null && (customer.getAddress().toUpperCase().contains(search1) || customer.getAddress().toUpperCase().contains(search2)))
-                            || (customer.getMyPosClientId() != null && (customer.getMyPosClientId().contains(search1) || customer.getMyPosClientId().contains(search2)));
+                    boolean textMatch = (customer.getName() != null && (customer.getName().toUpperCase().contains(search1) || customer.getName().toUpperCase().contains(search2))) || (customer.getTitle() != null && (customer.getTitle().toUpperCase().contains(search1) || customer.getTitle().toUpperCase().contains(search2))) || (customer.getJob() != null && (customer.getJob().toUpperCase().contains(search1) || customer.getJob().toUpperCase().contains(search2))) || (String.valueOf(customer.getCode()).contains(search1) || String.valueOf(customer.getCode()).contains(search2)) || (customer.getPhone1() != null && (customer.getPhone1().contains(search1) || customer.getPhone1().contains(search2))) || (customer.getPhone2() != null && (customer.getPhone2().contains(search1) || customer.getPhone2().contains(search2))) || (customer.getMobile() != null && (customer.getMobile().contains(search1) || customer.getMobile().contains(search2))) || (customer.getAfm() != null && (customer.getAfm().contains(search1) || customer.getAfm().contains(search2))) || (customer.getManager() != null && (customer.getManager().toUpperCase().contains(search1) || customer.getManager().toUpperCase().contains(search2))) || (customer.getManagerPhone() != null && (customer.getManagerPhone().toUpperCase().contains(search1) || customer.getManagerPhone().toUpperCase().contains(search2))) || (customer.getEmail() != null && (customer.getEmail().toUpperCase().contains(search1) || customer.getEmail().toUpperCase().contains(search2))) || (customer.getEmail2() != null && (customer.getEmail2().toUpperCase().contains(search1) || customer.getEmail2().toUpperCase().contains(search2))) || (customer.getTown() != null && (customer.getTown().toUpperCase().contains(search1) || customer.getTown().toUpperCase().contains(search2))) || (customer.getAddress() != null && (customer.getAddress().toUpperCase().contains(search1) || customer.getAddress().toUpperCase().contains(search2))) || (customer.getMyPosClientId() != null && (customer.getMyPosClientId().contains(search1) || customer.getMyPosClientId().contains(search2)));
                     return textMatch;
                 } else {
                     switch (searchField) {
@@ -509,9 +494,7 @@ public class CustomersController implements Initializable {
                                 return false;
                             break;
                         case "Αριθμοί επικοινωνίας":
-                            boolean phoneMatch = (customer.getPhone1() != null && customer.getPhone1().contains(search1)) ||
-                                    (customer.getPhone2() != null && customer.getPhone2().contains(search1)) ||
-                                    (customer.getMobile() != null && customer.getMobile().contains(search1));
+                            boolean phoneMatch = (customer.getPhone1() != null && customer.getPhone1().contains(search1)) || (customer.getPhone2() != null && customer.getPhone2().contains(search1)) || (customer.getMobile() != null && customer.getMobile().contains(search1));
                             if (!phoneMatch) return false;
                             break;
                         case "Υπεύθυνος":
@@ -557,9 +540,7 @@ public class CustomersController implements Initializable {
                 refreshTableData(); // Ανανεώνει τη λίστα πελατών
                 filteredData = new FilteredList<>(observableList, b -> true);
 
-                filterField.textProperty().addListener((observable, oldValue, newValue) ->
-                        applyFilters(newValue)
-                );
+                filterField.textProperty().addListener((observable, oldValue, newValue) -> applyFilters(newValue));
 
                 applyFilters(filterField.getText());
 
@@ -725,13 +706,7 @@ public class CustomersController implements Initializable {
                 }
             }
         } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Εργασιών είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
+            Notifications.create().title("Προσοχή").text("Το module Εργασιών είναι απενεργοποιημένο.").graphic(null).hideAfter(Duration.seconds(3)).position(Pos.TOP_RIGHT).showWarning();
         }
     }
 
@@ -739,17 +714,7 @@ public class CustomersController implements Initializable {
     public void customerInfo(ActionEvent actionEvent) {
         Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
         if (selectedCustomer != null) {
-            String msg = "Στοιχεία πελάτη" +
-                    "\nΕπωνυμία: " + selectedCustomer.getName() +
-                    "\nΤίτλος: " + selectedCustomer.getTitle() +
-                    "\nΕπάγγελμα: " + selectedCustomer.getJob() +
-                    "\nΔιεύθυνση: " + selectedCustomer.getAddress() +
-                    "\nΠόλη: " + selectedCustomer.getTown() +
-                    "\nΤ.Κ.: " + selectedCustomer.getPostcode() +
-                    "\nΑΦΜ: " + selectedCustomer.getAfm() +
-                    "\nEmail: " + selectedCustomer.getEmail() +
-                    "\nΤηλέφωνο: " + selectedCustomer.getPhone1() +
-                    "\nΚινητό: " + selectedCustomer.getMobile();
+            String msg = "Στοιχεία πελάτη" + "\nΕπωνυμία: " + selectedCustomer.getName() + "\nΤίτλος: " + selectedCustomer.getTitle() + "\nΕπάγγελμα: " + selectedCustomer.getJob() + "\nΔιεύθυνση: " + selectedCustomer.getAddress() + "\nΠόλη: " + selectedCustomer.getTown() + "\nΤ.Κ.: " + selectedCustomer.getPostcode() + "\nΑΦΜ: " + selectedCustomer.getAfm() + "\nEmail: " + selectedCustomer.getEmail() + "\nΤηλέφωνο: " + selectedCustomer.getPhone1() + "\nΚινητό: " + selectedCustomer.getMobile();
             copyTextToClipboard(msg);
         }
     }
@@ -871,13 +836,7 @@ public class CustomersController implements Initializable {
                 openCustomerInTab(selectedCustomer, "Taxis");
             }
         } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Taxis είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
+            Notifications.create().title("Προσοχή").text("Το module Taxis είναι απενεργοποιημένο.").graphic(null).hideAfter(Duration.seconds(3)).position(Pos.TOP_RIGHT).showWarning();
         }
     }
 
@@ -886,12 +845,7 @@ public class CustomersController implements Initializable {
             if (event.getButton() == MouseButton.SECONDARY) {
                 try {
                     LoginAutomator loginAutomation = new LoginAutomator(true);
-                    loginAutomation.openAndFillLoginFormDas("https://das.mypos.eu/en/login",
-                            AppSettings.loadSetting("myposUser"),
-                            AppSettings.loadSetting("myposPass"),
-                            By.id("username"),
-                            By.className("btn-primary"),
-                            By.id("password"));
+                    loginAutomation.openAndFillLoginFormDas("https://das.mypos.eu/en/login", AppSettings.loadSetting("myposUser"), AppSettings.loadSetting("myposPass"), By.id("username"), By.className("btn-primary"), By.id("password"));
                 } catch (IOException e) {
                     Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
                 }
@@ -900,13 +854,7 @@ public class CustomersController implements Initializable {
                 openCustomerInTab(selectedCustomer, "myPOS");
             }
         } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module myPOS είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
+            Notifications.create().title("Προσοχή").text("Το module myPOS είναι απενεργοποιημένο.").graphic(null).hideAfter(Duration.seconds(3)).position(Pos.TOP_RIGHT).showWarning();
         }
     }
 
@@ -915,12 +863,7 @@ public class CustomersController implements Initializable {
             if (event.getButton() == MouseButton.SECONDARY) {
                 try {
                     LoginAutomator loginAutomation = new LoginAutomator(true);
-                    loginAutomation.openAndFillLoginForm("https://app.simplycloud.gr/Partners",
-                            AppSettings.loadSetting("simplyCloudUser"),
-                            AppSettings.loadSetting("simplyCloudPass"),
-                            By.name("Email"),
-                            By.id("Password"),
-                            By.id("btnSubmit"));
+                    loginAutomation.openAndFillLoginForm("https://app.simplycloud.gr/Partners", AppSettings.loadSetting("simplyCloudUser"), AppSettings.loadSetting("simplyCloudPass"), By.name("Email"), By.id("Password"), By.id("btnSubmit"));
                 } catch (IOException e) {
                     Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
 
@@ -930,13 +873,7 @@ public class CustomersController implements Initializable {
                 openCustomerInTab(selectedCustomer, "Simply");
             }
         } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Simply είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
+            Notifications.create().title("Προσοχή").text("Το module Simply είναι απενεργοποιημένο.").graphic(null).hideAfter(Duration.seconds(3)).position(Pos.TOP_RIGHT).showWarning();
         }
     }
 
@@ -945,12 +882,7 @@ public class CustomersController implements Initializable {
             if (event.getButton() == MouseButton.SECONDARY) {
                 try {
                     LoginAutomator loginAutomation = new LoginAutomator(true);
-                    loginAutomation.openAndFillLoginForm("https://pool2.emblem.gr/resellers/",
-                            AppSettings.loadSetting("emblemUser"),
-                            AppSettings.loadSetting("emblemPass"),
-                            By.id("inputEmail"),
-                            By.id("inputPassword"),
-                            By.xpath("//button[@onclick=\"validateLogin()\"]"));
+                    loginAutomation.openAndFillLoginForm("https://pool2.emblem.gr/resellers/", AppSettings.loadSetting("emblemUser"), AppSettings.loadSetting("emblemPass"), By.id("inputEmail"), By.id("inputPassword"), By.xpath("//button[@onclick=\"validateLogin()\"]"));
                 } catch (IOException e) {
                     Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
                 }
@@ -959,13 +891,7 @@ public class CustomersController implements Initializable {
                 openCustomerInTab(selectedCustomer, "Emblem");
             }
         } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Emblem είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
+            Notifications.create().title("Προσοχή").text("Το module Emblem είναι απενεργοποιημένο.").graphic(null).hideAfter(Duration.seconds(3)).position(Pos.TOP_RIGHT).showWarning();
         }
     }
 
@@ -974,13 +900,7 @@ public class CustomersController implements Initializable {
             Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
             openCustomerInTab(selectedCustomer, "Ergani");
         } else {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Το module Ergani είναι απενεργοποιημένο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showWarning();
+            Notifications.create().title("Προσοχή").text("Το module Ergani είναι απενεργοποιημένο.").graphic(null).hideAfter(Duration.seconds(3)).position(Pos.TOP_RIGHT).showWarning();
         }
     }
 
@@ -1041,12 +961,7 @@ public class CustomersController implements Initializable {
         ClipboardContent content = new ClipboardContent();
         content.putString(msg);  // Replace with the desired text
         clipboard.setContent(content);
-        Notifications notifications = Notifications.create()
-                .title("Αντιγραγή στο πρόχειρο")
-                .text(msg)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
+        Notifications notifications = Notifications.create().title("Αντιγραγή στο πρόχειρο").text(msg).graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
         notifications.showInformation();
     }
 
@@ -1108,13 +1023,7 @@ public class CustomersController implements Initializable {
      */
     private void openCustomerInTab(Customer customer, String tabToSelect) {
         if (customer == null) {
-            Notifications.create()
-                    .title("Προσοχή")
-                    .text("Δεν έχει επιλεγεί Πελάτης!")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(3))
-                    .position(Pos.TOP_RIGHT)
-                    .showError();
+            Notifications.create().title("Προσοχή").text("Δεν έχει επιλεγεί Πελάτης!").graphic(null).hideAfter(Duration.seconds(3)).position(Pos.TOP_RIGHT).showError();
             return;
         }
 

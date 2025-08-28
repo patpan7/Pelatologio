@@ -1,7 +1,5 @@
 package org.easytech.pelatologio;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -47,9 +45,9 @@ public class AddOrderController {
     @FXML
     private ComboBox<Supplier> supplierComboBox;
     @FXML
-    private JFXButton btnCustomer, btnSupplier;
+    private Button btnCustomer, btnSupplier;
     @FXML
-    private JFXCheckBox is_completed, is_ergent, is_wait, is_received, is_delivered;
+    private CheckBox is_completed, is_ergent, is_wait, is_received, is_delivered;
 
     private Order order;
     private int customerId;

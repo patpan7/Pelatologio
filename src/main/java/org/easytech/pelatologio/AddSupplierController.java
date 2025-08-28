@@ -1,6 +1,5 @@
 package org.easytech.pelatologio;
 
-import com.jfoenix.controls.JFXCheckBox;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -52,7 +51,7 @@ public class AddSupplierController {
     @FXML
     private TextArea taNotes;
     @FXML
-    private JFXCheckBox hasCommissionsCheck;
+    private CheckBox hasCommissionsCheck;
 
     private OrdersSupViewController orderSupViewController;
     private SupplierPaymentsViewController supplierPaymentsController;

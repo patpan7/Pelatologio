@@ -1,58 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.calendarfx.view.CalendarView?>
-<?import com.jfoenix.controls.JFXButton?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
+<?import com.calendarfx.view.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<StackPane fx:id="stackPane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
-           xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CalendarController">
-    <BorderPane minHeight="800.0" minWidth="1200.0" styleClass="pane">
+
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CalendarController">
+    <BorderPane minHeight="800.0" minWidth="1200.0">
         <center>
             <ScrollPane fitToHeight="true" fitToWidth="true">
                 <VBox alignment="TOP_CENTER">
                     <HBox>
-                        <JFXButton buttonType="RAISED" mnemonicParsing="false" onAction="#calendarManager"
-                                   styleClass="click-button" text="Διαχείριση Ημερολογίων">
+                        <Button mnemonicParsing="false" onAction="#calendarManager" text="Διαχείριση Ημερολογίων">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/calendar.png"/>
+                                    <Image url="@icons/calendar.png" />
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                             </HBox.margin>
-                        </JFXButton>
-                        <Separator visible="false" HBox.hgrow="ALWAYS"/>
-                        <JFXButton buttonType="RAISED" mnemonicParsing="false" onAction="#addAppointment"
-                                   styleClass="click-button" text="Νέο ραντεβού">
+                        </Button>
+                        <Separator visible="false" HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#addAppointment" text="Νέο ραντεβού">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/add.png"/>
+                                    <Image url="@icons/add.png" />
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                             </HBox.margin>
-                        </JFXButton>
-                        <JFXButton fx:id="btnRefresh" buttonType="RAISED" mnemonicParsing="false"
-                                   onMouseClicked="#refresh" styleClass="click-button" text="">
+                        </Button>
+                        <Button fx:id="btnRefresh" mnemonicParsing="false" onMouseClicked="#refresh" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/refresh.png"/>
+                                    <Image url="@icons/refresh.png" />
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                             </HBox.margin>
-                        </JFXButton>
+                        </Button>
                     </HBox>
-                    <CalendarView fx:id="calendarView" enableHyperlinks="false" showAddCalendarButton="false"
-                                  VBox.vgrow="ALWAYS"/>
+                    <CalendarView fx:id="calendarView" enableHyperlinks="false" showAddCalendarButton="false" VBox.vgrow="ALWAYS" />
                     <padding>
-                        <Insets top="10.0"/>
+                        <Insets top="10.0" />
                     </padding>
                 </VBox>
             </ScrollPane>

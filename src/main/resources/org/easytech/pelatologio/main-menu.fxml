@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<StackPane fx:id="stackPane" prefHeight="900.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css"
+<StackPane fx:id="stackPane" prefHeight="900.0" prefWidth="1200.0"  
            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.easytech.pelatologio.MainMenuController">
-    <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" styleClass="pane">
-        <BorderPane fx:id="rootPane" styleClass="pane" StackPane.alignment="CENTER">
+    <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" >
+        <BorderPane fx:id="rootPane"  StackPane.alignment="CENTER">
             <center>
                 <TabPane fx:id="mainTabPane" BorderPane.alignment="CENTER">
                     <Tab fx:id="mainTab" closable="false" text="Κεντρικό menu">
@@ -19,47 +18,47 @@
                                 <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                 </HBox.margin>
-                                <Label fx:id="lbTasks" styleClass="normal-label" text="Εκκρεμής εργασίες: 1"
+                                <Label fx:id="lbTasks"  text="Εκκρεμής εργασίες: 1"
                                        wrapText="true"/>
-                                <Label fx:id="lbAppointments" layoutX="10.0" layoutY="10.0" styleClass="normal-label"
+                                <Label fx:id="lbAppointments" layoutX="10.0" layoutY="10.0" 
                                        text="Εκκρεμής εργασίες: 1" wrapText="true">
                                     <VBox.margin>
                                         <Insets bottom="10.0" top="20.0"/>
                                     </VBox.margin>
                                 </Label>
                                 <Separator/>
-                                <Label fx:id="lbSimply" layoutX="10.0" layoutY="10.0" styleClass="normal-label"
+                                <Label fx:id="lbSimply" layoutX="10.0" layoutY="10.0" 
                                        text="Πελάτες Simply: 1" wrapText="true">
                                     <VBox.margin>
                                         <Insets bottom="20.0" top="10.0"/>
                                     </VBox.margin>
                                 </Label>
                                 <Separator/>
-                                <VBox styleClass="stat-box">
+                                <VBox >
                                     <children>
-                                        <Label styleClass="normal-label" text="myPOS Στατιστικά" underline="true"
+                                        <Label  text="myPOS Στατιστικά" underline="true"
                                                wrapText="true"/>
-                                        <Label fx:id="lbMyposTotal" styleClass="normal-label" text="Σύνολο: 0"/>
-                                        <Label fx:id="lbMyposVerified" styleClass="normal-label" text="Verified: 0"/>
-                                        <Label fx:id="lbMyposUnverified" styleClass="normal-label"
+                                        <Label fx:id="lbMyposTotal"  text="Σύνολο: 0"/>
+                                        <Label fx:id="lbMyposVerified"  text="Verified: 0"/>
+                                        <Label fx:id="lbMyposUnverified" 
                                                text="Unverified: 0"/>
-                                        <Label fx:id="lbMyposActive" styleClass="normal-label" text="Active: 0"/>
-                                        <Label fx:id="lbMyposBlocked" styleClass="normal-label" text="Blocked: 0"/>
-                                        <Label fx:id="lbMyposClosed" styleClass="normal-label" text="Closed: 0"/>
+                                        <Label fx:id="lbMyposActive"  text="Active: 0"/>
+                                        <Label fx:id="lbMyposBlocked"  text="Blocked: 0"/>
+                                        <Label fx:id="lbMyposClosed"  text="Closed: 0"/>
                                     </children>
                                 </VBox>
-                                <JFXButton fx:id="btnSimulateCall" buttonType="RAISED" maxWidth="160.0"
-                                           mnemonicParsing="false" onAction="#simulateCall" styleClass="click-button"
-                                           text="Simulate Call">
+                                <Button fx:id="btnSimulateCall" maxWidth="160.0"
+                                        mnemonicParsing="false" onAction="#simulateCall" 
+                                        text="Simulate Call">
                                     <VBox.margin>
                                         <Insets top="10.0"/>
                                     </VBox.margin>
-                                </JFXButton>
+                                </Button>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS"/>
 
-                                <JFXButton fx:id="btnDashboard" buttonType="RAISED" maxWidth="160.0"
-                                           mnemonicParsing="false" onAction="#handleDashboardClick"
-                                           styleClass="click-button" text="Dashboard" textAlignment="CENTER">
+                                <Button fx:id="btnDashboard" maxWidth="160.0"
+                                        mnemonicParsing="false" onAction="#handleDashboardClick"
+                                         text="Dashboard" textAlignment="CENTER">
                                     <graphic>
                                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
                                                    preserveRatio="true">
@@ -69,12 +68,12 @@
                                     <VBox.margin>
                                         <Insets bottom="10.0"/>
                                     </VBox.margin>
-                                </JFXButton>
+                                </Button>
 
                                 <!-- Ρυθμίσεις Συστήματος -->
-                                <JFXButton fx:id="btnSettings" buttonType="RAISED" maxWidth="160.0"
-                                           mnemonicParsing="false" onAction="#settingsClick" styleClass="click-button"
-                                           text="Ρυθμίσεις" textAlignment="CENTER">
+                                <Button fx:id="btnSettings" maxWidth="160.0"
+                                        mnemonicParsing="false" onAction="#settingsClick" 
+                                        text="Ρυθμίσεις" textAlignment="CENTER">
                                     <graphic>
                                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
                                                    preserveRatio="true">
@@ -84,11 +83,11 @@
                                     <VBox.margin>
                                         <Insets bottom="10.0"/>
                                     </VBox.margin>
-                                </JFXButton>
+                                </Button>
 
-                                <JFXButton buttonType="RAISED" layoutX="1050.0" layoutY="15.0" mnemonicParsing="false"
-                                           onAction="#handleRefreshButton" prefWidth="160.0" styleClass="click-button"
-                                           text="Ανανέωση">
+                                <Button layoutX="1050.0" layoutY="15.0" mnemonicParsing="false"
+                                        onAction="#handleRefreshButton" prefWidth="160.0" 
+                                        text="Ανανέωση">
                                     <graphic>
                                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
                                                    preserveRatio="true">
@@ -98,7 +97,7 @@
                                     <HBox.margin>
                                         <Insets bottom="5.0" left="20.0" right="5.0" top="5.0"/>
                                     </HBox.margin>
-                                </JFXButton>
+                                </Button>
                             </VBox>
                             <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                                 <HBox.margin>
@@ -111,116 +110,116 @@
                                     <padding>
                                         <Insets top="10.0"/>
                                     </padding>
-                                    <JFXButton fx:id="btnCustomers" buttonType="RAISED" cache="true"
-                                               contentDisplay="TOP" minHeight="100.0" minWidth="220.0"
-                                               mnemonicParsing="false" onAction="#customersClick"
-                                               styleClass="click-button" text="Πελάτες" textAlignment="CENTER">
+                                    <Button fx:id="btnCustomers" cache="true"
+                                            contentDisplay="TOP" minHeight="100.0" minWidth="220.0"
+                                            mnemonicParsing="false" onAction="#customersClick"
+                                             text="Πελάτες" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/users.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnAccountants" buttonType="RAISED" cache="true"
-                                               contentDisplay="TOP" layoutX="269.0" layoutY="20.0" minHeight="100.0"
-                                               minWidth="220.0" mnemonicParsing="false" onAction="#accauntantsClick"
-                                               styleClass="click-button" text="Λογιστές" textAlignment="CENTER">
+                                    </Button>
+                                    <Button fx:id="btnAccountants" cache="true"
+                                            contentDisplay="TOP" layoutX="269.0" layoutY="20.0" minHeight="100.0"
+                                            minWidth="220.0" mnemonicParsing="false" onAction="#accauntantsClick"
+                                             text="Λογιστές" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/account.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnSuppliers" buttonType="RAISED" cache="true"
-                                               contentDisplay="TOP" layoutX="394.0" layoutY="20.0" minHeight="100.0"
-                                               minWidth="220.0" mnemonicParsing="false" onAction="#suppliersClick"
-                                               styleClass="click-button" text="Προμηθευτές" textAlignment="CENTER">
+                                    </Button>
+                                    <Button fx:id="btnSuppliers" cache="true"
+                                            contentDisplay="TOP" layoutX="394.0" layoutY="20.0" minHeight="100.0"
+                                            minWidth="220.0" mnemonicParsing="false" onAction="#suppliersClick"
+                                             text="Προμηθευτές" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/supplier.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
+                                    </Button>
                                 </HBox>
                                 <HBox alignment="CENTER" spacing="30.0">
                                     <VBox.margin>
                                         <Insets bottom="10.0" top="10.0"/>
                                     </VBox.margin>
-                                    <JFXButton fx:id="btnTasks" buttonType="RAISED" contentDisplay="TOP" layoutX="364.0"
-                                               layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
-                                               onAction="#tasksClick" styleClass="click-button" text="Εργασίες"
-                                               textAlignment="CENTER" GridPane.rowIndex="1">
+                                    <Button fx:id="btnTasks" contentDisplay="TOP" layoutX="364.0"
+                                            layoutY="10.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
+                                            onAction="#tasksClick"  text="Εργασίες"
+                                            textAlignment="CENTER" GridPane.rowIndex="1">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/tasks.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnCalendar" buttonType="RAISED" contentDisplay="TOP"
-                                               layoutX="364.0" layoutY="10.0" minHeight="100.0" minWidth="220.0"
-                                               mnemonicParsing="false" onAction="#calendarClick"
-                                               styleClass="click-button" text="Ημερολόγιο" textAlignment="CENTER"
-                                               GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    </Button>
+                                    <Button fx:id="btnCalendar" contentDisplay="TOP"
+                                            layoutX="364.0" layoutY="10.0" minHeight="100.0" minWidth="220.0"
+                                            mnemonicParsing="false" onAction="#calendarClick"
+                                             text="Ημερολόγιο" textAlignment="CENTER"
+                                            GridPane.columnIndex="1" GridPane.rowIndex="1">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/calendar.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnOffers" buttonType="RAISED" contentDisplay="TOP"
-                                               minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
-                                               onAction="#offersClick" styleClass="click-button" text="Προσφορές"
-                                               textAlignment="CENTER">
+                                    </Button>
+                                    <Button fx:id="btnOffers" contentDisplay="TOP"
+                                            minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
+                                            onAction="#offersClick"  text="Προσφορές"
+                                            textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/offer.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
+                                    </Button>
                                 </HBox>
                                 <HBox alignment="CENTER" spacing="30.0">
                                     <VBox.margin>
                                         <Insets bottom="10.0" top="10.0"/>
                                     </VBox.margin>
-                                    <JFXButton fx:id="btnMyPOS" buttonType="RAISED" contentDisplay="TOP"
-                                               minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
-                                               onMouseClicked="#myposdasClick" styleClass="click-button"
-                                               text="myPOS DAS" textAlignment="CENTER">
+                                    <Button fx:id="btnMyPOS" contentDisplay="TOP"
+                                            minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
+                                            onMouseClicked="#myposdasClick" 
+                                            text="myPOS DAS" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/mypos1.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnMyDataStatus" buttonType="RAISED" contentDisplay="TOP"
-                                               minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
-                                               onAction="#myDataStatusClick" styleClass="click-button"
-                                               text="myData Status" textAlignment="CENTER">
+                                    </Button>
+                                    <Button fx:id="btnMyDataStatus" contentDisplay="TOP"
+                                            minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
+                                            onAction="#myDataStatusClick" 
+                                            text="myData Status" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/mydatastatus.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnOrders" buttonType="RAISED" contentDisplay="TOP"
-                                               layoutX="394.0" layoutY="10.0" minHeight="100.0" minWidth="220.0"
-                                               mnemonicParsing="false" onAction="#ordersClick" styleClass="click-button"
-                                               text="Παραγγελίες" textAlignment="CENTER">
+                                    </Button>
+                                    <Button fx:id="btnOrders" contentDisplay="TOP"
+                                            layoutX="394.0" layoutY="10.0" minHeight="100.0" minWidth="220.0"
+                                            mnemonicParsing="false" onAction="#ordersClick" 
+                                            text="Παραγγελίες" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/order.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
+                                    </Button>
 
                                 </HBox>
                                 <HBox alignment="CENTER" spacing="30.0">
@@ -229,117 +228,128 @@
                                     </VBox.margin>
 
 
-                                    <JFXButton fx:id="btnItems" buttonType="RAISED" contentDisplay="TOP" layoutX="119.0"
-                                               layoutY="324.0" minHeight="100.0" minWidth="220.0"
-                                               mnemonicParsing="false" onAction="#itemsClick" styleClass="click-button"
-                                               text="Είδη" textAlignment="CENTER" GridPane.rowIndex="3">
+                                    <Button fx:id="btnItems" contentDisplay="TOP" layoutX="119.0"
+                                            layoutY="324.0" minHeight="100.0" minWidth="220.0"
+                                            mnemonicParsing="false" onAction="#itemsClick" 
+                                            text="Είδη" textAlignment="CENTER" GridPane.rowIndex="3">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/item.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnDevices" buttonType="RAISED" contentDisplay="TOP"
-                                               layoutX="269.0" layoutY="10.0" minHeight="100.0" minWidth="220.0"
-                                               mnemonicParsing="false" onAction="#devicesClick"
-                                               styleClass="click-button" text="Συσκευές" textAlignment="CENTER">
+                                    </Button>
+                                    <Button fx:id="btnDevices" contentDisplay="TOP"
+                                            layoutX="269.0" layoutY="10.0" minHeight="100.0" minWidth="220.0"
+                                            mnemonicParsing="false" onAction="#devicesClick"
+                                             text="Συσκευές" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/device.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnSubs" buttonType="RAISED" contentDisplay="TOP"
-                                               minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
-                                               onAction="#subsClick" styleClass="click-button" text="Συμβόλαια"
-                                               textAlignment="CENTER">
+                                    </Button>
+                                    <Button fx:id="btnSubs" contentDisplay="TOP"
+                                            minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
+                                            onAction="#subsClick"  text="Συμβόλαια"
+                                            textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/contract.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
+                                    </Button>
                                 </HBox>
                                 <HBox alignment="CENTER" spacing="30.0">
                                     <VBox.margin>
                                         <Insets bottom="10.0" top="10.0"/>
                                     </VBox.margin>
-                                    <JFXButton fx:id="btnD11" buttonType="RAISED" contentDisplay="TOP" minHeight="100.0"
-                                               minWidth="220.0" mnemonicParsing="false" onAction="#d11Click"
-                                               styleClass="click-button" text="Δ11" textAlignment="CENTER">
+                                    <Button fx:id="btnD11" contentDisplay="TOP" minHeight="100.0"
+                                            minWidth="220.0" mnemonicParsing="false" onAction="#d11Click"
+                                             text="Δ11" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/gsis.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnSimplyStatus" buttonType="RAISED" contentDisplay="TOP"
-                                               layoutX="399.0" layoutY="10.0" minHeight="100.0" minWidth="220.0"
-                                               mnemonicParsing="false" onMouseClicked="#simplyClick"
-                                               styleClass="click-button" text="Simply" textAlignment="CENTER">
+                                    </Button>
+                                    <Button fx:id="btnSimplyStatus" contentDisplay="TOP"
+                                            layoutX="399.0" layoutY="10.0" minHeight="100.0" minWidth="220.0"
+                                            mnemonicParsing="false" onMouseClicked="#simplyClick"
+                                             text="Simply" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/simply1.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnCallHistory" buttonType="RAISED" contentDisplay="TOP"
-                                               minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
-                                               onAction="#callHistoryClick" styleClass="click-button"
-                                               text="Ιστορικό Κλήσεων" textAlignment="CENTER">
+                                    </Button>
+                                    <Button fx:id="btnCallHistory" contentDisplay="TOP"
+                                            minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
+                                            onAction="#callHistoryClick" 
+                                            text="Ιστορικό Κλήσεων" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/phone.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
+                                    </Button>
                                 </HBox>
                                 <HBox alignment="CENTER" spacing="30.0">
                                     <VBox.margin>
                                         <Insets bottom="10.0" top="10.0"/>
                                     </VBox.margin>
-                                    <JFXButton fx:id="btnPartners" buttonType="RAISED" contentDisplay="TOP"
-                                               minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
-                                               onAction="#partnersClick" styleClass="click-button" text="Συνεργάτες">
+                                    <Button fx:id="btnPartners" contentDisplay="TOP"
+                                            minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
+                                            onAction="#partnersClick"  text="Συνεργάτες">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/partners.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnPartnerEarnings" buttonType="RAISED" contentDisplay="TOP"
-                                               minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
-                                               onAction="#partnerEarningsClick" styleClass="click-button"
-                                               text="Οφειλές Συνεργατών">
+                                    </Button>
+                                    <Button fx:id="btnPartnerEarnings" contentDisplay="TOP"
+                                            minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
+                                            onAction="#partnerEarningsClick" 
+                                            text="Οφειλές Συνεργατών">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/earnings.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
-                                    <JFXButton fx:id="btnCommissions" buttonType="RAISED" contentDisplay="TOP"
-                                               minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
-                                               onAction="#commisionsClick" styleClass="click-button" text="Προμήθειες">
+                                    </Button>
+                                    <Button fx:id="btnCommissions" contentDisplay="TOP"
+                                            minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
+                                            onAction="#commisionsClick"  text="Προμήθειες">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
                                                        preserveRatio="true">
                                                 <Image url="@icons/commission.png"/>
                                             </ImageView>
                                         </graphic>
-                                    </JFXButton>
+                                    </Button>
+                                    <Button fx:id="btnEdpsManagement" contentDisplay="TOP"
+                                            minHeight="100.0" minWidth="220.0" mnemonicParsing="false"
+                                            onAction="#handleEdpsManagement" 
+                                            text="Διαχείριση EDPS">
+                                        <graphic>
+                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true"
+                                                       preserveRatio="true">
+                                                <Image url="@icons/edps.png"/>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
                                 </HBox>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS"/>
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0"
                                       snapToPixel="false">
-                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.5" VBox.vgrow="NEVER">
+                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.6" VBox.vgrow="NEVER">
                                         <VBox.margin>
                                             <Insets bottom="5.0" right="20.0"/>
                                         </VBox.margin>
@@ -353,19 +363,19 @@
                                 <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0"/>
                                 </HBox.margin>
-                                <Label fx:id="lblForOrder" styleClass="normal-label" text="Για παραγγελία"
+                                <Label fx:id="lblForOrder"  text="Για παραγγελία"
                                        textAlignment="CENTER" underline="true">
                                     <VBox.margin>
                                         <Insets bottom="3.0"/>
                                     </VBox.margin>
                                 </Label>
                                 <ListView fx:id="ordersList" onMouseClicked="#handleOrderSelection" prefHeight="190.0"
-                                          styleClass="list-view1" VBox.vgrow="ALWAYS">
+                                           VBox.vgrow="ALWAYS">
                                     <VBox.margin>
                                         <Insets/>
                                     </VBox.margin>
                                 </ListView>
-                                <Label fx:id="lblWaitOrders" layoutX="38.0" layoutY="10.0" styleClass="normal-label"
+                                <Label fx:id="lblWaitOrders" layoutX="38.0" layoutY="10.0" 
                                        text="Αναμονή παραλαβής" textAlignment="CENTER" underline="true" wrapText="true">
                                     <VBox.margin>
                                         <Insets bottom="3.0"/>
@@ -373,8 +383,8 @@
                                 </Label>
                                 <ListView fx:id="pendingOrdersList" layoutX="15.0" layoutY="42.0"
                                           onMouseClicked="#handlePendingOrderSelection" prefHeight="190.0"
-                                          styleClass="list-view1" VBox.vgrow="ALWAYS"/>
-                                <Label fx:id="lblForDelivery" layoutX="10.0" layoutY="247.0" styleClass="normal-label"
+                                           VBox.vgrow="ALWAYS"/>
+                                <Label fx:id="lblForDelivery" layoutX="10.0" layoutY="247.0" 
                                        text="Προς παράδοση" textAlignment="CENTER" underline="true" wrapText="true">
                                     <VBox.margin>
                                         <Insets bottom="3.0"/>
@@ -382,7 +392,7 @@
                                 </Label>
                                 <ListView fx:id="deliveryOrdersList" layoutX="10.0" layoutY="302.0"
                                           onMouseClicked="#handleDeliveryOrderSelection" prefHeight="190.0"
-                                          styleClass="list-view1" VBox.vgrow="ALWAYS"/>
+                                           VBox.vgrow="ALWAYS"/>
                             </VBox>
                         </HBox>
                     </Tab>
@@ -394,7 +404,7 @@
                         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
                     </BorderPane.margin>
                     <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                        <Label styleClass="header-label" text="Πελατολόγιο" HBox.hgrow="ALWAYS">
+                        <Label  text="Πελατολόγιο" HBox.hgrow="ALWAYS">
                             <font>
                                 <Font size="38.0"/>
                             </font>
@@ -410,7 +420,8 @@
                         <HBox.margin>
                             <Insets/>
                         </HBox.margin>
-                        <Label fx:id="lbAppUser" styleClass="normal-label" text="Χειριστή: " HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="lbAppUser"  text="Χειριστή: " HBox.hgrow="ALWAYS"/>
+                        <ToggleButton fx:id="themeToggle" mnemonicParsing="false" onAction="#toggleTheme" text="Dark Mode" />
                     </HBox>
                 </HBox>
             </top>

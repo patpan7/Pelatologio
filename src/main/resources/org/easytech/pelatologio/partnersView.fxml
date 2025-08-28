@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<BorderPane styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+<BorderPane   stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.PartnersController">
     <top>
         <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
@@ -15,13 +14,13 @@
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
             </padding>
             <TextField fx:id="filterField" prefWidth="280.0" promptText="Αναζήτηση..."/>
-            <JFXButton onAction="#handleAddPartner" styleClass="click-button" text="Νέος Συνεργάτης">
+            <Button onAction="#handleAddPartner" text="Νέος Συνεργάτης">
                 <graphic>
                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@icons/add.png"/>
                     </ImageView>
                 </graphic>
-            </JFXButton>
+            </Button>
         </HBox>
     </top>
     <center>

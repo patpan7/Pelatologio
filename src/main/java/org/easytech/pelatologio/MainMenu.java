@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.ScheduledService;
@@ -46,8 +47,12 @@ public class MainMenu extends Application {
                 System.exit(0);
             }
         }
+
+        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
         FXMLLoader fxmlLoader = new FXMLLoader(MainMenu.class.getResource("main-menu.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
+        scene.getStylesheets().add(MainMenu.class.getResource("custom-atlantafx.css").toExternalForm());
+
         stage.setTitle("Πελατολόγιο");
         //stage.setResizable(false);
         stage.setScene(scene);

@@ -12,7 +12,7 @@ public class FeatureManagementDialogController {
     @FXML
     private CheckBox suppliersCheck, tasksCheck, ordersCheck, offersCheck, devicesCheck, subsCheck, callsCheck, partnersCheck, d11Check;
     @FXML
-    private JFXCheckBox taxisCheck, myposCheck, simplyCheck, emblemCheck, erganiCheck, pelatologioCheck, nineposheck, megasoftCheck;
+    private CheckBox taxisCheck, myposCheck, simplyCheck, emblemCheck, erganiCheck, pelatologioCheck, nineposheck, edpsCheck, megasoftCheck;
     @FXML
     public void initialize() {
         // Load current feature states
@@ -32,6 +32,7 @@ public class FeatureManagementDialogController {
         erganiCheck.setSelected(Features.isEnabled("ergani"));
         pelatologioCheck.setSelected(Features.isEnabled("pelatologio"));
         nineposheck.setSelected(Features.isEnabled("ninepos"));
+        edpsCheck.setSelected(Features.isEnabled("edps"));
         megasoftCheck.setSelected(Features.isEnabled("megasoft"));
     }
 
@@ -54,6 +55,7 @@ public class FeatureManagementDialogController {
         Features.setFeatureEnabled("ergani", erganiCheck.isSelected());
         Features.setFeatureEnabled("pelatologio", pelatologioCheck.isSelected());
         Features.setFeatureEnabled("ninepos", nineposheck.isSelected());
+        Features.setFeatureEnabled("edps", edpsCheck.isSelected());
         Features.setFeatureEnabled("megasoft", megasoftCheck.isSelected());
 
 

@@ -1,8 +1,11 @@
 package org.easytech.pelatologio.models;
 
 public class AppItem {
-    private final int id;
-    private final String name;
+    private int id;
+    private String name;
+
+    public AppItem() {
+    }
 
     public AppItem(int id, String name) {
         this.id = id;
@@ -11,6 +14,18 @@ public class AppItem {
 
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<VBox styleClass="pane" stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+<VBox   stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddSupplierController">
     <TabPane fx:id="tabPane">
         <Tab closable="false" text="Στοιχεία Προμηθευτή">
-            <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="pane">
-                <HBox styleClass="pane">
-                    <VBox styleClass="pane" HBox.hgrow="ALWAYS">
+            <ScrollPane fitToHeight="true" fitToWidth="true">
+                <HBox>
+                    <VBox HBox.hgrow="ALWAYS">
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
 
-                            <Label minWidth="140.0" styleClass="normal-label" text="Επωνυμία:"/>
+                            <Label minWidth="140.0" text="Επωνυμία:"/>
                             <TextField fx:id="tfName" HBox.hgrow="ALWAYS"/>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" layoutX="25.0" layoutY="20.0" VBox.vgrow="NEVER">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
-                            <Label minWidth="140.0" styleClass="normal-label" text="Τίτλος:"/>
+                            <Label minWidth="140.0" text="Τίτλος:"/>
                             <TextField fx:id="tfTitle" HBox.hgrow="ALWAYS"/>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT">
@@ -32,10 +31,10 @@
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
 
-                            <Label minWidth="140.0" styleClass="normal-label" text="ΑΦΜ:"/>
+                            <Label minWidth="140.0" text="ΑΦΜ:"/>
                             <TextField fx:id="tfAfm" prefWidth="228.0" HBox.hgrow="ALWAYS"/>
-                            <JFXButton fx:id="btnAfmSearch" buttonType="RAISED" mnemonicParsing="false"
-                                       styleClass="click-button" text="">
+                            <Button fx:id="btnAfmSearch" mnemonicParsing="false"
+                                    text="">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
                                                preserveRatio="true">
@@ -45,17 +44,17 @@
                                 <HBox.margin>
                                     <Insets left="5.0"/>
                                 </HBox.margin>
-                            </JFXButton>
+                            </Button>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
 
-                            <Label minWidth="140.0" styleClass="normal-label" text="Τηλέφωνο:"/>
+                            <Label minWidth="140.0" text="Τηλέφωνο:"/>
                             <TextField fx:id="tfPhone" alignment="TOP_LEFT" prefWidth="312.0" HBox.hgrow="ALWAYS"/>
-                            <JFXButton fx:id="btnPhone" buttonType="RAISED" mnemonicParsing="false"
-                                       styleClass="click-button" text="">
+                            <Button fx:id="btnPhone" mnemonicParsing="false"
+                                    text="">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
                                                preserveRatio="true">
@@ -67,33 +66,35 @@
                                 <HBox.margin>
                                     <Insets left="5.0"/>
                                 </HBox.margin>
-                            </JFXButton>
+                            </Button>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
 
-                            <Label minWidth="140.0" styleClass="normal-label" text="Κινητό:"/>
+                            <Label minWidth="140.0" text="Κινητό:"/>
                             <TextField fx:id="tfMobile" HBox.hgrow="ALWAYS"/>
-                            <JFXButton fx:id="btnMobile" buttonType="RAISED" layoutX="467.0" layoutY="10.0"
-                                       mnemonicParsing="false" styleClass="click-button" text="">
+                            <Button fx:id="btnMobile" layoutX="467.0" layoutY="10.0"
+                                    mnemonicParsing="false" text="">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
                                                preserveRatio="true">
-                                        <Image url="@icons/phone.png"/>
+                                        <image>
+                                            <Image url="@icons/phone.png"/>
+                                        </image>
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
                                     <Insets left="5.0"/>
                                 </HBox.margin>
-                            </JFXButton>
+                            </Button>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" layoutX="25.0" layoutY="169.0" VBox.vgrow="NEVER">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
-                            <Label minWidth="140.0" styleClass="normal-label" text="Επαφή:"/>
+                            <Label minWidth="140.0" text="Επαφή:"/>
                             <TextField fx:id="tfContact" HBox.hgrow="ALWAYS"/>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
@@ -101,67 +102,74 @@
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
 
-                            <Label minWidth="140.0" styleClass="normal-label" text="E-mail:"/>
+                            <Label minWidth="140.0" text="E-mail:"/>
                             <TextField fx:id="tfEmail" HBox.hgrow="ALWAYS"/>
-                            <JFXButton fx:id="btnEmail" buttonType="RAISED" mnemonicParsing="false"
-                                       onAction="#showEmailDialog" styleClass="click-button" text="">
+                            <Button fx:id="btnEmail" mnemonicParsing="false"
+                                    onAction="#showEmailDialog" text="">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
                                                preserveRatio="true">
-                                        <Image url="@icons/mail.png"/>
+                                        <image>
+                                            <Image url="@icons/mail.png"/>
+                                        </image>
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
                                     <Insets left="5.0"/>
                                 </HBox.margin>
-                            </JFXButton>
+                            </Button>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
 
-                            <Label minWidth="140.0" styleClass="normal-label" text="E-mail 2:"/>
+                            <Label minWidth="140.0" text="E-mail 2:"/>
                             <TextField fx:id="tfEmail2" HBox.hgrow="ALWAYS"/>
-                            <JFXButton fx:id="btnEmail2" buttonType="RAISED" mnemonicParsing="false"
-                                       onAction="#showEmailDialog" styleClass="click-button" text="">
+                            <Button fx:id="btnEmail2" mnemonicParsing="false"
+                                    onAction="#showEmailDialog" text="">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
                                                preserveRatio="true">
-                                        <Image url="@icons/mail.png"/>
+                                        <image>
+                                            <Image url="@icons/mail.png"/>
+                                        </image>
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
                                     <Insets left="5.0"/>
                                 </HBox.margin>
-                            </JFXButton>
+                            </Button>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" layoutX="25.0" layoutY="265.0" VBox.vgrow="NEVER">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
-                            <Label minWidth="140.0" styleClass="normal-label" text="Site:"/>
+                            <Label minWidth="140.0" text="Site:"/>
                             <TextField fx:id="tfSite" HBox.hgrow="ALWAYS"/>
-                            <JFXButton fx:id="btnSite" buttonType="RAISED" mnemonicParsing="false" onAction="#openSite"
-                                       styleClass="click-button" text="">
+                            <Button fx:id="btnSite" mnemonicParsing="false" onAction="#openSite"
+                                    text="">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
                                                preserveRatio="true">
-                                        <Image url="@icons/website.png"/>
+                                        <image>
+                                            <Image url="@icons/website.png"/>
+                                        </image>
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
                                     <Insets left="5.0"/>
                                 </HBox.margin>
-                            </JFXButton>
+                            </Button>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
                             <children>
-                                <Label minWidth="140.0" styleClass="normal-label" text="Συμμετοχή σε Προμήθειες:"/>
-                                <JFXCheckBox fx:id="hasCommissionsCheck" text=""/>
+                                <Label minWidth="140.0" text="Συμμετοχή σε Προμήθειες:"/>
+
+                                <CheckBox fx:id="hasCommissionsCheck" text=""/>
                             </children>
                         </HBox>
                         <HBox alignment="CENTER" layoutX="15.0" layoutY="336.0">
@@ -171,13 +179,13 @@
                             <VBox.margin>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </VBox.margin>
-                            <Label prefWidth="140.0" styleClass="normal-label" text="Σχόλειο:">
+                            <Label prefWidth="140.0" text="Σχόλειο:">
                                 <padding>
                                     <Insets right="20.0"/>
                                 </padding>
                             </Label>
-                            <JFXTextArea fx:id="taNotes" onMouseClicked="#handleMouseClick" prefHeight="102.0"
-                                         prefRowCount="4" prefWidth="555.0" HBox.hgrow="ALWAYS"/>
+                            <TextArea fx:id="taNotes" onMouseClicked="#handleMouseClick" prefHeight="102.0"
+                                      prefRowCount="4" prefWidth="555.0" HBox.hgrow="ALWAYS"/>
                         </HBox>
                         <padding>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
@@ -188,21 +196,21 @@
         </Tab>
         <Tab fx:id="tabOrders" closable="false" text="Παραγγελίες">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-                <AnchorPane fx:id="ordersContainer" styleClass="pane"/>
+                <AnchorPane fx:id="ordersContainer"/>
             </ScrollPane>
         </Tab>
         <Tab fx:id="tabPayments" closable="false" text="Εισερχόμενες Πληρωμές">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-                <AnchorPane fx:id="paymentsContainer" styleClass="pane"/>
+                <AnchorPane fx:id="paymentsContainer"/>
             </ScrollPane>
         </Tab>
         <VBox.margin>
             <Insets top="5.0"/>
         </VBox.margin>
     </TabPane>
-    <HBox alignment="BOTTOM_RIGHT" fillHeight="false" styleClass="pane" VBox.vgrow="ALWAYS">
-        <JFXButton buttonType="RAISED" mnemonicParsing="false" onAction="#handleOkButton" styleClass="click-button"
-                   text="Αποθήκευση">
+    <HBox alignment="BOTTOM_RIGHT" fillHeight="false" VBox.vgrow="ALWAYS">
+        <Button mnemonicParsing="false" onAction="#handleOkButton"
+                text="Αποθήκευση">
             <graphic>
                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                     <Image url="@icons/save.png"/>
@@ -211,6 +219,6 @@
             <HBox.margin>
                 <Insets bottom="5.0" left="5.0" right="20.0" top="5.0"/>
             </HBox.margin>
-        </JFXButton>
+        </Button>
     </HBox>
 </VBox>

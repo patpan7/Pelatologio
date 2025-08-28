@@ -1,0 +1,7 @@
+.root {
+    -fx-text-background-color: -color-fg-default;
+    -fx-background-color: -color-bg-default;
+    -fx-highlight-fill: -color-accent-emphasis;
+    -fx-prompt-text-fill: -color-fg-subtle;
+    -fx-text-inner-color: -color-fg-default;
+}

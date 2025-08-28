@@ -75,4 +75,8 @@ public class AfmResponseParser {
             return null;
         }
     }
+
+    public static String getDoyFromResponse(String responseXml) {
+        return getXPathValue(responseXml, "//basic_rec/doy_descr");
+    }
 }

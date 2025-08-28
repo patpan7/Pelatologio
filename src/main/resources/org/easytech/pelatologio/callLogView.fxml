@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox alignment="TOP_CENTER" spacing="10.0" styleClass="pane" stylesheets="@external.css"
+<VBox alignment="TOP_CENTER" spacing="10.0"
       xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.easytech.pelatologio.CallLogViewController">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
-    <Label styleClass="header-label" text="Ιστορικό Κλήσεων"/>
+    <Label text="Ιστορικό Κλήσεων"/>
     <HBox alignment="CENTER_LEFT" spacing="10.0">
-        <Label styleClass="normal-label" text="Αναζήτηση:"/>
+        <Label text="Αναζήτηση:"/>
         <TextField fx:id="searchField" promptText="Αριθμός / Όνομα" HBox.hgrow="ALWAYS"/>
-        <JFXButton fx:id="refreshButton" buttonType="RAISED" onAction="#handleRefresh" prefWidth="277.0"
-                   styleClass="click-button" text="Ανανέωση">
+        <Button fx:id="refreshButton" onAction="#handleRefresh" prefWidth="277.0"
+                text="Ανανέωση">
             <VBox.margin>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
             </VBox.margin>
-        </JFXButton>
+        </Button>
     </HBox>
     <TableView fx:id="callLogTable" VBox.vgrow="ALWAYS">
         <columns>

@@ -1,6 +1,5 @@
 package org.easytech.pelatologio;
 
-import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -44,7 +43,7 @@ public class AddSubController {
     @FXML
     private ComboBox<SubsCategory> categoryComboBox;
     @FXML
-    private JFXButton btnCustomer;
+    private Button btnCustomer;
 
     private Subscription sub;
     private int customerId;

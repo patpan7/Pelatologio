@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane prefHeight="900.0" prefWidth="1200.0" styleClass="pane" stylesheets="@external.css"
+<BorderPane prefHeight="900.0" prefWidth="1200.0"   stylesheets="@external.css"
             xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.easytech.pelatologio.PartnerEarningsController">
     <top>
@@ -15,50 +14,50 @@
             <children>
                 <HBox alignment="CENTER_LEFT">
                     <children>
-                        <Label styleClass="normal-label" text="Συνεργάτης:">
+                        <Label text="Συνεργάτης:">
                             <HBox.margin>
                                 <Insets right="5.0"/>
                             </HBox.margin>
                         </Label>
                         <ComboBox fx:id="partnerFilterComboBox" prefWidth="200.0"/>
-                        <Label styleClass="normal-label" text="Τιμολόγιο:">
+                        <Label text="Τιμολόγιο:">
                             <HBox.margin>
                                 <Insets left="5.0" right="5.0"/>
                             </HBox.margin>
                         </Label>
                         <ComboBox fx:id="invoiceStatusFilterComboBox" prefWidth="150.0"/>
-                        <Label styleClass="normal-label" text="Πληρωμή:">
+                        <Label text="Πληρωμή:">
                             <HBox.margin>
                                 <Insets left="5.0" right="5.0"/>
                             </HBox.margin>
                         </Label>
                         <ComboBox fx:id="paymentStatusFilterComboBox" prefWidth="150.0"/>
-                        <JFXButton onAction="#handleClearFilters" styleClass="click-button" text="Εκκαθάριση Φίλτρων">
+                        <Button onAction="#handleClearFilters" text="Εκκαθάριση Φίλτρων">
                             <HBox.margin>
                                 <Insets left="10.0"/>
                             </HBox.margin>
-                        </JFXButton>
+                        </Button>
                     </children>
                 </HBox>
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
-                        <JFXButton onAction="#handleMarkInvoiceReceived" styleClass="click-button"
-                                   text="Τιμολόγιο Ελήφθη"/>
-                        <JFXButton onAction="#handleMarkPaid" styleClass="click-button" text="Πληρωμένο"/>
-                        <JFXButton onAction="#handleCalculateCommissions" styleClass="click-button"
-                                   text="Υπολογισμός Προμηθειών"/>
-                        <JFXButton onAction="#handleGenerateStatement" styleClass="click-button"
-                                   text="Δημιουργία Καρτέλας"/>
+                        <Button onAction="#handleMarkInvoiceReceived"
+                                text="Τιμολόγιο Ελήφθη"/>
+                        <Button onAction="#handleMarkPaid" text="Πληρωμένο"/>
+                        <Button onAction="#handleCalculateCommissions"
+                                text="Υπολογισμός Προμηθειών"/>
+                        <Button onAction="#handleGenerateStatement"
+                                text="Δημιουργία Καρτέλας"/>
                     </children>
                 </HBox>
                 <HBox alignment="CENTER_LEFT" spacing="20.0">
                     <children>
-                        <Label styleClass="normal-label" text="Σύνολο Οφειλών:"/>
-                        <Label fx:id="totalEarningsLabel" styleClass="normal-label" text="0.00€"/>
-                        <Label styleClass="normal-label" text="Σύνολο Ανεξόφλητων:"/>
-                        <Label fx:id="totalUnpaidLabel" styleClass="normal-label" text="0.00€"/>
-                        <Label styleClass="normal-label" text="Σύνολο Πληρωμένων:"/>
-                        <Label fx:id="totalPaidLabel" styleClass="normal-label" text="0.00€"/>
+                        <Label text="Σύνολο Οφειλών:"/>
+                        <Label fx:id="totalEarningsLabel" text="0.00€"/>
+                        <Label text="Σύνολο Ανεξόφλητων:"/>
+                        <Label fx:id="totalUnpaidLabel" text="0.00€"/>
+                        <Label text="Σύνολο Πληρωμένων:"/>
+                        <Label fx:id="totalPaidLabel" text="0.00€"/>
                     </children>
                     <VBox.margin>
                         <Insets top="10.0"/>

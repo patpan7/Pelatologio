@@ -38,7 +38,7 @@ public class EmailDialogController {
     private Button attachButton;
 
     @FXML
-    private JFXButton sendButton;
+    private Button sendButton;
     @FXML
     private ProgressBar progressBar;
 
