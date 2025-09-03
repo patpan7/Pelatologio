@@ -4,435 +4,399 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<VBox   xmlns="http://javafx.com/javafx/17.0.12"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddCustomerController">
+<?import javafx.scene.text.*?>
+
+<VBox stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddCustomerController">
     <TabPane fx:id="tabPane">
         <Tab fx:id="tabMain" closable="false" text="Στοιχεία πελάτη">
-            <ScrollPane fitToHeight="true" fitToWidth="true" >
-                <HBox >
-                    <VBox  HBox.hgrow="ALWAYS">
-                        <Label fx:id="lblCode" minWidth="160.0"  text="Κωδικός:"/>
+            <ScrollPane fitToHeight="true" fitToWidth="true">
+                <HBox>
+                    <VBox HBox.hgrow="ALWAYS">
+                        <Label fx:id="lblCode" minWidth="160.0" text="Κωδικός:" />
                         <HBox alignment="CENTER_RIGHT">
-                            <Label minWidth="160.0"  text="Επωνυμία:"/>
-                            <TextField fx:id="tfName" alignment="TOP_LEFT" HBox.hgrow="ALWAYS"/>
+                            <Label minWidth="160.0" text="Επωνυμία:" />
+                            <TextField fx:id="tfName" alignment="TOP_LEFT" HBox.hgrow="ALWAYS" />
                             <VBox.margin>
-                                <Insets top="5.0"/>
+                                <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT">
-                            <Label minWidth="160.0"  text="Τίτλος:"/>
-                            <TextField fx:id="tfTitle" HBox.hgrow="ALWAYS"/>
+                            <Label minWidth="160.0" text="Τίτλος:" />
+                            <TextField fx:id="tfTitle" HBox.hgrow="ALWAYS" />
                             <VBox.margin>
-                                <Insets top="5.0"/>
+                                <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER_LEFT">
-                            <Label minWidth="160.0"  text="Επάγγελμα:"/>
-                            <TextField fx:id="tfJob" HBox.hgrow="ALWAYS"/>
+                            <Label minWidth="160.0" text="Επάγγελμα:" />
+                            <TextField fx:id="tfJob" HBox.hgrow="ALWAYS" />
                             <VBox.margin>
-                                <Insets top="5.0"/>
+                                <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="540.0">
                             <VBox.margin>
-                                <Insets top="5.0"/>
+                                <Insets top="5.0" />
                             </VBox.margin>
-                            <Label minWidth="160.0"  text="Ομάδα:"/>
-                            <ComboBox fx:id="tfJobTeam" editable="true" maxWidth="1.7976931348623157E308"
-                                      promptText="Ομάδα" HBox.hgrow="ALWAYS"/>
-                            <Button mnemonicParsing="false" onAction="#handleAddJobTeam" 
-                                    text="" HBox.hgrow="NEVER">
+                            <Label minWidth="160.0" text="Ομάδα:" />
+                            <ComboBox fx:id="tfJobTeam" editable="true" maxWidth="1.7976931348623157E308" promptText="Ομάδα" HBox.hgrow="ALWAYS" />
+                            <Button mnemonicParsing="false" onAction="#handleAddJobTeam" text="" HBox.hgrow="NEVER">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                         <image>
-                                            <Image url="@icons/add.png"/>
+                                            <Image url="@icons/add.png" />
                                         </image>
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
-                                    <Insets left="20.0"/>
+                                    <Insets left="20.0" />
                                 </HBox.margin>
                             </Button>
-                            <Label minWidth="145.0"  text="Υποομάδα:">
+                            <Label minWidth="145.0" text="Υποομάδα:">
                                 <HBox.margin>
-                                    <Insets left="10.0"/>
+                                    <Insets left="10.0" />
                                 </HBox.margin>
                             </Label>
-                            <ComboBox fx:id="tfSubJobTeam" editable="true" maxWidth="1.7976931348623157E308"
-                                      promptText="Ομάδα" HBox.hgrow="ALWAYS"/>
-                            <Button mnemonicParsing="false" onAction="#handleAddSubJobTeam" 
-                                    text="" HBox.hgrow="NEVER">
+                            <ComboBox fx:id="tfSubJobTeam" editable="true" maxWidth="1.7976931348623157E308" promptText="Ομάδα" HBox.hgrow="ALWAYS" />
+                            <Button mnemonicParsing="false" onAction="#handleAddSubJobTeam" text="" HBox.hgrow="NEVER">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                         <image>
-                                            <Image url="@icons/add.png"/>
+                                            <Image url="@icons/add.png" />
                                         </image>
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
-                                    <Insets left="20.0"/>
+                                    <Insets left="20.0" />
                                 </HBox.margin>
                             </Button>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT">
-                            <Label minWidth="160.0"  text="ΑΦΜ:"/>
-                            <TextField fx:id="tfAfm" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnAfmSearch" mnemonicParsing="false"  text="">
+                            <Label minWidth="160.0" text="ΑΦΜ:" />
+                            <TextField fx:id="tfAfm" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnAfmSearch" mnemonicParsing="false" text="">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@icons/Search.png"/>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/Search.png" />
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
-                                    <Insets left="5.0"/>
+                                    <Insets left="5.0" />
                                 </HBox.margin>
                             </Button>
                             <VBox.margin>
-                                <Insets top="5.0"/>
+                                <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT">
-                            <Label minWidth="160.0"  text="Τηλέφωνο 1:"/>
-                            <TextField fx:id="tfPhone1" alignment="TOP_LEFT" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnPhone1" mnemonicParsing="false"  text="">
+                            <Label minWidth="160.0" text="Τηλέφωνο 1:" />
+                            <TextField fx:id="tfPhone1" alignment="TOP_LEFT" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnPhone1" mnemonicParsing="false" text="">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@icons/phone.png"/>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/phone.png" />
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
-                                    <Insets left="5.0"/>
+                                    <Insets left="5.0" />
                                 </HBox.margin>
                             </Button>
 
-                            <Label minWidth="165.0"  text="Τηλέφωνο 2:">
+                            <Label minWidth="165.0" text="Τηλέφωνο 2:">
                                 <HBox.margin>
-                                    <Insets left="10.0"/>
+                                    <Insets left="10.0" />
                                 </HBox.margin>
                             </Label>
-                            <TextField fx:id="tfPhone2" alignment="TOP_LEFT" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnPhone2" mnemonicParsing="false"  text="">
+                            <TextField fx:id="tfPhone2" alignment="TOP_LEFT" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnPhone2" mnemonicParsing="false" text="">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@icons/phone.png"/>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/phone.png" />
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
-                                    <Insets left="5.0"/>
+                                    <Insets left="5.0" />
                                 </HBox.margin>
                             </Button>
                             <VBox.margin>
-                                <Insets top="5.0"/>
+                                <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT">
-                            <Label minWidth="160.0"  text="Κινητό:"/>
-                            <TextField fx:id="tfMobile" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnMobile" mnemonicParsing="false"  text="">
+                            <Label minWidth="160.0" text="Κινητό:" />
+                            <TextField fx:id="tfMobile" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnMobile" mnemonicParsing="false" text="">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@icons/phone.png"/>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/phone.png" />
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
-                                    <Insets left="5.0"/>
+                                    <Insets left="5.0" />
                                 </HBox.margin>
                             </Button>
                             <VBox.margin>
-                                <Insets top="5.0"/>
+                                <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT">
-                            <Label minWidth="160.0"  text="Διεύθυνση:"/>
-                            <TextField fx:id="tfAddress" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnAddressAdd" mnemonicParsing="false" onAction="#addAddress"
-                                     text="">
+                            <Label minWidth="160.0" text="Διεύθυνση:" />
+                            <TextField fx:id="tfAddress" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnAddressAdd" mnemonicParsing="false" onAction="#addAddress" text="">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@icons/add.png"/>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/add.png" />
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
-                                    <Insets left="5.0"/>
+                                    <Insets left="5.0" />
                                 </HBox.margin>
                             </Button>
                             <VBox.margin>
-                                <Insets top="5.0"/>
+                                <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT">
-                            <Label minWidth="160.0"  text="Πόλη:"/>
-                            <TextField fx:id="tfTown" HBox.hgrow="ALWAYS"/>
-                            <Label layoutX="10.0" layoutY="18.0" minWidth="65.0"  text="T.K.:">
+                            <Label minWidth="160.0" text="Πόλη:" />
+                            <TextField fx:id="tfTown" HBox.hgrow="ALWAYS" />
+                            <Label layoutX="10.0" layoutY="18.0" minWidth="65.0" text="T.K.:">
                                 <HBox.margin>
-                                    <Insets left="10.0"/>
+                                    <Insets left="10.0" />
                                 </HBox.margin>
                             </Label>
-                            <TextField fx:id="tfPostCode"/>
+                            <TextField fx:id="tfPostCode" />
                             <VBox.margin>
-                                <Insets top="5.0"/>
+                                <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT">
-                            <Label minWidth="160.0"  text="E-mail:"/>
-                            <TextField fx:id="tfEmail" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnEmail" mnemonicParsing="false"  text="">
+                            <Label minWidth="160.0" text="E-mail:" />
+                            <TextField fx:id="tfEmail" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnEmail" mnemonicParsing="false" text="">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@icons/mail.png"/>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/mail.png" />
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
-                                    <Insets left="5.0"/>
+                                    <Insets left="5.0" />
                                 </HBox.margin>
                             </Button>
-                            <Label layoutX="10.0" layoutY="20.0" minWidth="110.0" 
-                                   text="E-mail 2:">
+                            <Label layoutX="10.0" layoutY="20.0" minWidth="110.0" text="E-mail 2:">
                                 <HBox.margin>
-                                    <Insets left="10.0"/>
+                                    <Insets left="10.0" />
                                 </HBox.margin>
                             </Label>
-                            <TextField fx:id="tfEmail2" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnEmail2" mnemonicParsing="false"  text="">
+                            <TextField fx:id="tfEmail2" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnEmail2" mnemonicParsing="false" text="">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@icons/mail.png"/>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/mail.png" />
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
-                                    <Insets left="5.0"/>
+                                    <Insets left="5.0" />
                                 </HBox.margin>
                             </Button>
                             <VBox.margin>
-                                <Insets top="5.0"/>
+                                <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT">
-                            <Label minWidth="160.0"  text="Υπεύθυνος:"/>
-                            <TextField fx:id="tfManager" HBox.hgrow="ALWAYS"/>
-                            <Label minWidth="200.0"  text="Τηλ Υπευθύνου:" wrapText="true"
-                                   HBox.hgrow="NEVER">
+                            <Label minWidth="160.0" text="Υπεύθυνος:" />
+                            <TextField fx:id="tfManager" HBox.hgrow="ALWAYS" />
+                            <Label minWidth="200.0" text="Τηλ Υπευθύνου:" wrapText="true" HBox.hgrow="NEVER">
                                 <HBox.margin>
-                                    <Insets left="10.0"/>
+                                    <Insets left="10.0" />
                                 </HBox.margin>
                             </Label>
-                            <TextField fx:id="tfManagerPhone" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnPhoneManager" mnemonicParsing="false"  text="">
+                            <TextField fx:id="tfManagerPhone" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="btnPhoneManager" mnemonicParsing="false" text="">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@icons/phone.png"/>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/phone.png" />
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
-                                    <Insets left="5.0"/>
+                                    <Insets left="5.0" />
                                 </HBox.margin>
                             </Button>
                             <VBox.margin>
-                                <Insets top="5.0"/>
+                                <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER_LEFT">
-                            <Label minWidth="160.0"  text="Σύσταση:"/>
-                            <ComboBox fx:id="tfRecommendation" editable="true" maxWidth="1.7976931348623157E308"
-                                      promptText="Σύσταση" HBox.hgrow="ALWAYS"/>
-                            <Button mnemonicParsing="false" onAction="#handleAddRecommendation" prefWidth="250.0"
-                                     text="Προσθήκη Σύστασης" HBox.hgrow="NEVER">
+                            <Label minWidth="160.0" text="Σύσταση:" />
+                            <ComboBox fx:id="tfRecommendation" editable="true" maxWidth="1.7976931348623157E308" promptText="Σύσταση" HBox.hgrow="ALWAYS" />
+                            <Button mnemonicParsing="false" onAction="#handleAddRecommendation" prefWidth="250.0" text="Προσθήκη Σύστασης" HBox.hgrow="NEVER">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@icons/add.png"/>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/add.png" />
                                     </ImageView>
                                 </graphic>
                                 <HBox.margin>
-                                    <Insets left="20.0"/>
+                                    <Insets left="20.0" />
                                 </HBox.margin>
                             </Button>
                             <VBox.margin>
-                                <Insets top="5.0"/>
+                                <Insets top="5.0" />
                             </VBox.margin>
                         </HBox>
                         <padding>
-                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                         </padding>
                     </VBox>
-                    <VBox alignment="TOP_CENTER" minWidth="190.0"  HBox.hgrow="NEVER">
-                        <Button fx:id="btnAddToMegasoft" alignment="TOP_LEFT" mnemonicParsing="false"
-                                onAction="#addMegasoft" prefWidth="180.0"  text="Megasoft"
-                                wrapText="true">
+                    <VBox alignment="TOP_CENTER" minWidth="190.0" HBox.hgrow="NEVER">
+                        <Button fx:id="btnAddToMegasoft" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#addMegasoft" prefWidth="180.0" text="Megasoft" wrapText="true">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/megasoft.png"/>
+                                    <Image url="@icons/megasoft.png" />
                                 </ImageView>
                             </graphic>
                             <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </Button>
-                        <Button fx:id="btnData" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#folderClick"
-                                prefWidth="180.0"  text="Data" HBox.hgrow="ALWAYS">
+                        <Button fx:id="btnData" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#folderClick" prefWidth="180.0" text="Data" HBox.hgrow="ALWAYS">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/folder.png"/>
+                                    <Image url="@icons/folder.png" />
                                 </ImageView>
                             </graphic>
                             <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </Button>
-                        <Button fx:id="btnLabel" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#labelClick"
-                                prefWidth="180.0"  text="Ετικέτα">
+                        <Button fx:id="btnLabel" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#labelClick" prefWidth="180.0" text="Ετικέτα">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/label.png"/>
+                                    <Image url="@icons/label.png" />
                                 </ImageView>
                             </graphic>
                             <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </Button>
-                        <Button fx:id="btnCopy" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#copyClick"
-                                prefWidth="180.0"  text="Στοιχεία">
+                        <Button fx:id="btnCopy" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#copyClick" prefWidth="180.0" text="Στοιχεία">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/copy.png"/>
+                                    <Image url="@icons/copy.png" />
                                 </ImageView>
                             </graphic>
                             <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </Button>
-                        <Button fx:id="btnTask" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#newTask"
-                                prefWidth="180.0"  text="Νέα Εργασία" wrapText="true"
-                                HBox.hgrow="ALWAYS">
+                        <Button fx:id="btnTask" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#newTask" prefWidth="180.0" text="Νέα Εργασία" wrapText="true" HBox.hgrow="ALWAYS">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/tasks.png"/>
+                                    <Image url="@icons/tasks.png" />
                                 </ImageView>
                             </graphic>
                             <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </Button>
-                        <Button fx:id="btnAcs" alignment="TOP_LEFT" mnemonicParsing="false" onMouseClicked="#acsVoucher"
-                                prefWidth="180.0"  text="ACS" wrapText="true"
-                                HBox.hgrow="ALWAYS">
+                        <Button fx:id="btnAcs" alignment="TOP_LEFT" mnemonicParsing="false" onMouseClicked="#acsVoucher" prefWidth="180.0" text="ACS" wrapText="true" HBox.hgrow="ALWAYS">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/acs.png"/>
+                                    <Image url="@icons/acs.png" />
                                 </ImageView>
                             </graphic>
                             <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </Button>
-                        <Button fx:id="startCallLogButton" prefHeight="63.0" prefWidth="180.0" 
-                                text="Καταγραφή Κλήσης" wrapText="true" HBox.hgrow="ALWAYS">
+                        <Button fx:id="startCallLogButton" prefHeight="63.0" prefWidth="180.0" text="Καταγραφή Κλήσης" wrapText="true" HBox.hgrow="ALWAYS">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/online-support.png"/>
+                                    <Image url="@icons/online-support.png" />
                                 </ImageView>
                             </graphic>
                             <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </Button>
-                        <Button fx:id="btnAnydesk" alignment="TOP_LEFT" mnemonicParsing="false"
-                                onMouseClicked="#anydesk" prefWidth="180.0"  text="Anydesk"
-                                wrapText="true" HBox.hgrow="ALWAYS">
+                        <Button fx:id="btnAnydesk" alignment="TOP_LEFT" mnemonicParsing="false" onMouseClicked="#anydesk" prefWidth="180.0" text="Anydesk" wrapText="true" HBox.hgrow="ALWAYS">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/anydesk.png"/>
+                                    <Image url="@icons/anydesk.png" />
                                 </ImageView>
                             </graphic>
                             <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </Button>
-                        <Button fx:id="btnManageApps" mnemonicParsing="false" prefHeight="63.0" prefWidth="180.0"
-                                 text="Διαχείριση Εφαρμογών" wrapText="true">
+                        <Button fx:id="btnManageApps" mnemonicParsing="false" prefHeight="63.0" prefWidth="180.0" text="Διαχείριση Εφαρμογών" wrapText="true">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/newApp.png"/>
+                                    <Image url="@icons/newApp.png" />
                                 </ImageView>
                             </graphic>
                             <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </Button>
-                        <ProgressIndicator fx:id="progressIndicator" progress="-1.0" visible="false"
-                                           VBox.vgrow="ALWAYS"/>
-                        <Label fx:id="lblBlance"  text="Υπόλοιπο"/>
+                        <ProgressIndicator fx:id="progressIndicator" progress="-1.0" visible="false" VBox.vgrow="ALWAYS" />
+                        <Label fx:id="lblBlance" text="Υπόλοιπο" />
                         <TextField fx:id="tfBalance" maxWidth="190.0" onMouseClicked="#handleMouseClick">
                             <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </TextField>
-                        <Label fx:id="lblBlanceMega" layoutX="47.0" layoutY="392.0" 
-                               text="Υπολ. Megasoft" VBox.vgrow="ALWAYS">
+                        <Label fx:id="lblBlanceMega" layoutX="47.0" layoutY="392.0" text="Υπολ. Megasoft" VBox.vgrow="ALWAYS">
                             <opaqueInsets>
-                                <Insets/>
+                                <Insets />
                             </opaqueInsets>
                         </Label>
                         <TextField fx:id="tfBalanceMega" layoutX="15.0" layoutY="424.0" maxWidth="190.0">
                             <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </TextField>
-                        <CheckBox fx:id="checkboxActive" mnemonicParsing="false" 
-                                  text="Ενεργός">
+                        <CheckBox fx:id="checkboxActive" mnemonicParsing="false" text="Ενεργός">
                             <VBox.margin>
-                                <Insets top="30.0"/>
+                                <Insets top="30.0" />
                             </VBox.margin>
                         </CheckBox>
                         <HBox.margin>
-                            <Insets top="5.0"/>
+                            <Insets top="5.0" />
                         </HBox.margin>
                     </VBox>
                 </HBox>
             </ScrollPane>
         </Tab>
-        <Tab fx:id="tabDevices" closable="false" text="Συσκευές">
-            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-                <AnchorPane fx:id="devicesContainer" />
-            </ScrollPane>
-        </Tab>
-        <Tab fx:id="tabTasks" closable="false" text="Εργασίες">
-            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-                <AnchorPane fx:id="tasksContainer" />
-            </ScrollPane>
-        </Tab>
-        <Tab fx:id="tabSubs" closable="false" text="Συνδρομές">
-            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-                <AnchorPane fx:id="subsContainer" />
-            </ScrollPane>
-        </Tab>
-        <Tab fx:id="tabOffers" closable="false" text="Προσφορές">
-            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-                <AnchorPane fx:id="offersContainer" />
-            </ScrollPane>
-        </Tab>
-        <Tab fx:id="tabOrders" closable="false" text="Παραγγελίες">
-            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-                <AnchorPane fx:id="ordersContainer" />
-            </ScrollPane>
-        </Tab>
+<!--        <Tab fx:id="tabDevices" closable="false" text="Συσκευές">-->
+<!--            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">-->
+<!--                <AnchorPane fx:id="devicesContainer" />-->
+<!--            </ScrollPane>-->
+<!--        </Tab>-->
+<!--        <Tab fx:id="tabTasks" closable="false" text="Εργασίες">-->
+<!--            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">-->
+<!--                <AnchorPane fx:id="tasksContainer" />-->
+<!--            </ScrollPane>-->
+<!--        </Tab>-->
+<!--        <Tab fx:id="tabSubs" closable="false" text="Συνδρομές">-->
+<!--            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">-->
+<!--                <AnchorPane fx:id="subsContainer" />-->
+<!--            </ScrollPane>-->
+<!--        </Tab>-->
+<!--        <Tab fx:id="tabOffers" closable="false" text="Προσφορές">-->
+<!--            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">-->
+<!--                <AnchorPane fx:id="offersContainer" />-->
+<!--            </ScrollPane>-->
+<!--        </Tab>-->
+<!--        <Tab fx:id="tabOrders" closable="false" text="Παραγγελίες">-->
+<!--            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">-->
+<!--                <AnchorPane fx:id="ordersContainer" />-->
+<!--            </ScrollPane>-->
+<!--        </Tab>-->
         <Tab fx:id="tabNotes" closable="false" text="Σημειώσεις">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
                 <VBox VBox.vgrow="ALWAYS">
                     <TextArea fx:id="taNotes" prefRowCount="4" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                         <font>
-                            <Font size="24.0"/>
+                            <Font size="24.0" />
                         </font>
                     </TextArea>
                 </VBox>
@@ -440,148 +404,145 @@
         </Tab>
         <Tab fx:id="tabAccountant" closable="false" text="Λογιστής">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-                <VBox  HBox.hgrow="ALWAYS">
+                <VBox HBox.hgrow="ALWAYS">
                     <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
-                        <Label minWidth="200.0"  text="Λογιστής:"/>
-                        <ComboBox fx:id="tfAccName" editable="true" maxWidth="1.7976931348623157E308"
-                                  promptText="Λογιστής" HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="btnAccountantAdd" mnemonicParsing="false" onAction="#addAccountant"
-                                 text="">
+                        <Label minWidth="200.0" text="Λογιστής:" />
+                        <ComboBox fx:id="tfAccName" editable="true" maxWidth="1.7976931348623157E308" promptText="Λογιστής" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnAccountantAdd" mnemonicParsing="false" onAction="#addAccountant" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/add.png"/>
+                                    <Image url="@icons/add.png" />
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets left="5.0"/>
+                                <Insets left="5.0" />
                             </HBox.margin>
                         </Button>
                         <VBox.margin>
-                            <Insets top="5.0"/>
+                            <Insets top="5.0" />
                         </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
-                        <Label minWidth="200.0"  text="Τηλέφωνο:"/>
-                        <TextField fx:id="tfAccPhone" HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="btnAccPhone" mnemonicParsing="false"  text="">
+                        <Label minWidth="200.0" text="Τηλέφωνο:" />
+                        <TextField fx:id="tfAccPhone" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnAccPhone" mnemonicParsing="false" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/phone.png"/>
+                                    <Image url="@icons/phone.png" />
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets left="5.0"/>
+                                <Insets left="5.0" />
                             </HBox.margin>
                         </Button>
                         <VBox.margin>
-                            <Insets top="5.0"/>
+                            <Insets top="5.0" />
                         </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
-                        <Label minWidth="200.0"  text="Κινητό:"/>
-                        <TextField fx:id="tfAccMobile" HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="btnAccMobile" mnemonicParsing="false"  text="">
+                        <Label minWidth="200.0" text="Κινητό:" />
+                        <TextField fx:id="tfAccMobile" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnAccMobile" mnemonicParsing="false" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/phone.png"/>
+                                    <Image url="@icons/phone.png" />
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets left="5.0"/>
+                                <Insets left="5.0" />
                             </HBox.margin>
                         </Button>
                         <VBox.margin>
-                            <Insets top="5.0"/>
+                            <Insets top="5.0" />
                         </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
-                        <Label minWidth="200.0"  text="E-mail:" HBox.hgrow="NEVER"/>
-                        <TextField fx:id="tfAccEmail" HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="btnAccEmail" mnemonicParsing="false"  text="">
+                        <Label minWidth="200.0" text="E-mail:" HBox.hgrow="NEVER" />
+                        <TextField fx:id="tfAccEmail" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnAccEmail" mnemonicParsing="false" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/mail.png"/>
+                                    <Image url="@icons/mail.png" />
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets left="5.0"/>
+                                <Insets left="5.0" />
                             </HBox.margin>
                         </Button>
                         <VBox.margin>
-                            <Insets top="5.0"/>
+                            <Insets top="5.0" />
                         </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="177.0">
-                        <Label minWidth="200.0"  text="Epsilon Ergani:" HBox.hgrow="NEVER">
+                        <Label minWidth="200.0" text="Epsilon Ergani:" HBox.hgrow="NEVER">
                             <HBox.margin>
-                                <Insets/>
+                                <Insets />
                             </HBox.margin>
                         </Label>
-                        <TextField fx:id="tfAccErganiEmail" HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="tfAccErganiEmail" HBox.hgrow="ALWAYS" />
                         <VBox.margin>
-                            <Insets top="5.0"/>
+                            <Insets top="5.0" />
                         </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="68.0">
-                        <Label minWidth="200.0"  text="Επαφής:">
+                        <Label minWidth="200.0" text="Επαφής:">
                             <HBox.margin>
-                                <Insets/>
+                                <Insets />
                             </HBox.margin>
                         </Label>
-                        <TextField fx:id="tfAccName1" HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="tfAccName1" HBox.hgrow="ALWAYS" />
                         <VBox.margin>
-                            <Insets top="5.0"/>
+                            <Insets top="5.0" />
                         </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="174.0">
-                        <Label minWidth="200.0"  text="E-mail Επαφής:" HBox.hgrow="NEVER"/>
-                        <TextField fx:id="tfAccEmail1" HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="btnAccEmail1" mnemonicParsing="false"  text="">
+                        <Label minWidth="200.0" text="E-mail Επαφής:" HBox.hgrow="NEVER" />
+                        <TextField fx:id="tfAccEmail1" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnAccEmail1" mnemonicParsing="false" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/mail.png"/>
+                                    <Image url="@icons/mail.png" />
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets left="5.0"/>
+                                <Insets left="5.0" />
                             </HBox.margin>
                         </Button>
                         <VBox.margin>
-                            <Insets top="5.0"/>
+                            <Insets top="5.0" />
                         </VBox.margin>
                     </HBox>
                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0"/>
+                        <Insets bottom="10.0" left="10.0" right="10.0" />
                     </padding>
                 </VBox>
             </ScrollPane>
         </Tab>
         <VBox.margin>
-            <Insets top="5.0"/>
+            <Insets top="5.0" />
         </VBox.margin>
     </TabPane>
-    <HBox alignment="BOTTOM_RIGHT" fillHeight="false"  VBox.vgrow="ALWAYS">
-        <Button mnemonicParsing="false" onAction="#handleRefreshButton"  text="Ανανέωση">
+    <HBox alignment="BOTTOM_RIGHT" fillHeight="false" VBox.vgrow="ALWAYS">
+        <Button mnemonicParsing="false" onAction="#handleRefreshButton" text="Ανανέωση">
             <graphic>
                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@icons/refresh.png"/>
+                    <Image url="@icons/refresh.png" />
                 </ImageView>
             </graphic>
             <HBox.margin>
-                <Insets bottom="5.0" left="20.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
             </HBox.margin>
         </Button>
-        <TextArea fx:id="taBalanceReason" disable="true" editable="false" maxHeight="0.0" maxWidth="0.0" minHeight="0.0"
-                  minWidth="0.0" prefHeight="0.0" prefWidth="0.0" visible="false"/>
-        <Separator HBox.hgrow="ALWAYS"/>
-        <Button mnemonicParsing="false" onAction="#handleOkButton"  text="Αποθήκευση">
+        <TextArea fx:id="taBalanceReason" disable="true" editable="false" maxHeight="0.0" maxWidth="0.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="0.0" visible="false" />
+        <Separator HBox.hgrow="ALWAYS" />
+        <Button mnemonicParsing="false" onAction="#handleOkButton" text="Αποθήκευση">
             <graphic>
                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@icons/save.png"/>
+                    <Image url="@icons/save.png" />
                 </ImageView>
             </graphic>
             <HBox.margin>
-                <Insets bottom="5.0" left="5.0" right="20.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="20.0" top="5.0" />
             </HBox.margin>
         </Button>
     </HBox>

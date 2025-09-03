@@ -5,3 +5,33 @@
     -fx-prompt-text-fill: -color-fg-subtle;
     -fx-text-inner-color: -color-fg-default;
 }
+
+/* Table hover effect */
+.table-row-cell:hover {
+    -fx-background-color: -color-accent-subtle;
+}
+
+/* Larger button text */
+.button {
+    -fx-font-size: 1.2em; /* 20% larger */
+}
+
+/* Larger label text and bold titles */
+.label {
+    -fx-font-size: 1.2em; /* 20% larger */
+    -fx-font-weight: bold;
+}
+
+.header-label {
+    -fx-font-size: 1.8em; /* 80% larger */
+    -fx-font-weight: bold;
+}
+
+.title-label {
+    -fx-font-size: 2em; /* 80% larger */
+    -fx-font-weight: bold;
+}
+
+.text-field {
+    -fx-font-size: 1.2em; /* 20% larger */
+}

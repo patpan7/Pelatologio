@@ -349,7 +349,7 @@
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS"/>
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0"
                                       snapToPixel="false">
-                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.6" VBox.vgrow="NEVER">
+                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.7" VBox.vgrow="NEVER">
                                         <VBox.margin>
                                             <Insets bottom="5.0" right="20.0"/>
                                         </VBox.margin>
@@ -421,7 +421,6 @@
                             <Insets/>
                         </HBox.margin>
                         <Label fx:id="lbAppUser"  text="Χειριστή: " HBox.hgrow="ALWAYS"/>
-                        <ToggleButton fx:id="themeToggle" mnemonicParsing="false" onAction="#toggleTheme" text="Dark Mode" />
                     </HBox>
                 </HBox>
             </top>

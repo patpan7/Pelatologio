@@ -3,7 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<HBox alignment="TOP_CENTER"   stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+<HBox alignment="TOP_CENTER" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.InvoicesViewController">
     <VBox alignment="TOP_CENTER"  HBox.hgrow="ALWAYS">
         <HBox.margin>

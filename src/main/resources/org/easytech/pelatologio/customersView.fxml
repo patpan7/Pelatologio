@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0"  
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" stylesheets="@custom-atlantafx.css"
            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.easytech.pelatologio.CustomersController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" >
@@ -30,7 +32,7 @@
 
                         <!-- Κουμπί φίλτρου -->
                         <Button fx:id="filterButton" minHeight="46.0" 
-                                text="Περισσότερα Φίλτρα">
+                                styleClass="default" text="Περισσότερα Φίλτρα">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/filter.png"/>
@@ -43,7 +45,7 @@
 
                         <!-- Κουμπί προσθήκης -->
                         <Button mnemonicParsing="false" onAction="#customerAddNew"
-                                 text="Νέος Πελάτης">
+                                styleClass="accent" text="Νέος Πελάτης">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/add.png"/>
@@ -56,7 +58,7 @@
 
                         <!-- Καθαρισμός φίλτρων -->
                         <Button fx:id="btnClean" mnemonicParsing="false" onMouseClicked="#clean"
-                                 text="">
+                                styleClass="danger" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/clean.png"/>
@@ -70,7 +72,7 @@
 
                         <!-- Ανανέωση -->
                         <Button fx:id="btnRefresh" mnemonicParsing="false"
-                                onMouseClicked="#refresh"  text="">
+                                onMouseClicked="#refresh"  styleClass="default" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/refresh.png"/>
@@ -88,22 +90,22 @@
             <left>
                 <VBox fx:id="filterPane" alignment="TOP_LEFT" managed="false" prefWidth="250.0" spacing="10.0"
                       style="-fx-padding: 10;" visible="false">
-                    <Label  text="Φίλτρα"/>
+                    <Label styleClass="normal-label" text="Φίλτρα"/>
                     <Separator prefWidth="200.0"/>
-                    <Label  text="Αναζήτηση σε"/>
+                    <Label styleClass="normal-label" text="Αναζήτηση σε"/>
                     <ComboBox fx:id="searchFieldComboBox" prefWidth="280.0" promptText="Όλα τα πεδία"/>
-                    <Label  text="Κατάσταση"/>
+                    <Label styleClass="normal-label" text="Κατάσταση"/>
                     <ComboBox fx:id="statusComboBox" prefWidth="280.0" promptText="Επιλογή Κατάστασης"/>
-                    <Label  text="Σύσταση"/>
+                    <Label styleClass="normal-label" text="Σύσταση"/>
                     <ComboBox fx:id="recommendationComboBox" prefWidth="280.0" promptText="Επιλογή Σύστασης"/>
-                    <Label  text="Ομάδα"/>
+                    <Label styleClass="normal-label" text="Ομάδα"/>
                     <ComboBox fx:id="jobTeamComboBox" prefWidth="280.0" promptText="Επιλογή Ομάδας"/>
-                    <Label  text="Υπο-ομάδα"/>
+                    <Label styleClass="normal-label" text="Υπο-ομάδα"/>
                     <ComboBox fx:id="subJobTeamComboBox" disable="true" prefWidth="280.0"
                               promptText="Επιλογή Υπο-ομάδας"/>
-                    <Label  text="Εφαρμογή"/>
+                    <Label styleClass="normal-label" text="Εφαρμογή"/>
                     <ComboBox fx:id="appComboBox" prefWidth="280.0" promptText="Επιλογή Εφαρμογής"/>
-                    <Button fx:id="clearAdvancedFiltersButton" 
+                    <Button fx:id="clearAdvancedFiltersButton" styleClass="danger"
                             text="Καθαρισμός Φίλτρων"/>
                 </VBox>
             </left>
@@ -111,10 +113,10 @@
             <!-- Center Table -->
             <center>
                 <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-                    <TableView fx:id="customerTable" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="customerTable" styleClass="striped" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="codeColumn" maxWidth="60.0" minWidth="60.0" prefWidth="60.0"
-                                         resizable="true" text="Id"/>
+                            <TableColumn fx:id="codeColumn" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="true"
+                                         text="Id"/>
                             <TableColumn fx:id="nameColumn" minWidth="260.0" prefWidth="328.0" resizable="true"
                                          text="Όνομα"/>
                             <TableColumn fx:id="titleColumn" maxWidth="300.0" minWidth="100.0" prefWidth="100.0"
@@ -135,24 +137,49 @@
                         <contextMenu>
                             <ContextMenu>
                                 <items>
-                                    <MenuItem onAction="#handleEditOption"  text="Επεξεργασία"/>
-                                    <MenuItem mnemonicParsing="false" onAction="#customerAddNew" 
-                                              text="Προσθήκη"/>
-                                    <MenuItem mnemonicParsing="false" onAction="#customerDelete" 
-                                              text="Διαγραφή"/>
+                                    <MenuItem onAction="#handleEditOption" text="Επεξεργασία">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="PENCIL" />
+                                        </graphic>
+                                    </MenuItem>
+                                    <MenuItem mnemonicParsing="false" onAction="#customerAddNew" text="Προσθήκη">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="PLUS" />
+                                        </graphic>
+                                    </MenuItem>
+                                    <MenuItem mnemonicParsing="false" onAction="#customerDelete" text="Διαγραφή">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="TRASH" />
+                                        </graphic>
+                                    </MenuItem>
                                     <SeparatorMenuItem/>
-                                    <MenuItem mnemonicParsing="false" onAction="#unlock" 
-                                              text="Ξεκλείδωμα"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#unlock" text="Ξεκλείδωμα">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="UNLOCK" />
+                                        </graphic>
+                                    </MenuItem>
                                     <SeparatorMenuItem/>
-                                    <MenuItem mnemonicParsing="false" onAction="#customerNewTask" 
-                                              text="Νέα Εργασία"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#customerNewTask" text="Νέα Εργασία">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="TASKS" />
+                                        </graphic>
+                                    </MenuItem>
                                     <SeparatorMenuItem/>
-                                    <MenuItem mnemonicParsing="false" onAction="#customerInfo" 
-                                              text="Αντιγραφή Στοιχείων"/>
-                                    <MenuItem mnemonicParsing="false" onAction="#customerLabel" 
-                                              text="Ετικέτα Πελάτη"/>
-                                    <MenuItem mnemonicParsing="false" onAction="#viberOpen" 
-                                              text="Επικοινωνία Viber"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#customerInfo" text="Αντιγραφή Στοιχείων">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="COPY" />
+                                        </graphic>
+                                    </MenuItem>
+                                    <MenuItem mnemonicParsing="false" onAction="#customerLabel" text="Ετικέτα Πελάτη">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="TAG" />
+                                        </graphic>
+                                    </MenuItem>
+                                    <MenuItem mnemonicParsing="false" onAction="#viberOpen" text="Επικοινωνία Viber">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="COMMENT" />
+                                        </graphic>
+                                    </MenuItem>
                                 </items>
                             </ContextMenu>
                         </contextMenu>
@@ -170,7 +197,7 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                     </BorderPane.margin>
                     <Button fx:id="btnTaxis" onMouseClicked="#taxisClick" prefWidth="130" 
-                            text="Taxis">
+                            styleClass="default" text="Taxis">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/gsis.png"/>
@@ -178,7 +205,7 @@
                         </graphic>
                     </Button>
                     <Button fx:id="btnMypos" onMouseClicked="#myposClick" prefWidth="130" 
-                            text="myPOS">
+                            styleClass="default" text="myPOS">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/mypos1.png"/>
@@ -186,7 +213,7 @@
                         </graphic>
                     </Button>
                     <Button fx:id="btnSimply" onMouseClicked="#simplyClick" prefWidth="130" 
-                            text="Simply">
+                            styleClass="default" text="Simply">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/simply1.png"/>
@@ -194,7 +221,7 @@
                         </graphic>
                     </Button>
                     <Button fx:id="btnEmblem" onMouseClicked="#emblemClick" prefWidth="130" 
-                            text="Emblem">
+                            styleClass="default" text="Emblem">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/emblem.png"/>
@@ -202,7 +229,7 @@
                         </graphic>
                     </Button>
                     <Button fx:id="btnErgani" onMouseClicked="#erganiClick" prefWidth="140.0"
-                             text="Ergani">
+                             styleClass="default" text="Ergani">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/ergani.png"/>
@@ -210,7 +237,7 @@
                         </graphic>
                     </Button>
                     <Button fx:id="btnAnydesk" onMouseClicked="#anydeskClick" prefWidth="140.0"
-                             text="Anydesk">
+                             styleClass="default" text="Anydesk">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/anydesk.png"/>
@@ -218,14 +245,14 @@
                         </graphic>
                     </Button>
                     <Button fx:id="btnData" onAction="#folderClick" prefWidth="140.0" 
-                            text="Data">
+                            styleClass="default" text="Data">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/folder.png"/>
                             </ImageView>
                         </graphic>
                     </Button>
-                    <Button fx:id="openFileButton" prefWidth="140.0"  text="My Files">
+                    <Button fx:id="openFileButton" prefWidth="140.0"  styleClass="default" text="My Files">
                         <graphic>
                             <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
                                 <Image url="@icons/document.png"/>

@@ -6,13 +6,13 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CalendarController">
+<StackPane fx:id="stackPane" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CalendarController">
     <BorderPane minHeight="800.0" minWidth="1200.0">
         <center>
-            <ScrollPane fitToHeight="true" fitToWidth="true">
+            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
                 <VBox alignment="TOP_CENTER">
                     <HBox>
-                        <Button mnemonicParsing="false" onAction="#calendarManager" text="Διαχείριση Ημερολογίων">
+                        <Button mnemonicParsing="false" onAction="#calendarManager" styleClass="default" text="Διαχείριση Ημερολογίων">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/calendar.png" />
@@ -23,7 +23,7 @@
                             </HBox.margin>
                         </Button>
                         <Separator visible="false" HBox.hgrow="ALWAYS" />
-                        <Button mnemonicParsing="false" onAction="#addAppointment" text="Νέο ραντεβού">
+                        <Button mnemonicParsing="false" onAction="#addAppointment" styleClass="accent" text="Νέο ραντεβού">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/add.png" />

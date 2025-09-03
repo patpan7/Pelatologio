@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import atlantafx.base.controls.ToggleSwitch;
 import com.jfoenix.controls.JFXCheckBox;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -39,7 +40,7 @@ public class SimplyViewController implements CustomerTabController {
     @FXML
     public VBox progressBox;
     @FXML
-    public JFXCheckBox cbStock, cbRegister, cbAuth, cbAccept, cbMail, cbParam, cbMydata, cbDelivered, cbPaid;
+    public ToggleSwitch cbStock, cbRegister, cbAuth, cbAccept, cbMail, cbParam, cbMydata, cbDelivered, cbPaid;
     @FXML
     private ComboBox<String> cbContractDuration;
     @FXML
@@ -97,7 +98,7 @@ public class SimplyViewController implements CustomerTabController {
     }
 
     private void setupCheckboxListeners() {
-        Map<JFXCheckBox, String> checkboxMap = Map.of(
+        Map<ToggleSwitch, String> checkboxMap = Map.of(
                 cbStock, "stock",
                 cbRegister, "register",
                 cbAuth, "auth",
@@ -109,19 +110,19 @@ public class SimplyViewController implements CustomerTabController {
                 cbPaid, "paid"
         );
 
-        checkboxMap.forEach((checkbox, columnName) -> {
-            checkbox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+        checkboxMap.forEach((ToggleSwitch, columnName) -> {
+            ToggleSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> {
                 if (isInitializing) return;
 
                 Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
                 if (selectedLogin != null) {
                     DBHelper.getSimplyStatusDao().updateSimplyStatus(selectedLogin.getId(), columnName, newVal);
 
-                    // Special handling for register checkbox
-                    if (checkbox == cbRegister && newVal && !isInitializing) {
+                    // Special handling for register ToggleSwitch
+                    if (ToggleSwitch == cbRegister && newVal && !isInitializing) {
                         registercloudOpen(new ActionEvent());
-                    } // Special handling for mail checkbox
-                    else if (checkbox == cbMail && newVal && !isInitializing) {
+                    } // Special handling for mail ToggleSwitch
+                    else if (ToggleSwitch == cbMail && newVal && !isInitializing) {
                         handleSendEmailForSelectedLogin();
                     }
                 }
@@ -176,7 +177,7 @@ public class SimplyViewController implements CustomerTabController {
     }
 
     private void setupBidirectionalBinding() {
-        // Bidirectional binding between register checkbox and register button
+        // Bidirectional binding between register ToggleSwitch and register button
         btnSimplyCloudRegister.setOnAction(event -> {
             if (!isInitializing) {
                 cbRegister.setSelected(true);

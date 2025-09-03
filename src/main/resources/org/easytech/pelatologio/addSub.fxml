@@ -2,76 +2,59 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<DialogPane expanded="true"  stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddSubController">
+
+<DialogPane expanded="true" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddSubController">
     <content>
         <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-            <VBox alignment="TOP_CENTER">
-                <Label text="Διαχείριση Συμβολαίου"/>
-                <HBox alignment="CENTER_LEFT">
+            <VBox alignment="TOP_CENTER" spacing="10">
+                <Label styleClass="title-label" text="Διαχείριση Συμβολαίου">
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                        <Insets bottom="10.0" />
                     </VBox.margin>
-                    <Label prefWidth="235.0" text="Τίτλος:"/>
-                    <TextField fx:id="titleField" prefWidth="325.0"/>
+                </Label>
+                
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label minWidth="150" text="Τίτλος:" />
+                    <TextField fx:id="titleField" HBox.hgrow="ALWAYS" />
                 </HBox>
-                <HBox alignment="CENTER_LEFT">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                    </VBox.margin>
-                    <Label prefWidth="235.0" text="Κατηγορία:"/>
-                    <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="325.0"/>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label minWidth="150" text="Κατηγορία:" />
+                    <ComboBox fx:id="categoryComboBox" editable="true" HBox.hgrow="ALWAYS" />
                 </HBox>
-                <HBox alignment="CENTER_LEFT">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                    </VBox.margin>
-                    <Label prefWidth="235.0" text="Ημερομηνία Λήξης:">
-                        <opaqueInsets>
-                            <Insets/>
-                        </opaqueInsets>
-                    </Label>
-                    <DatePicker fx:id="dueDatePicker" prefWidth="325.0"/>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label minWidth="150" text="Ημερομηνία Λήξης:" />
+                    <DatePicker fx:id="dueDatePicker" HBox.hgrow="ALWAYS" />
                 </HBox>
-                <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="57.0">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                    </VBox.margin>
-                    <Label prefWidth="235.0" text="Τιμή:"/>
-                    <TextField fx:id="priceField" prefWidth="325.0"/>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label minWidth="150" text="Τιμή:" />
+                    <TextField fx:id="priceField" HBox.hgrow="ALWAYS" />
                 </HBox>
-                <HBox alignment="CENTER_LEFT">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                    </VBox.margin>
-                    <Label prefWidth="235.0" text="Πελάτης:"/>
-                    <ComboBox fx:id="customerComboBox" editable="true" prefWidth="325.0" promptText="Επιλογή Πελάτη"/>
-                    <Button fx:id="btnCustomer"  mnemonicParsing="false" onAction="#showCustomer"
-                            text="">
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label minWidth="150" text="Πελάτης:" />
+                    <ComboBox fx:id="customerComboBox" editable="true" promptText="Επιλογή Πελάτη" HBox.hgrow="ALWAYS" />
+                    <Button fx:id="btnCustomer" mnemonicParsing="false" onAction="#showCustomer" text="">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/users.png"/>
+                            <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@icons/users.png" />
                             </ImageView>
                         </graphic>
-                        <HBox.margin>
-                            <Insets left="5.0" right="10.0"/>
-                        </HBox.margin>
                     </Button>
                 </HBox>
-                <HBox alignment="CENTER_LEFT">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                    </VBox.margin>
 
-                    <Label prefWidth="235.0" text="Σημείωση:"/>
-                    <TextArea fx:id="noteField" onMouseClicked="#handleMouseClick" prefHeight="100" prefWidth="325.0"
-                              wrapText="true"/>
+                <HBox alignment="TOP_LEFT" spacing="10">
+                    <Label minWidth="150" text="Σημείωση:" />
+                    <TextArea fx:id="noteField" onMouseClicked="#handleMouseClick" prefHeight="100" wrapText="true" HBox.hgrow="ALWAYS" />
                 </HBox>
             </VBox>
         </ScrollPane>
     </content>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
 </DialogPane>
-

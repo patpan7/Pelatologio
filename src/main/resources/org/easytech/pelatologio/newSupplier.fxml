@@ -1,197 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import atlantafx.base.controls.ToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<VBox   stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+<VBox stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddSupplierController">
-    <TabPane fx:id="tabPane">
+    <TabPane fx:id="tabPane" styleClass="classic" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <Tab closable="false" text="Στοιχεία Προμηθευτή">
             <ScrollPane fitToHeight="true" fitToWidth="true">
-                <HBox>
-                    <VBox HBox.hgrow="ALWAYS">
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
+                <VBox spacing="10">
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </padding>
+                    <GridPane hgap="10" vgap="10">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="150.0"/>
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0"/>
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                            <RowConstraints/>
+                        </rowConstraints>
+                        <Label text="Επωνυμία:" GridPane.rowIndex="0"/>
+                        <TextField fx:id="tfName" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-                            <Label minWidth="140.0" text="Επωνυμία:"/>
-                            <TextField fx:id="tfName" HBox.hgrow="ALWAYS"/>
-                        </HBox>
-                        <HBox alignment="CENTER_RIGHT" layoutX="25.0" layoutY="20.0" VBox.vgrow="NEVER">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
-                            <Label minWidth="140.0" text="Τίτλος:"/>
-                            <TextField fx:id="tfTitle" HBox.hgrow="ALWAYS"/>
-                        </HBox>
-                        <HBox alignment="CENTER_RIGHT">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
+                        <Label text="Τίτλος:" GridPane.rowIndex="1"/>
+                        <TextField fx:id="tfTitle" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-                            <Label minWidth="140.0" text="ΑΦΜ:"/>
-                            <TextField fx:id="tfAfm" prefWidth="228.0" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnAfmSearch" mnemonicParsing="false"
-                                    text="">
+                        <Label text="ΑΦΜ:" GridPane.rowIndex="2"/>
+                        <HBox alignment="CENTER_LEFT" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <TextField fx:id="tfAfm" HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="btnAfmSearch" mnemonicParsing="false">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                         <Image url="@icons/Search.png"/>
                                     </ImageView>
                                 </graphic>
-                                <HBox.margin>
-                                    <Insets left="5.0"/>
-                                </HBox.margin>
                             </Button>
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
 
-                            <Label minWidth="140.0" text="Τηλέφωνο:"/>
-                            <TextField fx:id="tfPhone" alignment="TOP_LEFT" prefWidth="312.0" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnPhone" mnemonicParsing="false"
-                                    text="">
+                        <Label text="Τηλέφωνο:" GridPane.rowIndex="3"/>
+                        <HBox alignment="CENTER_LEFT" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                            <TextField fx:id="tfPhone" HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="btnPhone" mnemonicParsing="false">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <image>
-                                            <Image url="@icons/phone.png"/>
-                                        </image>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/phone.png"/>
                                     </ImageView>
                                 </graphic>
-                                <HBox.margin>
-                                    <Insets left="5.0"/>
-                                </HBox.margin>
                             </Button>
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
 
-                            <Label minWidth="140.0" text="Κινητό:"/>
+                        <Label text="Κινητό:" GridPane.rowIndex="4"/>
+                        <HBox alignment="CENTER_LEFT" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="4">
                             <TextField fx:id="tfMobile" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnMobile" layoutX="467.0" layoutY="10.0"
-                                    mnemonicParsing="false" text="">
+                            <Button fx:id="btnMobile" mnemonicParsing="false">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <image>
-                                            <Image url="@icons/phone.png"/>
-                                        </image>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/phone.png"/>
                                     </ImageView>
                                 </graphic>
-                                <HBox.margin>
-                                    <Insets left="5.0"/>
-                                </HBox.margin>
                             </Button>
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" layoutX="25.0" layoutY="169.0" VBox.vgrow="NEVER">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
-                            <Label minWidth="140.0" text="Επαφή:"/>
-                            <TextField fx:id="tfContact" HBox.hgrow="ALWAYS"/>
-                        </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
 
-                            <Label minWidth="140.0" text="E-mail:"/>
+                        <Label text="Επαφή:" GridPane.rowIndex="5"/>
+                        <TextField fx:id="tfContact" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+                        <Label text="E-mail:" GridPane.rowIndex="6"/>
+                        <HBox alignment="CENTER_LEFT" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="6">
                             <TextField fx:id="tfEmail" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnEmail" mnemonicParsing="false"
-                                    onAction="#showEmailDialog" text="">
+                            <Button fx:id="btnEmail" mnemonicParsing="false" onAction="#showEmailDialog">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <image>
-                                            <Image url="@icons/mail.png"/>
-                                        </image>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/mail.png"/>
                                     </ImageView>
                                 </graphic>
-                                <HBox.margin>
-                                    <Insets left="5.0"/>
-                                </HBox.margin>
                             </Button>
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
 
-                            <Label minWidth="140.0" text="E-mail 2:"/>
+                        <Label text="E-mail 2:" GridPane.rowIndex="7"/>
+                        <HBox alignment="CENTER_LEFT" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="7">
                             <TextField fx:id="tfEmail2" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnEmail2" mnemonicParsing="false"
-                                    onAction="#showEmailDialog" text="">
+                            <Button fx:id="btnEmail2" mnemonicParsing="false" onAction="#showEmailDialog">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <image>
-                                            <Image url="@icons/mail.png"/>
-                                        </image>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/mail.png"/>
                                     </ImageView>
                                 </graphic>
-                                <HBox.margin>
-                                    <Insets left="5.0"/>
-                                </HBox.margin>
                             </Button>
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" layoutX="25.0" layoutY="265.0" VBox.vgrow="NEVER">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
-                            <Label minWidth="140.0" text="Site:"/>
-                            <TextField fx:id="tfSite" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="btnSite" mnemonicParsing="false" onAction="#openSite"
-                                    text="">
-                                <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <image>
-                                            <Image url="@icons/website.png"/>
-                                        </image>
-                                    </ImageView>
-                                </graphic>
-                                <HBox.margin>
-                                    <Insets left="5.0"/>
-                                </HBox.margin>
-                            </Button>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" spacing="10.0">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
-                            <children>
-                                <Label minWidth="140.0" text="Συμμετοχή σε Προμήθειες:"/>
 
-                                <CheckBox fx:id="hasCommissionsCheck" text=""/>
-                            </children>
+                        <Label text="Site:" GridPane.rowIndex="8"/>
+                        <HBox alignment="CENTER_LEFT" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                            <TextField fx:id="tfSite" HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="btnSite" mnemonicParsing="false" onAction="#openSite">
+                                <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@icons/website.png"/>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
                         </HBox>
-                        <HBox alignment="CENTER" layoutX="15.0" layoutY="336.0">
-                            <ProgressBar fx:id="progressIndicator" prefWidth="200.0" progress="0.0" visible="false"/>
-                        </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
-                            <Label prefWidth="140.0" text="Σχόλειο:">
-                                <padding>
-                                    <Insets right="20.0"/>
-                                </padding>
-                            </Label>
-                            <TextArea fx:id="taNotes" onMouseClicked="#handleMouseClick" prefHeight="102.0"
-                                      prefRowCount="4" prefWidth="555.0" HBox.hgrow="ALWAYS"/>
-                        </HBox>
-                        <padding>
-                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                        </padding>
-                    </VBox>
-                </HBox>
+
+                        <Label text="Συμμετοχή σε Προμήθειες:" GridPane.rowIndex="9"/>
+                        <ToggleSwitch fx:id="hasCommissionsCheck" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+                    </GridPane>
+                    <Label text="Σχόλιο:"/>
+                    <TextArea fx:id="taNotes" onMouseClicked="#handleMouseClick" prefHeight="102.0"
+                              wrapText="true" VBox.vgrow="ALWAYS"/>
+                </VBox>
             </ScrollPane>
         </Tab>
         <Tab fx:id="tabOrders" closable="false" text="Παραγγελίες">
@@ -204,13 +132,10 @@
                 <AnchorPane fx:id="paymentsContainer"/>
             </ScrollPane>
         </Tab>
-        <VBox.margin>
-            <Insets top="5.0"/>
-        </VBox.margin>
     </TabPane>
     <HBox alignment="BOTTOM_RIGHT" fillHeight="false" VBox.vgrow="ALWAYS">
         <Button mnemonicParsing="false" onAction="#handleOkButton"
-                text="Αποθήκευση">
+                styleClass="accent" text="Αποθήκευση">
             <graphic>
                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                     <Image url="@icons/save.png"/>

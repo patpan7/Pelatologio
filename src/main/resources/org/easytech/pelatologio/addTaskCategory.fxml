@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.DialogPane?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.VBox?>
-<DialogPane xmlns="http://javafx.com/javafx/"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddTaskCategoryController">
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.textfield.*?>
+
+<DialogPane stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddTaskCategoryController">
     <content>
-        <VBox alignment="CENTER">
-            <Label text="Επεξεργασία Κατηγορίας Εργασίας"/>
-            <TextField fx:id="nameField" promptText="Κατηγορία Εργασίας">
+        <VBox alignment="TOP_CENTER">
+            <Label styleClass="title-label" text="Επεξεργασία Κατηγορίας Εργασίας">
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets bottom="10.0" />
                 </VBox.margin>
-            </TextField>
+            </Label>
+            <CustomTextField fx:id="nameField" promptText="Κατηγορίας Εργασίας">
+                <left>
+                    <FontAwesomeIcon glyphName="BOOK" />
+                </left>
+            </CustomTextField>
         </VBox>
     </content>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
 </DialogPane>

@@ -20,7 +20,7 @@ public class AlertHelper {
         // Style the alert
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getScene().getStylesheets().add(
-            AlertHelper.class.getResource("/org/easytech/pelatologio/external.css").toExternalForm()
+            AlertHelper.class.getResource("/org/easytech/pelatologio/custom-atlantafx.css").toExternalForm()
         );
         
         alert.showAndWait();
@@ -38,7 +38,7 @@ public class AlertHelper {
         // Style the alert
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getScene().getStylesheets().add(
-            AlertHelper.class.getResource("/org/easytech/pelatologio/external.css").toExternalForm()
+            AlertHelper.class.getResource("/org/easytech/pelatologio/custom-atlantafx.css").toExternalForm()
         );
         
         return alert.showAndWait().filter(response -> response == ButtonType.OK).isPresent();

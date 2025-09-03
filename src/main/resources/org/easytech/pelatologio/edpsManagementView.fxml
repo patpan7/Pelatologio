@@ -3,15 +3,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0"  xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EdpsManagementController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EdpsManagementController">
    <center>
-      <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane styleClass="classic" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
             <Tab text="Συνολική Πρόοδος">
-                <AnchorPane fx:id="globalProgressContainer"/>
+                <AnchorPane fx:id="globalProgressContainer" />
             </Tab>
             <Tab text="Διαχείριση Βημάτων">
-                <AnchorPane fx:id="stepManagementContainer"/>
+                <AnchorPane fx:id="stepManagementContainer" />
             </Tab>
         </tabs>
       </TabPane>

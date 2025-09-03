@@ -2,391 +2,342 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@external.css"
-           xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="org.easytech.pelatologio.SettingsController">
-    <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" >
-        <BorderPane fx:id="rootPane"  StackPane.alignment="CENTER">
 
+<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
+    <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
+        <BorderPane fx:id="rootPane" StackPane.alignment="CENTER">
             <center>
-                <ScrollPane fitToHeight="true" fitToWidth="true">
-                    <Accordion fx:id="settingsAccordion" stylesheets="@external.css" BorderPane.alignment="CENTER">
-                        <panes>
-                            <!-- Πρώτο TitledPane: Ρυθμίσεις Βάσης Δεδομένων -->
-                            <TitledPane  stylesheets="@external.css" text="Ρυθμίσεις Εφαρμογής">
-                                <GridPane alignment="TOP_CENTER" hgap="10"  stylesheets="@external.css"
-                                          vgap="10">
-                                    <columnConstraints>
-                                        <ColumnConstraints/>
-                                        <ColumnConstraints/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0"/>
-                                        <RowConstraints/>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0"/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                    </rowConstraints>
-                                    <Label  text="Server" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="0"/>
-                                    <TextField fx:id="tfServer" text="localhost" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="0"/>
+                <TabPane fx:id="settingsAccordion" styleClass="classic" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                    <tabs>
+                        <!-- Πρώτο TitledPane: Ρυθμίσεις Βάσης Δεδομένων -->
+                        <Tab text="Ρυθμίσεις Εφαρμογής">
+                            <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                           <RowConstraints />
+                                </rowConstraints>
+                                <Label text="Server" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="tfServer" text="localhost" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                                    <Label  text="DB User" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="1"/>
-                                    <TextField fx:id="tfUser" text="sa" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                <Label text="DB User" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="tfUser" text="sa" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                                    <Label  text="DB Password" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="2"/>
-                                    <TextField fx:id="tfPass" text="admin" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="2"/>
-                                    <VBox alignment="CENTER_LEFT" GridPane.rowIndex="4">
-                                        <fx:define>
-                                            <ToggleGroup fx:id="browserToggleGroup"/>
-                                        </fx:define>
+                                <Label text="DB Password" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <TextField fx:id="tfPass" text="admin" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <VBox alignment="CENTER_LEFT" GridPane.rowIndex="4">
+                                    <fx:define>
+                                        <ToggleGroup fx:id="browserToggleGroup" />
+                                    </fx:define>
+                                    <VBox.margin>
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                    </VBox.margin>
+                                    <Label text="Browser">
                                         <VBox.margin>
-                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                            <Insets bottom="10.0" />
                                         </VBox.margin>
-                                        <Label  text="Browser">
-                                            <VBox.margin>
-                                                <Insets bottom="10.0"/>
-                                            </VBox.margin>
-                                        </Label>
-                                        <RadioButton fx:id="rbChrome"  text="Chrome">
-                                            <VBox.margin>
-                                                <Insets bottom="10.0"/>
-                                            </VBox.margin>
-                                        </RadioButton>
-                                        <RadioButton fx:id="rbEdge"  text="Edge">
-                                            <VBox.margin>
-                                                <Insets bottom="10.0"/>
-                                            </VBox.margin>
-                                        </RadioButton>
-                                        <RadioButton fx:id="rbFirefox"  text="Firefox">
-                                            <VBox.margin>
-                                                <Insets bottom="10.0"/>
-                                            </VBox.margin>
-                                        </RadioButton>
-                                    </VBox>
-                                    <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="3"/>
-                                    <Separator layoutX="382.0" layoutY="217.0" prefWidth="200.0" GridPane.columnSpan="2"
-                                               GridPane.rowIndex="5"/>
-                                    <Label  text="Χειριστή" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="6"/>
-                                    <TextField fx:id="tfAppUser" text="" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="6"/>
-                                    <Label  text="Διαδρομή δεδομένων" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="7"/>
-                                    <TextField fx:id="tfDataFolder" text="" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="7"/>
-                                    <Button contentDisplay="TOP" layoutX="634.0" layoutY="167.0" minHeight="100.0"
-                                            minWidth="220.0" mnemonicParsing="false" onAction="#deactivateCustomers"
-                                             text="Απενεργοποίηση πελατών"
-                                            textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
-                                </GridPane>
+                                    </Label>
+                                    <RadioButton fx:id="rbChrome" text="Chrome">
+                                        <VBox.margin>
+                                            <Insets bottom="10.0" />
+                                        </VBox.margin>
+                                    </RadioButton>
+                                    <RadioButton fx:id="rbEdge" text="Edge">
+                                        <VBox.margin>
+                                            <Insets bottom="10.0" />
+                                        </VBox.margin>
+                                    </RadioButton>
+                                    <RadioButton fx:id="rbFirefox" text="Firefox">
+                                        <VBox.margin>
+                                            <Insets bottom="10.0" />
+                                        </VBox.margin>
+                                    </RadioButton>
+                                </VBox>
+                                <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                <Separator layoutX="382.0" layoutY="217.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                <Label text="Χειριστή" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                                <TextField fx:id="tfAppUser" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                <Label text="Διαδρομή δεδομένων" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                                <TextField fx:id="tfDataFolder" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                <Button contentDisplay="TOP" layoutX="634.0" layoutY="167.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#deactivateCustomers" text="Απενεργοποίηση πελατών" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                <Label text="Χρωματικό Θέμα:" GridPane.rowIndex="9" />
+                                <ComboBox fx:id="themeComboBox" promptText="Επιλέξτε θέμα" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                <padding>
+                                    <Insets top="10.0" />
+                                </padding>
+                            </GridPane>
+                        </Tab>
 
-                            </TitledPane>
+                        <!-- SIP Settings Pane -->
+                        <Tab text="Ρυθμίσεις Τηλεφωνίας (SIP)">
+                            <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                </rowConstraints>
+                                <Label text="SIP User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="tfSipUser" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                            <!-- SIP Settings Pane -->
-                            <TitledPane  text="Ρυθμίσεις Τηλεφωνίας (SIP)">
-                                <GridPane alignment="TOP_CENTER" hgap="10"  vgap="10">
-                                    <columnConstraints>
-                                        <ColumnConstraints/>
-                                        <ColumnConstraints/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                    </rowConstraints>
-                                    <Label  text="SIP User" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="0"/>
-                                    <TextField fx:id="tfSipUser" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                                <Label text="SIP Password" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="tfSipPassword" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                                    <Label  text="SIP Password" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="1"/>
-                                    <TextField fx:id="tfSipPassword" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                <Label text="SIP Domain/Server" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <TextField fx:id="tfSipDomain" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                                    <Label  text="SIP Domain/Server" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="2"/>
-                                    <TextField fx:id="tfSipDomain" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                <Label text="SIP Port" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <TextField fx:id="tfSipPort" text="9155" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                                    <Label  text="SIP Port" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="3"/>
-                                    <TextField fx:id="tfSipPort" text="9155" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="3"/>
+                                <Label text="Local IP Address" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <TextField fx:id="tfLocalIpAddress" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-                                    <Label  text="Local IP Address" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="4"/>
-                                    <TextField fx:id="tfLocalIpAddress" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                                <Label text="Transport Protocol" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                <TextField fx:id="tfSipTransport" text="udp" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-                                    <Label  text="Transport Protocol" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="5"/>
-                                    <TextField fx:id="tfSipTransport" text="udp" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="5"/>
+                                <Label layoutX="312.0" layoutY="453.0" text="Fanvil IP" GridPane.rowIndex="6" />
+                                <TextField fx:id="tfFanvilIp" layoutX="569.0" layoutY="445.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 
-                                    <Label layoutX="312.0" layoutY="453.0"  text="Fanvil IP"
-                                           GridPane.rowIndex="6"/>
-                                    <TextField fx:id="tfFanvilIp" layoutX="569.0" layoutY="445.0" text=""
-                                               GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                                <Label layoutX="312.0" layoutY="453.0" text="Fanvil User" GridPane.rowIndex="7" />
+                                <TextField fx:id="tfFanvilUser" layoutX="569.0" layoutY="445.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
 
-                                    <Label layoutX="312.0" layoutY="453.0"  text="Fanvil User"
-                                           GridPane.rowIndex="7"/>
-                                    <TextField fx:id="tfFanvilUser" layoutX="569.0" layoutY="445.0" text=""
-                                               GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+                                <Label layoutX="312.0" layoutY="453.0" text="Fanvil Pass" GridPane.rowIndex="8" />
+                                <TextField fx:id="tfFanvilPass" layoutX="569.0" layoutY="445.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="8" />
 
-                                    <Label layoutX="312.0" layoutY="453.0"  text="Fanvil Pass"
-                                           GridPane.rowIndex="8"/>
-                                    <TextField fx:id="tfFanvilPass" layoutX="569.0" layoutY="445.0" text=""
-                                               GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+                                <Label layoutX="312.0" layoutY="453.0" text="Θέση pop-up" GridPane.rowIndex="9" />
+                                <HBox GridPane.columnIndex="1" GridPane.rowIndex="9">
+                                    <RadioButton fx:id="rbPositionTopRight" text="Πάνω δεξιά" />
+                                    <RadioButton fx:id="rbPositionTopLeft" text="Πάνω αριστερά">
+                                        <HBox.margin>
+                                            <Insets left="5.0" />
+                                        </HBox.margin>
+                                    </RadioButton>
+                                    <RadioButton fx:id="rbPositionBottomLeft" text="Κάτω αριστερά">
+                                        <HBox.margin>
+                                            <Insets left="5.0" />
+                                        </HBox.margin>
+                                    </RadioButton>
+                                    <RadioButton fx:id="rbPositionBottomRight" text="Κάτω δεξιά">
+                                        <HBox.margin>
+                                            <Insets left="5.0" />
+                                        </HBox.margin>
+                                    </RadioButton>
+                                </HBox>
+                                <padding>
+                                    <Insets top="10.0" />
+                                </padding>
+                            </GridPane>
+                        </Tab>
 
-                                    <Label layoutX="312.0" layoutY="453.0"  text="Θέση pop-up"
-                                           GridPane.rowIndex="9"/>
-                                    <HBox GridPane.columnIndex="1" GridPane.rowIndex="9">
-                                        <RadioButton fx:id="rbPositionTopRight" 
-                                                     text="Πάνω δεξιά"/>
-                                        <RadioButton fx:id="rbPositionTopLeft" 
-                                                     text="Πάνω αριστερά">
-                                            <HBox.margin>
-                                                <Insets left="5.0"/>
-                                            </HBox.margin>
-                                        </RadioButton>
-                                        <RadioButton fx:id="rbPositionBottomLeft" 
-                                                     text="Κάτω αριστερά">
-                                            <HBox.margin>
-                                                <Insets left="5.0"/>
-                                            </HBox.margin>
-                                        </RadioButton>
-                                        <RadioButton fx:id="rbPositionBottomRight" 
-                                                     text="Κάτω δεξιά">
-                                            <HBox.margin>
-                                                <Insets left="5.0"/>
-                                            </HBox.margin>
-                                        </RadioButton>
-                                    </HBox>
-                                </GridPane>
-                            </TitledPane>
+                        <!-- Δεύτερο TitledPane: Ρυθμίσεις Taxis -->
+                        <Tab text="Ρυθμίσεις Taxis">
+                            <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                </rowConstraints>
+                                <Label text="Taxis User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="tfTaxisUser" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                            <!-- Δεύτερο TitledPane: Ρυθμίσεις Taxis -->
-                            <TitledPane  text="Ρυθμίσεις Taxis">
-                                <GridPane alignment="TOP_CENTER" hgap="10"  vgap="10">
-                                    <columnConstraints>
-                                        <ColumnConstraints/>
-                                        <ColumnConstraints/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                    </rowConstraints>
-                                    <Label  text="Taxis User" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="0"/>
-                                    <TextField fx:id="tfTaxisUser" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                                <Label text="Taxis Pass" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="tfTaxisPass" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                                    <Label  text="Taxis Pass" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="1"/>
-                                    <TextField fx:id="tfTaxisPass" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                <Label text="Ανεύρεση User" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <TextField fx:id="tfAfmUser" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                                    <Label  text="Ανεύρεση User" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="2"/>
-                                    <TextField fx:id="tfAfmUser" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                <Label text="Ανεύρεση Pass" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <TextField fx:id="tfAfmPass" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                <padding>
+                                    <Insets top="10.0" />
+                                </padding>
+                            </GridPane>
+                        </Tab>
 
-                                    <Label  text="Ανεύρεση Pass" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="3"/>
-                                    <TextField fx:id="tfAfmPass" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                                </GridPane>
-                            </TitledPane>
+                        <!-- Τρίτο TitledPane: Ρυθμίσεις myPOS -->
+                        <Tab text="Ρυθμίσεις myPOS">
+                            <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                </rowConstraints>
+                                <Label text="myPOS Link" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="tfMyposLink" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                            <!-- Τρίτο TitledPane: Ρυθμίσεις myPOS -->
-                            <TitledPane  text="Ρυθμίσεις myPOS">
-                                <GridPane alignment="TOP_CENTER" hgap="10"  vgap="10">
-                                    <columnConstraints>
-                                        <ColumnConstraints/>
-                                        <ColumnConstraints/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                    </rowConstraints>
-                                    <Label  text="myPOS Link" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="0"/>
-                                    <TextField fx:id="tfMyposLink" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                                <Label text="myPOS User" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="tfMyposUser" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                                    <Label  text="myPOS User" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="1"/>
-                                    <TextField fx:id="tfMyposUser" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                <Label text="myPOS Pass" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <TextField fx:id="tfMyposPass" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <padding>
+                                    <Insets top="10.0" />
+                                </padding>
+                            </GridPane>
+                        </Tab>
 
-                                    <Label  text="myPOS Pass" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="2"/>
-                                    <TextField fx:id="tfMyposPass" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                                </GridPane>
-                            </TitledPane>
+                        <!-- Τέταρτο TitledPane: Άλλες Ρυθμίσεις -->
+                        <Tab text="Ρυθμίσεις Simply">
+                            <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                <children>
+                                    <Label text="Simply POS User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                    <TextField fx:id="tfSimplyPosUser" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                            <!-- Τέταρτο TitledPane: Άλλες Ρυθμίσεις -->
-                            <TitledPane fx:id="simplySettingsPane"  text="Ρυθμίσεις Simply">
-                                <GridPane alignment="TOP_CENTER" hgap="10"  vgap="10">
-                                    <children>
-                                        <Label  text="Simply POS User" GridPane.columnIndex="0"
-                                               GridPane.rowIndex="0"/>
-                                        <TextField fx:id="tfSimplyPosUser" GridPane.columnIndex="1"
-                                                   GridPane.rowIndex="0"/>
+                                    <Label text="Simply POS Pass" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                    <TextField fx:id="tfSimplyPosPass" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                                        <Label  text="Simply POS Pass" GridPane.columnIndex="0"
-                                               GridPane.rowIndex="1"/>
-                                        <TextField fx:id="tfSimplyPosPass" GridPane.columnIndex="1"
-                                                   GridPane.rowIndex="1"/>
+                                    <Label text="Simply Cloud User" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                    <TextField fx:id="tfSimplyCloudUser" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                                        <Label  text="Simply Cloud User"
-                                               GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                                        <TextField fx:id="tfSimplyCloudUser" GridPane.columnIndex="1"
-                                                   GridPane.rowIndex="2"/>
+                                    <Label text="Simply Cloud Pass" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                    <TextField fx:id="tfSimplyCloudPass" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                                        <Label  text="Simply Cloud Pass"
-                                               GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                                        <TextField fx:id="tfSimplyCloudPass" GridPane.columnIndex="1"
-                                                   GridPane.rowIndex="3"/>
+                                    <Label text="E-mail Simply" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                    <TextField fx:id="tfSimplyRegisterMail" text="" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    <TextField fx:id="tfSimplyMail1" layoutX="557.0" layoutY="267.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                    <TextField fx:id="tfSimplyMail2" layoutX="557.0" layoutY="328.0" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                    <Label layoutX="333.0" layoutY="275.0" text="E-mail Γιώργος" GridPane.rowIndex="5" />
+                                    <Label layoutX="333.0" layoutY="336.0" text="E-mail Θένια" GridPane.rowIndex="6" />
+                                </children>
+                                <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                </rowConstraints>
+                                <padding>
+                                    <Insets top="10.0" />
+                                </padding>
+                            </GridPane>
+                        </Tab>
+                        <Tab text="Ρυθμίσεις Emblem">
+                            <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                </rowConstraints>
+                                <Label text="Emblem User" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="tfEmblemUser" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                                        <Label  text="E-mail Simply" GridPane.columnIndex="0"
-                                               GridPane.rowIndex="4"/>
-                                        <TextField fx:id="tfSimplyRegisterMail" text="" GridPane.columnIndex="1"
-                                                   GridPane.rowIndex="4"/>
-                                        <TextField fx:id="tfSimplyMail1" layoutX="557.0" layoutY="267.0" text=""
-                                                   GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-                                        <TextField fx:id="tfSimplyMail2" layoutX="557.0" layoutY="328.0" text=""
-                                                   GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-                                        <Label layoutX="333.0" layoutY="275.0" 
-                                               text="E-mail Γιώργος" GridPane.rowIndex="5"/>
-                                        <Label layoutX="333.0" layoutY="336.0" 
-                                               text="E-mail Θένια" GridPane.rowIndex="6"/>
-                                    </children>
-                                    <columnConstraints>
-                                        <ColumnConstraints/>
-                                        <ColumnConstraints/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                    </rowConstraints>
-                                </GridPane>
-                            </TitledPane>
-                            <TitledPane fx:id="emblemSettingsPane"  text="Ρυθμίσεις Emblem">
-                                <GridPane alignment="TOP_CENTER" hgap="10"  vgap="10">
-                                    <columnConstraints>
-                                        <ColumnConstraints/>
-                                        <ColumnConstraints/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                    </rowConstraints>
-                                    <Label  text="Emblem User" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="0"/>
-                                    <TextField fx:id="tfEmblemUser" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                                <Label text="Emblem Pass" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="tfEmblemPass" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                                    <Label  text="Emblem Pass" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="1"/>
-                                    <TextField fx:id="tfEmblemPass" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                <Label text="E-mail Emblem" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <TextField fx:id="tfEmblemRegisterMail" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <padding>
+                                    <Insets top="10.0" />
+                                </padding>
+                            </GridPane>
+                        </Tab>
+                        <Tab text="Ρυθμίσεις Εργάνη">
+                            <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                </rowConstraints>
+                                <Label text="E-mail Εργάνη" GridPane.columnIndex="0" />
+                                <TextField fx:id="tfErganiRegisterMail" text="" GridPane.columnIndex="1" />
+                                <padding>
+                                    <Insets top="10.0" />
+                                </padding>
+                            </GridPane>
+                        </Tab>
+                        <Tab text="Ρυθμίσεις Mail">
+                            <GridPane alignment="TOP_CENTER" hgap="10" vgap="10">
+                                <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                </rowConstraints>
+                                <Label text="E-mail" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="tfEmail" text="patelos942@gmail.com" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                                    <Label  text="E-mail Emblem" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="2"/>
-                                    <TextField fx:id="tfEmblemRegisterMail" text="" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="2"/>
-                                </GridPane>
-                            </TitledPane>
-                            <TitledPane fx:id="erganiSettingsPane"  text="Ρυθμίσεις Εργάνη">
-                                <GridPane alignment="TOP_CENTER" hgap="10"  vgap="10">
-                                    <columnConstraints>
-                                        <ColumnConstraints/>
-                                        <ColumnConstraints/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                    </rowConstraints>
-                                    <Label  text="E-mail Εργάνη" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="2"/>
-                                    <TextField fx:id="tfErganiRegisterMail" text="" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="2"/>
-                                </GridPane>
-                            </TitledPane>
-                            <TitledPane  text="Ρυθμίσεις Mail">
-                                <GridPane alignment="TOP_CENTER" hgap="10"  vgap="10">
-                                    <columnConstraints>
-                                        <ColumnConstraints/>
-                                        <ColumnConstraints/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                        <RowConstraints/>
-                                    </rowConstraints>
-                                    <Label  text="E-mail" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="0"/>
-                                    <TextField fx:id="tfEmail" text="patelos942@gmail.com" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="0"/>
+                                <Label text="Pass key" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="tfEmailPassKey" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                                    <Label  text="Pass key" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="1"/>
-                                    <TextField fx:id="tfEmailPassKey" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                <Label text="SMTP Server" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <TextField fx:id="tfSMTP" text="smtp.gmail.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                                    <Label  text="SMTP Server" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="2"/>
-                                    <TextField fx:id="tfSMTP" text="smtp.gmail.com" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="2"/>
+                                <Label text="SMTP Port" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <TextField fx:id="tfSMTPPort" text="587" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                <TextArea fx:id="taSignature" onMouseClicked="#handleMouseClick" prefHeight="100" prefWidth="300" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                <Label text="Υπογραφή" GridPane.rowIndex="4" />
+                                <padding>
+                                    <Insets top="10.0" />
+                                </padding>
+                            </GridPane>
+                        </Tab>
 
-                                    <Label  text="SMTP Port" GridPane.columnIndex="0"
-                                           GridPane.rowIndex="3"/>
-                                    <TextField fx:id="tfSMTPPort" text="587" GridPane.columnIndex="1"
-                                               GridPane.rowIndex="3"/>
-                                    <TextArea fx:id="taSignature" onMouseClicked="#handleMouseClick" prefHeight="100"
-                                              prefWidth="300" wrapText="true" GridPane.columnIndex="1"
-                                              GridPane.rowIndex="4"/>
-                                    <Label  text="Υπογραφή" GridPane.rowIndex="4"/>
-                                </GridPane>
-                            </TitledPane>
-                        </panes>
-                    </Accordion>
-                </ScrollPane>
+                    </tabs>
+                </TabPane>
             </center>
-
             <bottom>
                 <HBox alignment="CENTER" BorderPane.alignment="CENTER">
-                    <Button onAction="#saveSettings"  text="Αποθήκευση">
+                    <Button onAction="#saveSettings" styleClass="accent" text="Αποθήκευση">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/save.png"/>
+                                <Image url="@icons/save.png" />
                             </ImageView>
                         </graphic>
                         <HBox.margin>
-                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                         </HBox.margin>
                     </Button>
                 </HBox>

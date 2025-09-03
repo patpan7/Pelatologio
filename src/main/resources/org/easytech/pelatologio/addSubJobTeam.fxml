@@ -1,26 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DialogPane?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.VBox?>
-<DialogPane xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddSubJobTeamController">
+<?import atlantafx.base.controls.*?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddSubJobTeamController">
     <content>
-        <VBox alignment="CENTER">
-            <Label text="Επεξεργασία Υποομάδας"/>
-            <TextField fx:id="nameField" promptText="Υποομάδα">
+        <VBox alignment="TOP_CENTER">
+            <Label styleClass="title-label" text="Επεξεργασία Υποομάδας">
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets bottom="10.0" />
                 </VBox.margin>
-            </TextField>
-            <ComboBox fx:id="jobTeamField" minWidth="300.0" promptText="Ομάδα" VBox.vgrow="ALWAYS">
+            </Label>
+            <CustomTextField fx:id="nameField" promptText="Υποομάδα">
+                <left>
+                    <FontAwesomeIcon glyphName="USERS" />
+                </left>
+            <VBox.margin>
+               <Insets bottom="10.0" />
+            </VBox.margin>
+            </CustomTextField>
+            <ComboBox fx:id="jobTeamField" promptText="Ομάδα" VBox.vgrow="ALWAYS">
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets />
                 </VBox.margin>
             </ComboBox>
         </VBox>
     </content>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
 </DialogPane>

@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<VBox alignment="TOP_CENTER" spacing="10.0"
-      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.easytech.pelatologio.CallLogViewController">
+
+<VBox alignment="TOP_CENTER" spacing="10.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CallLogViewController">
     <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
-    <Label text="Ιστορικό Κλήσεων"/>
+    <Label styleClass="title-label" text="Ιστορικό Κλήσεων" />
     <HBox alignment="CENTER_LEFT" spacing="10.0">
-        <Label text="Αναζήτηση:"/>
-        <TextField fx:id="searchField" promptText="Αριθμός / Όνομα" HBox.hgrow="ALWAYS"/>
-        <Button fx:id="refreshButton" onAction="#handleRefresh" prefWidth="277.0"
-                text="Ανανέωση">
+        <Label text="Αναζήτηση:" />
+        <TextField fx:id="searchField" promptText="Αριθμός / Όνομα" HBox.hgrow="ALWAYS" />
+        <Button fx:id="refreshButton" onAction="#handleRefresh" styleClass="accent" text="Ανανέωση">
+            <graphic>
+                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@icons/refresh.png" />
+                </ImageView>
+            </graphic>
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </Button>
     </HBox>
-    <TableView fx:id="callLogTable" VBox.vgrow="ALWAYS">
+    <TableView fx:id="callLogTable" styleClass="striped" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="colStartTime" prefWidth="150.0" text="Έναρξη"/>
-            <TableColumn fx:id="colEndTime" prefWidth="150.0" text="Λήξη"/>
-            <TableColumn fx:id="colDuration" prefWidth="100.0" text="Διάρκεια (s)"/>
-            <TableColumn fx:id="colCallType" prefWidth="100.0" text="Τύπος"/>
-            <TableColumn fx:id="colCallerNumber" prefWidth="150.0" text="Αριθμός"/>
-            <TableColumn fx:id="colCallerName" prefWidth="200.0" text="Όνομα Πελάτη"/>
-            <TableColumn fx:id="colNotes" prefWidth="250.0" text="Σημειώσεις"/>
+            <TableColumn fx:id="colStartTime" prefWidth="150.0" text="Έναρξη" />
+            <TableColumn fx:id="colEndTime" prefWidth="150.0" text="Λήξη" />
+            <TableColumn fx:id="colDuration" prefWidth="100.0" text="Διάρκεια (s)" />
+            <TableColumn fx:id="colCallType" prefWidth="100.0" text="Τύπος" />
+            <TableColumn fx:id="colCallerNumber" prefWidth="150.0" text="Αριθμός" />
+            <TableColumn fx:id="colCallerName" prefWidth="200.0" text="Όνομα Πελάτη" />
+            <TableColumn fx:id="colNotes" prefWidth="250.0" text="Σημειώσεις" />
         </columns>
         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
         </columnResizePolicy>
     </TableView>
 </VBox>

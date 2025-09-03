@@ -1,85 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<HBox alignment="TOP_CENTER"   xmlns="http://javafx.com/javafx/17.0.12"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.ErganiViewController">
-    <VBox alignment="TOP_CENTER"  HBox.hgrow="ALWAYS">
+
+<HBox alignment="TOP_CENTER" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.ErganiViewController">
+    <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
         <HBox.margin>
-            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
         </HBox.margin>
-        <TableView fx:id="loginTable" VBox.vgrow="ALWAYS">
+        <TableView fx:id="loginTable" styleClass="striped" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="usernameColumn" text="Username"/>
-                <TableColumn fx:id="passwordColumn" text="Password"/>
-                <TableColumn fx:id="tagColumn" text="Tag"/>
-                <TableColumn fx:id="phoneColumn" text="Τηλέφωνο"/>
+                <TableColumn fx:id="usernameColumn" text="Username" />
+                <TableColumn fx:id="passwordColumn" text="Password" />
+                <TableColumn fx:id="tagColumn" text="Tag" />
+                <TableColumn fx:id="phoneColumn" text="Τηλέφωνο" />
             </columns>
             <contextMenu>
                 <ContextMenu>
                     <items>
-                        <MenuItem onAction="#handleEditLogin"  text="Επεξεργασία"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleAddLogin" 
-                                  text="Προσθήκη"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteLogin" 
-                                  text="Διαγραφή"/>
-                        <SeparatorMenuItem/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleLabel" 
-                                  text="Ετικέτα"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleCopy" 
-                                  text="Αντιγραφή Login"/>
-                        <SeparatorMenuItem/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleAddTask" 
-                                  text="Προσθήκη εργασίας"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleAddSub" 
-                                  text="Προσθήκη Συμβολαίου"/>
+                        <MenuItem onAction="#handleEditLogin" text="Επεξεργασία">
+                            <graphic>
+                                <FontAwesomeIcon glyphName="PENCIL" />
+                            </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddLogin" text="Προσθήκη">
+                            <graphic>
+                                <FontAwesomeIcon glyphName="PLUS" />
+                            </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteLogin" text="Διαγραφή">
+                            <graphic>
+                                <FontAwesomeIcon glyphName="TRASH" />
+                            </graphic>
+                        </MenuItem>
+                        <SeparatorMenuItem />
+                        <MenuItem mnemonicParsing="false" onAction="#handleLabel" text="Ετικέτα">
+                            <graphic>
+                                <FontAwesomeIcon glyphName="TAG" />
+                            </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#handleCopy" text="Αντιγραφή Login">
+                            <graphic>
+                                <FontAwesomeIcon glyphName="COPY" />
+                            </graphic>
+                        </MenuItem>
+                        <SeparatorMenuItem />
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddTask" text="Προσθήκη εργασίας">
+                            <graphic>
+                                <FontAwesomeIcon glyphName="TASKS" />
+                            </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddSub" text="Προσθήκη Συμβολαίου">
+                            <graphic>
+                                <FontAwesomeIcon glyphName="FILES_ALT" />
+                            </graphic>
+                        </MenuItem>
                     </items>
                 </ContextMenu>
             </contextMenu>
             <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-        <Button fx:id="addLoginButton" onAction="#handleAddLogin" prefWidth="277.0"
-                 text="Προσθήκη Νέου Login">
+        <Button fx:id="addLoginButton" onAction="#handleAddLogin" prefWidth="277.0" styleClass="accent" text="Προσθήκη Login">
+            <graphic>
+                <FontAwesomeIcon glyphName="PLUS" />
+            </graphic>
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </Button>
-        <Button fx:id="editButton" onAction="#handleEditLogin" prefWidth="277.0"
-                 text="Επεξεργασία">
+        <Button fx:id="editButton" onAction="#handleEditLogin" prefWidth="277.0" styleClass="success" text="Επεξεργασία">
+            <graphic>
+                <FontAwesomeIcon glyphName="PENCIL" />
+            </graphic>
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </Button>
-        <Button fx:id="deleteButton" onAction="#handleDeleteLogin" prefWidth="277.0"
-                 text="Διαγραφή">
+        <Button fx:id="deleteButton" onAction="#handleDeleteLogin" prefWidth="277.0" styleClass="danger" text="Διαγραφή">
+            <graphic>
+                <FontAwesomeIcon glyphName="TRASH" />
+            </graphic>
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </Button>
     </VBox>
-    <VBox alignment="TOP_CENTER"  HBox.hgrow="NEVER">
+    <VBox alignment="TOP_CENTER" HBox.hgrow="NEVER">
         <HBox.margin>
-            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
         </HBox.margin>
-        <Button fx:id="btnErganiRegister" mnemonicParsing="false" onAction="#registerErgani"
-                prefWidth="277.0"  text="Εγγραφή Εργάνη">
+        <Button fx:id="btnErganiRegister" mnemonicParsing="false" onAction="#registerErgani" prefWidth="277.0" styleClass="default" text="Εγγραφή Εργάνη">
+            <graphic>
+                <FontAwesomeIcon glyphName="USER_PLUS" />
+            </graphic>
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </Button>
-        <Button fx:id="btnErganiLogin" layoutX="15.0" layoutY="15.0" mnemonicParsing="false"
-                onAction="#loginErgani" prefWidth="277.0"  text="Αντιγραφή Συνδέσμου">
+        <Button fx:id="btnErganiLogin" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onAction="#loginErgani" prefWidth="277.0" styleClass="default" text="Αντιγραφή Συνδέσμου">
+            <graphic>
+                <FontAwesomeIcon glyphName="LINK" />
+            </graphic>
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </Button>
-        <Button fx:id="btnErganiOffer" layoutX="24.0" layoutY="68.0" mnemonicParsing="false"
-                onAction="#erganiOffer" prefWidth="277.0"  text="Προσφορά">
+        <Button fx:id="btnErganiOffer" layoutX="24.0" layoutY="68.0" mnemonicParsing="false" onAction="#erganiOffer" prefWidth="277.0" styleClass="default" text="Προσφορά">
+            <graphic>
+                <FontAwesomeIcon glyphName="FILE_ALT" />
+            </graphic>
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </Button>
     </VBox>

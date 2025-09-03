@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<BorderPane stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.easytech.pelatologio.EdpsController">
+<?import javafx.scene.layout.*?>
+
+<BorderPane stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EdpsController">
     <top>
         <VBox spacing="10.0">
             <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
             <HBox alignment="CENTER_LEFT" spacing="10.0">
-                <Label text="Επιλογή Project:"/>
-                <ComboBox fx:id="projectComboBox" prefWidth="300.0"/>
-                <Button onAction="#handleNewProject" text="Νέο Project"/>
-                <Button mnemonicParsing="false" onAction="#handleOpenEdpsFolder"
-                        text="Άνοιγμα φακέλου"/>
+                <Label text="Επιλογή Project:" />
+                <ComboBox fx:id="projectComboBox" prefWidth="300.0" />
+                <Button onAction="#handleNewProject" text="Νέο Project" />
+                <Button mnemonicParsing="false" onAction="#handleOpenEdpsFolder" text="Άνοιγμα φακέλου" />
             </HBox>
         </VBox>
     </top>
     <center>
         <TableView fx:id="stepsTable">
             <columns>
-                <TableColumn fx:id="completedColumn" maxWidth="100.0" prefWidth="100.0" text="✓"/>
-                <TableColumn fx:id="stepNameColumn" maxWidth="500.0" prefWidth="250.0" text="Βήμα"/>
-                <TableColumn fx:id="completionDateColumn" prefWidth="120.0" text="Ημ/νία Ολοκλήρωσης"/>
-                <TableColumn fx:id="notesColumn" prefWidth="300.0" text="Σημειώσεις"/>
-                <TableColumn fx:id="actionColumn" prefWidth="150.0" text="Ενέργεια"/>
+                <TableColumn fx:id="completedColumn" maxWidth="100.0" prefWidth="100.0" text="✓" />
+                <TableColumn fx:id="stepNameColumn" maxWidth="500.0" prefWidth="250.0" text="Βήμα" />
+                <TableColumn fx:id="completionDateColumn" prefWidth="120.0" text="Ημ/νία Ολοκλήρωσης" />
+                <TableColumn fx:id="notesColumn" prefWidth="300.0" text="Σημειώσεις" />
+                <TableColumn fx:id="actionColumn" prefWidth="150.0" text="Ενέργεια" />
             </columns>
-            <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-            </columnResizePolicy>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
         </TableView>
     </center>
 </BorderPane>

@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import atlantafx.base.controls.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<DialogPane expanded="true" xmlns="http://javafx.com/javafx/17.0.12"
+<DialogPane expanded="true" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddTaskController">
     <content>
         <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
             <VBox alignment="TOP_CENTER">
-                <Label header-label" text="Διαχείριση Εργασίας"/>
+                <Label text="Διαχείριση Εργασίας"/>
                 <HBox alignment="CENTER_LEFT">
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label minWidth="180.0"  text="Τίτλος:"/>
+                    <Label minWidth="180.0" text="Τίτλος:"/>
                     <TextField fx:id="titleField" prefWidth="325.0"/>
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
@@ -23,7 +24,7 @@
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
 
-                    <Label minWidth="180.0"  text="Περιγραφή:"/>
+                    <Label minWidth="180.0" text="Περιγραφή:"/>
                     <TextArea fx:id="descriptionField" onMouseClicked="#handleMouseClick" prefHeight="100"
                               prefWidth="325.0" wrapText="true"/>
                 </HBox>
@@ -31,7 +32,7 @@
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label minWidth="180.0"  text="Ημερομηνία:">
+                    <Label minWidth="180.0" text="Ημερομηνία:">
                         <opaqueInsets>
                             <Insets/>
                         </opaqueInsets>
@@ -51,7 +52,7 @@
                     </VBox.margin>
                 </HBox>
                 <HBox alignment="CENTER_LEFT">
-                    <Label prefWidth="180.0"  text="Διάρκεια (λεπτά):" wrapText="true"/>
+                    <Label prefWidth="180.0" text="Διάρκεια (λεπτά):" wrapText="true"/>
                     <ComboBox fx:id="durationComboBox" editable="true" prefWidth="160.0" promptText="Διάρκεια"/>
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
@@ -61,10 +62,10 @@
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label minWidth="180.0"  text="Πελάτης:"/>
+                    <Label minWidth="180.0" text="Πελάτης:"/>
                     <ComboBox fx:id="customerComboBox" editable="true" prefWidth="325.0" promptText="Επιλογή Πελάτη"/>
                     <Button fx:id="btnCustomer" mnemonicParsing="false" onAction="#showCustomer"
-                            click-button" text="">
+                            styleClass="click-button" text="">
                         <graphic>
                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@icons/users.png"/>
@@ -79,59 +80,59 @@
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label minWidth="180.0"  text="Κατηγορία:"/>
+                    <Label minWidth="180.0" text="Κατηγορία:"/>
                     <ComboBox fx:id="categoryComboBox" editable="true" prefWidth="325.0" promptText="Κατηγορία"/>
                 </HBox>
                 <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="329.0">
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
-                    <Label  text="Επείγον:">
+                    <Label text="Επείγον:">
                         <HBox.margin>
                             <Insets bottom="5.0" right="5.0" top="5.0"/>
                         </HBox.margin>
                     </Label>
-                    <CheckBox fx:id="is_ergent" mnemonicParsing="false" text="">
+                    <ToggleSwitch fx:id="is_ergent" mnemonicParsing="false" text="">
                         <HBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                         </HBox.margin>
-                    </CheckBox>
-                    <Label  text="Αναμονή:">
+                    </ToggleSwitch>
+                    <Label text="Αναμονή:">
                         <HBox.margin>
                             <Insets bottom="5.0" left="20.0" right="5.0" top="5.0"/>
                         </HBox.margin>
                     </Label>
-                    <CheckBox fx:id="is_wait" mnemonicParsing="false" text="">
+                    <ToggleSwitch fx:id="is_wait" mnemonicParsing="false" text="">
                         <HBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                         </HBox.margin>
-                    </CheckBox>
-                    <Label  text="Ημερολογίο:">
+                    </ToggleSwitch>
+                    <Label text="Ημερολογίο:">
                         <HBox.margin>
                             <Insets bottom="5.0" left="20.0" right="5.0" top="5.0"/>
                         </HBox.margin>
                     </Label>
-                    <CheckBox fx:id="is_calendar" mnemonicParsing="false" text="">
+                    <ToggleSwitch fx:id="is_calendar" mnemonicParsing="false" text="">
                         <HBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                         </HBox.margin>
-                    </CheckBox>
+                    </ToggleSwitch>
                 </HBox>
                 <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="382.0">
                     <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                     </VBox.margin>
                     <children>
-                        <Label  text="Ολοκληρωμένο:">
+                        <Label text="Ολοκληρωμένο:">
                             <HBox.margin>
                                 <Insets bottom="5.0" right="5.0" top="5.0"/>
                             </HBox.margin>
                         </Label>
-                        <CheckBox fx:id="is_completed" mnemonicParsing="false" text="">
+                        <ToggleSwitch fx:id="is_completed" mnemonicParsing="false" text="">
                             <HBox.margin>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </HBox.margin>
-                        </CheckBox>
+                        </ToggleSwitch>
                     </children>
                 </HBox>
                 <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="419.0">
@@ -142,4 +143,7 @@
             </VBox>
         </ScrollPane>
     </content>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+    </padding>
 </DialogPane>

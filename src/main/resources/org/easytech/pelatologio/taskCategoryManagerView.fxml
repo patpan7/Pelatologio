@@ -1,39 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<DialogPane prefHeight="800.0" prefWidth="1100.0"  
-            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.easytech.pelatologio.TaskCategoryManagerViewController">
+
+<DialogPane stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.TaskCategoryManagerViewController">
     <content>
-        <VBox alignment="TOP_CENTER" >
-            <TableView fx:id="taskCategoryTable" VBox.vgrow="ALWAYS">
+        <VBox alignment="TOP_CENTER" spacing="10">
+            <Label styleClass="title-label" text="Διαχείριση Κατηγοριών Εργασιών" />
+            <TableView fx:id="taskCategoryTable" styleClass="striped" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="taskCategoryColumn" prefWidth="866.0" text="Κατηγορίες Εργασιών"/>
+                    <TableColumn fx:id="taskCategoryColumn" prefWidth="866.0" text="Κατηγορίες Εργασιών" />
                 </columns>
                 <columnResizePolicy>
-                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                 </columnResizePolicy>
             </TableView>
-            <Button fx:id="addButton" onAction="#handleAdd" prefWidth="355.0" 
-                    text="Προσθήκη Κατηγορίας">
+            <Button fx:id="addButton" onAction="#handleAdd" prefWidth="300.0" styleClass="accent" text="Προσθήκη">
+                <graphic>
+                    <FontAwesomeIcon glyphName="PLUS" />
+                </graphic>
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets />
                 </VBox.margin>
             </Button>
-            <Button fx:id="editButton" onAction="#handleEdit" prefWidth="355.0" 
-                    text="Επεξεργασία">
+            <Button fx:id="editButton" onAction="#handleEdit" prefWidth="300.0" styleClass="success" text="Επεξεργασία">
+                <graphic>
+                    <FontAwesomeIcon glyphName="PENCIL" />
+                </graphic>
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets />
                 </VBox.margin>
             </Button>
-            <Button fx:id="deleteButton" onAction="#handleDelete" prefWidth="355.0" 
-                    text="Διαγραφή">
+            <Button fx:id="deleteButton" onAction="#handleDelete" prefWidth="300.0" styleClass="danger" text="Διαγραφή">
+                <graphic>
+                    <FontAwesomeIcon glyphName="TRASH" />
+                </graphic>
                 <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    <Insets />
                 </VBox.margin>
             </Button>
         </VBox>
     </content>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
 </DialogPane>

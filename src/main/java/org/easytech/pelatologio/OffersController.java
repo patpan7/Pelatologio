@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import atlantafx.base.controls.ToggleSwitch;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,7 +42,7 @@ public class OffersController implements Initializable {
     @FXML
     private TableColumn idColumn, descriptionColumn, offerDateColumn, cucstomerColum, statusColumn, response_dateColumn, sendedColumn;
     @FXML
-    private CheckBox showAllCheckbox, acceptCheckbox, rejectCheckbox, pendingCheckbox, archivedCheckbox;
+    private ToggleSwitch showAllCheckbox, acceptCheckbox, rejectCheckbox, pendingCheckbox, archivedCheckbox;
     @FXML
     private Button addOfferButton, editOfferButton, deleteOfferButton;
 
@@ -97,7 +98,7 @@ public class OffersController implements Initializable {
         });
 
         // Φίλτρα
-        CheckBox[] checkBoxes1 = {
+        ToggleSwitch[] checkBoxes1 = {
                 showAllCheckbox,
                 acceptCheckbox,
                 rejectCheckbox,
@@ -105,11 +106,11 @@ public class OffersController implements Initializable {
         };
         configureSingleSelectionCheckBoxes(checkBoxes1);
 
-        showAllCheckbox.setOnAction(e -> updateOffersTable());
-        acceptCheckbox.setOnAction(e -> updateOffersTable());
-        rejectCheckbox.setOnAction(e -> updateOffersTable());
-        pendingCheckbox.setOnAction(e -> updateOffersTable());
-        archivedCheckbox.setOnAction(e -> updateOffersTable());
+        showAllCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOffersTable());
+        acceptCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOffersTable());
+        rejectCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOffersTable());
+        pendingCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOffersTable());
+        archivedCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOffersTable());
 
         // Κουμπιά
         addOfferButton.setOnAction(e -> handleAddOffer());
@@ -129,12 +130,12 @@ public class OffersController implements Initializable {
         });
     }
 
-    private void configureSingleSelectionCheckBoxes(CheckBox[] checkBoxes) {
-        for (CheckBox checkBox : checkBoxes) {
-            checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+    private void configureSingleSelectionCheckBoxes(ToggleSwitch[] checkBoxes) {
+        for (ToggleSwitch ToggleSwitch : checkBoxes) {
+            ToggleSwitch.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
-                    for (CheckBox otherCheckBox : checkBoxes) {
-                        if (otherCheckBox != checkBox) {
+                    for (ToggleSwitch otherCheckBox : checkBoxes) {
+                        if (otherCheckBox != ToggleSwitch) {
                             otherCheckBox.setSelected(false);
                         }
                     }

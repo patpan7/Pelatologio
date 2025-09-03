@@ -1,151 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import atlantafx.base.controls.*?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0"   stylesheets="@external.css"
-           xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="org.easytech.pelatologio.SimplyStatusController">
+
+<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SimplyStatusController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-        <BorderPane fx:id="rootPane"  StackPane.alignment="CENTER">
+        <BorderPane fx:id="rootPane" StackPane.alignment="CENTER">
             <center>
                 <VBox spacing="10">
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="Φίλτρα χωρίς:">
+                        <Label styleClass="title-label" text="Φίλτρα χωρίς:">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
                         </Label>
-                        <CheckBox fx:id="stockCheckbox" text="Μόνο Stock">
+                        <ToggleSwitch fx:id="stockCheckbox" text="Μόνο Stock">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
-                        </CheckBox>
-                        <CheckBox fx:id="registerCheckbox" text="Εγγραφή">
+                        </ToggleSwitch>
+                        <ToggleSwitch fx:id="registerCheckbox" text="Εγγραφή">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
-                        </CheckBox>
-                        <CheckBox fx:id="acceptCheckbox" text="Αποδοχή">
+                        </ToggleSwitch>
+                        <ToggleSwitch fx:id="acceptCheckbox" text="Αποδοχή">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
-                        </CheckBox>
-                        <CheckBox fx:id="paramCheckbox" text="Παραμετροποίηση">
+                        </ToggleSwitch>
+                        <ToggleSwitch fx:id="paramCheckbox" text="Παραμετροποίηση">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
-                        </CheckBox>
-                        <CheckBox fx:id="myDataCheckBox" text="myData">
+                        </ToggleSwitch>
+                        <ToggleSwitch fx:id="myDataCheckBox" text="myData">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
-                        </CheckBox>
-                        <Separator HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="btnRefresh" mnemonicParsing="false"
-                                onMouseClicked="#refresh" text="">
+                        </ToggleSwitch>
+                        <Separator HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnRefresh" mnemonicParsing="false" onMouseClicked="#refresh" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/refresh.png"/>
+                                    <Image url="@icons/refresh.png" />
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets left="5.0"/>
+                                <Insets left="5.0" />
                             </HBox.margin>
                         </Button>
                         <VBox.margin>
-                            <Insets left="10.0" right="10.0"/>
+                            <Insets left="10.0" right="10.0" />
                         </VBox.margin>
                     </HBox>
                     <HBox alignment="CENTER_LEFT">
                         <VBox.margin>
-                            <Insets left="10.0" right="10.0"/>
+                            <Insets left="10.0" right="10.0" />
                         </VBox.margin>
-                        <CheckBox fx:id="deliveredCheckBox" text="Παράδωση">
+                        <ToggleSwitch fx:id="deliveredCheckBox" text="Παράδωση">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
-                        </CheckBox>
-                        <CheckBox fx:id="paidCheckBox" text="Πληρωμή">
+                        </ToggleSwitch>
+                        <ToggleSwitch fx:id="paidCheckBox" text="Πληρωμή">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
-                        </CheckBox>
+                        </ToggleSwitch>
                         <Label text="Έτη">
                             <HBox.margin>
                                 <Insets left="10.0" right="10.0" />
                             </HBox.margin>
                         </Label>
-                        <ComboBox fx:id="yearsFilter" editable="true" prefHeight="51.0">
+                        <ComboBox fx:id="yearsFilter" editable="true">
                             <HBox.margin>
-                                <Insets left="10.0" right="10.0"/>
+                                <Insets left="10.0" right="10.0" />
                             </HBox.margin>
                         </ComboBox>
-                        <Label fx:id="countLabel" text="Label"/>
+                        <Label fx:id="countLabel" text="Label" />
                     </HBox>
-                    <TableView fx:id="statusTable" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="statusTable" styleClass="striped" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID"/>
-                            <TableColumn fx:id="customerColumn" minWidth="-1.0" prefWidth="-1.0" text="Πελάτης"/>
-                            <TableColumn fx:id="usernameColumn" minWidth="-1.0" prefWidth="-1.0" text="e-mail"/>
-                            <TableColumn fx:id="registerColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0"
-                                         text="Εγγραφή"/>
-                            <TableColumn fx:id="authColumn" maxWidth="140.0" minWidth="140.0" prefWidth="140.0"
-                                         text="Εξουσιοδότηση"/>
-                            <TableColumn fx:id="acceptColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0"
-                                         text="Αποδοχή"/>
-                            <TableColumn fx:id="mailColumn" maxWidth="110.0" minWidth="110.0" prefWidth="110.0"
-                                         text="Mail Simply"/>
-                            <TableColumn fx:id="paramColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0"
-                                         text="Παραμετρ"/>
-                            <TableColumn fx:id="myDataColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0"
-                                         text="myData"/>
-                            <TableColumn fx:id="deliveredColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0"
-                                         text="Παράδωση"/>
-                            <TableColumn fx:id="paidColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0"
-                                         text="Πληρωμή"/>
-                            <TableColumn fx:id="stockColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0"
-                                         text="Stock"/>
-                            <TableColumn fx:id="yearsColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0"
-                                         text="Έτη"/>
+                            <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID" />
+                            <TableColumn fx:id="customerColumn" minWidth="-1.0" prefWidth="-1.0" text="Πελάτης" />
+                            <TableColumn fx:id="usernameColumn" minWidth="-1.0" prefWidth="-1.0" text="e-mail" />
+                            <TableColumn fx:id="registerColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Εγγραφή" />
+                            <TableColumn fx:id="authColumn" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" text="Εξουσιοδότηση" />
+                            <TableColumn fx:id="acceptColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Αποδοχή" />
+                            <TableColumn fx:id="mailColumn" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" text="Mail Simply" />
+                            <TableColumn fx:id="paramColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Παραμετρ" />
+                            <TableColumn fx:id="myDataColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="myData" />
+                            <TableColumn fx:id="deliveredColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Παράδωση" />
+                            <TableColumn fx:id="paidColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Πληρωμή" />
+                            <TableColumn fx:id="stockColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Stock" />
+                            <TableColumn fx:id="yearsColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="Έτη" />
                         </columns>
                         <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                         </columnResizePolicy>
                     </TableView>
                     <BorderPane.margin>
-                        <Insets top="10.0"/>
+                        <Insets top="10.0" />
                     </BorderPane.margin>
                 </VBox>
             </center>
             <bottom>
                 <HBox alignment="CENTER_RIGHT" spacing="10" BorderPane.alignment="CENTER">
-                    <Button fx:id="addContractButton" mnemonicParsing="false"
-                            text="Προσθήκη συμβολαίου">
+                    <Button fx:id="addContractButton" mnemonicParsing="false" styleClass="accent" text="Προσθήκη συμβολαίου">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/complete.png"/>
-                            </ImageView>
+                            <FontAwesomeIcon glyphName="PLUS" />
                         </graphic>
                         <HBox.margin>
-                            <Insets/>
+                            <Insets />
                         </HBox.margin>
                     </Button>
-                    <Separator visible="false" HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="renewButton" mnemonicParsing="false" prefWidth="230.0"
-                            text="Ανανέωση">
+                    <Separator visible="false" HBox.hgrow="ALWAYS" />
+                    <Button fx:id="renewButton" mnemonicParsing="false" prefWidth="230.0" styleClass="default" text="Ανανέωση">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/pending.png"/>
-                            </ImageView>
+                            <FontAwesomeIcon glyphName="RECYCLE" />
                         </graphic>
                         <HBox.margin>
-                            <Insets/>
+                            <Insets />
                         </HBox.margin>
                     </Button>
                     <BorderPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </BorderPane.margin>
                 </HBox>
             </bottom>

@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import atlantafx.base.controls.ToggleSwitch;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -44,7 +45,7 @@ public class TaskListViewController implements Initializable {
     private TableColumn<Tasks, Boolean> calendarColumn;
 
     @FXML
-    private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox, showErgentCheckBox, showWaitCheckBox;
+    private ToggleSwitch showAllCheckbox, showCompletedCheckbox, showPendingCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox, showErgentCheckBox, showWaitCheckBox;
 
     @FXML
     private ComboBox<TaskCategory> categoryFilterComboBox;
@@ -73,7 +74,7 @@ public class TaskListViewController implements Initializable {
             Tasks task = cellData.getValue();
             BooleanProperty property = new SimpleBooleanProperty(task.getIsCalendar());
 
-            // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
+            // Αν το ToggleSwitch αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
                 task.setCalendar(newValue);
                 DBHelper.getTaskDao().updateTaskCalendar(task); // Ενημέρωση στη βάση
@@ -89,7 +90,7 @@ public class TaskListViewController implements Initializable {
             return cell;
         });
 
-// Κάνει τον πίνακα επεξεργάσιμο, αλλιώς το CheckBox δεν θα λειτουργεί
+// Κάνει τον πίνακα επεξεργάσιμο, αλλιώς το ToggleSwitch δεν θα λειτουργεί
         taskTable.setEditable(true);
         calendarColumn.setEditable(true);
 
@@ -134,20 +135,20 @@ public class TaskListViewController implements Initializable {
         });
 
         // Φίλτρα
-        CheckBox[] checkBoxes1 = {
+        ToggleSwitch[] checkBoxes1 = {
                 showAllCheckbox,
                 showCompletedCheckbox,
                 showPendingCheckbox
         };
         configureSingleSelectionCheckBoxes(checkBoxes1);
 
-        CheckBox[] checkBoxes2 = {
+        ToggleSwitch[] checkBoxes2 = {
                 showWithCustomerCheckbox,
                 showWithoutCustomerCheckbox
         };
         configureSingleSelectionCheckBoxes(checkBoxes2);
 
-        CheckBox[] checkBoxes3 = {
+        ToggleSwitch[] checkBoxes3 = {
                 showErgentCheckBox,
                 showWaitCheckBox
         };
@@ -177,13 +178,13 @@ public class TaskListViewController implements Initializable {
         categoryFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateTaskTable());
 
 
-        showAllCheckbox.setOnAction(e -> updateTaskTable());
-        showCompletedCheckbox.setOnAction(e -> updateTaskTable());
-        showPendingCheckbox.setOnAction(e -> updateTaskTable());
-        showWithCustomerCheckbox.setOnAction(e -> updateTaskTable());
-        showWithoutCustomerCheckbox.setOnAction(e -> updateTaskTable());
-        showErgentCheckBox.setOnAction(e -> updateTaskTable());
-        showWaitCheckBox.setOnAction(e -> updateTaskTable());
+        showAllCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateTaskTable());
+        showCompletedCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateTaskTable());
+        showPendingCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateTaskTable());
+        showWithCustomerCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateTaskTable());
+        showWithoutCustomerCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateTaskTable());
+        showErgentCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> updateTaskTable());
+        showWaitCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> updateTaskTable());
 
         // Κουμπιά
         addCategoryButton.setOnAction(e -> TaskCategoryManager());
@@ -207,12 +208,12 @@ public class TaskListViewController implements Initializable {
     }
 
 
-    private void configureSingleSelectionCheckBoxes(CheckBox[] checkBoxes) {
-        for (CheckBox checkBox : checkBoxes) {
-            checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+    private void configureSingleSelectionCheckBoxes(ToggleSwitch[] checkBoxes) {
+        for (ToggleSwitch ToggleSwitch : checkBoxes) {
+            ToggleSwitch.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
-                    for (CheckBox otherCheckBox : checkBoxes) {
-                        if (otherCheckBox != checkBox) {
+                    for (ToggleSwitch otherCheckBox : checkBoxes) {
+                        if (otherCheckBox != ToggleSwitch) {
                             otherCheckBox.setSelected(false);
                         }
                     }

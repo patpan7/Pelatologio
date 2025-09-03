@@ -4,142 +4,114 @@
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<AnchorPane prefHeight="800.0" prefWidth="1200.0"  xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.DashboardController">
-    <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-          AnchorPane.topAnchor="0.0">
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.DashboardController">
+    <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <padding>
-            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
         </padding>
         <HBox VBox.vgrow="ALWAYS">
             <children>
                 <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label text="Εργασίες ημέρας">
-                            <font>
-                                <Font name="System Bold" size="16.0"/>
-                            </font>
-                        </Label>
-                        <TableView fx:id="tasksTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                        <Label text="Εργασίες ημέρας" />
+                        <TableView fx:id="tasksTableView" prefHeight="200.0" prefWidth="200.0" styleClass="striped" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="taskCustomerColumn" prefWidth="150.0" text="Πελάτης"/>
-                                <TableColumn fx:id="taskTitleColumn" prefWidth="250.0" text="Τίτλος"/>
-                                <TableColumn fx:id="taskDescriptionColumn" prefWidth="100.0" text="Περιγραφή"/>
+                                <TableColumn fx:id="taskCustomerColumn" prefWidth="150.0" text="Πελάτης" />
+                                <TableColumn fx:id="taskTitleColumn" prefWidth="250.0" text="Τίτλος" />
+                                <TableColumn fx:id="taskDescriptionColumn" prefWidth="100.0" text="Περιγραφή" />
                             </columns>
                             <columnResizePolicy>
-                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                             </columnResizePolicy>
                         </TableView>
                     </children>
                     <HBox.margin>
-                        <Insets right="10.0"/>
+                        <Insets right="10.0" />
                     </HBox.margin>
                 </VBox>
                 <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                     <HBox.margin>
-                        <Insets left="10.0" right="10.0"/>
+                        <Insets left="10.0" right="10.0" />
                     </HBox.margin>
-                    <Label text="Συνδρομές που λήγουν (30 ημέρες)">
-                        <font>
-                            <Font name="System Bold" size="16.0"/>
-                        </font>
-                    </Label>
-                    <TableView fx:id="subscriptionsTableView" prefHeight="200.0" prefWidth="200.0"
-                               VBox.vgrow="ALWAYS">
+                    <Label text="Συνδρομές που λήγουν (30 ημέρες)" />
+                    <TableView fx:id="subscriptionsTableView" prefHeight="200.0" prefWidth="200.0" styleClass="striped" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="subsCustomerColumn" prefWidth="150.0" text="Πελάτης"/>
-                            <TableColumn fx:id="subsTypeColumn" prefWidth="150.0" text="Συνδρομή"/>
-                            <TableColumn fx:id="subsExpiryColumn" prefWidth="120.0" text="Ημερομηνία Λήξης"/>
+                            <TableColumn fx:id="subsCustomerColumn" prefWidth="150.0" text="Πελάτης" />
+                            <TableColumn fx:id="subsTypeColumn" prefWidth="150.0" text="Συνδρομή" />
+                            <TableColumn fx:id="subsExpiryColumn" prefWidth="120.0" text="Ημερομηνία Λήξης" />
                         </columns>
                         <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                         </columnResizePolicy>
                     </TableView>
                 </VBox>
-                <VBox layoutX="605.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0"
-                      HBox.hgrow="ALWAYS">
+                <VBox layoutX="605.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                     <HBox.margin>
-                        <Insets left="10.0"/>
+                        <Insets left="10.0" />
                     </HBox.margin>
-                    <Label text="Υπόλοιπα πελατών">
-                        <font>
-                            <Font name="System Bold" size="16.0"/>
-                        </font>
-                    </Label>
-                    <TableView fx:id="balanceTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                    <Label text="Υπόλοιπα πελατών" />
+                    <TableView fx:id="balanceTableView" prefHeight="200.0" prefWidth="200.0" styleClass="striped" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="balanceCustomerColumn" prefWidth="150.0" text="Πελάτης"/>
-                            <TableColumn fx:id="balanceColumn" prefWidth="150.0" text="Υπόλοιπο"/>
+                            <TableColumn fx:id="balanceCustomerColumn" prefWidth="150.0" text="Πελάτης" />
+                            <TableColumn fx:id="balanceColumn" prefWidth="150.0" text="Υπόλοιπο" />
                         </columns>
                         <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                         </columnResizePolicy>
                     </TableView>
                 </VBox>
             </children>
             <VBox.margin>
-                <Insets bottom="10.0"/>
+                <Insets bottom="10.0" />
             </VBox.margin>
         </HBox>
         <HBox VBox.vgrow="ALWAYS">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
             <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
-                <Label text="Νέοι Πελάτες ανά μήνα">
-                    <font>
-                        <Font name="System Bold" size="16.0"/>
-                    </font>
-                </Label>
+                <Label text="Νέοι Πελάτες ανά μήνα" />
                 <BarChart fx:id="customersChart" VBox.vgrow="ALWAYS">
                     <xAxis>
-                        <CategoryAxis side="BOTTOM"/>
+                        <CategoryAxis side="BOTTOM" />
                     </xAxis>
                     <yAxis>
-                        <NumberAxis side="LEFT"/>
+                        <NumberAxis side="LEFT" />
                     </yAxis>
                 </BarChart>
                 <HBox.margin>
-                    <Insets right="5.0"/>
+                    <Insets right="5.0" />
                 </HBox.margin>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                 <HBox.margin>
-                    <Insets left="5.0" right="5.0"/>
+                    <Insets left="5.0" right="5.0" />
                 </HBox.margin>
-                <Label text="Πελάτες ανά σύσταση">
-                    <font>
-                        <Font name="System Bold" size="16.0"/>
-                    </font>
-                </Label>
+                <Label text="Πελάτες ανά σύσταση" />
                 <BarChart fx:id="recommendationChart" categoryGap="1.0" VBox.vgrow="ALWAYS">
                     <xAxis>
-                        <CategoryAxis side="BOTTOM"/>
+                        <CategoryAxis side="BOTTOM" />
                     </xAxis>
                     <yAxis>
-                        <NumberAxis side="LEFT"/>
+                        <NumberAxis side="LEFT" />
                     </yAxis>
                 </BarChart>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
-                <Label text="Τελευταίες κλήσεις">
-                    <font>
-                        <Font name="System Bold" size="16.0"/>
-                    </font>
-                </Label>
-                <ListView fx:id="callsListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
+                <Label text="Τελευταίες κλήσεις" />
+                <ListView fx:id="callsListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                 <HBox.margin>
-                    <Insets left="5.0"/>
+                    <Insets left="5.0" />
                 </HBox.margin>
             </VBox>
         </HBox>
         <HBox VBox.vgrow="ALWAYS">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
-            <PieChart fx:id="jobTeamPieChart" title="Πελάτες ανά Ομάδα" HBox.hgrow="ALWAYS"/>
-            <PieChart fx:id="subJobTeamPieChart" title="Πελάτες ανά Υπο-ομάδα" HBox.hgrow="ALWAYS"/>
+            <PieChart fx:id="jobTeamPieChart" title="Πελάτες ανά Ομάδα" HBox.hgrow="ALWAYS" />
+            <PieChart fx:id="subJobTeamPieChart" title="Πελάτες ανά Υπο-ομάδα" HBox.hgrow="ALWAYS" />
         </HBox>
     </VBox>
 </AnchorPane>

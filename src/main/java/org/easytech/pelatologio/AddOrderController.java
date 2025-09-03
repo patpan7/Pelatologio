@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
+import atlantafx.base.controls.ToggleSwitch;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.AppSettings;
 import org.easytech.pelatologio.helper.ComboBoxHelper;
@@ -47,7 +48,7 @@ public class AddOrderController {
     @FXML
     private Button btnCustomer, btnSupplier;
     @FXML
-    private CheckBox is_completed, is_ergent, is_wait, is_received, is_delivered;
+    private ToggleSwitch is_completed, is_ergent, is_wait, is_received, is_delivered;
 
     private Order order;
     private int customerId;
@@ -157,7 +158,7 @@ public class AddOrderController {
         supplierComboBox.setVisibleRowCount(5);
 
         dueDatePicker.setValue(LocalDate.now());
-        CheckBox[] checkBoxes = {
+        ToggleSwitch[] checkBoxes = {
                 is_ergent,
                 is_wait
         };
@@ -354,11 +355,11 @@ public class AddOrderController {
         btnCustomer.setDisable(true);
     }
 
-    private void configureSingleSelectionCheckBoxes(CheckBox[] checkBoxes) {
-        for (CheckBox checkBox : checkBoxes) {
+    private void configureSingleSelectionCheckBoxes(ToggleSwitch[] checkBoxes) {
+        for (ToggleSwitch checkBox : checkBoxes) {
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
-                    for (CheckBox otherCheckBox : checkBoxes) {
+                    for (ToggleSwitch otherCheckBox : checkBoxes) {
                         if (otherCheckBox != checkBox) {
                             otherCheckBox.setSelected(false);
                         }

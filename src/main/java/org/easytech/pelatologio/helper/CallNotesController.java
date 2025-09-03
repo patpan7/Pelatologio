@@ -1,5 +1,6 @@
 package org.easytech.pelatologio.helper;
 
+import atlantafx.base.controls.ToggleSwitch;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,11 +38,11 @@ public class CallNotesController {
     @FXML
     private RadioButton outgoingRadio;
     @FXML
-    private CheckBox createTaskCheckBox;
+    private ToggleSwitch createTaskCheckBox;
     @FXML
-    private CheckBox createOfferCheckBox;
+    private ToggleSwitch createOfferCheckBox;
     @FXML
-    private CheckBox createOrderCheckBox;
+    private ToggleSwitch createOrderCheckBox;
 
     private ToggleGroup callTypeGroup;
     private Stage stage;

@@ -3,39 +3,23 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<DialogPane expanded="true"   stylesheets="@external.css" xmlns="http://javafx.com/javafx/17.0.12"
+<DialogPane expanded="true" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddItemController">
     <content>
-        <BorderPane>
-            <center>
-                <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-                    <VBox alignment="CENTER"  VBox.vgrow="ALWAYS">
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
-                            <Label prefWidth="205.0" text="Είδος:">
-                                <padding>
-                                    <Insets right="20.0"/>
-                                </padding>
-                            </Label>
-                            <TextField fx:id="tfName" HBox.hgrow="ALWAYS"/>
-                        </HBox>
-                        <HBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS">
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </VBox.margin>
-                            <Label prefWidth="205.0" text="Περιγραφή:">
-                                <padding>
-                                    <Insets right="20.0"/>
-                                </padding>
-                            </Label>
-                            <TextArea fx:id="taDescription" onMouseClicked="#handleMouseClick" prefHeight="102.0"
-                                      prefRowCount="4" prefWidth="555.0" HBox.hgrow="ALWAYS"/>
-                        </HBox>
-                    </VBox>
-                </ScrollPane>
-            </center>
-        </BorderPane>
+        <VBox alignment="TOP_CENTER" spacing="10">
+            <Label styleClass="title-label" text="Διαχείριση Είδους"/>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label minWidth="100" text="Είδος:"/>
+                <TextField fx:id="tfName" HBox.hgrow="ALWAYS"/>
+            </HBox>
+            <HBox alignment="TOP_LEFT" spacing="10">
+                <Label minWidth="100" text="Περιγραφή:"/>
+                <TextArea fx:id="taDescription" onMouseClicked="#handleMouseClick" prefHeight="102.0"
+                          wrapText="true" HBox.hgrow="ALWAYS"/>
+            </HBox>
+        </VBox>
     </content>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+    </padding>
 </DialogPane>

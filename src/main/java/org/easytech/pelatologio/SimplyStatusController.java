@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import atlantafx.base.controls.ToggleSwitch;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -64,7 +65,7 @@ public class SimplyStatusController implements Initializable {
     private Label countLabel;
 
     @FXML
-    private CheckBox stockCheckbox, registerCheckbox, acceptCheckbox, paramCheckbox, myDataCheckBox, deliveredCheckBox, paidCheckBox;
+    private ToggleSwitch stockCheckbox, registerCheckbox, acceptCheckbox, paramCheckbox, myDataCheckBox, deliveredCheckBox, paidCheckBox;
 
     @FXML
     private ComboBox<String> yearsFilter;
@@ -94,7 +95,7 @@ public class SimplyStatusController implements Initializable {
             SimplyStatus data = cellData.getValue();
             BooleanProperty property = new SimpleBooleanProperty(data.isRegister());
 
-            // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
+            // Αν το ToggleSwitch αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
                 DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "register", true); // Ενημέρωση στη βάση
             });
@@ -105,7 +106,7 @@ public class SimplyStatusController implements Initializable {
             SimplyStatus data = cellData.getValue();
             BooleanProperty property = new SimpleBooleanProperty(data.isAuth());
 
-            // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
+            // Αν το ToggleSwitch αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
                 DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "auth", true); // Ενημέρωση στη βάση
             });
@@ -116,7 +117,7 @@ public class SimplyStatusController implements Initializable {
             SimplyStatus data = cellData.getValue();
             BooleanProperty property = new SimpleBooleanProperty(data.isAccept());
 
-            // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
+            // Αν το ToggleSwitch αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
                 DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "accept", true); // Ενημέρωση στη βάση
             });
@@ -127,7 +128,7 @@ public class SimplyStatusController implements Initializable {
             SimplyStatus data = cellData.getValue();
             BooleanProperty property = new SimpleBooleanProperty(data.isMail());
 
-            // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
+            // Αν το ToggleSwitch αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
                 DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "mail", true); // Ενημέρωση στη βάση
             });
@@ -138,7 +139,7 @@ public class SimplyStatusController implements Initializable {
             SimplyStatus data = cellData.getValue();
             BooleanProperty property = new SimpleBooleanProperty(data.isParam());
 
-            // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
+            // Αν το ToggleSwitch αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
                 DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "param", true); // Ενημέρωση στη βάση
             });
@@ -149,7 +150,7 @@ public class SimplyStatusController implements Initializable {
             SimplyStatus data = cellData.getValue();
             BooleanProperty property = new SimpleBooleanProperty(data.isMydata());
 
-            // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
+            // Αν το ToggleSwitch αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
                 DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "mydata", true); // Ενημέρωση στη βάση
             });
@@ -160,7 +161,7 @@ public class SimplyStatusController implements Initializable {
             SimplyStatus data = cellData.getValue();
             BooleanProperty property = new SimpleBooleanProperty(data.isDelivered());
 
-            // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
+            // Αν το ToggleSwitch αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
                 DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "delivered", true); // Ενημέρωση στη βάση
             });
@@ -171,7 +172,7 @@ public class SimplyStatusController implements Initializable {
             SimplyStatus data = cellData.getValue();
             BooleanProperty property = new SimpleBooleanProperty(data.isPaid());
 
-            // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
+            // Αν το ToggleSwitch αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
                 DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "paid", true); // Ενημέρωση στη βάση
             });
@@ -182,7 +183,7 @@ public class SimplyStatusController implements Initializable {
             SimplyStatus data = cellData.getValue();
             BooleanProperty property = new SimpleBooleanProperty(data.isStock());
 
-            // Αν το checkbox αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
+            // Αν το ToggleSwitch αλλάξει, ενημερώνουμε την κλάση Tasks και τη βάση
             property.addListener((obs, oldValue, newValue) -> {
                 DBHelper.getSimplyStatusDao().updateSimplyStatus(data.getApp_login_id(), "stock", true); // Ενημέρωση στη βάση
             });
@@ -237,7 +238,7 @@ public class SimplyStatusController implements Initializable {
             return cell;
         });
 
-// Κάνει τον πίνακα επεξεργάσιμο, αλλιώς το CheckBox δεν θα λειτουργεί
+// Κάνει τον πίνακα επεξεργάσιμο, αλλιώς το ToggleSwitch δεν θα λειτουργεί
         statusTable.setEditable(true);
         registerColumn.setEditable(true);
         authColumn.setEditable(true);
@@ -320,13 +321,13 @@ public class SimplyStatusController implements Initializable {
         yearsFilter.getItems().add(2, "2 Έτη");
         yearsFilter.getSelectionModel().selectFirst();
 
-        stockCheckbox.setOnAction(e -> updateStatusTable());
-        registerCheckbox.setOnAction(e -> updateStatusTable());
-        acceptCheckbox.setOnAction(e -> updateStatusTable());
-        paramCheckbox.setOnAction(e -> updateStatusTable());
-        myDataCheckBox.setOnAction(e -> updateStatusTable());
-        deliveredCheckBox.setOnAction(e -> updateStatusTable());
-        paidCheckBox.setOnAction(e -> updateStatusTable());
+        stockCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateStatusTable());
+        registerCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateStatusTable());
+        acceptCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateStatusTable());
+        paramCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateStatusTable());
+        myDataCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> updateStatusTable());
+        deliveredCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> updateStatusTable());
+        paidCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> updateStatusTable());
 
 
         yearsFilter.valueProperty().addListener((obs, oldVal, newVal) -> updateStatusTable());
@@ -334,12 +335,12 @@ public class SimplyStatusController implements Initializable {
     }
 
 
-    private void configureSingleSelectionCheckBoxes(CheckBox[] checkBoxes) {
-        for (CheckBox checkBox : checkBoxes) {
-            checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+    private void configureSingleSelectionCheckBoxes(ToggleSwitch[] checkBoxes) {
+        for (ToggleSwitch ToggleSwitch : checkBoxes) {
+            ToggleSwitch.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
-                    for (CheckBox otherCheckBox : checkBoxes) {
-                        if (otherCheckBox != checkBox) {
+                    for (ToggleSwitch otherCheckBox : checkBoxes) {
+                        if (otherCheckBox != ToggleSwitch) {
                             otherCheckBox.setSelected(false);
                         }
                     }

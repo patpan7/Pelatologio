@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import atlantafx.base.controls.ToggleSwitch;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -53,7 +54,7 @@ public class AddTaskController {
     @FXML
     private Button btnCustomer;
     @FXML
-    private CheckBox is_completed, is_ergent, is_wait, is_calendar;
+    private ToggleSwitch is_completed, is_ergent, is_wait, is_calendar;
 
     private Tasks tasks;
     private int customerId;
@@ -156,7 +157,7 @@ public class AddTaskController {
         });
 
         dueDatePicker.setValue(LocalDate.now());
-        CheckBox[] checkBoxes = {
+        ToggleSwitch[] checkBoxes = {
                 is_ergent,
                 is_wait
         };
@@ -371,11 +372,11 @@ public class AddTaskController {
         btnCustomer.setDisable(true);
     }
 
-    private void configureSingleSelectionCheckBoxes(CheckBox[] checkBoxes) {
-        for (CheckBox checkBox : checkBoxes) {
+    private void configureSingleSelectionCheckBoxes(ToggleSwitch[] checkBoxes) {
+        for (ToggleSwitch checkBox : checkBoxes) {
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
-                    for (CheckBox otherCheckBox : checkBoxes) {
+                    for (ToggleSwitch otherCheckBox : checkBoxes) {
                         if (otherCheckBox != checkBox) {
                             otherCheckBox.setSelected(false);
                         }

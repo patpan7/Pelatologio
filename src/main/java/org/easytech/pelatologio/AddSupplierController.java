@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import atlantafx.base.controls.ToggleSwitch;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -51,7 +52,7 @@ public class AddSupplierController {
     @FXML
     private TextArea taNotes;
     @FXML
-    private CheckBox hasCommissionsCheck;
+    private ToggleSwitch hasCommissionsCheck;
 
     private OrdersSupViewController orderSupViewController;
     private SupplierPaymentsViewController supplierPaymentsController;

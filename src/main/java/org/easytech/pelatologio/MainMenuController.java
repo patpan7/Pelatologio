@@ -58,8 +58,6 @@ public class MainMenuController implements Initializable {
     private Button btnCustomers, btnMyPOS, btnTasks, btnCalendar, btnD11, btnMyDataStatus, btnItems, btnDevices, btnSettings, btnSimplyStatus;
     @FXML
     private ProgressIndicator loadingIndicator;
-    @FXML
-    private ToggleButton themeToggle;
 
     private CustomerDao customerDao;
     private SipClient sipClient;
@@ -1066,18 +1064,6 @@ public class MainMenuController implements Initializable {
                 AlertDialogHelper.showDialog("Σφάλμα", "Λανθασμένος κωδικός πρόσβασης.", "", Alert.AlertType.ERROR);
             }
         });
-    }
-
-
-    @FXML
-    private void toggleTheme(ActionEvent event) {
-        if (themeToggle.isSelected()) {
-            Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
-            themeToggle.setText("Light Mode");
-        } else {
-            Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
-            themeToggle.setText("Dark Mode");
-        }
     }
 }
 

@@ -2,7 +2,6 @@ package org.easytech.pelatologio;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -17,6 +16,7 @@ import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
+import org.easytech.pelatologio.util.ThemeManager;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -25,7 +25,9 @@ import java.util.ResourceBundle;
 
 public class SettingsController implements Initializable {
     @FXML
-    StackPane stackPane;
+    private ComboBox<String> themeComboBox;
+    @FXML
+    private StackPane stackPane;
     @FXML
     private TextField tfServer;
     @FXML
@@ -136,6 +138,7 @@ public class SettingsController implements Initializable {
         loadTextFieldSettings();
         loadBrowserSettings();
         loadPositionSettings();
+        initializeThemeSettings();
 
         if (!Features.isEnabled("simply")) {
             simplySettingsPane.setVisible(false);
@@ -150,6 +153,31 @@ public class SettingsController implements Initializable {
         if (!Features.isEnabled("ergani")) {
             erganiSettingsPane.setVisible(false);
             erganiSettingsPane.setManaged(false);
+        }
+    }
+
+    private void initializeThemeSettings() {
+        try {
+            // Initialize theme combo box
+            themeComboBox.getItems().clear();
+            themeComboBox.getItems().addAll(ThemeManager.getAvailableThemes());
+            
+            // Load saved theme
+            String currentTheme = ThemeManager.getCurrentTheme();
+            if (currentTheme != null && !currentTheme.isEmpty()) {
+                themeComboBox.setValue(currentTheme);
+            } else {
+                themeComboBox.setValue("Nord Light"); // Default theme
+            }
+            
+            // Add theme change listener
+            themeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null && stackPane != null && stackPane.getScene() != null) {
+                    ThemeManager.applyTheme(newVal, stackPane.getScene());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -240,17 +268,8 @@ public class SettingsController implements Initializable {
         }
     }
 
-    public void saveSettings(ActionEvent event) {
-
-        if (Features.isEnabled("simply")) {
-            AppSettings.saveSetting("simplyPosUser", tfSimplyPosUser.getText());
-            AppSettings.saveSetting("simplyPosPass", tfSimplyPosPass.getText());
-            AppSettings.saveSetting("simplyCloudUser", tfSimplyCloudUser.getText());
-            AppSettings.saveSetting("simplyCloudPass", tfSimplyCloudPass.getText());
-            AppSettings.saveSetting("simplyRegisterMail", tfSimplyRegisterMail.getText());
-            AppSettings.saveSetting("simplyMail1", tfSimplyMail1.getText());
-            AppSettings.saveSetting("simplyMail2", tfSimplyMail2.getText());
-        }
+    @FXML
+    private void saveSettings() {
         AppSettings.saveSetting("taxisUser", tfTaxisUser.getText());
         AppSettings.saveSetting("taxisPass", tfTaxisPass.getText());
         AppSettings.saveSetting("afmUser", tfAfmUser.getText());
@@ -310,16 +329,14 @@ public class SettingsController implements Initializable {
         });
     }
 
-    public void syncClick(ActionEvent event) {
-        DBHelper dbHelper = new DBHelper();
+    public void syncClick() {
         DBHelper.getMegasoftDao().syncMegasoft();
     }
 
-    public void deactivateCustomers(ActionEvent event) {
+    public void deactivateCustomers() {
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws SQLException {
-                DBHelper dbHelper = new DBHelper();
                 AfmLookupService lookupService = new AfmLookupService();
                 List<Customer> customers = DBHelper.getCustomerDao().getCustomers(); // Υλοποίησέ τη με SQL ή DAO
 
@@ -399,7 +416,7 @@ public class SettingsController implements Initializable {
 
     @FXML
     private void handleMouseClick(MouseEvent event) {
-        // Έλεγχος για διπλό κλικ
+        // Check for double click
         if (event.getClickCount() == 2) {
             openNotesDialog(taSignature.getText());
         }

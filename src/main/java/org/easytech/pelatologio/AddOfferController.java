@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import atlantafx.base.controls.ToggleSwitch;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -50,7 +51,7 @@ public class AddOfferController {
     @FXML
     private Button btnCustomer, btnSelectFile;
     @FXML
-    private CheckBox isArchived;
+    private ToggleSwitch isArchived;
 
     private Offer offer;
     private Customer selectedCustomer;

@@ -1,0 +1,16 @@
+/* Fix for ControlsFX custom text field background color issue */
+.custom-text-field {
+    -fx-background-color: transparent;
+    background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    padding: 0;
+}
+
+.custom-text-field .content {
+    -fx-background-color: -fx-control-inner-background;
+    background-color: -fx-control-inner-background;
+    -fx-background-insets: 0;
+    -fx-padding: 0.25em 0.5em 0.25em 0.5em;
+    padding: 0.25em 0.5em 0.25em 0.5em;
+}

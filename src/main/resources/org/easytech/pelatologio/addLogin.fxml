@@ -6,49 +6,57 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddLoginController">
+<DialogPane stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddLoginController">
     <content>
         <VBox alignment="CENTER">
-            <Label text="Προσθήκη Νέου Login" />
-            <TextField fx:id="usernameField" promptText="Username">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-            </TextField>
-            <TextField fx:id="passwordField" accessibleRole="TEXT_FIELD" promptText="Password">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-            </TextField>
-            <ComboBox fx:id="tagField" editable="true" promptText="Tag">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Taxis" />
-                        <String fx:value="Ανεύρεση ΑΦΜ" />
-                        <String fx:value="myPOS" />
-                        <String fx:value="Cash" />
-                        <String fx:value="Rest" />
-                        <String fx:value="Full" />
-                        <String fx:value="Invoice" />
-                        <String fx:value="Emblem" />
-                        <String fx:value="Εργάνη" />
-                        <String fx:value="Πελατολόγιο" />
-                        <String fx:value="NinePOS" />
-                    </FXCollections>
-                </items>
+            <Label styleClass="title-label" text="Προσθήκη Νέου Login">
+            <VBox.margin>
+               <Insets bottom="10.0" />
+            </VBox.margin></Label>
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="150.0" />
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                </columnConstraints>
+                <children>
+                    <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <TextField fx:id="usernameField" promptText="Username" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-            </ComboBox>
-            <TextField fx:id="phoneField" promptText="Τηλέφωνο">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </VBox.margin>
-            </TextField>
+                    <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <TextField fx:id="passwordField" accessibleRole="TEXT_FIELD" promptText="Password" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                    <Label text="Tag:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <ComboBox fx:id="tagField" editable="true" promptText="Tag" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Taxis" />
+                                <String fx:value="Ανεύρεση ΑΦΜ" />
+                                <String fx:value="myPOS" />
+                                <String fx:value="Cash" />
+                                <String fx:value="Rest" />
+                                <String fx:value="Full" />
+                                <String fx:value="Invoice" />
+                                <String fx:value="Emblem" />
+                                <String fx:value="Εργάνη" />
+                                <String fx:value="Πελατολόγιο" />
+                                <String fx:value="NinePOS" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+
+                    <Label text="Τηλέφωνο:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <TextField fx:id="phoneField" promptText="Τηλέφωνο" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                </children>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
+            </GridPane>
         </VBox>
     </content>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
 </DialogPane>

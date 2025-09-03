@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0"  xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AccountantsController">
+<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AccountantsController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
-        <BorderPane fx:id="rootPane"  StackPane.alignment="CENTER">
+        <BorderPane fx:id="rootPane" StackPane.alignment="CENTER">
             <center>
                 <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                     <BorderPane.margin>
@@ -18,30 +18,26 @@
                         <VBox.margin>
                             <Insets bottom="10.0" left="20.0" right="20.0" />
                         </VBox.margin>
-                        <Label alignment="CENTER" contentDisplay="CENTER" text="Αναζήτηση">
-                            <font>
-                                <Font name="System Bold" size="30.0" />
-                            </font>
-                            <opaqueInsets>
-                                <Insets />
-                            </opaqueInsets>
-                            <padding>
-                                <Insets right="20.0" />
-                            </padding>
-                        </Label>
+                        <Label alignment="CENTER" contentDisplay="CENTER" styleClass="title-label" text="Αναζήτηση">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin></Label>
                         <TextField fx:id="filterField" prefWidth="300.0">
                             <opaqueInsets>
                                 <Insets />
                             </opaqueInsets>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
                         </TextField>
-                        <Button mnemonicParsing="false" onAction="#accountantAddNew" text="Προσθήκη Νέου Λογιστή">
+                        <Button mnemonicParsing="false" onAction="#accountantAddNew" styleClass="accent" text="Προσθήκη Νέου Λογιστή">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/add.png" />
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets left="10.0" right="10.0" />
+                                <Insets right="10.0" />
                             </HBox.margin>
                         </Button>
                         <Button fx:id="btnClean" mnemonicParsing="false" onMouseClicked="#clean" text="">
@@ -51,14 +47,10 @@
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets left="5.0" />
+                                <Insets left="10.0" />
                             </HBox.margin>
                         </Button>
-                        <Separator HBox.hgrow="ALWAYS">
-                            <HBox.margin>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                            </HBox.margin>
-                        </Separator>
+                        <Separator HBox.hgrow="ALWAYS" visible="false" />
                         <Button fx:id="btnRefresh" mnemonicParsing="false" onMouseClicked="#refresh" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -66,11 +58,11 @@
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets left="5.0" />
+                                <Insets left="10.0" />
                             </HBox.margin>
                         </Button>
                     </HBox>
-                    <TableView fx:id="accountantTable" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="accountantTable" styleClass="striped" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="nameColumn" minWidth="120.0" prefWidth="120.0" resizable="true" sortable="false" text="Όνομα" />
                             <TableColumn fx:id="phoneColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="Τηλέφωνο" />
@@ -80,10 +72,10 @@
                         <contextMenu>
                             <ContextMenu>
                                 <items>
-                                    <MenuItem onAction="#handleEditOption"  text="Επεξεργασία" />
-                                    <MenuItem mnemonicParsing="false" onAction="#accountantAddNew"  text="Προσθήκη" />
+                                    <MenuItem onAction="#handleEditOption" text="Επεξεργασία" />
+                                    <MenuItem mnemonicParsing="false" onAction="#accountantAddNew" text="Προσθήκη" />
                                     <SeparatorMenuItem />
-                                    <MenuItem mnemonicParsing="false" onAction="#viberOpen"  text="Επικοινωνία Viber" />
+                                    <MenuItem mnemonicParsing="false" onAction="#viberOpen" text="Επικοινωνία Viber" />
                                 </items>
                             </ContextMenu>
                         </contextMenu>

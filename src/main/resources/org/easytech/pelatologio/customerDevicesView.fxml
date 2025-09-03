@@ -1,51 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<HBox alignment="TOP_CENTER"   xmlns="http://javafx.com/javafx/17.0.12"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CustomerDevicesController">
-    <VBox alignment="TOP_CENTER"  HBox.hgrow="ALWAYS">
+
+<HBox alignment="TOP_CENTER" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.CustomerDevicesController">
+    <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
         <HBox.margin>
-            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
         </HBox.margin>
-        <TableView fx:id="devicesTable" VBox.vgrow="ALWAYS">
+        <TableView fx:id="devicesTable" styleClass="striped" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="serialColumn" text="Serial Number"/>
-                <TableColumn fx:id="itemColumn" text="Είδος"/>
-                <TableColumn fx:id="descriptionColumn" text="Περιγραφή"/>
-                <TableColumn fx:id="dateColumn" text="Ημερομηνία"/>
+                <TableColumn fx:id="serialColumn" text="Serial Number" />
+                <TableColumn fx:id="itemColumn" text="Είδος" />
+                <TableColumn fx:id="descriptionColumn" text="Περιγραφή" />
             </columns>
             <contextMenu>
                 <ContextMenu>
                     <items>
-                        <MenuItem onAction="#handleEditDevice" text="Επεξεργασία"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleAddDevice"
-                                  text="Προσθήκη"/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteDevice"
-                                  text="Διαγραφή"/>
-                        <SeparatorMenuItem/>
-                        <MenuItem mnemonicParsing="false" onAction="#handleAddTask"
-                                  text="Προσθήκη εργασίας"/>
+                        <MenuItem onAction="#handleEditDevice" text="Επεξεργασία">
+                            <graphic>
+                                <FontAwesomeIcon glyphName="PENCIL_ALT" />
+                            </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddDevice" text="Προσθήκη">
+                            <graphic>
+                                <FontAwesomeIcon glyphName="PLUS" />
+                            </graphic>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#handleDeleteDevice" text="Διαγραφή">
+                            <graphic>
+                                <FontAwesomeIcon glyphName="TRASH" />
+                            </graphic>
+                        </MenuItem>
+                        <SeparatorMenuItem />
+                        <MenuItem mnemonicParsing="false" onAction="#handleAddTask" text="Προσθήκη εργασίας">
+                            <graphic>
+                                <FontAwesomeIcon glyphName="TASKS" />
+                            </graphic>
+                        </MenuItem>
                     </items>
                 </ContextMenu>
             </contextMenu>
             <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
-        <Button fx:id="addDeviceButton" onAction="#handleAddDevice" prefWidth="277.0"
-                text="Προσθήκη Συσκευής">
+        <Button fx:id="addDeviceButton" onAction="#handleAddDevice" prefWidth="277.0" styleClass="accent" text="Προσθήκη">
+            <graphic>
+                <FontAwesomeIcon glyphName="PLUS" />
+            </graphic>
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </Button>
-        <Button fx:id="deleteButton" onAction="#handleDeleteDevice" prefWidth="277.0"
-                text="Διαγραφή">
+        <Button fx:id="deleteButton" onAction="#handleDeleteDevice" prefWidth="277.0" styleClass="danger" text="Διαγραφή">
+            <graphic>
+                <FontAwesomeIcon glyphName="TRASH" />
+            </graphic>
             <VBox.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
         </Button>
     </VBox>
 </HBox>
-

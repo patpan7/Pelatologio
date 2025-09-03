@@ -1,143 +1,150 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import atlantafx.base.controls.*?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0"  
-           xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="org.easytech.pelatologio.OffersController">
-    <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" >
-        <BorderPane fx:id="rootPane"  StackPane.alignment="CENTER">
+
+<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.OffersController">
+    <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
+        <BorderPane fx:id="rootPane" StackPane.alignment="CENTER">
             <center>
                 <VBox spacing="10">
                     <HBox alignment="CENTER_LEFT">
-                        <Label  text="Φίλτρα:">
+                        <Label styleClass="title-label" text="Φίλτρα:">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
                         </Label>
-                        <CheckBox fx:id="showAllCheckbox" selected="true"  text="Όλες">
+                        <ToggleSwitch fx:id="showAllCheckbox" selected="true" text="Όλες">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
-                        </CheckBox>
-                        <CheckBox fx:id="acceptCheckbox"  text="Αποδοχή">
+                        </ToggleSwitch>
+                        <ToggleSwitch fx:id="acceptCheckbox" text="Αποδοχή">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
-                        </CheckBox>
-                        <CheckBox fx:id="rejectCheckbox"  text="Απόρριψη">
+                        </ToggleSwitch>
+                        <ToggleSwitch fx:id="rejectCheckbox" text="Απόρριψη">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
-                        </CheckBox>
-                        <CheckBox fx:id="pendingCheckbox" layoutX="473.0" layoutY="20.0" 
-                                  text="Αναμονή">
+                        </ToggleSwitch>
+                        <ToggleSwitch fx:id="pendingCheckbox" layoutX="473.0" layoutY="20.0" text="Αναμονή">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
-                        </CheckBox>
-                        <CheckBox fx:id="archivedCheckbox" layoutX="566.0" layoutY="20.0" 
-                                  text="Μόνο Αρχειοθετημένες">
+                        </ToggleSwitch>
+                        <ToggleSwitch fx:id="archivedCheckbox" layoutX="566.0" layoutY="20.0" text="Μόνο Αρχειοθετημένες">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </HBox.margin>
-                        </CheckBox>
-                        <Separator HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="btnRefresh" mnemonicParsing="false"
-                                onMouseClicked="#refresh"  text="">
+                        </ToggleSwitch>
+                        <Separator HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnRefresh" mnemonicParsing="false" onMouseClicked="#refresh" text="">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/refresh.png"/>
+                                    <Image url="@icons/refresh.png" />
                                 </ImageView>
                             </graphic>
                             <HBox.margin>
-                                <Insets left="5.0"/>
+                                <Insets left="5.0" />
                             </HBox.margin>
                         </Button>
                         <VBox.margin>
-                            <Insets left="10.0" right="10.0"/>
+                            <Insets left="10.0" right="10.0" />
                         </VBox.margin>
                     </HBox>
-                    <TableView fx:id="offersTable" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="offersTable" styleClass="striped" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID"/>
-                            <TableColumn fx:id="descriptionColumn" text="Περιγραφή"/>
-                            <TableColumn fx:id="offerDateColumn" text="Ημερ. Προσφοράς"/>
-                            <TableColumn fx:id="cucstomerColum" text="Πελάτης"/>
-                            <TableColumn fx:id="statusColumn" text="Κατάσταση"/>
-                            <TableColumn fx:id="response_dateColumn" text="Ημερ. Απόκρισης"/>
-                            <TableColumn fx:id="sendedColumn" text="Email?"/>
+                            <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID" />
+                            <TableColumn fx:id="descriptionColumn" text="Περιγραφή" />
+                            <TableColumn fx:id="offerDateColumn" text="Ημερ. Προσφοράς" />
+                            <TableColumn fx:id="cucstomerColum" text="Πελάτης" />
+                            <TableColumn fx:id="statusColumn" text="Κατάσταση" />
+                            <TableColumn fx:id="response_dateColumn" text="Ημερ. Απόκρισης" />
+                            <TableColumn fx:id="sendedColumn" text="Email?" />
                         </columns>
                         <contextMenu>
                             <ContextMenu>
                                 <items>
-                                    <MenuItem mnemonicParsing="false" onAction="#handleAddTask" 
-                                              text="Προσθήκη εργασίας"/>
-                                    <MenuItem mnemonicParsing="false" onAction="#handleShareOffer"
-                                               text="Αντιγραφή συνδέσμου"/>
-                                    <MenuItem mnemonicParsing="false" onAction="#handleSendEmail" 
-                                              text="Αποστολή E-mail"/>
-                                    <MenuItem mnemonicParsing="false" onAction="#handleAccept" 
-                                              text="Αποδοχή"/>
-                                    <MenuItem mnemonicParsing="false" onAction="#handleReject" 
-                                              text="Απόρριψη"/>
-                                    <MenuItem mnemonicParsing="false" onAction="#handleArchive" 
-                                              text="Αρχειοθέτηση"/>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleAddTask" text="Προσθήκη εργασίας">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="TASKS" />
+                                        </graphic>
+                                    </MenuItem>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleShareOffer" text="Αντιγραφή συνδέσμου">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="SHARE_ALT" />
+                                        </graphic>
+                                    </MenuItem>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleSendEmail" text="Αποστολή E-mail">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="ENVELOPE" />
+                                        </graphic>
+                                    </MenuItem>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleAccept" text="Αποδοχή">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="CHECK" />
+                                        </graphic>
+                                    </MenuItem>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleReject" text="Απόρριψη">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="TIMES" />
+                                        </graphic>
+                                    </MenuItem>
+                                    <MenuItem mnemonicParsing="false" onAction="#handleArchive" text="Αρχειοθέτηση">
+                                        <graphic>
+                                            <FontAwesomeIcon glyphName="ARCHIVE" />
+                                        </graphic>
+                                    </MenuItem>
                                 </items>
                             </ContextMenu>
                         </contextMenu>
                         <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                         </columnResizePolicy>
                     </TableView>
                     <BorderPane.margin>
-                        <Insets top="10.0"/>
+                        <Insets top="10.0" />
                     </BorderPane.margin>
                 </VBox>
             </center>
             <bottom>
                 <HBox alignment="CENTER_RIGHT" spacing="10" BorderPane.alignment="CENTER">
-                    <Separator visible="false" HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="addOfferButton" prefWidth="220.0" 
-                            text="Προσθήκη">
+                    <Separator visible="false" HBox.hgrow="ALWAYS" />
+                    <Button fx:id="addOfferButton" styleClass="accent" text="Προσθήκη">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/add.png"/>
-                            </ImageView>
+                            <FontAwesomeIcon glyphName="PLUS" />
                         </graphic>
                         <HBox.margin>
-                            <Insets/>
+                            <Insets />
                         </HBox.margin>
                     </Button>
-                    <Button fx:id="editOfferButton" prefWidth="220.0" 
-                            text="Επεξεργασία">
+                    <Button fx:id="editOfferButton" styleClass="success" text="Επεξεργασία">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/edit.png"/>
-                            </ImageView>
+                            <FontAwesomeIcon glyphName="PENCIL" />
                         </graphic>
                         <HBox.margin>
-                            <Insets/>
+                            <Insets />
                         </HBox.margin>
                     </Button>
-                    <Button fx:id="deleteOfferButton" prefWidth="220.0" 
-                            text="Διαγραφή">
+                    <Button fx:id="deleteOfferButton" styleClass="danger" text="Διαγραφή">
                         <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/remove.png"/>
-                            </ImageView>
+                            <FontAwesomeIcon glyphName="TRASH" />
                         </graphic>
                         <HBox.margin>
-                            <Insets/>
+                            <Insets />
                         </HBox.margin>
                     </Button>
                     <BorderPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </BorderPane.margin>
                     <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                     </VBox.margin>
                 </HBox>
             </bottom>

@@ -33,7 +33,7 @@ public enum CustomerFeature {
     ERGANI(
             "ergani",
             "Εργάνη",
-            "/fxml/erganiView.fxml",
+            "erganiView.fxml",
             c -> DBHelper.getCustomerDao().hasApp(c.getCode(), 5)
     ),
     PELATOLOGIO(
@@ -52,7 +52,7 @@ public enum CustomerFeature {
             "devices",
             "Συσκευές",
             "customerDevicesView.fxml",
-            c -> DBHelper.getCustomerDao().hasDevice(c.getCode())
+            c -> true // Always show if feature is enabled
     ),
     INVOICES(
             "megasoft",
@@ -61,47 +61,47 @@ public enum CustomerFeature {
             c -> DBHelper.getCustomerDao().hasInvoices(c.getAfm())
     ),
     TASKS(
-        "tasks",
-        "Εργασίες",
-        "customerTasksView.fxml",
-        c -> DBHelper.getCustomerDao().hasTask(c.getCode())
-),
-SUBS(
-        "subs",
-        "Συνδρομές",
-        "customerSubsView.fxml",
-        c -> DBHelper.getCustomerDao().hasSub(c.getCode())
-),
-OFFERS(
-        "offers",
-        "Προσφορές",
-        "customerOffersView.fxml",
-        c -> DBHelper.getCustomerDao().hasOffer(c.getCode())
-),
-ORDERS(
-        "orders",
-        "Παραγγελίες",
-        "ordersCustView.fxml",
-        c -> DBHelper.getCustomerDao().hasOrders(c.getCode())
-),
-CALLS(
-        "calls",
-        "Κλήσεις",
-        "customerCallLogView.fxml",
-        c -> true
-),
-NOTES(
-        "notes",
-        "Σημειώσεις",
-        "notesView.fxml",
-        c -> true
-),
-EDPS(
-        "edps",
-        "EDPS",
-        "edpsView.fxml",
-        c -> DBHelper.getCustomerProjectDao().hasProjects(c.getCode(), 8) // Assuming 1 is the ApplicationID for EDPS
-);
+            "tasks",
+            "Εργασίες",
+            "customerTasksView.fxml",
+            c -> true
+    ),
+    SUBS(
+            "subs",
+            "Συνδρομές",
+            "customerSubsView.fxml",
+            c -> true
+    ),
+    OFFERS(
+            "offers",
+            "Προσφορές",
+            "customerOffersView.fxml",
+            c -> true
+    ),
+    ORDERS(
+            "orders",
+            "Παραγγελίες",
+            "ordersCustView.fxml",
+            c -> true
+    ),
+    CALLS(
+            "calls",
+            "Κλήσεις",
+            "customerCallLogView.fxml",
+            c -> true
+    ),
+    NOTES(
+            "notes",
+            "Σημειώσεις",
+            "notesView.fxml",
+            c -> true
+    ),
+    EDPS(
+            "edps",
+            "EDPS",
+            "edpsView.fxml",
+            c -> DBHelper.getCustomerProjectDao().hasProjects(c.getCode(), 8) // Assuming 1 is the ApplicationID for EDPS
+    );
 
     public final String featureFlag;
     public final String title;
@@ -115,12 +115,16 @@ EDPS(
         this.hasData = hasData;
     }
 
-    /** Είναι ενεργό συνολικά; (global feature flag) */
+    /**
+     * Είναι ενεργό συνολικά; (global feature flag)
+     */
     public boolean isGloballyEnabled() {
         return Features.isEnabled(featureFlag);
     }
 
-    /** Υπάρχουν δεδομένα για αυτό τον πελάτη; */
+    /**
+     * Υπάρχουν δεδομένα για αυτό τον πελάτη;
+     */
     public boolean isPresentFor(Customer c) {
         try {
             return hasData.apply(c);

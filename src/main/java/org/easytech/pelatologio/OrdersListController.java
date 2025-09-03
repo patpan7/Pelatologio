@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import atlantafx.base.controls.ToggleSwitch;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,7 +39,7 @@ public class OrdersListController implements Initializable {
     @FXML
     private TableColumn idColumn, titleColumn, descriptionColumn, dueDateColumn, customerColumn, supplierColumn;
     @FXML
-    private CheckBox showAllCheckbox, showCompletedCheckbox, showPendingCheckbox, showReceivedCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox, showErgentCheckBox, showWaitCheckBox, showWithSupplierCheckbox, showWithoutSupplierCheckbox;
+    private ToggleSwitch showAllCheckbox, showCompletedCheckbox, showPendingCheckbox, showReceivedCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox, showErgentCheckBox, showWaitCheckBox, showWithSupplierCheckbox, showWithoutSupplierCheckbox;
     @FXML
     private Button addOrderButton, editOrderButton, deleteOrderButton, completeOrderButton, uncompletedOrderButton;
     @FXML
@@ -106,7 +107,7 @@ public class OrdersListController implements Initializable {
         });
 
         // Φίλτρα
-        CheckBox[] checkBoxes1 = {
+        ToggleSwitch[] checkBoxes1 = {
                 showAllCheckbox,
                 showCompletedCheckbox,
                 showPendingCheckbox,
@@ -114,19 +115,19 @@ public class OrdersListController implements Initializable {
         };
         configureSingleSelectionCheckBoxes(checkBoxes1);
 
-        CheckBox[] checkBoxes2 = {
+        ToggleSwitch[] checkBoxes2 = {
                 showWithCustomerCheckbox,
                 showWithoutCustomerCheckbox
         };
         configureSingleSelectionCheckBoxes(checkBoxes2);
 
-        CheckBox[] checkBoxes3 = {
+        ToggleSwitch[] checkBoxes3 = {
                 showErgentCheckBox,
                 showWaitCheckBox
         };
         configureSingleSelectionCheckBoxes(checkBoxes3);
 
-        CheckBox[] checkBoxes4 = {
+        ToggleSwitch[] checkBoxes4 = {
                 showWithSupplierCheckbox,
                 showWithoutSupplierCheckbox
         };
@@ -156,16 +157,16 @@ public class OrdersListController implements Initializable {
         supplierFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateOrdersTable());
 
 
-        showAllCheckbox.setOnAction(e -> updateOrdersTable());
-        showCompletedCheckbox.setOnAction(e -> updateOrdersTable());
-        showPendingCheckbox.setOnAction(e -> updateOrdersTable());
-        showReceivedCheckbox.setOnAction(e -> updateOrdersTable());
-        showWithCustomerCheckbox.setOnAction(e -> updateOrdersTable());
-        showWithoutCustomerCheckbox.setOnAction(e -> updateOrdersTable());
-        showErgentCheckBox.setOnAction(e -> updateOrdersTable());
-        showWaitCheckBox.setOnAction(e -> updateOrdersTable());
-        showWithSupplierCheckbox.setOnAction(e -> updateOrdersTable());
-        showWithoutSupplierCheckbox.setOnAction(e -> updateOrdersTable());
+        showAllCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOrdersTable());
+        showCompletedCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOrdersTable());
+        showPendingCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOrdersTable());
+        showReceivedCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOrdersTable());
+        showWithCustomerCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOrdersTable());
+        showWithoutCustomerCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOrdersTable());
+        showErgentCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOrdersTable());
+        showWaitCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOrdersTable());
+        showWithSupplierCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOrdersTable());
+        showWithoutSupplierCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> updateOrdersTable());
 
         // Κουμπιά
         addOrderButton.setOnAction(e -> handleAddOrder());
@@ -188,11 +189,11 @@ public class OrdersListController implements Initializable {
     }
 
 
-    private void configureSingleSelectionCheckBoxes(CheckBox[] checkBoxes) {
-        for (CheckBox checkBox : checkBoxes) {
+    private void configureSingleSelectionCheckBoxes(ToggleSwitch[] checkBoxes) {
+        for (ToggleSwitch checkBox : checkBoxes) {
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
-                    for (CheckBox otherCheckBox : checkBoxes) {
+                    for (ToggleSwitch otherCheckBox : checkBoxes) {
                         if (otherCheckBox != checkBox) {
                             otherCheckBox.setSelected(false);
                         }

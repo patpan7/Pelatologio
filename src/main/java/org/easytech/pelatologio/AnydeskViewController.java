@@ -19,7 +19,7 @@ import java.util.Optional;
 public class AnydeskViewController {
 
     @FXML
-    private Text customerNameText;
+    private Label customerNameText;
     @FXML
     private TableView<Anydesk> anydeskTableView;
     @FXML

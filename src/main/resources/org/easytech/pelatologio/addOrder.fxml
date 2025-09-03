@@ -1,136 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import atlantafx.base.controls.ToggleSwitch?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<DialogPane expanded="true" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddOrderController">
+<DialogPane expanded="true" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddOrderController">
     <content>
         <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
             <VBox alignment="TOP_CENTER">
-                <Label text="Διαχείριση Παραγγελίας" />
-                <HBox alignment="CENTER_LEFT">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                    </VBox.margin>
-                    <Label minWidth="180.0" text="Τίτλος:" />
-                    <TextField fx:id="titleField" prefWidth="325.0" />
-                </HBox>
-                <HBox alignment="CENTER_LEFT">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                    </VBox.margin>
+                <Label styleClass="title-label" text="Διαχείριση Παραγγελίας">
+                   <VBox.margin>
+                      <Insets bottom="10.0" />
+                   </VBox.margin>
+                </Label>
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="150.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                    </rowConstraints>
+                    <Label text="Τίτλος:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <TextField fx:id="titleField" prefWidth="325.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-                    <Label minWidth="180.0" text="Περιγραφή:" />
-                    <TextArea fx:id="descriptionField" onMouseClicked="#handleMouseClick" prefHeight="100" prefWidth="325.0" wrapText="true" />
+                    <Label text="Περιγραφή:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <TextArea fx:id="descriptionField" onMouseClicked="#handleMouseClick" prefHeight="100"
+                              prefWidth="325.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <Label text="Ημερομηνία:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <DatePicker fx:id="dueDatePicker" prefWidth="325.0" promptText="Ημερομηνία" GridPane.columnIndex="1"
+                                GridPane.rowIndex="2"/>
+
+                    <Label text="Πελάτης:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <ComboBox fx:id="customerComboBox" editable="true" prefWidth="325.0" promptText="Επιλογή Πελάτη"
+                                  HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnCustomer" mnemonicParsing="false" onAction="#showCustomer" text="">
+                            <graphic>
+                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@icons/users.png"/>
+                                </ImageView>
+                            </graphic>
+                            <HBox.margin>
+                                <Insets left="5.0" right="10.0"/>
+                            </HBox.margin>
+                        </Button>
+                    </HBox>
+
+                    <Label text="Προμηθευτής:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <ComboBox fx:id="supplierComboBox" editable="true" prefWidth="325.0" promptText="Προμηθευτής"
+                                  HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnSupplier" mnemonicParsing="false" onAction="#showSupplier" text="">
+                            <graphic>
+                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@icons/supplier.png"/>
+                                </ImageView>
+                            </graphic>
+                            <HBox.margin>
+                                <Insets left="5.0" right="10.0"/>
+                            </HBox.margin>
+                        </Button>
+                    </HBox>
+                </GridPane>
+                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </padding>
+                    <Label text="Επείγον:"/>
+                    <ToggleSwitch fx:id="is_ergent" />
+
+                    <Label text="Αναμονή:"/>
+                    <ToggleSwitch fx:id="is_wait" />
                 </HBox>
-                <HBox alignment="CENTER_LEFT">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                    </VBox.margin>
-                    <Label minWidth="180.0" text="Ημερομηνία:">
-                        <opaqueInsets>
-                            <Insets />
-                        </opaqueInsets>
-                    </Label>
-                    <DatePicker fx:id="dueDatePicker" prefWidth="325.0" promptText="Ημερομηνία" />
-                </HBox>
-                <HBox alignment="CENTER_LEFT">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                    </VBox.margin>
-                    <Label minWidth="180.0" text="Πελάτης:" />
-                    <ComboBox fx:id="customerComboBox" editable="true" prefWidth="325.0" promptText="Επιλογή Πελάτη" />
-                    <Button fx:id="btnCustomer" mnemonicParsing="false" onAction="#showCustomer" text="">
-                        <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/users.png" />
-                            </ImageView>
-                        </graphic>
-                        <HBox.margin>
-                            <Insets left="5.0" right="10.0" />
-                        </HBox.margin>
-                    </Button>
-                </HBox>
-                <HBox alignment="CENTER_LEFT">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                    </VBox.margin>
-                    <Label minWidth="180.0" text="Προμηθευτής:" />
-                    <ComboBox fx:id="supplierComboBox" editable="true" prefWidth="325.0" promptText="Προμηθευτής" />
-                    <Button fx:id="btnSupplier" mnemonicParsing="false" onAction="#showSupplier" text="">
-                        <graphic>
-                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@icons/supplier.png" />
-                            </ImageView>
-                        </graphic>
-                        <HBox.margin>
-                            <Insets left="5.0" right="10.0" />
-                        </HBox.margin>
-                    </Button>
-                </HBox>
-                <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="329.0">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                    </VBox.margin>
-                    <Label text="Επείγον:">
-                        <HBox.margin>
-                            <Insets bottom="5.0" right="5.0" top="5.0" />
-                        </HBox.margin>
-                    </Label>
-                    <CheckBox fx:id="is_ergent" mnemonicParsing="false" text="">
-                        <HBox.margin>
-                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </HBox.margin>
-                    </CheckBox>
-                    <Label text="Αναμονή:">
-                        <HBox.margin>
-                            <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
-                        </HBox.margin>
-                    </Label>
-                    <CheckBox fx:id="is_wait" mnemonicParsing="false" text="">
-                        <HBox.margin>
-                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </HBox.margin>
-                    </CheckBox>
-                </HBox>
-                <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="382.0">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                    </VBox.margin>
-                    <Label text="Παραγγελία:">
-                        <HBox.margin>
-                            <Insets bottom="5.0" right="5.0" top="5.0" />
-                        </HBox.margin>
-                    </Label>
-                    <CheckBox fx:id="is_completed" mnemonicParsing="false" text="">
-                        <HBox.margin>
-                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </HBox.margin>
-                    </CheckBox>
-                    <Label layoutX="10.0" layoutY="15.0" text="Παραλαβή:">
-                        <HBox.margin>
-                            <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
-                        </HBox.margin>
-                    </Label>
-                    <CheckBox fx:id="is_received" layoutX="163.0" layoutY="20.0" mnemonicParsing="false" text="">
-                        <HBox.margin>
-                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </HBox.margin>
-                    </CheckBox>
-                    <Label layoutX="188.0" layoutY="15.0" text="Παράδωση:">
-                        <HBox.margin>
-                            <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
-                        </HBox.margin>
-                    </Label>
-                    <CheckBox fx:id="is_delivered" layoutX="316.0" layoutY="20.0" mnemonicParsing="false" text="">
-                        <HBox.margin>
-                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        </HBox.margin>
-                    </CheckBox>
+                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </padding>
+                    <Label text="Παραγγελία:"/>
+                    <ToggleSwitch fx:id="is_completed" />
+
+                    <Label text="Παραλαβή:"/>
+                    <ToggleSwitch fx:id="is_received" />
+
+                    <Label text="Παράδοση:"/>
+                    <ToggleSwitch fx:id="is_delivered" />
                 </HBox>
             </VBox>
         </ScrollPane>
     </content>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
 </DialogPane>
