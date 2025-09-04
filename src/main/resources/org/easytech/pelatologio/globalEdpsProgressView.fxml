@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.GlobalEdpsProgressController">
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.GlobalEdpsProgressController">
     <top>
         <HBox alignment="CENTER_LEFT" spacing="10.0">
             <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
-            <Label text="Φίλτρο Βήματος:"/>
-            <ComboBox fx:id="stepFilterComboBox" prefWidth="250.0"/>
-            <TextField fx:id="customerFilterField" promptText="Αναζήτηση πελάτη..."/>
+            <Label text="Φίλτρο Βήματος:" />
+            <ComboBox fx:id="stepFilterComboBox" prefWidth="250.0" />
+            <TextField fx:id="customerFilterField" promptText="Αναζήτηση πελάτη..." />
         </HBox>
     </top>
     <center>
-        <TreeTableView fx:id="progressTable">
+        <TreeTableView fx:id="progressTable" styleClass="striped">
             <columns>
-                <TreeTableColumn fx:id="customerNameColumn" prefWidth="150.0" text="Πελάτης"/>
-                <TreeTableColumn fx:id="projectNameColumn" prefWidth="150.0" text="Project"/>
-                <TreeTableColumn fx:id="totalStepsColumn" prefWidth="80.0" text="Σύνολο Βημάτων"/>
-                <TreeTableColumn fx:id="completedStepsColumn" prefWidth="100.0" text="Ολοκληρωμένα"/>
-                <TreeTableColumn fx:id="progressColumn" prefWidth="100.0" text="Πρόοδος"/>
-                <TreeTableColumn fx:id="nextPendingStepColumn" prefWidth="200.0" text="Επόμενο Βήμα"/>
-                <TreeTableColumn fx:id="lastCompletedStepColumn" prefWidth="200.0" text="Τελευταίο Ολοκληρωμένο"/>
-                <TreeTableColumn fx:id="lastCompletionDateColumn" prefWidth="150.0" text="Ημ/νία Τελευταίου"/>
+                <TreeTableColumn fx:id="customerNameColumn" prefWidth="150.0" text="Πελάτης" />
+                <TreeTableColumn fx:id="projectNameColumn" prefWidth="150.0" text="Project" />
+                <TreeTableColumn fx:id="totalStepsColumn" prefWidth="80.0" text="Σύνολο Βημάτων" />
+                <TreeTableColumn fx:id="completedStepsColumn" prefWidth="100.0" text="Ολοκληρωμένα" />
+                <TreeTableColumn fx:id="progressColumn" prefWidth="100.0" text="Πρόοδος" />
+                <TreeTableColumn fx:id="nextPendingStepColumn" prefWidth="200.0" text="Επόμενο Βήμα" />
+                <TreeTableColumn fx:id="lastCompletedStepColumn" prefWidth="200.0" text="Τελευταίο Ολοκληρωμένο" />
+                <TreeTableColumn fx:id="lastCompletionDateColumn" prefWidth="150.0" text="Ημ/νία Τελευταίου" />
             </columns>
             <columnResizePolicy>
-                <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TreeTableView>
     </center>

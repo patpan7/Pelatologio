@@ -6,9 +6,33 @@
     -fx-text-inner-color: -color-fg-default;
 }
 
-/* Table hover effect */
-.table-row-cell:hover {
-    -fx-background-color: -color-accent-subtle;
+/* Hover effect for all table rows */
+.table-row-cell:filled:hover {
+    -fx-background-color: -color-accent-emphasis; /* Ένα πολύ ανοιχτό γκρι για hover */
+    -fx-text-fill: -color-fg-default; /* Χρησιμοποιεί το προεπιλεγμένο χρώμα κειμένου του θέματος */
+}
+
+/* Selected row effect */
+.table-row-cell:filled:selected {
+    -fx-background-color: -color-accent-emphasis; /* Πιο έντονο χρώμα από το θέμα */
+    -fx-font-weight: bold; /* Κάνει το κείμενο πιο έντονο */
+    -fx-font-size: 1.3em; /* Ελαφρώς μεγαλύτερο κείμενο */
+}
+
+/* Target the text within the selected cell */
+.table-row-cell:filled:selected .text {
+    -fx-fill: -color-fg-emphasis !important; /* Το κείμενο γίνεται λευκό και υπερισχύει */
+}
+
+/* Target the label within the selected cell (if any) */
+.table-row-cell:filled:selected .label {
+    -fx-text-fill: -color-fg-emphasis !important; /* Το κείμενο γίνεται λευκό και υπερισχύει */
+}
+
+/* Combined hover and selected effect */
+.table-row-cell:filled:selected:hover {
+    -fx-background-color: derive(-color-accent-emphasis, -10%); /* Ελαφρώς πιο σκούρο από το επιλεγμένο */
+    -fx-text-fill: -color-fg-emphasis;
 }
 
 /* Larger button text */
@@ -34,4 +58,5 @@
 
 .text-field {
     -fx-font-size: 1.2em; /* 20% larger */
+    -fx-border-color: -color-neutral-emphasis;
 }

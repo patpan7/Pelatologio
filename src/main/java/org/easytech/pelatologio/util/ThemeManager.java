@@ -4,6 +4,7 @@ import atlantafx.base.theme.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import org.easytech.pelatologio.helper.AppSettings;
+import org.easytech.pelatologio.util.SoftBlueTheme;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,7 @@ public class ThemeManager {
         THEMES.put("Cupertino Light", new CupertinoLight());
         THEMES.put("Cupertino Dark", new CupertinoDark());
         THEMES.put("Dracula", new Dracula());
+        THEMES.put("Soft Blue", new SoftBlueTheme());
     }
 
     public static String[] getAvailableThemes() {

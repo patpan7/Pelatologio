@@ -54,7 +54,7 @@
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#handleAddSub" text="Προσθήκη Συμβολαίου">
                             <graphic>
-                                <FontAwesomeIcon glyphName="FILES_ALT" />
+                                <FontAwesomeIcon glyphName="FILE_ALT" />
                             </graphic>
                         </MenuItem>
                     </items>
