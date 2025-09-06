@@ -28,14 +28,14 @@ import java.io.IOException;
 
 public class TaxisViewController implements CustomerTabController {
     // Constants
-    private static final String TAXISNET_URL = "https://www1.aade.gr/saadeapps3/comregistry/#!/arxiki";
-    private static final String AUTHORIZATIONS_URL = "https://www1.gsis.gr/taxisnet/mytaxisnet/protected/authorizations.htm";
-    private static final String MYDATA_URL = "https://www1.aade.gr/saadeapps2/bookkeeper-web/bookkeeper/#!/";
-    private static final String ESEND_URL = "https://www1.gsis.gr/tameiakes/myweb/esendN.php?FUNCTION=1";
-    private static final String AFM1_URL = "https://www1.aade.gr/webtax/wspublicreg/faces/pages/wspublicreg/menu.xhtml";
-    private static final String AFM2_URL = "https://www1.aade.gr/sgsisapps/tokenservices/protected/displayConsole.htm";
-    private static final String TAMEIAKES_URL = "https://www1.aade.gr/taxisnet/info/protected/displayTillInfo.htm";
-    private static final String GEMI_URL = "https://publicity.businessportal.gr/";
+    public static final String TAXISNET_URL = "https://www1.aade.gr/saadeapps3/comregistry/#!/arxiki";
+    public static final String AUTHORIZATIONS_URL = "https://www1.gsis.gr/taxisnet/mytaxisnet/protected/authorizations.htm";
+    public static final String MYDATA_URL = "https://www1.aade.gr/saadeapps2/bookkeeper-web/bookkeeper/#!/";
+    public static final String ESEND_URL = "https://www1.gsis.gr/tameiakes/myweb/esendN.php?FUNCTION=1";
+    public static final String AFM1_URL = "https://www1.aade.gr/webtax/wspublicreg/faces/pages/wspublicreg/menu.xhtml";
+    public static final String AFM2_URL = "https://www1.aade.gr/sgsisapps/tokenservices/protected/displayConsole.htm";
+    public static final String TAMEIAKES_URL = "https://www1.aade.gr/taxisnet/info/protected/displayTillInfo.htm";
+    public static final String GEMI_URL = "https://publicity.businessportal.gr/";
 
     private static final By DEFAULT_USERNAME_LOCATOR = By.id("username");
     private static final By DEFAULT_PASSWORD_LOCATOR = By.id("password");

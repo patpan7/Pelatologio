@@ -35,9 +35,15 @@
     -fx-text-fill: -color-fg-emphasis;
 }
 
+  .table-cell {
+      -fx-font-size: 1.1em; /* 10% larger */
+  }
+
 /* Larger button text */
 .button {
     -fx-font-size: 1.2em; /* 20% larger */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Rounded corners */
 }
 
 /* Larger label text and bold titles */
@@ -59,4 +65,20 @@
 .text-field {
     -fx-font-size: 1.2em; /* 20% larger */
     -fx-border-color: -color-neutral-emphasis;
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Rounded corners */
+}
+
+.tab-pane .tab-header-area .tab {
+    -fx-font-size: 1.1em; /* 10% larger */
+}
+
+.tab-pane .tab-header-area .tab:selected {
+    -fx-font-size: 1.2em; /* 20% larger */
+    -fx-font-weight: bold;
+}
+
+.tabHas {
+    -fx-border-color: #ff0000;
+    -fx-border-width: 2px;
 }

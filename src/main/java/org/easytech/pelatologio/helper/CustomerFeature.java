@@ -6,10 +6,9 @@ import java.util.function.Function;
 
 public enum CustomerFeature {
     TAXIS(
-            "taxis",                // feature flag name (Features.isEnabled("taxis"))
-            "Taxis",                // τίτλος tab
-            "taxisView.fxml", // FXML path (προτίμησε absolute με /)
-            // Πότε θεωρούμε ότι "υπάρχουν δεδομένα" ώστε να εμφανιστεί το tab μόνιμα
+            "taxis",
+            "Taxis",
+            "taxisView.fxml",
             c -> DBHelper.getCustomerDao().hasApp(c.getCode(), 3)
     ),
     MY_POS(
@@ -52,7 +51,7 @@ public enum CustomerFeature {
             "devices",
             "Συσκευές",
             "customerDevicesView.fxml",
-            c -> true // Always show if feature is enabled
+            c -> DBHelper.getCustomerDao().hasDevice(c.getCode())
     ),
     INVOICES(
             "megasoft",
@@ -64,44 +63,38 @@ public enum CustomerFeature {
             "tasks",
             "Εργασίες",
             "customerTasksView.fxml",
-            c -> true
+            c -> DBHelper.getCustomerDao().hasTask(c.getCode())
     ),
     SUBS(
             "subs",
             "Συνδρομές",
             "customerSubsView.fxml",
-            c -> true
+            c -> DBHelper.getCustomerDao().hasSub(c.getCode())
     ),
     OFFERS(
             "offers",
             "Προσφορές",
             "customerOffersView.fxml",
-            c -> true
+            c -> DBHelper.getCustomerDao().hasOffer(c.getCode())
     ),
     ORDERS(
             "orders",
             "Παραγγελίες",
             "ordersCustView.fxml",
-            c -> true
+            c -> DBHelper.getCustomerDao().hasOrders(c.getCode())
     ),
     CALLS(
-            "calls",
-            "Κλήσεις",
-            "customerCallLogView.fxml",
-            c -> true
-    ),
-    NOTES(
-            "notes",
-            "Σημειώσεις",
-            "notesView.fxml",
-            c -> true
+        "calls",
+        "Κλήσεις",
+        "customerCallLogView.fxml",
+        c -> DBHelper.getCallLogDao().hasCalls(c.getCode())
     ),
     EDPS(
             "edps",
             "EDPS",
             "edpsView.fxml",
-            c -> DBHelper.getCustomerProjectDao().hasProjects(c.getCode(), 8) // Assuming 1 is the ApplicationID for EDPS
-    );
+            c -> DBHelper.getCustomerProjectDao().hasProjects(c.getCode(), 8)
+      );
 
     public final String featureFlag;
     public final String title;
@@ -115,20 +108,17 @@ public enum CustomerFeature {
         this.hasData = hasData;
     }
 
-    /**
-     * Είναι ενεργό συνολικά; (global feature flag)
-     */
     public boolean isGloballyEnabled() {
         return Features.isEnabled(featureFlag);
     }
 
-    /**
-     * Υπάρχουν δεδομένα για αυτό τον πελάτη;
-     */
     public boolean isPresentFor(Customer c) {
+        if (c == null) return false;
         try {
             return hasData.apply(c);
         } catch (Exception e) {
+            System.err.println("Error checking hasData for feature " + this.name() + ": " +
+                    e.getMessage());
             return false;
         }
     }

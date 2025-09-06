@@ -21,7 +21,7 @@
                     <items>
                         <MenuItem onAction="#handleEditDevice" text="Επεξεργασία">
                             <graphic>
-                                <FontAwesomeIcon glyphName="PENCIL_ALT" />
+                                <FontAwesomeIcon glyphName="PENCIL" />
                             </graphic>
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#handleAddDevice" text="Προσθήκη">

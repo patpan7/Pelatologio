@@ -11,4 +11,6 @@ public interface CallLogDao {
     List<CallLog> getCallLogsByCustomerId(int customerId) throws SQLException;
     void deleteCallLog(int callLogId) throws SQLException;
     List<CallLog> getRecentCalls(int limit);
+
+    boolean hasCalls(int code);
 }

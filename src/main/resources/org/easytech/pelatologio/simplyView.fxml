@@ -57,7 +57,7 @@
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#handleAddSub" text="Προσθήκη Συμβολαίου">
                             <graphic>
-                                <FontAwesomeIcon glyphName="FILES_ALT " />
+                                <FontAwesomeIcon glyphName="FILES_ALT" />
                             </graphic>
                         </MenuItem>
                     </items>
@@ -168,15 +168,15 @@
                     </items>
                 </ComboBox>
             </HBox>
-            <ToggleSwitch fx:id="cbStock" text="Stock" />
-            <ToggleSwitch fx:id="cbRegister" text="Εγγραφή" />
-            <ToggleSwitch fx:id="cbAuth" text="Εξουσιοδότηση" />
-            <ToggleSwitch fx:id="cbAccept" text="Αποδοχή Σύμβασης" />
-            <ToggleSwitch fx:id="cbMail" text="Αποστολή Mail" />
-            <ToggleSwitch fx:id="cbParam" text="Ολοκ. Παραμετρ" />
-            <ToggleSwitch fx:id="cbMydata" text="Ολοκ. MyData" />
-            <ToggleSwitch fx:id="cbDelivered" text="Παράδοση" />
-            <ToggleSwitch fx:id="cbPaid" text="Πληρωμή Πελάτη" />
+            <ToggleSwitch fx:id="cbStock" labelPosition="RIGHT" text="Stock" />
+            <ToggleSwitch fx:id="cbRegister" labelPosition="RIGHT" text="Εγγραφή" />
+            <ToggleSwitch fx:id="cbAuth" labelPosition="RIGHT" text="Εξουσιοδότηση" />
+            <ToggleSwitch fx:id="cbAccept" labelPosition="RIGHT" text="Αποδοχή Σύμβασης" />
+            <ToggleSwitch fx:id="cbMail" labelPosition="RIGHT" text="Αποστολή Mail" />
+            <ToggleSwitch fx:id="cbParam" labelPosition="RIGHT" text="Ολοκ. Παραμετρ" />
+            <ToggleSwitch fx:id="cbMydata" labelPosition="RIGHT" text="Ολοκ. MyData" />
+            <ToggleSwitch fx:id="cbDelivered" labelPosition="RIGHT" text="Παράδοση" />
+            <ToggleSwitch fx:id="cbPaid" labelPosition="RIGHT" text="Πληρωμή Πελάτη" />
 
         </VBox>
     </VBox>

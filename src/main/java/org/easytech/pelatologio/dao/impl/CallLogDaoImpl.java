@@ -5,7 +5,6 @@ import org.easytech.pelatologio.dao.CallLogDao;
 import org.easytech.pelatologio.models.CallLog;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,5 +154,22 @@ public class CallLogDaoImpl implements CallLogDao {
             e.printStackTrace();
         }
         return callLogs;
+    }
+
+    @Override
+    public boolean hasCalls(int code) {
+        String query = "SELECT COUNT(*) FROM CallLogs WHERE CustomerID = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, code);
+            pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

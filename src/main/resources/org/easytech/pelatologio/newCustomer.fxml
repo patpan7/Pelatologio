@@ -7,7 +7,7 @@
 <?import javafx.scene.text.*?>
 
 <VBox stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.AddCustomerController">
-    <TabPane fx:id="tabPane">
+    <TabPane fx:id="tabPane" styleClass="classic">
         <Tab fx:id="tabMain" closable="false" text="Στοιχεία πελάτη">
             <ScrollPane fitToHeight="true" fitToWidth="true">
                 <HBox>
@@ -84,6 +84,11 @@
                                     <Insets left="5.0" />
                                 </HBox.margin>
                             </Button>
+                     <Button fx:id="btnGemiSearch" layoutX="819.0" layoutY="10.0" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Γ.Ε.ΜΗ." HBox.hgrow="ALWAYS">
+                        <HBox.margin>
+                           <Insets left="5.0" />
+                        </HBox.margin>
+                     </Button>
                             <VBox.margin>
                                 <Insets top="5.0" />
                             </VBox.margin>

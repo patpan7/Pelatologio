@@ -68,7 +68,7 @@
                     <Insets />
                 </HBox.margin>
             </Button>
-            <Button fx:id="uncompletedTaskButton" mnemonicParsing="false" styleClass="success" text="Ανάκληση">
+            <Button fx:id="uncompletedTaskButton" mnemonicParsing="false" styleClass="danger" text="Ανάκληση">
                 <graphic>
                     <FontAwesomeIcon glyphName="UNDO" />
                 </graphic>

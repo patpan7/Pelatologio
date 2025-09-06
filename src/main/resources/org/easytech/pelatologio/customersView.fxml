@@ -106,7 +106,7 @@
                 <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                     <TableView fx:id="customerTable" styleClass="bordered" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="codeColumn" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="true" text="Id" />
+                            <TableColumn fx:id="codeColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="true" text="Id" />
                             <TableColumn fx:id="nameColumn" minWidth="260.0" prefWidth="328.0" resizable="true" text="Όνομα" />
                             <TableColumn fx:id="titleColumn" maxWidth="300.0" minWidth="100.0" prefWidth="100.0" resizable="true" text="Τίτλος" />
                             <TableColumn fx:id="afmColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="true" sortable="false" text="ΑΦΜ" />

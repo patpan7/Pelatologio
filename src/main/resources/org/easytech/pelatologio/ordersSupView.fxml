@@ -12,7 +12,7 @@
         </HBox.margin>
         <TableView fx:id="ordersTable" styleClass="striped" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID" />
+                <TableColumn fx:id="idColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="ID" />
                 <TableColumn fx:id="titleColumn" maxWidth="500.0" minWidth="250.0" prefWidth="250.0" text="Τίτλος" />
                 <TableColumn fx:id="descriptionColumn" maxWidth="700.0" minWidth="300.0" prefWidth="300.0" text="Περιγραφή" />
                 <TableColumn fx:id="dueDateColumn" maxWidth="220.0" minWidth="110.0" prefWidth="110.0" text="Ημερομηνία" />

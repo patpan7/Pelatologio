@@ -24,6 +24,8 @@ public class ThemeManager {
         THEMES.put("Cupertino Dark", new CupertinoDark());
         THEMES.put("Dracula", new Dracula());
         THEMES.put("Soft Blue", new SoftBlueTheme());
+        THEMES.put("Soft Red", new SoftRedTheme());
+        THEMES.put("Soft Green", new SoftGreenTheme());
     }
 
     public static String[] getAvailableThemes() {

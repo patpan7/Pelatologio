@@ -26,7 +26,7 @@
                 </HBox>
 
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label minWidth="150" text="Ημερομηνία Λήξης:" />
+                    <Label minWidth="150" text="Ημερ. Λήξης:" />
                     <DatePicker fx:id="dueDatePicker" HBox.hgrow="ALWAYS" />
                 </HBox>
 

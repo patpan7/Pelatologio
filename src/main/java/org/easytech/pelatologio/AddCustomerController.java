@@ -1,6 +1,5 @@
 package org.easytech.pelatologio;
 
-import com.jfoenix.controls.JFXCheckBox;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -43,6 +42,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static org.easytech.pelatologio.TaxisViewController.GEMI_URL;
+import static org.easytech.pelatologio.helper.AlertDialogHelper.showErrorDialog;
+
 public class AddCustomerController {
     private TabPane mainTabPane;
     private Tab myTab;
@@ -65,7 +67,7 @@ public class AddCustomerController {
     @FXML
     private ComboBox<Accountant> tfAccName;
     @FXML
-    private Button btnAfmSearch;
+    private Button btnAfmSearch, btnGemiSearch;
     @FXML
     private Button btnAddressAdd;
     @FXML
@@ -82,22 +84,6 @@ public class AddCustomerController {
     public CheckBox checkboxActive;
     @FXML
     Button btnPhone1, btnPhone2, btnMobile, btnPhoneManager, btnAccPhone, btnAccMobile, startCallLogButton, btnAnydesk, btnManageApps;
-//
-//
-//    private TaxisViewController taxisViewController;
-//    private MyposViewController myposViewController;
-//    private SimplyViewController simplyViewController;
-//    private EmblemViewController emblemViewController;
-//    private ErganiViewController erganiViewController;
-//    private PelatologioViewController pelatologioViewController;
-//    private NineposViewController nineposViewController;
-//    private CustomerDevicesController customerDevicesController;
-//    private InvoicesViewController invoicesViewController;
-//    private CustomerTasksController customerTasksController;
-//    private CustomerSubsController customerSubsController;
-//    private CustomerOffersController customerOffersController;
-//    private CustomerOrdersController customerOrdersController;
-//    private CustomerCallLogController customerCallLogController;
 
     private final Map<Tab, String> tabToFxml = new HashMap<>();
     private final Map<Tab, AnchorPane> tabToContainer = new HashMap<>();
@@ -153,6 +139,7 @@ public class AddCustomerController {
         btnManageApps.setOnAction(e -> openAddFeatureDialog());
 
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
+        btnGemiSearch.setOnAction(event -> handleGemiSearch());
         btnAddressAdd.setDisable(true);
         btnAddToMegasoft.setDisable(true);
         btnAddToMegasoft.setVisible(false);
@@ -418,65 +405,6 @@ public class AddCustomerController {
         }
     }
 
-
-//    private void setupTabs() {
-//        if (Features.isEnabled("taxis")) {
-//            tabToFxml.put(tabTaxis, "taxisView.fxml");
-//            tabToContainer.put(tabTaxis, taxisContainer);
-//        }
-//        if (Features.isEnabled("mypos")) {
-//            tabToFxml.put(tabMypos, "myposView.fxml");
-//            tabToContainer.put(tabMypos, myposContainer);
-//        }
-//        if (Features.isEnabled("simply")) {
-//            tabToFxml.put(tabSimply, "simplyView.fxml");
-//            tabToContainer.put(tabSimply, simplyContainer);
-//        }
-//        if (Features.isEnabled("emblem")) {
-//            tabToFxml.put(tabEmblem, "emblemView.fxml");
-//            tabToContainer.put(tabEmblem, emblemContainer);
-//        }
-//        if (Features.isEnabled("ergani")) {
-//            tabToFxml.put(tabErgani, "erganiView.fxml");
-//            tabToContainer.put(tabErgani, erganiContainer);
-//        }
-//        if (Features.isEnabled("pelatologio")) {
-//            tabToFxml.put(tabPelatologio, "pelatologioView.fxml");
-//            tabToContainer.put(tabPelatologio, pelatologioContainer);
-//        }
-//        if (Features.isEnabled("ninepos")) {
-//            tabToFxml.put(tabNinepos, "nineposView.fxml");
-//            tabToContainer.put(tabNinepos, nineposContainer);
-//        }
-//        if (Features.isEnabled("devices")) {
-//            tabToFxml.put(tabDevices, "customerDevicesView.fxml");
-//            tabToContainer.put(tabDevices, devicesContainer);
-//        }
-//        if (Features.isEnabled("megasoft")) {
-//            tabToFxml.put(tabInvoices, "invoicesView.fxml");
-//            tabToContainer.put(tabInvoices, invoicesContainer);
-//        }
-//        if (Features.isEnabled("tasks")) {
-//            tabToFxml.put(tabTasks, "customerTasksView.fxml");
-//            tabToContainer.put(tabTasks, tasksContainer);
-//        }
-//        if (Features.isEnabled("subs")) {
-//            tabToFxml.put(tabSubs, "customerSubsView.fxml");
-//            tabToContainer.put(tabSubs, subsContainer);
-//        }
-//        if (Features.isEnabled("offers")) {
-//            tabToFxml.put(tabOffers, "customerOffersView.fxml");
-//            tabToContainer.put(tabOffers, offersContainer);
-//        }
-//        if (Features.isEnabled("orders")) {
-//            tabToFxml.put(tabOrders, "ordersCustView.fxml");
-//            tabToContainer.put(tabOrders, ordersContainer);
-//        }
-//        if (Features.isEnabled("calls")) {
-//            tabToFxml.put(tabCallLog, "customerCallLogView.fxml");
-//            tabToContainer.put(tabCallLog, callLogContainer);
-//        }
-//    }
 
     private void loadTabContent(Tab tab) {
         String fxmlPath = tabToFxml.get(tab);
@@ -980,40 +908,80 @@ public class AddCustomerController {
     private void rebuildFeatureTabs() {
         Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
 
-        // Remove all dynamic tabs (keep only static tabs)
-        List<Tab> allTabs = new ArrayList<>(tabPane.getTabs());
-        List<Tab> staticTabs = allTabs.stream()
-                .filter(tab -> tab == tabMain || tab == tabOrders || tab == tabOffers ||
-                        tab == tabTasks || tab == tabNotes || tab == tabAccountant)
-                .collect(Collectors.toList());
+        // Define which features should always be visible (if their feature is enabled)
+        final Set<CustomerFeature> alwaysVisibleFeatures = EnumSet.of(
+                CustomerFeature.TASKS,
+                CustomerFeature.SUBS,
+                CustomerFeature.OFFERS,
+                CustomerFeature.ORDERS,
+                CustomerFeature.CALLS,
+                CustomerFeature.DEVICES
+        );
 
-        // Clear and re-add only static tabs in the correct order
-        tabPane.getTabs().setAll(staticTabs);
-        activeFeatureTabs.clear();
-        loadedTabs.clear();
+        // Start with a fresh list containing only the absolute static tabs
+        List<Tab> tabsToShow = new ArrayList<>();
+        tabsToShow.add(tabMain);
 
-        // Add dynamic tabs after the main tab
-        int insertIndex = 1; // After the main tab (index 0)
+        activeFeatureTabs.clear(); // Clear the map of active tabs
 
+        // Iterate through all possible features and build the UI
         for (CustomerFeature feature : CustomerFeature.values()) {
-            if (!feature.isGloballyEnabled() || !feature.isPresentFor(customer)) {
-                continue;
+            if (!feature.isGloballyEnabled()) {
+                continue; // Skip globally disabled features
             }
 
-            Tab tab = new Tab(feature.title);
-            tab.setId("tab_" + feature.featureFlag);
-            tab.setClosable(false);
-            tab.getStyleClass().add("tabHas");
-            tab.setContent(new Label("Φόρτωση..."));
+            boolean hasData = feature.isPresentFor(customer);
+            boolean isAlwaysVisible = alwaysVisibleFeatures.contains(feature);
 
-            tabPane.getTabs().add(insertIndex, tab);
-            activeFeatureTabs.put(feature, tab);
-            insertIndex++; // Move the insert position for the next tab
+            Tab tab = null;
+
+            if (isAlwaysVisible) {
+                // Create the tab because it should always be visible
+                tab = new Tab(feature.title);
+                if (hasData) {
+                    // If it also has data, highlight it
+                    tab.getStyleClass().add("tabHas");
+                }
+            } else { // This is a data-driven tab
+                if (hasData) {
+                    // Create the tab ONLY if it has data
+                    tab = new Tab(feature.title);
+                    // It will always be highlighted if it's shown
+                    tab.getStyleClass().add("tabHas");
+                }
+            }
+
+            // If a tab was created, configure it and add it to our lists
+            if (tab != null) {
+                tab.setId("tab_" + feature.featureFlag);
+                tab.setClosable(false);
+                tab.setContent(new Label("Φόρτωση...")); // Placeholder content
+
+                tabsToShow.add(tab);
+                activeFeatureTabs.put(feature, tab); // Keep track of the new tab instance
+            }
         }
+        tabsToShow.add(tabNotes);
+        if (customer.getNotes().length() >0) {
+            tabNotes.getStyleClass().add("tabHas");
+        }
+        tabsToShow.add(tabAccountant);
+        if (customer.getAccId() != 0) {
+            tabAccountant.getStyleClass().add("tabHas");
+        }
+        // Set the final, correct list of tabs
+        tabPane.getTabs().setAll(tabsToShow);
 
         // Restore the selected tab if it still exists
-        if (selectedTab != null && tabPane.getTabs().contains(selectedTab)) {
-            tabPane.getSelectionModel().select(selectedTab);
+        // Note: This might need adjustment since we create new tab instances every time
+        if (selectedTab != null) {
+            // Find the equivalent new tab to select
+            Optional<Tab> newSelectedTab = tabPane.getTabs().stream()
+                    .filter(t -> t.getText().equals(selectedTab.getText()))
+                    .findFirst();
+            newSelectedTab.ifPresent(value -> tabPane.getSelectionModel().select(value));
+        } else {
+            tabPane.getSelectionModel().selectFirst();
         }
     }
 
@@ -1336,6 +1304,16 @@ public class AddCustomerController {
         }
     }
 
+    public void handleGemiSearch() {
+        if (tfAfm != null && !tfAfm.getText().isEmpty()) {
+            try {
+                new LoginAutomator(true).openGemi(GEMI_URL, tfAfm.getText());
+            } catch (IOException e) {
+                showErrorDialog("Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage());
+            }
+        }
+    }
+
 
     public void handleOkButton() {
         if (code == 0) {
@@ -1348,7 +1326,7 @@ public class AddCustomerController {
     }
 
     public void handleRefreshButton() {
-        hasTabs();
+        rebuildFeatureTabs();
         setAccountant();
         setRecommendation();
     }
