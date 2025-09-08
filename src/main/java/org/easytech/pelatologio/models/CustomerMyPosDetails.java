@@ -6,6 +6,8 @@ public class CustomerMyPosDetails {
     private String myposClientId;
     private String verificationStatus;
     private String accountStatus;
+    private String customerName; // New field
+    private int customerCode;    // New field
 
     // Constructors
     public CustomerMyPosDetails() {}
@@ -49,5 +51,22 @@ public class CustomerMyPosDetails {
 
     public void setAccountStatus(String accountStatus) {
         this.accountStatus = accountStatus;
+    }
+
+    // New getters and setters for customerName and customerCode
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public int getCustomerCode() {
+        return customerCode;
+    }
+
+    public void setCustomerCode(int customerCode) {
+        this.customerCode = customerCode;
     }
 }

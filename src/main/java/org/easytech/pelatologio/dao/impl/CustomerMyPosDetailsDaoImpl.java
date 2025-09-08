@@ -129,4 +129,29 @@ public class CustomerMyPosDetailsDaoImpl implements CustomerMyPosDetailsDao {
         }
         return 0;
     }
+
+    @Override
+    public List<CustomerMyPosDetails> getAll() {
+        List<CustomerMyPosDetails> detailsList = new ArrayList<>();
+        String sql = "SELECT c.name, c.code, cmd.* FROM CustomerMyPosDetails cmd JOIN Customers c ON cmd.customer_id = c.code order by c.code DESC";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                CustomerMyPosDetails details = new CustomerMyPosDetails();
+                details.setId(rs.getInt("id"));
+                details.setCustomerId(rs.getInt("customer_id"));
+                details.setMyposClientId(rs.getString("mypos_client_id"));
+                details.setVerificationStatus(rs.getString("verification_status"));
+                details.setAccountStatus(rs.getString("account_status"));
+                // Set customer name and code for display
+                details.setCustomerName(rs.getString("name"));
+                details.setCustomerCode(rs.getInt("code"));
+                detailsList.add(details);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return detailsList;
+    }
 }

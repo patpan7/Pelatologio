@@ -537,6 +537,46 @@ public class MainMenuController implements Initializable {
         }
     }
 
+    public void handleMyposAccountsClick(MouseEvent event) throws IOException {
+        if (Features.isEnabled("mypos")) {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                try {
+                    LoginAutomator loginAutomation = new LoginAutomator(true);
+                    loginAutomation.openPage("https://status.mypos.com/");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                for (Tab tab : mainTabPane.getTabs()) {
+                    if (tab.getText().equals("MyPOS")) {
+                        mainTabPane.getSelectionModel().select(tab);
+                        return;
+                    }
+                }
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("myposAccountsView.fxml"));
+                Parent myposContent = fxmlLoader.load();
+
+
+                MyposAccountsController myposAccountsController = fxmlLoader.getController();
+                myposAccountsController.setMainTabPane(mainTabPane);
+                myposAccountsController.setOpenCustomerCallback(this::openCustomerDetailsTabSimple);
+                Tab newTab = new Tab("MyPOS");
+                newTab.setContent(myposContent);
+
+                mainTabPane.getTabs().add(newTab);
+                mainTabPane.getSelectionModel().select(newTab);
+            }
+        } else {
+            Notifications.create()
+                    .title("Προσοχή")
+                    .text("Το module myPOS είναι απενεργοποιημένο.")
+                    .graphic(null)
+                    .hideAfter(Duration.seconds(3))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
+        }
+    }
+
     public void myDataStatusClick(ActionEvent event) {
         try {
             LoginAutomator loginAutomation = new LoginAutomator(true);

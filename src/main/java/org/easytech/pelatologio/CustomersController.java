@@ -51,6 +51,7 @@ import java.util.stream.IntStream;
 public class CustomersController implements Initializable {
     @FXML
     public TableColumn codeColumn, nameColumn, titleColumn, afmColumn, phone1Column, mobileColumn, townColumn, emailColumn;
+    @FXML
     public Button btnClean;
     @FXML
     private TableColumn<Customer, BigDecimal> balanceColumn;
@@ -1044,7 +1045,7 @@ public class CustomersController implements Initializable {
                     mainTabPane.getSelectionModel().select(tab);
                     // If a specific sub-tab needs to be selected, find the controller and call the method
                     if (tabToSelect != null && tab.getContent().getUserData() instanceof AddCustomerController controller) {
-                        selectSubTab(controller, tabToSelect);
+                        Platform.runLater(() -> selectSubTab(controller, tabToSelect));
                     }
                     return; // Tab found and selected, exit the method
                 }
@@ -1069,7 +1070,7 @@ public class CustomersController implements Initializable {
 
             // Select the specific sub-tab if requested
             if (tabToSelect != null) {
-                selectSubTab(controller, tabToSelect);
+                Platform.runLater(() -> selectSubTab(controller, tabToSelect));
             }
 
             customerTab.setOnCloseRequest(event -> {
@@ -1102,33 +1103,31 @@ public class CustomersController implements Initializable {
     }
 
     private void selectSubTab(AddCustomerController controller, String tabName) {
-        Platform.runLater(() -> {
-            switch (tabName) {
-                case "Taxis":
-                    controller.selectTaxisTab();
-                    break;
-                case "myPOS":
-                    if (Features.isEnabled("mypos")) {
-                        controller.selectMyPOSTab();
-                    }
-                    break;
-                case "Simply":
-                    if (Features.isEnabled("simply")) {
-                        controller.selectSimplyTab();
-                    }
-                    break;
-                case "Emblem":
-                    if (Features.isEnabled("emblem")) {
-                        controller.selectEmbelmTab();
-                    }
-                    break;
-                case "Ergani":
-                    if (Features.isEnabled("ergani")) {
-                        controller.selectErganiTab();
-                    }
-                    break;
-            }
-        });
+        switch (tabName) {
+            case "Taxis":
+                controller.selectTaxisTab();
+                break;
+            case "myPOS":
+                if (Features.isEnabled("mypos")) {
+                    controller.selectMyPOSTab();
+                }
+                break;
+            case "Simply":
+                if (Features.isEnabled("simply")) {
+                    controller.selectSimplyTab();
+                }
+                break;
+            case "Emblem":
+                if (Features.isEnabled("emblem")) {
+                    controller.selectEmbelmTab();
+                }
+                break;
+            case "Ergani":
+                if (Features.isEnabled("ergani")) {
+                    controller.selectErganiTab();
+                }
+                break;
+        }
     }
 
     private void handleMakeCall(String phoneNumber) {

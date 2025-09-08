@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Modality;
@@ -32,6 +33,39 @@ public class MainMenu extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        while (!DBHelper.initializeDatabase()) {
+            // Show dialog to user
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Database Connection Error");
+            alert.setHeaderText("Could not connect to the database.");
+            alert.setContentText("Please check your settings.");
+
+            ButtonType settingsButton = new ButtonType("Settings");
+            ButtonType exitButton = new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            alert.getButtonTypes().setAll(settingsButton, exitButton);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == settingsButton) {
+                // Open settings window
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("settings.fxml"));
+                    Parent root = loader.load();
+                    Stage settingsStage = new Stage();
+                    settingsStage.setTitle("Settings");
+                    settingsStage.setScene(new Scene(root));
+                    settingsStage.initModality(Modality.APPLICATION_MODAL);
+                    settingsStage.showAndWait();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // Exit application
+                Platform.exit();
+                return;
+            }
+        }
+
         Features.loadFeatureFlags();
         //Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
         String username = AppSettings.loadSetting("appuser") != null ? AppSettings.loadSetting("appuser") : "";

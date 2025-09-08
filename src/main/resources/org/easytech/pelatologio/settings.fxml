@@ -22,6 +22,7 @@
                                     <RowConstraints />
                                     <RowConstraints />
                                     <RowConstraints />
+                           <RowConstraints prefHeight="30.0" />
                                     <RowConstraints />
                                     <RowConstraints />
                                     <RowConstraints />
@@ -38,7 +39,7 @@
 
                                 <Label text="DB Password" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                                 <TextField fx:id="tfPass" text="admin" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                <VBox alignment="CENTER_LEFT" GridPane.rowIndex="4">
+                                <VBox alignment="CENTER_LEFT" GridPane.rowIndex="5">
                                     <fx:define>
                                         <ToggleGroup fx:id="browserToggleGroup" />
                                     </fx:define>
@@ -66,15 +67,17 @@
                                         </VBox.margin>
                                     </RadioButton>
                                 </VBox>
-                                <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                <Separator layoutX="382.0" layoutY="217.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                                <Label text="Χειριστή" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-                                <TextField fx:id="tfAppUser" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                <Label text="Διαδρομή δεδομένων" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-                                <TextField fx:id="tfDataFolder" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                <Button contentDisplay="TOP" layoutX="634.0" layoutY="167.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#deactivateCustomers" text="Απενεργοποίηση πελατών" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                                <Label text="Χρωματικό Θέμα:" GridPane.rowIndex="9" />
-                                <ComboBox fx:id="themeComboBox" promptText="Επιλέξτε θέμα" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                <Separator layoutX="382.0" layoutY="217.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                <Label text="Χειριστή" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                                <TextField fx:id="tfAppUser" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                <Label text="Διαδρομή δεδομένων" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                                <TextField fx:id="tfDataFolder" text="" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                <Button contentDisplay="TOP" layoutX="634.0" layoutY="167.0" minHeight="100.0" minWidth="220.0" mnemonicParsing="false" onAction="#deactivateCustomers" text="Απενεργοποίηση πελατών" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                <Label text="Χρωματικό Θέμα:" GridPane.rowIndex="10" />
+                                <ComboBox fx:id="themeComboBox" promptText="Επιλέξτε θέμα" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                        <Label layoutX="419.0" layoutY="109.0" text="DB" GridPane.rowIndex="3" />
+                        <TextField fx:id="tfDb" layoutX="579.0" layoutY="104.0" text="Pelatologio" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                 <padding>
                                     <Insets top="10.0" />
                                 </padding>

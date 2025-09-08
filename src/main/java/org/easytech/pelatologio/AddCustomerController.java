@@ -281,10 +281,7 @@ public class AddCustomerController {
 
             @Override
             public Accountant fromString(String string) {
-                return accountants.stream()
-                        .filter(accountant -> accountant.getName().equals(string))
-                        .findFirst()
-                        .orElse(null);
+                return accountants.stream().filter(accountant -> accountant.getName().equals(string)).findFirst().orElse(null);
             }
         });
         tfAccName.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -324,10 +321,7 @@ public class AddCustomerController {
                 if (string == null || string.trim().isEmpty()) {
                     return null;
                 }
-                return recommendationList.stream()
-                        .filter(rec -> rec != null && string.equals(rec.getName()))
-                        .findFirst()
-                        .orElse(null);
+                return recommendationList.stream().filter(rec -> rec != null && string.equals(rec.getName())).findFirst().orElse(null);
             }
         });
 
@@ -354,10 +348,7 @@ public class AddCustomerController {
 
             @Override
             public SubJobTeam fromString(String string) {
-                return subJobTeamList.stream()
-                        .filter(subJobTeam -> subJobTeam.getName().equals(string))
-                        .findFirst()
-                        .orElse(null);
+                return subJobTeamList.stream().filter(subJobTeam -> subJobTeam.getName().equals(string)).findFirst().orElse(null);
             }
         });
 
@@ -380,9 +371,7 @@ public class AddCustomerController {
             selectedJobTeam = (JobTeam) value;
         } else if (value instanceof String typedValue) {
             // Αν είναι String, ψάχνουμε στη λίστα για το αντίστοιχο αντικείμενο.
-            selectedJobTeam = jobTeamList.stream()
-                    .filter(r -> r.getName().equalsIgnoreCase(typedValue))
-                    .findFirst().orElse(null);
+            selectedJobTeam = jobTeamList.stream().filter(r -> r.getName().equalsIgnoreCase(typedValue)).findFirst().orElse(null);
         }
 
         subJobTeamList.clear();
@@ -535,12 +524,7 @@ public class AddCustomerController {
                 e.printStackTrace();
             }
         } else {
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Παρακαλώ εισάγετε ένα έγκυρο τηλέφωνο")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
+            Notifications notifications = Notifications.create().title("Προσοχή").text("Παρακαλώ εισάγετε ένα έγκυρο τηλέφωνο").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
             notifications.showError();
         }
     }
@@ -562,12 +546,7 @@ public class AddCustomerController {
 
                     // Ενημερώνουμε το UI όταν ολοκληρωθεί η αποστολή του email
                     Platform.runLater(() -> {
-                        Notifications notifications = Notifications.create()
-                                .title("Επιτυχία")
-                                .text("Το email στάλθηκε με επιτυχία.")
-                                .graphic(null)
-                                .hideAfter(Duration.seconds(5))
-                                .position(Pos.TOP_RIGHT);
+                        Notifications notifications = Notifications.create().title("Επιτυχία").text("Το email στάλθηκε με επιτυχία.").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
                         notifications.showConfirm();
                         progressIndicator.setVisible(false); // Απόκρυψη του progress indicator
                     });
@@ -583,12 +562,7 @@ public class AddCustomerController {
             emailThread.start(); // Ξεκινάμε το thread για την αποστολή του email
         } else {
             //showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο email.");
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Παρακαλώ εισάγετε ένα έγκυρο email.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
+            Notifications notifications = Notifications.create().title("Προσοχή").text("Παρακαλώ εισάγετε ένα έγκυρο email.").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
             notifications.showError();
         }
     }
@@ -909,14 +883,7 @@ public class AddCustomerController {
         Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
 
         // Define which features should always be visible (if their feature is enabled)
-        final Set<CustomerFeature> alwaysVisibleFeatures = EnumSet.of(
-                CustomerFeature.TASKS,
-                CustomerFeature.SUBS,
-                CustomerFeature.OFFERS,
-                CustomerFeature.ORDERS,
-                CustomerFeature.CALLS,
-                CustomerFeature.DEVICES
-        );
+        final Set<CustomerFeature> alwaysVisibleFeatures = EnumSet.of(CustomerFeature.TASKS, CustomerFeature.SUBS, CustomerFeature.OFFERS, CustomerFeature.ORDERS, CustomerFeature.CALLS, CustomerFeature.DEVICES);
 
         // Start with a fresh list containing only the absolute static tabs
         List<Tab> tabsToShow = new ArrayList<>();
@@ -962,7 +929,7 @@ public class AddCustomerController {
             }
         }
         tabsToShow.add(tabNotes);
-        if (customer.getNotes().length() >0) {
+        if (customer.getNotes().length() > 0) {
             tabNotes.getStyleClass().add("tabHas");
         }
         tabsToShow.add(tabAccountant);
@@ -976,9 +943,7 @@ public class AddCustomerController {
         // Note: This might need adjustment since we create new tab instances every time
         if (selectedTab != null) {
             // Find the equivalent new tab to select
-            Optional<Tab> newSelectedTab = tabPane.getTabs().stream()
-                    .filter(t -> t.getText().equals(selectedTab.getText()))
-                    .findFirst();
+            Optional<Tab> newSelectedTab = tabPane.getTabs().stream().filter(t -> t.getText().equals(selectedTab.getText())).findFirst();
             newSelectedTab.ifPresent(value -> tabPane.getSelectionModel().select(value));
         } else {
             tabPane.getSelectionModel().selectFirst();
@@ -1000,11 +965,7 @@ public class AddCustomerController {
      */
     private void loadTabContentIfNeeded(Tab tab) {
         // Είναι dynamic tab;
-        CustomerFeature feature = activeFeatureTabs.entrySet().stream()
-                .filter(e -> e.getValue() == tab)
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(null);
+        CustomerFeature feature = activeFeatureTabs.entrySet().stream().filter(e -> e.getValue() == tab).map(Map.Entry::getKey).findFirst().orElse(null);
 
         if (feature == null) {
             // Σταθερά tabs (Main/Orders/Offers/Tasks/Notes) τα διαχειρίζεσαι όπως ήδη
@@ -1043,8 +1004,7 @@ public class AddCustomerController {
     }
 
     // List of feature flags that should be excluded from the add dialog (static tabs)
-    private static final Set<String> EXCLUDED_FEATURES = Set.of(
-            "devices",    // Συσκευές
+    private static final Set<String> EXCLUDED_FEATURES = Set.of("devices",    // Συσκευές
             "megasoft",   // Τιμολόγια
             "tasks",      // Εργασίες
             "subs",       // Συνδρομές
@@ -1057,12 +1017,7 @@ public class AddCustomerController {
      */
     private void openAddFeatureDialog() {
         // Get available features, excluding static tabs and already active tabs
-        List<CustomerFeature> candidates = Arrays.stream(CustomerFeature.values())
-                .filter(CustomerFeature::isGloballyEnabled)
-                .filter(f -> !activeFeatureTabs.containsKey(f))
-                .filter(f -> !EXCLUDED_FEATURES.contains(f.featureFlag))
-                .sorted(Comparator.comparing(f -> f.title))
-                .collect(Collectors.toList());
+        List<CustomerFeature> candidates = Arrays.stream(CustomerFeature.values()).filter(CustomerFeature::isGloballyEnabled).filter(f -> !activeFeatureTabs.containsKey(f)).filter(f -> !EXCLUDED_FEATURES.contains(f.featureFlag)).sorted(Comparator.comparing(f -> f.title)).collect(Collectors.toList());
 
         if (candidates.isEmpty()) {
             Alert a = new Alert(Alert.AlertType.INFORMATION, "Δεν υπάρχουν διαθέσιμες εφαρμογές για προσθήκη.");
@@ -1117,10 +1072,7 @@ public class AddCustomerController {
                 listView.setItems(features);
             } else {
                 String lowerCaseFilter = newVal.toLowerCase();
-                listView.setItems(features.filtered(feature ->
-                        feature.title.toLowerCase().contains(lowerCaseFilter) ||
-                                feature.name().toLowerCase().contains(lowerCaseFilter)
-                ));
+                listView.setItems(features.filtered(feature -> feature.title.toLowerCase().contains(lowerCaseFilter) || feature.name().toLowerCase().contains(lowerCaseFilter)));
             }
         });
 
@@ -1253,12 +1205,7 @@ public class AddCustomerController {
         String afm = tfAfm.getText();
         if (afm == null || afm.isEmpty()) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Παρακαλώ εισάγετε ένα έγκυρο ΑΦΜ.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
+                Notifications notifications = Notifications.create().title("Προσοχή").text("Παρακαλώ εισάγετε ένα έγκυρο ΑΦΜ.").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
                 notifications.showError();
             });
             return;
@@ -1271,12 +1218,7 @@ public class AddCustomerController {
         String errorDescr = AfmResponseParser.getXPathValue(responseXml, "//error_rec/error_descr");
         if (errorDescr != null && !errorDescr.isEmpty()) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text(errorDescr)
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
+                Notifications notifications = Notifications.create().title("Προσοχή").text(errorDescr).graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
                 notifications.showError();
             });
             return;
@@ -1293,12 +1235,7 @@ public class AddCustomerController {
             tfPostCode.setText(companyInfo.getPostcode());
         } else {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προσοχή")
-                        .text("Σφάλμα κατά την ανάγνωση των δεδομένων")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
+                Notifications notifications = Notifications.create().title("Προσοχή").text("Σφάλμα κατά την ανάγνωση των δεδομένων").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
                 notifications.showError();
             });
         }
@@ -1358,10 +1295,7 @@ public class AddCustomerController {
                     if (string == null || string.trim().isEmpty()) {
                         return null;
                     }
-                    return recommendationList.stream()
-                            .filter(rec -> rec != null && string.equals(rec.getName()))
-                            .findFirst()
-                            .orElse(null);
+                    return recommendationList.stream().filter(rec -> rec != null && string.equals(rec.getName())).findFirst().orElse(null);
                 }
             });
 
@@ -1400,10 +1334,7 @@ public class AddCustomerController {
 
             @Override
             public Accountant fromString(String string) {
-                return accountants.stream()
-                        .filter(accountant -> accountant.getName().equals(string))
-                        .findFirst()
-                        .orElse(null);
+                return accountants.stream().filter(accountant -> accountant.getName().equals(string)).findFirst().orElse(null);
             }
         });
         tfAccName.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -1447,10 +1378,7 @@ public class AddCustomerController {
 
             @Override
             public JobTeam fromString(String string) {
-                return jobTeamList.stream()
-                        .filter(jobTeam -> jobTeam.getName().equals(string))
-                        .findFirst()
-                        .orElse(null);
+                return jobTeamList.stream().filter(jobTeam -> jobTeam.getName().equals(string)).findFirst().orElse(null);
             }
         });
 
@@ -1591,14 +1519,9 @@ public class AddCustomerController {
         } else if (value != null) {
             // If it's a String or any other type, try to find by name
             String searchName = value.toString();
-            selectedRec = recommendationList.stream()
-                    .filter(rec -> rec != null && rec.getName() != null && rec.getName().equals(searchName))
-                    .findFirst()
-                    .orElse(null);
+            selectedRec = recommendationList.stream().filter(rec -> rec != null && rec.getName() != null && rec.getName().equals(searchName)).findFirst().orElse(null);
         }
-        // Παίρνουμε το ID με ασφάλεια, αφού έχουμε βρει το σωστό αντικείμενο.
         int selectedRecommendation = (selectedRec != null) ? selectedRec.getId() : 0;
-        //int selectedRecommendation = tfRecommendation.getSelectionModel().getSelectedItem() != null ? tfRecommendation.getSelectionModel().getSelectedItem().getId() : 0;
         Accountant selectedAccountant = tfAccName.getSelectionModel().getSelectedItem();
         int accId = (selectedAccountant != null) ? selectedAccountant.getId() : 0;
         String balance = tfBalance.getText();
@@ -1606,18 +1529,11 @@ public class AddCustomerController {
         SubJobTeam selectedSubJob = null;
         value = tfSubJobTeam.getValue(); // Παίρνουμε την τιμή ως γενικό Object
         if (value instanceof SubJobTeam) {
-            // Αν είναι ήδη αντικείμενο Recommendation, το παίρνουμε.
             selectedSubJob = (SubJobTeam) value;
         } else if (value instanceof String typedValue) {
-            // Αν είναι String, ψάχνουμε στη λίστα για το αντίστοιχο αντικείμενο.
-            selectedSubJob = subJobTeamList.stream()
-                    .filter(r -> r.getName().equalsIgnoreCase(typedValue))
-                    .findFirst().orElse(null);
+            selectedSubJob = subJobTeamList.stream().filter(r -> r.getName().equalsIgnoreCase(typedValue)).findFirst().orElse(null);
         }
-        // Παίρνουμε το ID με ασφάλεια, αφού έχουμε βρει το σωστό αντικείμενο.
         int selectedJobTeam = (selectedSubJob != null) ? selectedSubJob.getId() : 0;
-        //int selectedJobTeam = tfJobTeam.getSelectionModel().getSelectedItem() != null ? tfJobTeam.getSelectionModel().getSelectedItem().getId() : 0;
-
 
         if (mobile.startsWith("+30"))
             mobile = mobile.substring(3);
@@ -1632,35 +1548,39 @@ public class AddCustomerController {
         phone2 = phone2.replaceAll("\\s+", "");
         managerPhone = managerPhone.replaceAll("\\s+", "");
 
-        // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
-        int customerId;
-        if (DBHelper.getCustomerDao().isAfmExists(afm)) {
+        boolean afmIsEmpty = afm.isEmpty();
+
+        if (!afmIsEmpty && DBHelper.getCustomerDao().isAfmExists(afm)) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                Notifications.create()
                         .title("Προσοχή")
                         .text("Ο πελάτης με ΑΦΜ " + afm + " υπάρχει ήδη.")
                         .graphic(null)
                         .hideAfter(Duration.seconds(3))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
         } else {
-            // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
-            customerId = DBHelper.getCustomerDao().insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason, selectedJobTeam);
-            // Εμφάνιση επιτυχίας
+            int customerId = DBHelper.getCustomerDao().insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason, selectedJobTeam);
+
+            if (afmIsEmpty) {
+                String newAfm = String.valueOf(customerId);
+                boolean isActive = true; // Assuming new customers are active
+                DBHelper.getCustomerDao().updateCustomer(customerId, name, title, job, newAfm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason, isActive, selectedJobTeam);
+            }
+
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                Notifications.create()
                         .title("Επιτυχία")
                         .text("Ο πελάτης εισήχθη με επιτυχία στη βάση δεδομένων.")
                         .graphic(null)
                         .hideAfter(Duration.seconds(3))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showInformation();
-                closeCurrentTab(); // Κλείσιμο του "Νέος Πελάτης"
-                openCustomerTab(customerId); // Άνοιγμα καρτέλας με τον νέο πελάτη
+                        .position(Pos.TOP_RIGHT)
+                        .showInformation();
+                closeCurrentTab();
+                openCustomerTab(customerId);
             });
         }
-
     }
 
     private void openCustomerTab(int customerId) {
@@ -1763,23 +1683,13 @@ public class AddCustomerController {
 
         DBHelper.getAccountantDao().updateAccountant(accId, accName, accPhone, accMobile, accEmail, accErganiEmail);
 
-        Notifications notifications = Notifications.create()
-                .title("Επιτυχία")
-                .text("Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.")
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
+        Notifications notifications = Notifications.create().title("Επιτυχία").text("Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
         notifications.showInformation();
     }
 
     public void addAddress(ActionEvent event) {
         if (tfAddress.getText() == null || tfAddress.getText().isEmpty()) {
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Δεν υπάρχει κεντρική διεύθυνση!")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
+            Notifications notifications = Notifications.create().title("Προσοχή").text("Δεν υπάρχει κεντρική διεύθυνση!").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
             notifications.showError();
             return;
         }
@@ -1816,17 +1726,7 @@ public class AddCustomerController {
     }
 
     public void copyClick(ActionEvent event) {
-        String msg = "Στοιχεία πελάτη"
-                + "\nΕπωνυμία: " + customer.getName()
-                + "\nΤίτλος: " + customer.getTitle()
-                + "\nΕπάγγελμα: " + customer.getJob()
-                + "\nΔιεύθυνση: " + customer.getAddress()
-                + "\nΠόλη: " + customer.getTown()
-                + "\nΤ.Κ.: " + customer.getPostcode()
-                + "\nΑΦΜ: " + customer.getAfm()
-                + "\nEmail: " + customer.getEmail()
-                + "\nΤηλέφωνο: " + customer.getPhone1()
-                + "\nΚινητό: " + customer.getMobile();
+        String msg = "Στοιχεία πελάτη" + "\nΕπωνυμία: " + customer.getName() + "\nΤίτλος: " + customer.getTitle() + "\nΕπάγγελμα: " + customer.getJob() + "\nΔιεύθυνση: " + customer.getAddress() + "\nΠόλη: " + customer.getTown() + "\nΤ.Κ.: " + customer.getPostcode() + "\nΑΦΜ: " + customer.getAfm() + "\nEmail: " + customer.getEmail() + "\nΤηλέφωνο: " + customer.getPhone1() + "\nΚινητό: " + customer.getMobile();
         copyTextToClipboard(msg);
     }
 
@@ -1870,12 +1770,7 @@ public class AddCustomerController {
         ClipboardContent content = new ClipboardContent();
         content.putString(msg);  // Replace with the desired text
         clipboard.setContent(content);
-        Notifications notifications = Notifications.create()
-                .title("Αντιγραγή στο πρόχειρο")
-                .text(msg)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
+        Notifications notifications = Notifications.create().title("Αντιγραφή στο πρόχειρο").text(msg).graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
         notifications.showInformation();
     }
 
@@ -1980,60 +1875,48 @@ public class AddCustomerController {
         DBHelper dbHelper = new DBHelper();
         if (DBHelper.getCustomerDao().isAfmExistsMegasoft(customer.getAfm()))
             PrismaWinAutomation.showCustomer(customer);
-        else
-            PrismaWinAutomation.addCustomer(customer);
+        else PrismaWinAutomation.addCustomer(customer);
     }
 
-//    // --- NEW GENERIC TAB SELECTION METHOD ---
-//    public void selectTab(CustomerFeature feature) {
-//        if (feature.isGloballyEnabled()) {
-//            temporarilyEnableTab(feature);
-//        }
-//    }
+    //    // --- NEW GENERIC TAB SELECTION METHOD ---
+    public void selectTab(CustomerFeature feature) {
+        if (feature == null) return;
 
-//    private void temporarilyEnableTab(CustomerFeature feature) {
-//        Tab tab = featureToTabMap.get(feature);
-//        if (tab != null && !tabPane.getTabs().contains(tab)) {
-//            tabPane.getTabs().add(tab);
-//        }
-//        // Always select the tab, even if it was already visible
-//        Platform.runLater(() -> tabPane.getSelectionModel().select(tab));
-//    }
+        // Check if the tab is already active
+        Tab tabToSelect = activeFeatureTabs.get(feature);
+
+        if (tabToSelect != null) {
+            // Tab exists, just select it
+            tabPane.getSelectionModel().select(tabToSelect);
+        } else {
+            // Tab does not exist, show it temporarily
+            // This is useful for adding credentials for a feature the customer doesn't have yet
+            showFeatureTemporarily(feature);
+        }
+    }
 
     public void selectTaxisTab() {
-        if (Features.isEnabled("taxis")) {
-            Platform.runLater(() -> tabPane.getSelectionModel().select(tabTaxis));
-        }
+        selectTab(CustomerFeature.TAXIS);
     }
 
     public void selectMyPOSTab() {
-        if (Features.isEnabled("mypos")) {
-            Platform.runLater(() -> tabPane.getSelectionModel().select(tabMypos));
-        }
+        selectTab(CustomerFeature.MY_POS);
     }
 
     public void selectSimplyTab() {
-        if (Features.isEnabled("simply")) {
-            Platform.runLater(() -> tabPane.getSelectionModel().select(tabSimply));
-        }
+        selectTab(CustomerFeature.SIMPLY);
     }
 
     public void selectEmbelmTab() {
-        if (Features.isEnabled("emblem")) {
-            Platform.runLater(() -> tabPane.getSelectionModel().select(tabEmblem));
-        }
+        selectTab(CustomerFeature.EMBLEM);
     }
 
     public void selectErganiTab() {
-        if (Features.isEnabled("ergani")) {
-            Platform.runLater(() -> tabPane.getSelectionModel().select(tabErgani));
-        }
+        selectTab(CustomerFeature.ERGANI);
     }
 
     public void selectEdpsTab() {
-        if (Features.isEnabled("edps")) {
-            Platform.runLater(() -> tabPane.getSelectionModel().select(tabEdps));
-        }
+        selectTab(CustomerFeature.EDPS);
     }
 
 
@@ -2117,8 +2000,7 @@ public class AddCustomerController {
 
     private void setupFieldListeners() {
         // Προσθήκη listeners σε όλα τα input fields
-        Consumer<TextInputControl> textListener = field ->
-                field.textProperty().addListener((obs, oldVal, newVal) -> markAsChanged(field));
+        Consumer<TextInputControl> textListener = field -> field.textProperty().addListener((obs, oldVal, newVal) -> markAsChanged(field));
         // TextFields
         textListener.accept(tfName);
         textListener.accept(tfTitle);

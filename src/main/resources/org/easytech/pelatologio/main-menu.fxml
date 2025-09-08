@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
+<StackPane fx:id="stackPane" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
         <BorderPane fx:id="rootPane" StackPane.alignment="CENTER">
             <center>
@@ -170,10 +170,11 @@
                                  <Insets bottom="5.0" />
                               </padding>
                                     </Button>
-                                    <Button fx:id="btnMyDataStatus" contentDisplay="TOP" minHeight="90.0" minWidth="200.0" mnemonicParsing="false" onAction="#myDataStatusClick" text="myData Status" textAlignment="CENTER">
+                                    <!-- NEW BUTTON HERE -->
+                                    <Button fx:id="btnMyposAccounts" contentDisplay="TOP" minHeight="90.0" minWidth="200.0" mnemonicParsing="false" onMouseClicked="#handleMyposAccountsClick" text="myPOS Accounts" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                                                <Image url="@icons/mydatastatus.png" />
+                                                <Image url="@icons/mypos1.png" /> <!-- Assuming a new icon -->
                                             </ImageView>
                                         </graphic>
                               <padding>
@@ -305,6 +306,16 @@
                                     <VBox.margin>
                                         <Insets bottom="10.0" top="10.0" />
                                     </VBox.margin>
+                                    <Button fx:id="btnMyDataStatus" contentDisplay="TOP" minHeight="90.0" minWidth="200.0" mnemonicParsing="false" onAction="#myDataStatusClick" text="myData Status" textAlignment="CENTER">
+                                        <graphic>
+                                            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                                <Image url="@icons/mydatastatus.png" />
+                                            </ImageView>
+                                        </graphic>
+                              <padding>
+                                 <Insets bottom="5.0" />
+                              </padding>
+                                    </Button>
                                     <Button fx:id="btnD11" contentDisplay="TOP" minHeight="90.0" minWidth="200.0" mnemonicParsing="false" onAction="#d11Click" text="Δ11" textAlignment="CENTER">
                                         <graphic>
                                             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
@@ -318,7 +329,7 @@
                                 </HBox>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false">
-                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.8" VBox.vgrow="NEVER">
+                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.9" VBox.vgrow="NEVER">
                                         <VBox.margin>
                                             <Insets bottom="5.0" right="20.0" />
                                         </VBox.margin>

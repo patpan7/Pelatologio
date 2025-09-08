@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import atlantafx.base.controls.ToggleSwitch?>
 <DialogPane stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.easytech.pelatologio.FeatureManagementDialogController">
     <content>
@@ -13,58 +14,58 @@
             <Label text="Διαχείριση Modules"/>
             <GridPane hgap="10.0" vgap="10.0">
                 <Label text="Προμηθευτές:" GridPane.rowIndex="0"/>
-                <CheckBox fx:id="suppliersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <ToggleSwitch fx:id="suppliersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
                 <Label text="Εργασίες:" GridPane.rowIndex="1"/>
-                <CheckBox fx:id="tasksCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <ToggleSwitch fx:id="tasksCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
                 <Label text="Παραγγελίες:" GridPane.rowIndex="2"/>
-                <CheckBox fx:id="ordersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <ToggleSwitch fx:id="ordersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
                 <Label text="Προσφορές:" GridPane.rowIndex="3"/>
-                <CheckBox fx:id="offersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                <ToggleSwitch fx:id="offersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
                 <Label text="Συσκευές/Είδη:" GridPane.rowIndex="4"/>
-                <CheckBox fx:id="devicesCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                <ToggleSwitch fx:id="devicesCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
                 <Label text="Συμβόλαια:" GridPane.rowIndex="5"/>
-                <CheckBox fx:id="subsCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                <ToggleSwitch fx:id="subsCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
                 <Label text="Κλήσεις:" GridPane.rowIndex="6"/>
-                <CheckBox fx:id="callsCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                <ToggleSwitch fx:id="callsCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
 
                 <Label text="Συνεργάτες/Προμήθειες:" GridPane.rowIndex="7"/>
-                <CheckBox fx:id="partnersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+                <ToggleSwitch fx:id="partnersCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
 
                 <Label layoutX="10.0" layoutY="346.0" text="Taxis:" GridPane.rowIndex="8"/>
-                <CheckBox fx:id="taxisCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+                <ToggleSwitch fx:id="taxisCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
 
                 <Label text="myPOS:" GridPane.rowIndex="9"/>
-                <CheckBox fx:id="myposCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+                <ToggleSwitch fx:id="myposCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
 
                 <Label text="Simply:" GridPane.rowIndex="10"/>
-                <CheckBox fx:id="simplyCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
+                <ToggleSwitch fx:id="simplyCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
 
                 <Label text="Emblem:" GridPane.rowIndex="11"/>
-                <CheckBox fx:id="emblemCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
+                <ToggleSwitch fx:id="emblemCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
 
                 <Label text="Εργάνη:" GridPane.rowIndex="12"/>
-                <CheckBox fx:id="erganiCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="12"/>
+                <ToggleSwitch fx:id="erganiCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="12"/>
 
                 <Label text="Πελατολόγιο:" GridPane.rowIndex="13"/>
-                <CheckBox fx:id="pelatologioCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="13"/>
+                <ToggleSwitch fx:id="pelatologioCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="13"/>
 
                 <Label text="9POS:" GridPane.rowIndex="14"/>
-                <CheckBox fx:id="nineposheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="14"/>
+                <ToggleSwitch fx:id="nineposheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="14"/>
 
                 <Label text="EDPS:" GridPane.rowIndex="15"/>
-                <CheckBox fx:id="edpsCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="15"/>
+                <ToggleSwitch fx:id="edpsCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="15"/>
 
                 <Label text="Megasoft:" GridPane.rowIndex="16"/>
-                <CheckBox fx:id="megasoftCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="16"/>
+                <ToggleSwitch fx:id="megasoftCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="16"/>
 
                 <Label text="Δ11:" GridPane.rowIndex="17"/>
-                <CheckBox fx:id="d11Check" text="" GridPane.columnIndex="1" GridPane.rowIndex="17"/>
+                <ToggleSwitch fx:id="d11Check" text="" GridPane.columnIndex="1" GridPane.rowIndex="17"/>
 
 
                 <columnConstraints>

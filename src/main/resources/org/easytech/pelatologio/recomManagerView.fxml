@@ -9,7 +9,7 @@
     <content>
         <VBox alignment="TOP_CENTER" spacing="10">
             <Label styleClass="title-label" text="Διαχείριση Συστάσεων" />
-            <TableView fx:id="table" styleClass="striped" VBox.vgrow="ALWAYS">
+            <TableView fx:id="recomTable" styleClass="striped" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="recomColumn" prefWidth="866.0" text="Συστάσεις" />
                 </columns>

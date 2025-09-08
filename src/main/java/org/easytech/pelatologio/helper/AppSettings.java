@@ -12,6 +12,7 @@ public class AppSettings {
     public String server;
     public String dbUser;
     public String dbPass;
+    public String db;
     public String myposLink;
     public String SimplyUser;
     public String SimplyPass;
@@ -30,6 +31,7 @@ public class AppSettings {
         server = AppSettings.loadSetting("server");
         dbUser = AppSettings.loadSetting("dbUser");
         dbPass = AppSettings.loadSetting("dbPass");
+        db = AppSettings.loadSetting("db");
         myposLink = AppSettings.loadSetting("myposlink");
         SimplyUser = AppSettings.loadSetting("simplyUser");
         SimplyPass = AppSettings.loadSetting("simplyPass");

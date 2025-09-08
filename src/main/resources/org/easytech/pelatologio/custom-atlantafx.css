@@ -82,3 +82,7 @@
     -fx-border-color: #ff0000;
     -fx-border-width: 2px;
 }
+
+.notification-bar > .pane {
+    -fx-background-color: -color-bg-default;
+}

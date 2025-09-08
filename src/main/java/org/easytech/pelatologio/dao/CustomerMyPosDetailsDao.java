@@ -11,4 +11,5 @@ public interface CustomerMyPosDetailsDao {
     int countByAccountStatus(String status);
     int getTotalCount();
     void delete(int id);
+    List<CustomerMyPosDetails> getAll();
 }

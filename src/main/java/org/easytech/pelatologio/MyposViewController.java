@@ -151,6 +151,9 @@ public class MyposViewController implements CustomerTabController {
             dialog.setOnHidden(e -> {
                 if (dialog.getResult() == ButtonType.OK) {
                     loadLoginsForCustomer(customer.getCode());
+                    // Create a new ActionEvent to pass to handleAdd
+                    ActionEvent actionEvent = new ActionEvent();
+                    handleAdd(actionEvent);
                 }
             });
 

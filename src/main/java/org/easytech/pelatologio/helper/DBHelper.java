@@ -41,16 +41,16 @@ public class DBHelper {
     private static ProjectStepProgressDao customerProjectTaskDao;
     private static ApplicationDao applicationDao;
 
-    static {
+    public static boolean initializeDatabase() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl("jdbc:sqlserver://" + AppSettings.getInstance().server + ";databaseName=Pelatologio;encrypt=false;");
+            config.setJdbcUrl("jdbc:sqlserver://" + AppSettings.getInstance().server + ";databaseName="+AppSettings.getInstance().db+";encrypt=false;");
             config.setUsername(AppSettings.getInstance().dbUser);
             config.setPassword(AppSettings.getInstance().dbPass);
             config.setMaximumPoolSize(10); // Μέγιστο μέγεθος pool
             config.setMinimumIdle(5); // Ελάχιστες αδρανείς συνδέσεις
-            config.setConnectionTimeout(30000); // 30 δευτερόλεπτα timeout
+            config.setConnectionTimeout(3000); // 3 δευτερόλεπτα timeout
             config.setIdleTimeout(600000); // 10 λεπτά idle timeout
             config.setMaxLifetime(1800000); // 30 λεπτά μέγιστη διάρκεια ζωής σύνδεσης
             dataSource = new HikariDataSource(config);
@@ -111,10 +111,10 @@ public class DBHelper {
             // This DAO seems general purpose, might need to always be on
             trackingDao = new TrackingDaoImpl(dataSource);
             loginDao = new LoginDaoImpl(dataSource); // For app logins
-
-        } catch (ClassNotFoundException e) {
+            return true;
+        } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("SQL Server JDBC Driver not found.");
+            return false;
         }
     }
 

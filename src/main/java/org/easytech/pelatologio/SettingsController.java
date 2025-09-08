@@ -35,6 +35,8 @@ public class SettingsController implements Initializable {
     @FXML
     private TextField tfPass;
     @FXML
+    private TextField tfDb;
+    @FXML
     private TextField tfMyposLink;
     @FXML
     private TextField tfMyposUser;
@@ -200,6 +202,7 @@ public class SettingsController implements Initializable {
         tfServer.setText(getSettingOrEmpty("server"));
         tfUser.setText(getSettingOrEmpty("dbUser"));
         tfPass.setText(getSettingOrEmpty("dbPass"));
+        tfDb.setText(getSettingOrEmpty("db"));
         tfMyposLink.setText(getSettingOrEmpty("myposlink"));
         tfMyposUser.setText(getSettingOrEmpty("myposUser"));
         tfMyposPass.setText(getSettingOrEmpty("myposPass"));
@@ -270,6 +273,22 @@ public class SettingsController implements Initializable {
 
     @FXML
     private void saveSettings() {
+        AppSettings.saveSetting("server", tfServer.getText());
+        AppSettings.saveSetting("dbUser", tfUser.getText());
+        AppSettings.saveSetting("dbPass", tfPass.getText());
+        AppSettings.saveSetting("db", tfDb.getText());
+        AppSettings.saveSetting("myposlink", tfMyposLink.getText());
+        AppSettings.saveSetting("myposUser", tfMyposUser.getText());
+        AppSettings.saveSetting("myposPass", tfMyposPass.getText());
+        if (Features.isEnabled("simply")) {
+            AppSettings.saveSetting("simplyPosUser", tfSimplyPosUser.getText());
+            AppSettings.saveSetting("simplyPosPass", tfSimplyPosPass.getText());
+            AppSettings.saveSetting("simplyCloudUser", tfSimplyCloudUser.getText());
+            AppSettings.saveSetting("simplyCloudPass", tfSimplyCloudPass.getText());
+            AppSettings.saveSetting("simplyRegisterMail", tfSimplyRegisterMail.getText());
+            AppSettings.saveSetting("simplyMail1", tfSimplyMail1.getText());
+            AppSettings.saveSetting("simplyMail2", tfSimplyMail2.getText());
+        }
         AppSettings.saveSetting("taxisUser", tfTaxisUser.getText());
         AppSettings.saveSetting("taxisPass", tfTaxisPass.getText());
         AppSettings.saveSetting("afmUser", tfAfmUser.getText());

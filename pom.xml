@@ -256,7 +256,7 @@
                     <target>23</target>
                     <compilerArgs>
                         <arg>--add-modules</arg>
-                        <arg>java.xml.bind</arg>
+                        <arg>java.xml.bind,javafx.graphics,javafx.fxml</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
