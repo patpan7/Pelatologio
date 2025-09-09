@@ -35,7 +35,7 @@
     -fx-text-fill: -color-fg-emphasis;
 }
 
-  .table-cell {
+.table-cell {
       -fx-font-size: 1.1em; /* 10% larger */
   }
 

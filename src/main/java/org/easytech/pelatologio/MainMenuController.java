@@ -55,7 +55,7 @@ public class MainMenuController implements Initializable {
     @FXML
     private ListView<Order> ordersList, pendingOrdersList, deliveryOrdersList;
     @FXML
-    private Button btnCustomers, btnMyPOS, btnTasks, btnCalendar, btnD11, btnMyDataStatus, btnItems, btnDevices, btnSettings, btnSimplyStatus;
+    private Button btnCustomers, btnMyPOS, btnMyposAccounts, btnTasks, btnCalendar, btnD11, btnMyDataStatus, btnItems, btnDevices, btnSettings, btnSimplyStatus;
     @FXML
     private ProgressIndicator loadingIndicator;
 
@@ -105,6 +105,8 @@ public class MainMenuController implements Initializable {
         if (!Features.isEnabled("mypos")) {
             btnMyPOS.setVisible(false);
             btnMyPOS.setManaged(false);
+            btnMyposAccounts.setVisible(false);
+            btnMyposAccounts.setManaged(false);
             lbMyposTotal.setVisible(false);
             lbMyposTotal.setManaged(false);
             lbMyposVerified.setVisible(false);
@@ -161,6 +163,11 @@ public class MainMenuController implements Initializable {
         if (!Features.isEnabled("offers")) {
             btnOffers.setVisible(false);
             btnOffers.setManaged(false);
+        }
+
+        if (!Features.isEnabled("edps")) {
+            btnEdpsManagement.setVisible(false);
+            btnEdpsManagement.setManaged(false);
         }
         lbAppUser.setText("Χειριστής: " + AppSettings.loadSetting("appuser"));
         loadAllDashboardData();

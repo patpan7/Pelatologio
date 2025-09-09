@@ -1,6 +1,7 @@
 package org.easytech.pelatologio.helper;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -30,13 +31,21 @@ public class Features {
         }
 
         // 2. Load user-defined features from external file (overwrites defaults)
-        try (InputStream externalInput = new FileInputStream(EXTERNAL_PROPERTIES_FILE)) {
-            props.load(externalInput);
-        } catch (FileNotFoundException e) {
+        File externalFile = new File(EXTERNAL_PROPERTIES_FILE);
+        if (externalFile.exists()) {
+            try (InputStream externalInput = new FileInputStream(externalFile)) {
+                byte[] encryptedBytes = externalInput.readAllBytes();
+                String encryptedSettings = new String(encryptedBytes, StandardCharsets.UTF_8);
+                String decryptedSettings = EncryptionHelper.decrypt(encryptedSettings);
+                props.load(new StringReader(decryptedSettings));
+            } catch (Exception e) {
+                System.out.println("Could not load or decrypt external features file. Using defaults.");
+                e.printStackTrace();
+            }
+        } else {
             System.out.println("No external features file found. Using defaults.");
-        } catch (IOException ex) {
-            ex.printStackTrace();
         }
+
 
         // 3. Populate the map
         for (String key : props.stringPropertyNames()) {
@@ -60,12 +69,17 @@ public class Features {
             prop.setProperty(entry.getKey(), entry.getValue().toString());
         }
 
-        // Write to the external file in the same directory as the application
-        try (OutputStream output = new FileOutputStream(EXTERNAL_PROPERTIES_FILE)) {
-            prop.store(output, "User-defined Feature Flags");
-            System.out.println("Feature flags saved to " + EXTERNAL_PROPERTIES_FILE);
-        } catch (IOException io) {
-            io.printStackTrace();
+        try (StringWriter stringWriter = new StringWriter()) {
+            prop.store(stringWriter, "User-defined Feature Flags");
+            String settingsString = stringWriter.toString();
+            String encryptedSettings = EncryptionHelper.encrypt(settingsString);
+
+            try (OutputStream output = new FileOutputStream(EXTERNAL_PROPERTIES_FILE)) {
+                output.write(encryptedSettings.getBytes(StandardCharsets.UTF_8));
+                System.out.println("Feature flags saved to " + EXTERNAL_PROPERTIES_FILE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             System.err.println("Failed to save feature flags to external file.");
         }
     }
