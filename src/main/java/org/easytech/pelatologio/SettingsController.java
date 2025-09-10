@@ -21,6 +21,7 @@ import org.easytech.pelatologio.util.ThemeManager;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SettingsController implements Initializable {
@@ -438,6 +439,35 @@ public class SettingsController implements Initializable {
         // Check for double click
         if (event.getClickCount() == 2) {
             openNotesDialog(taSignature.getText());
+        }
+    }
+
+    @FXML
+    private void handleDatabaseSetup() {
+        String dbName = tfDb.getText();
+        if (dbName == null || dbName.trim().isEmpty()) {
+            AlertDialogHelper.showDialog("Σφάλμα", "Το όνομα της βάσης δεδομένων δεν μπορεί να είναι κενό.", "", Alert.AlertType.ERROR);
+            return;
+        }
+
+        try {
+            if (DatabaseSetup.checkDatabaseExists(dbName)) {
+                AlertDialogHelper.showDialog("Ενημέρωση", "Η βάση δεδομένων '" + dbName + "' υπάρχει ήδη.", "", Alert.AlertType.INFORMATION);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Επιβεβαίωση Δημιουργίας");
+                alert.setHeaderText("Η βάση δεδομένων '" + dbName + "' δεν υπάρχει.");
+                alert.setContentText("Θέλετε να τη δημιουργήσετε;");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    DatabaseSetup.runSetupScript(dbName);
+                    AlertDialogHelper.showDialog("Επιτυχία", "Η βάση δεδομένων δημιουργήθηκε με επιτυχία.", "", Alert.AlertType.INFORMATION);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά τον έλεγχο ή τη δημιουργία της βάσης δεδομένων.", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 }
