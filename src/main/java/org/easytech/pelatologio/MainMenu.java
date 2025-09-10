@@ -16,11 +16,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AppSettings;
-import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.util.ThemeManager;
-import org.easytech.pelatologio.helper.Features;
-import org.easytech.pelatologio.helper.Logger;
 import org.easytech.pelatologio.models.Offer;
 import org.easytech.pelatologio.models.Tasks;
 
@@ -66,6 +63,13 @@ public class MainMenu extends Application {
             }
         }
 
+        // License Check
+        LicenseManager licenseManager = new LicenseManager();
+        if (!licenseManager.isLicenseValid()) {
+            showActivationWindow(stage);
+            return; // Exit if license is not valid and user closes activation window
+        }
+
         Features.loadFeatureFlags();
         //Application.setUserAgentStylesheet(new NordLight().getUserAgentStylesheet());
         String username = AppSettings.loadSetting("appuser") != null ? AppSettings.loadSetting("appuser") : "";
@@ -99,6 +103,25 @@ public class MainMenu extends Application {
         // Ξεκινά το polling αφού φορτωθεί η εφαρμογή
         startPolling();
         startAppointmentReminder();
+    }
+
+    private void showActivationWindow(Stage primaryStage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ActivationView.fxml"));
+        Parent root = loader.load();
+        ActivationController controller = loader.getController();
+        
+        Stage activationStage = new Stage();
+        activationStage.initModality(Modality.APPLICATION_MODAL);
+        activationStage.initOwner(primaryStage);
+        activationStage.setTitle("Ενεργοποίηση Εφαρμογής");
+        activationStage.setScene(new Scene(root));
+        controller.setStage(activationStage);
+        activationStage.showAndWait();
+
+        // After activation window is closed, re-check license
+        if (!new LicenseManager().isLicenseValid()) {
+            Platform.exit(); // Exit if license is still not valid
+        }
     }
 
     private Optional<String> promptForUsername() {

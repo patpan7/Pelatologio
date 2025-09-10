@@ -39,6 +39,7 @@ module org.easytech.pelatologio {
     requires javafx.base;
     requires org.apache.pdfbox;
     requires com.google.gson;
+    requires java.prefs;
 //    requires org.apache.poi.ooxml.schemas;
 //    requires docx4j;
 //    requires org.apache.poi.ooxml;
