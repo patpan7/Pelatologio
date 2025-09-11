@@ -250,6 +250,25 @@ public class MainMenu extends Application {
 
     public static void main(String[] args) {
         Logger.initLogging();
-        launch();
+        // Loop to handle restarts
+        do {
+            exitCode = 0; // Reset exit code for each launch attempt
+            launch(args); // Call the JavaFX launch method
+        } while (RESTART_EXIT_CODE == exitCode);
+    }
+
+    private static final int RESTART_EXIT_CODE = 100;
+    private static int exitCode = 0;
+
+
+    public static void restartApplication() {
+        exitCode = RESTART_EXIT_CODE;
+        Platform.exit();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        // No specific restart logic here, as it's handled by restartApplication() and the main loop
     }
 }

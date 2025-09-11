@@ -1,8 +1,5 @@
 package org.easytech.pelatologio;
 
-import atlantafx.base.theme.PrimerDark;
-import atlantafx.base.theme.PrimerLight;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -18,6 +15,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
@@ -47,7 +45,7 @@ public class MainMenuController implements Initializable {
     @FXML
     private Tab mainTab;
     @FXML
-    private Label vesrion, lbAppUser, lbTasks, lbAppointments, lbSimply;
+    private Label vesrion, lbAppUser, lbTasks, lbAppointments, lbSimply, lblExpiryDate, lblRemainingDays;
     @FXML
     private Label lbMyposTotal, lbMyposVerified, lbMyposUnverified, lbMyposActive, lbMyposBlocked, lbMyposClosed;
     @FXML
@@ -68,6 +66,11 @@ public class MainMenuController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         mainTab.setClosable(false);
         setTooltips();
+
+        // License Info
+        LicenseManager licenseManager = new LicenseManager();
+        lblExpiryDate.setText("Λήξη άδειας: " + licenseManager.getExpiryDate());
+        lblRemainingDays.setText("Υπόλοιπες ημέρες: " + licenseManager.getRemainingDays());
 
         if (!Features.isEnabled("suppliers")) {
             btnSuppliers.setVisible(false);
@@ -217,6 +220,18 @@ public class MainMenuController implements Initializable {
             // Add key combination for feature management
             final KeyCombination keyCombination = new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
             stage.getScene().getAccelerators().put(keyCombination, this::openFeatureManagement);
+
+            // Add key combination for activation window
+            final KeyCombination activationKeyCombination = new KeyCodeCombination(KeyCode.K, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
+            stage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                if (activationKeyCombination.match(event)) {
+                    try {
+                        openActivationWindowFromMenu();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         });
     }
 
@@ -1111,6 +1126,21 @@ public class MainMenuController implements Initializable {
                 AlertDialogHelper.showDialog("Σφάλμα", "Λανθασμένος κωδικός πρόσβασης.", "", Alert.AlertType.ERROR);
             }
         });
+    }
+
+    @FXML
+    private void openActivationWindowFromMenu() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ActivationView.fxml"));
+        Parent root = loader.load();
+        ActivationController controller = loader.getController();
+
+        Stage activationStage = new Stage();
+        activationStage.initModality(Modality.APPLICATION_MODAL);
+        activationStage.setTitle("Ενεργοποίηση Εφαρμογής");
+        activationStage.setScene(new Scene(root));
+        controller.setStage(activationStage);
+
+        activationStage.show();
     }
 }
 

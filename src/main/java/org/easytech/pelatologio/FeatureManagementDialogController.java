@@ -1,10 +1,8 @@
 package org.easytech.pelatologio;
 
 import atlantafx.base.controls.ToggleSwitch;
-import com.jfoenix.controls.JFXCheckBox;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
 import javafx.stage.Stage;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.Features;
@@ -14,6 +12,7 @@ public class FeatureManagementDialogController {
     private ToggleSwitch suppliersCheck, tasksCheck, ordersCheck, offersCheck, devicesCheck, subsCheck, callsCheck, partnersCheck, d11Check;
     @FXML
     private ToggleSwitch taxisCheck, myposCheck, simplyCheck, emblemCheck, erganiCheck, pelatologioCheck, nineposheck, edpsCheck, megasoftCheck;
+
     @FXML
     public void initialize() {
         // Load current feature states

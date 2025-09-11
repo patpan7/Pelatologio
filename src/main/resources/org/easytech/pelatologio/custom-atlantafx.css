@@ -57,6 +57,10 @@
     -fx-font-weight: bold;
 }
 
+.small-label {
+    -fx-font-size: 0.8em; /* -20% larger */
+}
+
 .title-label {
     -fx-font-size: 2em; /* 80% larger */
     -fx-font-weight: bold;

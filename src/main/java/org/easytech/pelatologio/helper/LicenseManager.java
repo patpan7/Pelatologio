@@ -26,7 +26,7 @@ public class LicenseManager {
     }
 
     public boolean activate(String activationCode, String secretKey) {
-        String deviceId = HardwareIdUtil.getHardwareId();
+        String deviceId = HardwareIdUtil.getDisplayHardwareId();
         ActivationCodeValidator.ValidationResult result = ActivationCodeValidator.validate(activationCode, deviceId, secretKey);
 
         if (result.isValid()) {
@@ -80,5 +80,20 @@ public class LicenseManager {
 
     public String getExpiryDate() {
         return prefs.get(KEY_EXPIRY_DATE, null);
+    }
+
+    public long getRemainingDays() {
+        String expiryDateStr = getExpiryDate();
+        if (expiryDateStr == null) {
+            return 0;
+        }
+        try {
+            Date expiryDate = DATE_FORMATTER.parse(expiryDateStr);
+            Date currentDate = new Date();
+            long diff = expiryDate.getTime() - currentDate.getTime();
+            return diff / (24 * 60 * 60 * 1000);
+        } catch (ParseException e) {
+            return 0;
+        }
     }
 }

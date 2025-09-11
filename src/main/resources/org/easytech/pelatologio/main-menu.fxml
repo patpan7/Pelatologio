@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="stackPane" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
+<StackPane fx:id="stackPane" prefWidth="1200.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.MainMenuController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
         <BorderPane fx:id="rootPane" StackPane.alignment="CENTER">
             <center>
@@ -329,7 +329,7 @@
                                 </HBox>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false">
-                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.10" VBox.vgrow="NEVER">
+                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.11" VBox.vgrow="NEVER">
                                         <VBox.margin>
                                             <Insets bottom="5.0" right="20.0" />
                                         </VBox.margin>
@@ -376,7 +376,7 @@
                         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                     </BorderPane.margin>
                     <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                        <Label text="Πελατολόγιο" HBox.hgrow="ALWAYS">
+                        <Label styleClass="header-label" text="Πελατολόγιο" HBox.hgrow="ALWAYS">
                             <font>
                                 <Font size="38.0" />
                             </font>
@@ -392,7 +392,13 @@
                         <HBox.margin>
                             <Insets />
                         </HBox.margin>
-                        <Label fx:id="lbAppUser" text="Χειριστή: " HBox.hgrow="ALWAYS" />
+                        <VBox alignment="CENTER_RIGHT">
+                           <children>
+                              <Label fx:id="lbAppUser" text="Χειριστή: " HBox.hgrow="ALWAYS" />
+                              <Label fx:id="lblExpiryDate" styleClass="small-label" text="Λήξη άδειας:" />
+                              <Label fx:id="lblRemainingDays" styleClass="small-label" text="Υπόλοιπες ημέρες:" />
+                           </children>
+                        </VBox>
                     </HBox>
                 </HBox>
             </top>

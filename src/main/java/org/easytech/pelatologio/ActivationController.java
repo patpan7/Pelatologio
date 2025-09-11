@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -31,7 +32,7 @@ public class ActivationController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         licenseManager = new LicenseManager();
-        tfHardwareId.setText(HardwareIdUtil.getHardwareId()); // Use raw ID for internal logic
+        tfHardwareId.setText(HardwareIdUtil.getDisplayHardwareId()); // Use raw ID for internal logic
     }
 
     public void setStage(Stage stage) {
@@ -58,9 +59,14 @@ public class ActivationController implements Initializable {
 
         if (activated) {
             lblStatus.setTextFill(Color.GREEN);
-            lblStatus.setText("Ενεργοποίηση επιτυχής! Επανεκκινήστε την εφαρμογή.");
-            // Optionally, close the activation window after a short delay
-            // stage.close();
+            lblStatus.setText("Ενεργοποίηση επιτυχής! Επανεκκίνηση εφαρμογής...");
+            // Close the activation window
+            if (stage != null) {
+                stage.close();
+            }
+            // Request application restart
+            // Request application restart
+            MainMenu.restartApplication();
         } else {
             lblStatus.setTextFill(Color.RED);
             lblStatus.setText("Λανθασμένος κωδικός ή σφάλμα.");
