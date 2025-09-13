@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -40,19 +41,24 @@ public class EmailDialogController {
     @FXML
     private Button sendButton;
     @FXML
-    private ProgressBar progressBar;
+    private ProgressIndicator progressIndicator;
 
     private Boolean copy = true;
 
 
     private Stage dialogStage;
     private Customer customer;
+    private Node ownerNode; // NEW
 
     private final List<File> attachments = new ArrayList<>();
     public boolean isSended = false;
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
+    }
+
+    public void setOwnerNode(Node ownerNode) { // NEW
+        this.ownerNode = ownerNode;
     }
 
     public void setCustomer(Customer customer) {
@@ -116,11 +122,11 @@ public class EmailDialogController {
 
         // Κουμπί αποστολής
         sendButton.setOnAction(event -> sendEmail());
-        progressBar.setVisible(false); // Αρχικά κρυφό
+        progressIndicator.setVisible(false); // Αρχικά κρυφό
     }
 
     private void sendEmail() {
-        progressBar.setVisible(true); // Εμφάνιση προόδου
+        progressIndicator.setVisible(true); // Εμφάνιση προόδου
         String email = emailField.getText().trim();
         String subject = subjectField.getText();
         String body = bodyArea.getText();
@@ -132,10 +138,11 @@ public class EmailDialogController {
                         .text("Το πεδίο παραλήπτη δεν μπορεί να είναι κενό.")
                         .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
+                        .position(Pos.TOP_RIGHT)
+                        .owner(ownerNode); // NEW
                 notifications.showError();
             });
-            progressBar.setVisible(false); // Απόκρυψη προόδου σε περίπτωση σφάλματος
+            progressIndicator.setVisible(false); // Απόκρυψη προόδου σε περίπτωση σφάλματος
             return;
         }
 
@@ -159,13 +166,14 @@ public class EmailDialogController {
                             .text("Το email στάλθηκε με επιτυχία.")
                             .graphic(null)
                             .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
+                            .position(Pos.TOP_RIGHT)
+                            .owner(ownerNode); // NEW
                     notifications.showConfirm();
                     subjectField.setText("");
                     bodyArea.setText("");
                     attachmentList.getItems().clear();
                     isSended = true;
-                    progressBar.setVisible(false); // Απόκρυψη προόδου
+                    progressIndicator.setVisible(false); // Απόκρυψη προόδου
                 });
 
                 // Αποθήκευση του email (εκτός UI thread αλλά με τελική ενημέρωση στο UI)
@@ -180,11 +188,12 @@ public class EmailDialogController {
                             .text("Υπήρξε πρόβλημα κατά την αποστολή του email.")
                             .graphic(null)
                             .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
+                            .position(Pos.TOP_RIGHT)
+                            .owner(ownerNode); // NEW
                     notifications.showError();
+                    progressIndicator.setVisible(false); // Απόκρυψη προόδου
+                    AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR);
                 });
-                progressBar.setVisible(false); // Απόκρυψη προόδου
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
             }
         }).start();
     }
@@ -248,7 +257,6 @@ public class EmailDialogController {
             }
 
             System.out.println("Το email αποθηκεύτηκε στον φάκελο: " + emailFile.getAbsolutePath());
-            progressBar.setVisible(false);
         } catch (Exception e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποθήκευση του email.", e.getMessage(), Alert.AlertType.ERROR));
         }

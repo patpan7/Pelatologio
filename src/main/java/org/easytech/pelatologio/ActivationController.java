@@ -65,7 +65,6 @@ public class ActivationController implements Initializable {
                 stage.close();
             }
             // Request application restart
-            // Request application restart
             MainMenu.restartApplication();
         } else {
             lblStatus.setTextFill(Color.RED);

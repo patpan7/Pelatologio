@@ -250,25 +250,27 @@ public class MainMenu extends Application {
 
     public static void main(String[] args) {
         Logger.initLogging();
-        // Loop to handle restarts
-        do {
-            exitCode = 0; // Reset exit code for each launch attempt
-            launch(args); // Call the JavaFX launch method
-        } while (RESTART_EXIT_CODE == exitCode);
+        launch(args);
     }
 
-    private static final int RESTART_EXIT_CODE = 100;
-    private static int exitCode = 0;
-
-
     public static void restartApplication() {
-        exitCode = RESTART_EXIT_CODE;
-        Platform.exit();
+        Platform.runLater(() -> {
+            try {
+                String java = System.getProperty("java.home") + "/bin/java";
+                String jar = new java.io.File(MainMenu.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getAbsolutePath();
+                ProcessBuilder pb = new ProcessBuilder(java, "-jar", jar);
+                pb.start();
+                Platform.exit();
+                System.exit(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+                AlertDialogHelper.showDialog("Σφάλμα Επανεκκίνησης", "Δεν ήταν δυνατή η επανεκκίνηση της εφαρμογής.", e.getMessage(), Alert.AlertType.ERROR);
+            }
+        });
     }
 
     @Override
     public void stop() throws Exception {
         super.stop();
-        // No specific restart logic here, as it's handled by restartApplication() and the main loop
     }
 }

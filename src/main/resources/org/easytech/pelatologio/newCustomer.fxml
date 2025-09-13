@@ -312,7 +312,7 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </Button>
-                        <Button fx:id="startCallLogButton" prefHeight="63.0" prefWidth="180.0" text="Καταγραφή Κλήσης" wrapText="true" HBox.hgrow="ALWAYS">
+                        <Button fx:id="startCallLogButton" prefWidth="180.0" text="Καταγραφή Κλήσης" wrapText="true" HBox.hgrow="ALWAYS">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/online-support.png" />
@@ -332,7 +332,7 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </VBox.margin>
                         </Button>
-                        <Button fx:id="btnManageApps" mnemonicParsing="false" prefHeight="63.0" prefWidth="180.0" text="Διαχείριση Εφαρμογών" wrapText="true">
+                        <Button fx:id="btnManageApps" mnemonicParsing="false" prefWidth="180.0" text="Διαχείριση Εφαρμογών" wrapText="true">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                     <Image url="@icons/newApp.png" />

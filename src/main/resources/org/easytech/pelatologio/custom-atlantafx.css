@@ -21,18 +21,28 @@
 
 /* Target the text within the selected cell */
 .table-row-cell:filled:selected .text {
-    -fx-fill: -color-fg-emphasis !important; /* Το κείμενο γίνεται λευκό και υπερισχύει */
-}
-
-/* Target the label within the selected cell (if any) */
-.table-row-cell:filled:selected .label {
-    -fx-text-fill: -color-fg-emphasis !important; /* Το κείμενο γίνεται λευκό και υπερισχύει */
+    -fx-fill: -color-fg-emphasis; /* Το κείμενο γίνεται λευκό και υπερισχύει */
 }
 
 /* Combined hover and selected effect */
 .table-row-cell:filled:selected:hover {
     -fx-background-color: derive(-color-accent-emphasis, -10%); /* Ελαφρώς πιο σκούρο από το επιλεγμένο */
     -fx-text-fill: -color-fg-emphasis;
+}
+
+.combo-box-popup .list-cell {
+
+    -fx-font-size: 1.2em; /* 20% larger */
+}
+
+.combo-box-popup .list-cell:filled:hover {
+    -fx-background-color: -color-accent-muted;
+
+}
+
+.combo-box-popup .list-cell:filled:selected {
+    -fx-background-color: -color-accent-emphasis;
+    -fx-text-fill: -color-fg-emphasis !important;
 }
 
 .table-cell {

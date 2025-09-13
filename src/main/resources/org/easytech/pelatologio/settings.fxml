@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.web.*?>
 
 <StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" styleClass="border-pane" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.SettingsController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
@@ -316,6 +317,7 @@
                                     <RowConstraints />
                                     <RowConstraints />
                                     <RowConstraints />
+                           <RowConstraints />
                                 </rowConstraints>
                                 <Label text="E-mail" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                 <TextField fx:id="tfEmail" text="patelos942@gmail.com" GridPane.columnIndex="1" GridPane.rowIndex="0" />
@@ -328,12 +330,39 @@
 
                                 <Label text="SMTP Port" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                                 <TextField fx:id="tfSMTPPort" text="587" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                <TextArea fx:id="taSignature" onMouseClicked="#handleMouseClick" prefHeight="100" prefWidth="300" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                 <Label text="Υπογραφή" GridPane.rowIndex="4" />
+                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                    <HTMLEditor fx:id="taSignature" prefHeight="200.0" />
+                                </VBox>
+                                <Label text="Λογότυπο" GridPane.rowIndex="5" />
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                    <TextField fx:id="tfLogoPath" editable="false" prefWidth="300.0" promptText="Διαδρομή αρχείου λογότυπου" />
+                                    <Button fx:id="btnChooseLogo" text="Επιλογή..." />
+                                </HBox>
                                 <padding>
                                     <Insets top="10.0" />
                                 </padding>
                             </GridPane>
+                        </Tab>
+                        <Tab text="Πρότυπα Email">
+                            <VBox spacing="10.0">
+                                <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                </padding>
+                                <Label text="Επιλογή Προτύπου:" />
+                                <ComboBox fx:id="templateComboBox" prefWidth="300.0" />
+                                <Label text="Θέμα:" />
+                                <TextField fx:id="templateSubjectField" />
+                                <Label text="Κείμενο:" />
+                                <HTMLEditor fx:id="templateBodyEditor" prefHeight="400.0" />
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Μοντέλο:" />
+                                    <ComboBox fx:id="modelComboBox" prefWidth="150.0" />
+                                    <Label text="Πεδίο:" />
+                                    <ComboBox fx:id="fieldComboBox" prefWidth="150.0" />
+                                    <Button fx:id="insertPlaceholderButton" text="Εισαγωγή" />
+                                </HBox>
+                            </VBox>
                         </Tab>
 
                     </tabs>

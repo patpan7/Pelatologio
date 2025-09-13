@@ -10,19 +10,29 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.HTMLEditor;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
+import org.easytech.pelatologio.models.Logins;
+import org.easytech.pelatologio.models.Offer;
+import org.easytech.pelatologio.models.Subscription;
+import org.easytech.pelatologio.models.Tasks;
 import org.easytech.pelatologio.util.ThemeManager;
 
+import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.util.StringConverter;
 
 public class SettingsController implements Initializable {
     @FXML
@@ -100,7 +110,11 @@ public class SettingsController implements Initializable {
     @FXML
     private TextField tfSMTPPort;
     @FXML
-    private TextArea taSignature;
+    private HTMLEditor taSignature;
+    @FXML
+    private TextField tfLogoPath;
+    @FXML
+    private Button btnChooseLogo;
     @FXML
     private TextField tfFanvilIp;
     @FXML
@@ -131,6 +145,18 @@ public class SettingsController implements Initializable {
     private TextField tfLocalIpAddress;
     @FXML
     private TextField tfSipTransport;
+    @FXML
+    private ComboBox<String> templateComboBox;
+    @FXML
+    private TextField templateSubjectField;
+    @FXML
+    private HTMLEditor templateBodyEditor;
+    @FXML
+    private ComboBox<Class<?>> modelComboBox;
+    @FXML
+    private ComboBox<String> fieldComboBox;
+    @FXML
+    private Button insertPlaceholderButton;
 
 
     @Override
@@ -142,6 +168,9 @@ public class SettingsController implements Initializable {
         loadBrowserSettings();
         loadPositionSettings();
         initializeThemeSettings();
+        setupLogoControls(); // NEW
+        setupTemplateEditor(); // NEW
+        setupPlaceholderHelper(); // NEW
 
         if (!Features.isEnabled("simply")) {
             simplySettingsPane.setVisible(false);
@@ -159,12 +188,59 @@ public class SettingsController implements Initializable {
         }
     }
 
+    private void setupPlaceholderHelper() {
+        modelComboBox.getItems().addAll(Customer.class, Logins.class, Offer.class, Subscription.class, Tasks.class);
+        modelComboBox.setConverter(new StringConverter<Class<?>>() {
+            @Override
+            public String toString(Class<?> object) {
+                return object != null ? object.getSimpleName() : "";
+            }
+
+            @Override
+            public Class<?> fromString(String string) {
+                return null; // Not needed
+            }
+        });
+
+        modelComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                fieldComboBox.getItems().clear();
+                for (java.lang.reflect.Field field : newVal.getDeclaredFields()) {
+                    fieldComboBox.getItems().add(field.getName());
+                }
+            }
+        });
+
+        insertPlaceholderButton.setOnAction(event -> {
+            Class<?> selectedModel = modelComboBox.getValue();
+            String selectedField = fieldComboBox.getValue();
+            if (selectedModel != null && selectedField != null) {
+                String placeholder = "{" + selectedModel.getSimpleName().toLowerCase() + "." + selectedField + "}";
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString(placeholder);
+                clipboard.setContent(content);
+                Notifications.create().title("Placeholder Copied").text(placeholder).position(Pos.TOP_RIGHT).showInformation();
+            }
+        });
+    }
+
+    private void setupTemplateEditor() {
+        templateComboBox.getItems().addAll("simplyService", "simplyRenew");
+        templateComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                templateSubjectField.setText(getSettingOrEmpty("email.template.subject." + newVal));
+                templateBodyEditor.setHtmlText(getSettingOrEmpty("email.template.body." + newVal));
+            }
+        });
+    }
+
     private void initializeThemeSettings() {
         try {
             // Initialize theme combo box
             themeComboBox.getItems().clear();
             themeComboBox.getItems().addAll(ThemeManager.getAvailableThemes());
-            
+
             // Load saved theme
             String currentTheme = ThemeManager.getCurrentTheme();
             if (currentTheme != null && !currentTheme.isEmpty()) {
@@ -172,7 +248,7 @@ public class SettingsController implements Initializable {
             } else {
                 themeComboBox.setValue("Nord Light"); // Default theme
             }
-            
+
             // Add theme change listener
             themeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal != null && stackPane != null && stackPane.getScene() != null) {
@@ -197,6 +273,20 @@ public class SettingsController implements Initializable {
         rbPositionTopLeft.setToggleGroup(positionToggleGroup);
         rbPositionBottomLeft.setToggleGroup(positionToggleGroup);
         rbPositionBottomRight.setToggleGroup(positionToggleGroup);
+    }
+
+    private void setupLogoControls() {
+        btnChooseLogo.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Επιλογή Λογότυπου");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif")
+            );
+            File selectedFile = fileChooser.showOpenDialog(stackPane.getScene().getWindow());
+            if (selectedFile != null) {
+                tfLogoPath.setText(selectedFile.getAbsolutePath());
+            }
+        });
     }
 
     private void loadTextFieldSettings() {
@@ -231,7 +321,9 @@ public class SettingsController implements Initializable {
             tfEmblemPass.setText(getSettingOrEmpty("emblemPass"));
             tfEmblemRegisterMail.setText(getSettingOrEmpty("emblemRegisterMail"));
         }
-        taSignature.setText(getSettingOrEmpty("signature"));
+
+        taSignature.setHtmlText(getSettingOrEmpty("signature"));
+        tfLogoPath.setText(getSettingOrEmpty("logoPath")); // NEW
         if (Features.isEnabled("ergani")) {
             tfErganiRegisterMail.setText(getSettingOrEmpty("erganiRegisterMail"));
         }
@@ -300,7 +392,8 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("emailPass", tfEmailPassKey.getText());
         AppSettings.saveSetting("smtp", tfSMTP.getText());
         AppSettings.saveSetting("smtpport", tfSMTPPort.getText());
-        AppSettings.saveSetting("signature", taSignature.getText());
+        AppSettings.saveSetting("signature", taSignature.getHtmlText());
+        AppSettings.saveSetting("logoPath", tfLogoPath.getText()); // NEW
         if (Features.isEnabled("emblem")) {
             AppSettings.saveSetting("emblemUser", tfEmblemUser.getText());
             AppSettings.saveSetting("emblemPass", tfEmblemPass.getText());
@@ -320,6 +413,13 @@ public class SettingsController implements Initializable {
         AppSettings.saveSetting("fanvilIp", tfFanvilIp.getText());
         AppSettings.saveSetting("fanvil.user", tfFanvilUser.getText());
         AppSettings.saveSetting("fanvil.pass", tfFanvilPass.getText());
+
+        // Save the currently selected email template
+        String selectedTemplate = templateComboBox.getValue();
+        if (selectedTemplate != null && !selectedTemplate.isEmpty()) {
+            AppSettings.saveSetting("email.template.subject." + selectedTemplate, templateSubjectField.getText());
+            AppSettings.saveSetting("email.template.body." + selectedTemplate, templateBodyEditor.getHtmlText());
+        }
 
         if (rbChrome.isSelected()) {
             AppSettings.saveSetting("browser", "chrome");
@@ -421,7 +521,7 @@ public class SettingsController implements Initializable {
         Button btnOk = new Button("OK");
         btnOk.setPrefWidth(100);
         btnOk.setOnAction(event -> {
-            taSignature.setText(expandedTextArea.getText()); // Ενημέρωση του αρχικού TextArea
+            taSignature.setHtmlText(expandedTextArea.getText()); // Ενημέρωση του αρχικού TextArea
             dialogStage.close();
         });
 
@@ -438,7 +538,7 @@ public class SettingsController implements Initializable {
     private void handleMouseClick(MouseEvent event) {
         // Check for double click
         if (event.getClickCount() == 2) {
-            openNotesDialog(taSignature.getText());
+            openNotesDialog(taSignature.getHtmlText());
         }
     }
 

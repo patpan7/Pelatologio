@@ -1792,7 +1792,14 @@ public class AddCustomerController {
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(loader.load());
                 dialog.setTitle("Αποστολή Email");
+
+                // Copy stylesheets from main window to the dialog
+                if (emailField.getScene() != null) {
+                    dialog.getDialogPane().getStylesheets().addAll(emailField.getScene().getStylesheets());
+                }
+
                 EmailDialogController controller = loader.getController();
+                controller.setOwnerNode(tabPane); // NEW
                 controller.setCustomer(customer);
                 controller.setEmail(email);
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);

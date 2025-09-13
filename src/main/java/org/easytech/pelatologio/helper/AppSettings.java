@@ -39,6 +39,26 @@ public class AppSettings {
         SimplyPass = AppSettings.loadSetting("simplyPass");
         fanvilUser = AppSettings.loadSetting("fanvil.user");
         fanvilPass = AppSettings.loadSetting("fanvil.pass");
+
+        // Add new email templates if they don't exist
+        if (loadSetting("email.template.subject.simplyService") == null) {
+            saveSetting("email.template.subject.simplyService", "Νέος Πελάτης Simply {serviceType}");
+        }
+        if (loadSetting("email.template.body.simplyService") == null) {
+            saveSetting("email.template.body.simplyService", "<b>Νέος Πελάτης Simply {serviceType}</b><br><b>Επωνυμία:</b> {customer.name}<br><b>ΑΦΜ:</b> {customer.afm}<br><b>E-mail:</b> {login.username}<br><b>Κωδικός:</b> {login.password}<br><b>Κινητό:</b> {customer.mobile}<br>Έχει κάνει αποδοχή σύμβασης και εξουσιοδότηση<br>");
+        }
+        if (loadSetting("email.template.subject.simplyRenew") == null) {
+            saveSetting("email.template.subject.simplyRenew", "Ανανέωση Πελάτη Simply {serviceType}");
+        }
+        if (loadSetting("email.template.body.simplyRenew") == null) {
+            saveSetting("email.template.body.simplyRenew", "<b>Ανανέωση Πελάτη Simply {serviceType}</b><br><b>Επωνυμία:</b> {customer.name}<br><b>ΑΦΜ:</b> {customer.afm}<br><b>E-mail:</b> {login.username}<br><b>Κωδικός:</b> {login.password}<br><b>Κινητό:</b> {customer.mobile}<br>");
+        }
+        if (loadSetting("email.template.subject.simplyPos") == null) {
+            saveSetting("email.template.subject.simplyPos", "Νέος Πελάτης Simply POS");
+        }
+        if (loadSetting("email.template.body.simplyPos") == null) {
+            saveSetting("email.template.body.simplyPos", "Νέος Πελάτης Simply POS\nΕπωνυμία: {customer.name}\nΑΦΜ: {customer.afm}\nEmail: {login.username}\nΚωδικός: {login.password}\nΚινητό: {customer.mobile}\n");
+        }
     }
 
     public static void saveSetting(String key, String value) {

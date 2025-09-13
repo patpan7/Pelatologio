@@ -20,6 +20,7 @@ import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
+import org.easytech.pelatologio.helper.EmailTemplateHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Logins;
 import org.easytech.pelatologio.models.Subscription;
@@ -152,28 +153,13 @@ public class SimplyViewController implements CustomerTabController {
     }
 
     private void sendSimplyServiceEmail(String serviceType, Logins login) {
-        String subject = "Νέος Πελάτης Simply " + serviceType;
-        String msg = "<b>Νέος Πελάτης Simply " + serviceType + "</b>" +
-                "<br><b>Επωνυμία:</b> " + customer.getName() +
-                "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
-                "<br><b>E-mail:</b> " + login.getUsername() +
-                "<br><b>Κωδικός:</b> " + login.getPassword() +
-                "<br><b>Κινητό:</b> " + customer.getMobile() +
-                "<br>Έχει κάνει αποδοχή σύμβασης και εξουσιοδότηση" +
-                "<br>";
-        sendEmail(subject, msg);
+        EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("simplyService", customer, login);
+        sendEmail(emailContent.subject, emailContent.body);
     }
 
     private void sendSimplyPosEmail(Logins login) {
-        String subject = "Νέος Πελάτης Simply POS";
-        String msg = "Νέος Πελάτης Simply POS" +
-                "\nΕπωνυμία: " + customer.getName() +
-                "\nΑΦΜ: " + customer.getAfm() +
-                "\nEmail: " + login.getUsername() +
-                "\nΚωδικός: " + login.getPassword() +
-                "\nΚινητό: " + customer.getMobile() +
-                "\n";
-        sendEmail(subject, msg);
+        EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("simplyPos", customer, login);
+        sendEmail(emailContent.subject, emailContent.body);
     }
 
     private void setupBidirectionalBinding() {
@@ -536,14 +522,8 @@ public class SimplyViewController implements CustomerTabController {
                         "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
                 copyTextToClipboard(msg);
             } else if (choice == buttonRenew) {
-                String msg = "<b>Ανανέωση Πελάτη Simply " + serviceName + "</b>" +
-                        "<br><b>Επωνυμία:</b> " + customer.getName() +
-                        "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
-                        "<br><b>E-mail:</b> " + selectedLogin.getUsername() +
-                        "<br><b>Κωδικός:</b> " + selectedLogin.getPassword() +
-                        "<br><b>Κινητό:</b> " + customer.getMobile() +
-                        "<br>";
-                sendEmail("Ανανέωση Πελάτη Simply " + serviceName, msg);
+                EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("simplyRenew", customer, selectedLogin);
+                sendEmail(emailContent.subject, emailContent.body);
                 cbMail.setSelected(true);
             }
         });

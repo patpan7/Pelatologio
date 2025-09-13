@@ -7,47 +7,49 @@
 
 <DialogPane prefHeight="700.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EmailDialogController">
     <content>
-        <VBox spacing="10">
-            <padding>
-                <Insets bottom="10" left="10" right="10" top="10" />
-            </padding>
-            <Label styleClass="title-label" text="Αποστολή E-mail" />
-            <!-- Παραλήπτης -->
-            <Label styleClass="normal-label" text="Παραλήπτης:" />
-            <TextField fx:id="emailField" prefWidth="400" promptText="Email παραλήπτη" />
+        <StackPane>
+            <VBox spacing="10">
+                <padding>
+                    <Insets bottom="10" left="10" right="10" top="10" />
+                </padding>
+                <Label styleClass="title-label" text="Αποστολή E-mail" />
+                <!-- Παραλήπτης -->
+                <Label styleClass="normal-label" text="Παραλήπτης:" />
+                <TextField fx:id="emailField" prefWidth="400" promptText="Email παραλήπτη" />
 
-            <!-- Θέμα -->
-            <Label styleClass="normal-label" text="Θέμα:" />
-            <TextField fx:id="subjectField" promptText="Θέμα" />
+                <!-- Θέμα -->
+                <Label styleClass="normal-label" text="Θέμα:" />
+                <TextField fx:id="subjectField" promptText="Θέμα" />
 
-            <!-- Περιεχόμενο -->
-            <Label styleClass="normal-label" text="Μήνυμα:" />
-            <TextArea fx:id="bodyArea" prefHeight="454.0" prefWidth="580.0" promptText="Περιεχόμενο email" VBox.vgrow="ALWAYS" />
+                <!-- Περιεχόμενο -->
+                <Label styleClass="normal-label" text="Μήνυμα:" />
+                <TextArea fx:id="bodyArea" prefHeight="454.0" prefWidth="580.0" promptText="Περιεχόμενο email" VBox.vgrow="ALWAYS" />
 
-            <!-- Συνημμένα -->
-            <Label styleClass="normal-label" text="Συνημμένα:" />
-            <ListView fx:id="attachmentList" />
+                <!-- Συνημμένα -->
+                <Label styleClass="normal-label" text="Συνημμένα:" />
+                <ListView fx:id="attachmentList" />
 
-            <!-- Κουμπιά -->
-            <HBox alignment="CENTER_LEFT" spacing="10">
-                <Button fx:id="attachButton" styleClass="default" text="Προσθήκη Συνημμένων">
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <Image url="@icons/attach.png" />
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Separator visible="false" HBox.hgrow="ALWAYS" />
-                <Button fx:id="sendButton" styleClass="accent" text="Αποστολή">
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <Image url="@icons/send.png" />
-                        </ImageView>
-                    </graphic>
-                </Button>
-            </HBox>
-            <ProgressBar fx:id="progressBar" prefWidth="200.0" visible="false" />
-        </VBox>
+                <!-- Κουμπιά -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Button fx:id="attachButton" styleClass="default" text="Προσθήκη Συνημμένων">
+                        <graphic>
+                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@icons/attach.png" />
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                    <Separator visible="false" HBox.hgrow="ALWAYS" />
+                    <Button fx:id="sendButton" styleClass="accent" text="Αποστολή">
+                        <graphic>
+                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@icons/send.png" />
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+            </VBox>
+            <ProgressIndicator fx:id="progressIndicator" visible="false" />
+        </StackPane>
     </content>
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
