@@ -71,8 +71,6 @@ public class SettingsController implements Initializable {
     @FXML
     private TextField tfSimplyMail2;
     @FXML
-    private TitledPane simplySettingsPane;
-    @FXML
     private TextField tfEmblemUser;
     @FXML
     private TextField tfEmblemPass;
@@ -80,10 +78,7 @@ public class SettingsController implements Initializable {
     private TextField tfEmblemRegisterMail;
     @FXML
     private TextField tfErganiRegisterMail;
-    @FXML
-    private TitledPane emblemSettingsPane;
-    @FXML
-    private TitledPane erganiSettingsPane;
+
     @FXML
     private TextField tfTaxisUser;
     @FXML
@@ -176,21 +171,6 @@ public class SettingsController implements Initializable {
         setupLogoControls(); // NEW
         setupTemplateEditor(); // NEW
         setupPlaceholderHelper(); // NEW
-
-        if (!Features.isEnabled("simply")) {
-            simplySettingsPane.setVisible(false);
-            simplySettingsPane.setManaged(false);
-        }
-
-        if (!Features.isEnabled("emblem")) {
-            emblemSettingsPane.setVisible(false);
-            emblemSettingsPane.setManaged(false);
-        }
-
-        if (!Features.isEnabled("ergani")) {
-            erganiSettingsPane.setVisible(false);
-            erganiSettingsPane.setManaged(false);
-        }
     }
 
     private void setupPlaceholderHelper() {

@@ -30,6 +30,18 @@ public class MainMenu extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        // License Check
+        LicenseManager licenseManager = new LicenseManager();
+        if (!licenseManager.isLicenseValid()) {
+            showActivationWindow(stage);
+            // Re-check after the window is closed. If still invalid, exit.
+            if (!licenseManager.isLicenseValid()) {
+                Platform.exit();
+                return;
+            }
+        }
+
+        // Database initialization loop
         while (!DBHelper.initializeDatabase()) {
             // Show dialog to user
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -61,13 +73,6 @@ public class MainMenu extends Application {
                 Platform.exit();
                 return;
             }
-        }
-
-        // License Check
-        LicenseManager licenseManager = new LicenseManager();
-        if (!licenseManager.isLicenseValid()) {
-            showActivationWindow(stage);
-            return; // Exit if license is not valid and user closes activation window
         }
 
         Features.loadFeatureFlags();
