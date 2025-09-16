@@ -27,9 +27,6 @@
                 <TableColumn fx:id="notesColumn" prefWidth="300.0" text="Σημειώσεις" />
                 <TableColumn fx:id="actionColumn" prefWidth="150.0" text="Ενέργεια" />
             </columns>
-         <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-         </columnResizePolicy>
         </TableView>
     </center>
 </BorderPane>

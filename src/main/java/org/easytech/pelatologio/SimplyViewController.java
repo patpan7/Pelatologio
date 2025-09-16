@@ -144,15 +144,15 @@ public class SimplyViewController implements CustomerTabController {
         if (selectedLogin == null) return;
 
         if (selectedLogin.getTag().contains("Cash")) {
-            sendSimplyServiceEmail("Cash", selectedLogin);
+            sendSimplyServiceEmail(selectedLogin);
         } else if (selectedLogin.getTag().contains("Rest")) {
-            sendSimplyServiceEmail("Rest", selectedLogin);
+            sendSimplyServiceEmail(selectedLogin);
         } else {
             sendSimplyPosEmail(selectedLogin);
         }
     }
 
-    private void sendSimplyServiceEmail(String serviceType, Logins login) {
+    private void sendSimplyServiceEmail(Logins login) {
         EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("simplyService", customer, login);
         sendEmail(emailContent.subject, emailContent.body);
     }
@@ -423,15 +423,7 @@ public class SimplyViewController implements CustomerTabController {
         if (selectedLogin == null) return;
 
         if (event.getButton() == MouseButton.SECONDARY) {
-            String msg = "Νέος Πελάτης Simply POS" +
-                    "\nΕπωνυμία: " + customer.getName() +
-                    "\nΑΦΜ: " + customer.getAfm() +
-                    "\nEmail: " + selectedLogin.getUsername() +
-                    "\nΚωδικός: " + selectedLogin.getPassword() +
-                    "\nΚινητό: " + customer.getMobile() +
-                    "\n";
-            copyTextToClipboard(msg);
-            showInfoNotification("Αντιγραφή", "Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.");
+            handleSimplyServiceOptions("POS", selectedLogin);
         } else {
             try {
                 LoginAutomator loginAutomation = new LoginAutomator(true);

@@ -392,15 +392,13 @@ public class CustomerOffersController implements CustomerTabController {
             EmailDialogController controller = loader.getController();
             controller.setCustomer(customer);
             controller.setEmail(email);
-            controller.setSubject("Προσφορά " + selectedOffer.getId() + ": " + selectedOffer.getCustomerName());
-            controller.setBody("<h3>" + selectedOffer.getDescription() + "</h3>" +
-                    "<br><br><h3>Μπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου: </h3>" +
-                    "<a href=http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() + "><b><h2>Αποδοχή ή Απόρριψη προσφορά " + selectedOffer.getId() + "</b><h2></a>" +
-                    //"<br>http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() +
-                    "<br><br><h3>Μπορείτε δείτε τους τραπεζικούς μας λογαριασμούς </h3>" +
-                    "<a href=http://dgou.dynns.com:8090/portal/bank_accounts.php><b><h2>Τραπεζικοί λογαριασμοί</b></h2></a>" +
-                    //"<br>http://dgou.dynns.com:8090/portal/bank_accounts.php" +
-                    "<br><br><h3>Για οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας.</h3>");
+
+            // Prepare email content using EmailTemplateHelper
+            EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("offer", selectedOffer, customer);
+
+            controller.setSubject(emailContent.subject);
+            controller.setBody(emailContent.body);
+
             List<File> attachments = new ArrayList<>();
             String[] offerPaths = selectedOffer.getPaths().split(";");
             for (String path : offerPaths) {
@@ -416,7 +414,6 @@ public class CustomerOffersController implements CustomerTabController {
             dialog.setOnCloseRequest(evt -> {
                 if (controller.isSended) {
                     // Εκτελούμε το handleSendEmail
-                    DBHelper dbHelper = new DBHelper();
                     DBHelper.getOfferDao().updateOfferSent(selectedOffer.getId());
                     loadOffers(customer.getCode());
                 }

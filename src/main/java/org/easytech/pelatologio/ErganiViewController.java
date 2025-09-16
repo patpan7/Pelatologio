@@ -50,12 +50,12 @@ public class ErganiViewController implements CustomerTabController {
 
     @FXML
     public void initialize() {
-            btnErganiRegister.setVisible(false);
-            btnErganiRegister.setManaged(false);
-            btnErganiLogin.setVisible(false);
-            btnErganiLogin.setManaged(false);
-            btnErganiOffer.setVisible(false);
-            btnErganiOffer.setManaged(false);
+        btnErganiRegister.setVisible(false);
+        btnErganiRegister.setManaged(false);
+        btnErganiLogin.setVisible(false);
+        btnErganiLogin.setManaged(false);
+        btnErganiOffer.setVisible(false);
+        btnErganiOffer.setManaged(false);
 
         setTooltip(btnErganiRegister, "Εγγραφή πελάτη στο Ergani");
         setTooltip(btnErganiLogin, "Πρόσβαση στο Ergani");
@@ -89,6 +89,12 @@ public class ErganiViewController implements CustomerTabController {
         loginList.addAll(DBHelper.getLoginDao().getLogins(customerId, 5));
         if (loginTable.getItems().size() == 1)
             loginTable.getSelectionModel().select(0);
+        btnErganiRegister.setVisible(true);
+        btnErganiRegister.setManaged(true);
+        btnErganiLogin.setVisible(true);
+        btnErganiLogin.setManaged(true);
+        btnErganiOffer.setVisible(true);
+        btnErganiOffer.setManaged(true);
     }
 
     @Override
@@ -378,23 +384,13 @@ public class ErganiViewController implements CustomerTabController {
 
             Optional<ErganiRegistration> result = dialog.showAndWait();
             result.ifPresent(data -> {
-                String program = data.getProgram();
-                String years = data.getYears();
-                String emailAcc = data.getEmail();
-                String entrance = data.getEntrance();
-                String subject = "Νέος πελάτης Εργάνη";
-                String msg = "<b>Νέος πελάτης Εργάνη</b>" +
-                        "<br><b>Επωνυμία:</b> " + customer.getName() +
-                        "<br><b>ΑΦΜ:</b> " + customer.getAfm() +
-                        "<br><b>E-mai:</b> " + selectedLogin.getUsername() +
-                        "<br><b>Κινητό:</b> " + selectedLogin.getPhone() +
-                        "<br><b>E-mail Λογιστή:</b> " + emailAcc +
-                        "<br><b>Προγράμματα:</b> " + program +
-                        "<br><b>Σύνολο Ετών:</b> " + years +
-                        "<br><b>Extra Είσοδος:</b> " + entrance;
-                sendEmail(subject, msg);
+                // Prepare email using the template helper
+                EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("erganiRegistration", customer, selectedLogin, data);
+
+                sendEmail(emailContent.subject, emailContent.body);
+
                 if (DBHelper.getCustomerDao().hasAccountant(selectedLogin.getCustomerId())) {
-                    DBHelper.getSubscriptionDao().updateErganiEmail(selectedLogin.getCustomerId(), emailAcc);
+                    DBHelper.getSubscriptionDao().updateErganiEmail(selectedLogin.getCustomerId(), data.getEmail());
                 }
             });
         } else {

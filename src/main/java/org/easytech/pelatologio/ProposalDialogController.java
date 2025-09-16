@@ -9,6 +9,7 @@ import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.AppSettings;
 import org.easytech.pelatologio.helper.CustomerFolderManager;
 import org.easytech.pelatologio.helper.EmailSender;
+import org.easytech.pelatologio.helper.EmailTemplateHelper;
 import org.easytech.pelatologio.models.Customer;
 
 import java.io.File;
@@ -17,7 +18,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProposalDialogController {
 
@@ -83,19 +86,23 @@ public class ProposalDialogController {
             return;
         }
 
-        // 2. Construct email body
-        StringBuilder body = new StringBuilder();
-        body.append("Αγαπητή EDPS,<br><br>");
-        body.append("Παρακαλώ βρείτε παρακάτω τα στοιχεία της πρότασης για τον πελάτη: ").append(customer.getName()).append(" (ΑΦΜ: ").append(customer.getAfm()).append(")<br><br>");
-        body.append("<b>Προμήθεια:</b> ").append(commissionField.getText()).append("%<br>");
-        body.append("<b>Τιμή POS:</b> ").append(posPriceField.getText()).append("€<br>");
-        body.append("<b>Μηνιαία Συνδρομή:</b> ").append(monthlyFeeField.getText()).append("€<br>");
-        body.append("<b>Τύπος Σύνδεσης:</b> ").append(integrationTypeComboBox.getValue()).append("<br>");
-        if (integrationTypeComboBox.getValue().equals("ERP")) {
-            body.append("<b>Όνομα ERP:</b> ").append(erpNameField.getText()).append("<br>");
+        // 2. Prepare placeholders
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("{commission}", commissionField.getText());
+        placeholders.put("{posPrice}", posPriceField.getText());
+        placeholders.put("{monthlyFee}", monthlyFeeField.getText());
+        placeholders.put("{integrationType}", integrationTypeComboBox.getValue());
+        placeholders.put("{erpName}", integrationTypeComboBox.getValue().equals("ERP") ? erpNameField.getText() : "");
+
+        // Conditionally add the ERP line placeholder
+        String erpLine = "";
+        if ("ERP".equals(integrationTypeComboBox.getValue())) {
+            erpLine = "<B>Όνομα ERP:</b> {erpName}<br>";
         }
-        body.append("<br>Συνημμένα θα βρείτε το υπογεγραμμένο έντυπο Α1.<br><br>");
-        body.append("Με εκτίμηση.");
+        placeholders.put("{erpLine}", erpLine);
+
+        // 3. Prepare email content
+        EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("edpsProposal", customer, placeholders);
 
         // Save proposal text to a file
         try {
@@ -105,14 +112,14 @@ public class ProposalDialogController {
             if (!edpsFolder.exists()) edpsFolder.mkdirs();
             String fileName = "Proposal_" + LocalDate.now().toString() + ".txt";
             // Replace <br> with newline for the text file
-            String textContent = body.toString().replaceAll("<br>", "\n").replaceAll("<b>", "").replaceAll("</b>", "");
+            String textContent = emailContent.body.replaceAll("<br>", "\n").replaceAll("<b>", "").replaceAll("</b>", "");
             Files.writeString(Paths.get(edpsFolder.getAbsolutePath(), fileName), textContent);
         } catch (IOException e) {
             e.printStackTrace();
             AlertDialogHelper.showErrorDialog("File Error", "Could not save the proposal text file.");
         }
 
-        // 3. Prepare for sending
+        // 4. Prepare for sending
         String recipientsString = (this.recipients != null && !this.recipients.isEmpty()) 
                                 ? String.join(",", this.recipients) 
                                 : "";
@@ -121,11 +128,10 @@ public class ProposalDialogController {
             return;
         }
         
-        String subject = "Νέα Πρόταση Σύμβασης - " + customer.getName();
         List<File> attachments = new ArrayList<>();
         attachments.add(selectedAttachment);
 
-        // 4. Send email in a background thread
+        // 5. Send email in a background thread
         new Thread(() -> {
             try {
                 EmailSender emailSender = new EmailSender(
@@ -134,7 +140,7 @@ public class ProposalDialogController {
                     AppSettings.loadSetting("email"),
                     AppSettings.loadSetting("emailPass")
                 );
-                emailSender.sendEmailWithAttachments(recipientsString, subject, body.toString(), attachments);
+                emailSender.sendEmailWithAttachments(recipientsString, emailContent.subject, emailContent.body, attachments);
 
                 Platform.runLater(() -> {
                     AlertDialogHelper.showInfoDialog("Επιτυχία", "Η πρόταση στάλθηκε με επιτυχία.");

@@ -361,6 +361,10 @@ public class AddCustomerController {
             startCallLogButton.setVisible(true);
             startCallLogButton.setOnAction(e -> handleStartCallLogging());
         }
+
+        if (!Features.isEnabled("accountants")) {
+            tabAccountant.setDisable(true);
+        }
     }
 
     private void handleJobTeamSelection() {

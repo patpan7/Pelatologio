@@ -67,12 +67,19 @@
                 <Label text="Δ11:" GridPane.rowIndex="17"/>
                 <ToggleSwitch fx:id="d11Check" text="" GridPane.columnIndex="1" GridPane.rowIndex="17"/>
 
+                <Label text="Λογιστές:" GridPane.rowIndex="18"/>
+                <ToggleSwitch fx:id="accountantsCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="18"/>
+
+                <Label text="myData:" GridPane.rowIndex="19"/>
+                <ToggleSwitch fx:id="mydataCheck" text="" GridPane.columnIndex="1" GridPane.rowIndex="19"/>
 
                 <columnConstraints>
                     <ColumnConstraints/>
                     <ColumnConstraints/>
                 </columnConstraints>
                 <rowConstraints>
+                    <RowConstraints/>
+                    <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>

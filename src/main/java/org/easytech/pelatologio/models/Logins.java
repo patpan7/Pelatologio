@@ -1,12 +1,12 @@
 package org.easytech.pelatologio.models;
 
 public class Logins {
-    int id;
-    private String username;
-    private String password;
-    private String tag;
-    private String phone;
-    private int customerId;
+    public int id;
+    public String username;
+    public String password;
+    public String tag;
+    public String phone;
+    public int customerId;
 
     public Logins() {
     }

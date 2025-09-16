@@ -32,7 +32,7 @@
                                 <Separator />
                                 <VBox>
                                     <children>
-                                        <Label text="myPOS Στατιστικά" underline="true" wrapText="true" />
+                                        <Label fx:id="lbMyPosStatus" text="myPOS Στατιστικά" underline="true" wrapText="true" />
                                         <Label fx:id="lbMyposTotal" text="Σύνολο: 0" />
                                         <Label fx:id="lbMyposVerified" text="Verified: 0" />
                                         <Label fx:id="lbMyposUnverified" text="Unverified: 0" />
@@ -329,7 +329,7 @@
                                 </HBox>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false">
-                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.11" VBox.vgrow="NEVER">
+                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.12" VBox.vgrow="NEVER">
                                         <VBox.margin>
                                             <Insets bottom="5.0" right="20.0" />
                                         </VBox.margin>

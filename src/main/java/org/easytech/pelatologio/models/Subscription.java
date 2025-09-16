@@ -3,16 +3,16 @@ package org.easytech.pelatologio.models;
 import java.time.LocalDate;
 
 public class Subscription {
-    private int id;
-    private String title;
-    private LocalDate endDate;
-    private Integer customerId;
-    private String customerName;
-    private Integer categoryId;
-    private String category;
-    private String price;
-    private String note;
-    private String sended;
+    public int id;
+    public String title;
+    public LocalDate endDate;
+    public Integer customerId;
+    public String customerName;
+    public Integer categoryId;
+    public String category;
+    public String price;
+    public String note;
+    public String sended;
 
     public Subscription(int id, String title, LocalDate endDate, Integer customerId, Integer categoryId, String price, String note, String sended) {
         this.id = id;

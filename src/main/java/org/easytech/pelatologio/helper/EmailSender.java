@@ -34,67 +34,72 @@ public class EmailSender {
     }
 
     public void sendEmail(String toAddress, String subject, String messageContent) {
-        // Ρυθμίσεις για τον SMTP διακομιστή
-        Properties properties = new Properties();
-        properties.put("mail.smtp.host", host);
-        properties.put("mail.smtp.port", port);
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true"); // Για ασφαλή σύνδεση
-        signature = AppSettings.loadSetting("signature");
-
-        // Αυθεντικοποίηση του λογαριασμού
-        Authenticator auth = new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
-            }
-        };
-
-        // Δημιουργία συνεδρίας με βάση τις ρυθμίσεις
-        Session session = Session.getInstance(properties, auth);
-
         try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toAddress));
-            message.setSubject(subject);
-
-            // 1. Δημιουργία του HTML μέρους
-            MimeBodyPart messageBodyPart = new MimeBodyPart();
-            String htmlContent = "<html><body>" + messageContent + "<br><br>" + signature + "</body></html>";
-            messageBodyPart.setContent(htmlContent, "text/html; charset=UTF-8");
-
-            // 2. Επισύναψη εικόνας
-            String currentDir = System.getProperty("user.dir");
-            String fullPath = currentDir + File.separator + "images" + File.separator + "logo.png";
-            MimeBodyPart imagePart = new MimeBodyPart();
-            imagePart.attachFile(fullPath);
-            imagePart.setContentID("<logo>");
-            imagePart.setDisposition(MimeBodyPart.INLINE);
-
-            // 3. Σύνθεση του email
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(messageBodyPart);
-            multipart.addBodyPart(imagePart);
-
-            message.setContent(multipart);
-
-            Transport.send(message);
-        } catch (MessagingException e) {
-            Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Attention")
-                        .text("Η αποστολή του email απέτυχε.")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
-            });
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
-
-        } catch (IOException e) {
+            sendEmailWithAttachments(toAddress, subject, messageContent, null);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
+//        // Ρυθμίσεις για τον SMTP διακομιστή
+//        Properties properties = new Properties();
+//        properties.put("mail.smtp.host", host);
+//        properties.put("mail.smtp.port", port);
+//        properties.put("mail.smtp.auth", "true");
+//        properties.put("mail.smtp.starttls.enable", "true"); // Για ασφαλή σύνδεση
+//        signature = AppSettings.loadSetting("signature");
+//
+//        // Αυθεντικοποίηση του λογαριασμού
+//        Authenticator auth = new Authenticator() {
+//            @Override
+//            protected PasswordAuthentication getPasswordAuthentication() {
+//                return new PasswordAuthentication(username, password);
+//            }
+//        };
+//
+//        // Δημιουργία συνεδρίας με βάση τις ρυθμίσεις
+//        Session session = Session.getInstance(properties, auth);
+//
+//        try {
+//            MimeMessage message = new MimeMessage(session);
+//            message.setFrom(new InternetAddress(username));
+//            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toAddress));
+//            message.setSubject(subject);
+//
+//            // 1. Δημιουργία του HTML μέρους
+//            MimeBodyPart messageBodyPart = new MimeBodyPart();
+//            String htmlContent = "<html><body>" + messageContent + "<br><br>" + signature + "</body></html>";
+//            messageBodyPart.setContent(htmlContent, "text/html; charset=UTF-8");
+//
+//            // 2. Επισύναψη εικόνας
+//            String currentDir = System.getProperty("user.dir");
+//            String fullPath = currentDir + File.separator + "images" + File.separator + "logo.png";
+//            MimeBodyPart imagePart = new MimeBodyPart();
+//            imagePart.attachFile(fullPath);
+//            imagePart.setContentID("<logo>");
+//            imagePart.setDisposition(MimeBodyPart.INLINE);
+//
+//            // 3. Σύνθεση του email
+//            Multipart multipart = new MimeMultipart();
+//            multipart.addBodyPart(messageBodyPart);
+//            multipart.addBodyPart(imagePart);
+//
+//            message.setContent(multipart);
+//
+//            Transport.send(message);
+//        } catch (MessagingException e) {
+//            Platform.runLater(() -> {
+//                Notifications notifications = Notifications.create()
+//                        .title("Attention")
+//                        .text("Η αποστολή του email απέτυχε.")
+//                        .graphic(null)
+//                        .hideAfter(Duration.seconds(5))
+//                        .position(Pos.TOP_RIGHT);
+//                notifications.showError();
+//            });
+//            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     public void sendEmailWithAttachments(String recipientEmail, String subject, String body, List<File> attachments) throws Exception {

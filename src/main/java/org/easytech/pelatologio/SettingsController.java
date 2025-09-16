@@ -4,10 +4,12 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.HTMLEditor;
@@ -15,6 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
@@ -149,8 +152,10 @@ public class SettingsController implements Initializable {
     private ComboBox<String> templateComboBox;
     @FXML
     private TextField templateSubjectField;
-    @FXML
+        @FXML
     private HTMLEditor templateBodyEditor;
+    @FXML
+    private Button insertLinkButton; // NEW
     @FXML
     private ComboBox<Class<?>> modelComboBox;
     @FXML
@@ -223,10 +228,57 @@ public class SettingsController implements Initializable {
                 Notifications.create().title("Placeholder Copied").text(placeholder).position(Pos.TOP_RIGHT).showInformation();
             }
         });
+
+        insertLinkButton.setOnAction(event -> handleInsertLink()); // NEW
+    }
+
+    private void handleInsertLink() {
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Εισαγωγή Συνδέσμου");
+
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField urlField = new TextField();
+        urlField.setPromptText("URL");
+        TextField textField = new TextField();
+        textField.setPromptText("Κείμενο εμφάνισης");
+
+        grid.add(new Label("URL:"), 0, 0);
+        grid.add(urlField, 1, 0);
+        grid.add(new Label("Κείμενο:"), 0, 1);
+        grid.add(textField, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        Platform.runLater(urlField::requestFocus);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == okButtonType) {
+                return new Pair<>(urlField.getText(), textField.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+
+        result.ifPresent(pair -> {
+            String url = pair.getKey();
+            String text = pair.getValue();
+            if (url != null && !url.isEmpty() && text != null && !text.isEmpty()) {
+                String linkHtml = "<a href=\"" + url + "\">" + text + "</a>";
+                templateBodyEditor.setHtmlText(templateBodyEditor.getHtmlText() + linkHtml);
+            }
+        });
     }
 
     private void setupTemplateEditor() {
-        templateComboBox.getItems().addAll("simplyService", "simplyRenew");
+        templateComboBox.getItems().addAll("simplyService", "simplyRenew", "subsReminder","edpsProposal", "offer", "erganiRegistration");
         templateComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 templateSubjectField.setText(getSettingOrEmpty("email.template.subject." + newVal));

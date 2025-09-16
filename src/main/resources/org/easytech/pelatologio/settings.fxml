@@ -353,14 +353,15 @@
                                 <ComboBox fx:id="templateComboBox" prefWidth="300.0" />
                                 <Label text="Θέμα:" />
                                 <TextField fx:id="templateSubjectField" />
-                                <Label text="Κείμενο:" />
+                                                                <Label text="Κείμενο:" />
                                 <HTMLEditor fx:id="templateBodyEditor" prefHeight="400.0" />
                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <Label text="Μοντέλο:" />
                                     <ComboBox fx:id="modelComboBox" prefWidth="150.0" />
                                     <Label text="Πεδίο:" />
                                     <ComboBox fx:id="fieldComboBox" prefWidth="150.0" />
-                                    <Button fx:id="insertPlaceholderButton" text="Εισαγωγή" />
+                                    <Button fx:id="insertPlaceholderButton" text="Εισαγωγή Placeholder" />
+                                    <Button fx:id="insertLinkButton" text="Εισαγωγή Συνδέσμου" />
                                 </HBox>
                             </VBox>
                         </Tab>

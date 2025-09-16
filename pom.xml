@@ -241,6 +241,11 @@
             <artifactId>fontawesomefx</artifactId>
             <version>8.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.10.0</version>
+        </dependency>
     </dependencies>
 
 
@@ -256,7 +261,7 @@
                     <target>23</target>
                     <compilerArgs>
                         <arg>--add-modules</arg>
-                        <arg>java.xml.bind,javafx.graphics,javafx.fxml</arg>
+                        <arg>java.xml.bind,javafx.graphics,javafx.fxml,org.apache.commons.text</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

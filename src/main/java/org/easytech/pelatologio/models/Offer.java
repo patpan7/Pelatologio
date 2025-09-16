@@ -3,17 +3,17 @@ package org.easytech.pelatologio.models;
 import java.time.LocalDate;
 
 public class Offer {
-    private int id;
-    private LocalDate offerDate;
-    private String description;
-    private String hours;
-    private String status;
-    private Integer customerId;
-    private LocalDate response_date;
-    private String customerName;
-    private String paths;
-    private String sended;
-    Boolean isArchived;
+    public int id;
+    public LocalDate offerDate;
+    public String description;
+    public String hours;
+    public String status;
+    public Integer customerId;
+    public LocalDate response_date;
+    public String customerName;
+    public String paths;
+    public String sended;
+    public Boolean isArchived;
 
     public Offer(int id, LocalDate offerDate, String description, String hours, String status, int customerId, LocalDate response_date, String customerName, String paths, String sended, Boolean isArchived) {
         this.id = id;

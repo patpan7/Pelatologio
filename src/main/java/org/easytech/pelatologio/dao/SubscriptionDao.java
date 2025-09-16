@@ -19,7 +19,7 @@ public interface SubscriptionDao {
     boolean updateErganiEmail(int customerId, String emailAcc);
     List<Subscription> getAllCustomerSubs(int customerCode);
     void deleteSub(int id);
-    void renewSub(int id, int yearsToAdd);
+    void renewSub(int id, int monthsToAdd);
     void updateSubSent(int id);
     List<Subscription> getExpiringSubscriptions(int days);
 }

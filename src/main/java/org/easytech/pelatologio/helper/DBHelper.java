@@ -65,48 +65,68 @@ public class DBHelper {
             subJobTeamDao = new SubJobTeamDaoImpl(dataSource);
             applicationDao = new ApplicationDaoImpl(dataSource); // Needed for feature management
 
-            // --- Conditional DAOs based on Features ---
-            if (Features.isEnabled("tasks")) {
-                taskDao = new TaskDaoImpl(dataSource);
-            }
-            if (Features.isEnabled("devices")) {
-                deviceDao = new DeviceDaoImpl(dataSource);
-                itemDao = new ItemDaoImpl(dataSource);
-                appItemDao = new AppItemDaoImpl(dataSource);
-            }
-            if (Features.isEnabled("subs")) {
-                subscriptionDao = new SubscriptionDaoImpl(dataSource);
-            }
-            if (Features.isEnabled("offers")) {
-                offerDao = new OfferDaoImpl(dataSource);
-            }
-            if (Features.isEnabled("megasoft")) {
-                megasoftDao = new MegasoftDaoImpl(dataSource);
-                invoiceDao = new InvoiceDaoImpl(dataSource);
-            }
-            if (Features.isEnabled("orders")) {
-                orderDao = new OrderDaoImpl(dataSource);
-            }
-            if (Features.isEnabled("simply")) {
-                simplyStatusDao = new SimplyStatusDaoImpl(dataSource);
-            }
-            if (Features.isEnabled("calls")) {
-                callLogDao = new CallLogDaoImpl(dataSource);
-            }
-            if (Features.isEnabled("mypos")) {
-                customerMyPosDetailsDao = new CustomerMyPosDetailsDaoImpl(dataSource);
-            }
-            if (Features.isEnabled("partners")) {
-                partnerDao = new PartnerDaoImpl(dataSource);
-                commissionDao = new CommissionDaoImpl(dataSource);
-                supplierPaymentDao = new SupplierPaymentDaoImpl(dataSource);
-                partnerEarningDao = new PartnerEarningDaoImpl(dataSource);
-            }
-            if (Features.isEnabled("edps")) { // Assuming 'edps' is the feature key
-                applicationStepDao = new ApplicationStepDaoImpl(dataSource);
-                customerProjectDao = new CustomerProjectDaoImpl(dataSource);
-                customerProjectTaskDao = new ProjectStepProgressDaoImpl(dataSource);
-            }
+            taskDao = new TaskDaoImpl(dataSource);
+            deviceDao = new DeviceDaoImpl(dataSource);
+            itemDao = new ItemDaoImpl(dataSource);
+            appItemDao = new AppItemDaoImpl(dataSource);
+            subscriptionDao = new SubscriptionDaoImpl(dataSource);
+            offerDao = new OfferDaoImpl(dataSource);
+            megasoftDao = new MegasoftDaoImpl(dataSource);
+            invoiceDao = new InvoiceDaoImpl(dataSource);
+            orderDao = new OrderDaoImpl(dataSource);
+            simplyStatusDao = new SimplyStatusDaoImpl(dataSource);
+            callLogDao = new CallLogDaoImpl(dataSource);
+            customerMyPosDetailsDao = new CustomerMyPosDetailsDaoImpl(dataSource);
+            partnerDao = new PartnerDaoImpl(dataSource);
+            commissionDao = new CommissionDaoImpl(dataSource);
+            supplierPaymentDao = new SupplierPaymentDaoImpl(dataSource);
+            partnerEarningDao = new PartnerEarningDaoImpl(dataSource);
+            applicationStepDao = new ApplicationStepDaoImpl(dataSource);
+            customerProjectDao = new CustomerProjectDaoImpl(dataSource);
+            customerProjectTaskDao = new ProjectStepProgressDaoImpl(dataSource);
+
+//            // --- Conditional DAOs based on Features ---
+//            if (Features.isEnabled("tasks")) {
+//                taskDao = new TaskDaoImpl(dataSource);
+//            }
+//            if (Features.isEnabled("devices")) {
+//                deviceDao = new DeviceDaoImpl(dataSource);
+//                itemDao = new ItemDaoImpl(dataSource);
+//                appItemDao = new AppItemDaoImpl(dataSource);
+//            }
+//            if (Features.isEnabled("subs")) {
+//                subscriptionDao = new SubscriptionDaoImpl(dataSource);
+//            }
+//            if (Features.isEnabled("offers")) {
+//                offerDao = new OfferDaoImpl(dataSource);
+//            }
+//            if (Features.isEnabled("megasoft")) {
+//                megasoftDao = new MegasoftDaoImpl(dataSource);
+//                invoiceDao = new InvoiceDaoImpl(dataSource);
+//            }
+//            if (Features.isEnabled("orders")) {
+//                orderDao = new OrderDaoImpl(dataSource);
+//            }
+//            if (Features.isEnabled("simply")) {
+//                simplyStatusDao = new SimplyStatusDaoImpl(dataSource);
+//            }
+//            if (Features.isEnabled("calls")) {
+//                callLogDao = new CallLogDaoImpl(dataSource);
+//            }
+//            if (Features.isEnabled("mypos")) {
+//                customerMyPosDetailsDao = new CustomerMyPosDetailsDaoImpl(dataSource);
+//            }
+//            if (Features.isEnabled("partners")) {
+//                partnerDao = new PartnerDaoImpl(dataSource);
+//                commissionDao = new CommissionDaoImpl(dataSource);
+//                supplierPaymentDao = new SupplierPaymentDaoImpl(dataSource);
+//                partnerEarningDao = new PartnerEarningDaoImpl(dataSource);
+//            }
+//            if (Features.isEnabled("edps")) { // Assuming 'edps' is the feature key
+//                applicationStepDao = new ApplicationStepDaoImpl(dataSource);
+//                customerProjectDao = new CustomerProjectDaoImpl(dataSource);
+//                customerProjectTaskDao = new ProjectStepProgressDaoImpl(dataSource);
+//            }
 
             // This DAO seems general purpose, might need to always be on
             trackingDao = new TrackingDaoImpl(dataSource);

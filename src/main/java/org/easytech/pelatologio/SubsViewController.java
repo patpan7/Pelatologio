@@ -21,6 +21,7 @@ import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.EmailTemplateHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.SubsCategory;
 import org.easytech.pelatologio.models.Subscription;
@@ -315,28 +316,26 @@ public class SubsViewController implements Initializable {
     }
 
     private void handleRenewSub() {
-        // Επεξεργασία επιλεγμένης εργασίας
         Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
         if (selectedSub == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Προσοχή");
-            alert.setContentText("Δεν έχει επιλεγεί συμβόλαιο!");
-            Optional<ButtonType> result = alert.showAndWait();
+            AlertDialogHelper.showDialog("Προσοχή", "Δεν έχει επιλεγεί συμβόλαιο!", "", Alert.AlertType.ERROR);
             return;
         }
-        // Δημιουργία διαλόγου με επιλογές
-        List<String> choices = Arrays.asList("+1 χρόνο", "+2 χρόνια", "+3 χρόνια");
-        ChoiceDialog<String> dialog = new ChoiceDialog<>("+1 χρόνο", choices);
+        List<String> choices = Arrays.asList("+1 μήνας", "+3 μήνες", "+6 μήνες", "+1 χρόνος", "+2 χρόνια", "+3 χρόνια");
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("+1 χρόνος", choices);
         dialog.setTitle("Ανανέωση Συμβολαίου");
         dialog.setHeaderText("Επιλέξτε διάρκεια ανανέωσης");
         dialog.setContentText("Διάρκεια:");
 
-        // Αν ο χρήστης επιλέξει κάτι
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(selected -> {
-            int yearsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", ""));
-            DBHelper dbHelper = new DBHelper();
-            DBHelper.getSubscriptionDao().renewSub(selectedSub.getId(), yearsToAdd);
+            int monthsToAdd = 0;
+            if (selected.contains("μήνας")) {
+                monthsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", ""));
+            } else if (selected.contains("χρόνος")) {
+                monthsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", "")) * 12;
+            }
+            DBHelper.getSubscriptionDao().renewSub(selectedSub.getId(), monthsToAdd);
             loadSubs(dateFrom.getValue(), dateTo.getValue());
         });
     }
@@ -373,41 +372,22 @@ public class SubsViewController implements Initializable {
     public void handleSendMail(ActionEvent event) {
         Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
         if (selectedSub == null) {
-            Notifications notifications = Notifications.create()
+            Notifications.create()
                     .title("Προσοχή")
                     .text("Παρακαλώ επιλέξτε ένα συμβόλαιο για να στείλετε το e-mail.")
                     .graphic(null)
                     .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
+                    .position(Pos.TOP_RIGHT)
+                    .showError();
             return;
         }
-        DBHelper dbHelper = new DBHelper();
         Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedSub.getCustomerId());
-        String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" +
-                "<br>Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "." +
-                "<br>Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν." +
-                "<br>Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f", Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς." +
-                "<br>Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας." +
-                "<br>Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας." +
-                "<br>" +
-                "<br><b>Τραπεζικοί Λογαριασμοί:</b>" +
-                "<br>" +
-                "<br><b>ΕΘΝΙΚΗ ΤΡΑΠΕΖΑ</b>" +
-                "<br><b>Λογαριασμός:</b> 29700119679" +
-                "<br><b>Λογαριασμός (IBAN):</b> GR6201102970000029700119679" +
-                "<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ" +
-                "<br><b>EUROBANK</b>" +
-                "<br><b>Λογαριασμός:</b> 0026.0451.27.0200083481" +
-                "<br><b>Λογαριασμός (IBAN):</b> GR7902604510000270200083481" +
-                "<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ" +
-                "<br><b>myPOS</b>" +
-                "<br><b>ΑΡ.ΠΟΡΤΟΦΟΛΙΟΥ:</b> 40005794314" +
-                "<br><b>Όνομα δικαιούχου:</b> GKOUMAS DIMITRIOS " +
-                "<br><b>IBAN:</b> IE27MPOS99039012868261 " +
-                "<br><b>ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ:</b> 12868261" +
-                "<br><b>myPOS Ltd</b>" +
-                "<br><b>BIC: MPOSIE2D</b>";
+
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("{calculatedPrice}", String.format("%.02f", Float.parseFloat(selectedSub.getPrice().trim()) * 1.24));
+
+        EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("subsReminder", customer, selectedSub, placeholders);
+
         try {
             String email = customer.getEmail();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
@@ -417,14 +397,13 @@ public class SubsViewController implements Initializable {
             EmailDialogController controller = loader.getController();
             controller.setCustomer(customer);
             controller.setEmail(email);
-            controller.setSubject("Υπενθύμιση λήξης συνδρομής " + selectedSub.getTitle());
-            controller.setBody(msg);
+            controller.setSubject(emailContent.subject);
+            controller.setBody(emailContent.body);
             controller.setCopy(false);
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
             dialog.show();
             dialog.setOnCloseRequest(evt -> {
                 if (controller.isSended) {
-                    // Εκτελούμε το handleSendEmail
                     DBHelper.getSubscriptionDao().updateSubSent(selectedSub.getId());
                     loadSubs(dateFrom.getValue(), dateTo.getValue());
                 }

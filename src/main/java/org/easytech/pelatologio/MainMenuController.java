@@ -47,7 +47,7 @@ public class MainMenuController implements Initializable {
     @FXML
     private Label vesrion, lbAppUser, lbTasks, lbAppointments, lbSimply, lblExpiryDate, lblRemainingDays;
     @FXML
-    private Label lbMyposTotal, lbMyposVerified, lbMyposUnverified, lbMyposActive, lbMyposBlocked, lbMyposClosed;
+    private Label lbMyPosStatus, lbMyposTotal, lbMyposVerified, lbMyposUnverified, lbMyposActive, lbMyposBlocked, lbMyposClosed;
     @FXML
     private Label lblForOrder, lblWaitOrders, lblForDelivery;
     @FXML
@@ -110,6 +110,8 @@ public class MainMenuController implements Initializable {
             btnMyPOS.setManaged(false);
             btnMyposAccounts.setVisible(false);
             btnMyposAccounts.setManaged(false);
+            lbMyPosStatus.setVisible(false);
+            lbMyPosStatus.setManaged(false);
             lbMyposTotal.setVisible(false);
             lbMyposTotal.setManaged(false);
             lbMyposVerified.setVisible(false);
@@ -172,31 +174,44 @@ public class MainMenuController implements Initializable {
             btnEdpsManagement.setVisible(false);
             btnEdpsManagement.setManaged(false);
         }
+
+        if (!Features.isEnabled("accountants")) {
+            btnAccountants.setVisible(false);
+            btnAccountants.setManaged(false);
+        }
+
+        if (!Features.isEnabled("mydata")) {
+            btnMyDataStatus.setVisible(false);
+            btnMyDataStatus.setManaged(false);
+        }
+
         lbAppUser.setText("Χειριστής: " + AppSettings.loadSetting("appuser"));
         loadAllDashboardData();
 
         // Initialize CustomerDao
         customerDao = DBHelper.getCustomerDao();
 
-        // Initialize SIP Client
-        try {
-            sipClient = new SipClient(callerId -> {
-                Platform.runLater(() -> {
-                    try {
-                        Customer customer = customerDao.getCustomerByPhoneNumber(callerId);
-                        int customerId = (customer != null) ? customer.getCode() : -1;
-                        String customerName = (customer != null) ? customer.getName() : "Άγνωστος";
-                        String customerTitle = (customer != null) ? customer.getTitle() : "";
-                        showCallerPopup(callerId, customerName, customerId, customerTitle);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+        if (Features.isEnabled("calls")) {
+            // Initialize SIP Client
+            try {
+                sipClient = new SipClient(callerId -> {
+                    Platform.runLater(() -> {
+                        try {
+                            Customer customer = customerDao.getCustomerByPhoneNumber(callerId);
+                            int customerId = (customer != null) ? customer.getCode() : -1;
+                            String customerName = (customer != null) ? customer.getName() : "Άγνωστος";
+                            String customerTitle = (customer != null) ? customer.getTitle() : "";
+                            showCallerPopup(callerId, customerName, customerId, customerTitle);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 });
-            });
-            sipClient.start();
-        } catch (Exception e) {
-            System.err.println("Failed to start SIP client: " + e.getMessage());
-            AlertDialogHelper.showDialog("Σφάλμα SIP", "Αδυναμία σύνδεσης με τον SIP server.", e.getMessage(), Alert.AlertType.ERROR);
+                sipClient.start();
+            } catch (Exception e) {
+                System.err.println("Failed to start SIP client: " + e.getMessage());
+                AlertDialogHelper.showDialog("Σφάλμα SIP", "Αδυναμία σύνδεσης με τον SIP server.", e.getMessage(), Alert.AlertType.ERROR);
+            }
         }
 
         // Add shutdown hook to stop SIP client when application closes

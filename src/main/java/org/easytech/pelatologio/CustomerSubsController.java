@@ -14,10 +14,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.CustomerTabController;
-import org.easytech.pelatologio.helper.DBHelper;
-import org.easytech.pelatologio.helper.Features;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Subscription;
 
@@ -25,9 +22,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class CustomerSubsController implements CustomerTabController {
     @FXML
@@ -246,16 +241,21 @@ public class CustomerSubsController implements CustomerTabController {
             AlertDialogHelper.showDialog("Προσοχή", "Δεν έχει επιλεγεί συμβόλαιο!", "", Alert.AlertType.ERROR);
             return;
         }
-        List<String> choices = Arrays.asList("+1 χρόνο", "+2 χρόνια", "+3 χρόνια");
-        ChoiceDialog<String> dialog = new ChoiceDialog<>("+1 χρόνο", choices);
+        List<String> choices = Arrays.asList("+1 μήνας", "+3 μήνες", "+6 μήνες", "+1 χρόνος", "+2 χρόνια", "+3 χρόνια");
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("+1 χρόνος", choices);
         dialog.setTitle("Ανανέωση Συμβολαίου");
         dialog.setHeaderText("Επιλέξτε διάρκεια ανανέωσης");
         dialog.setContentText("Διάρκεια:");
 
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(selected -> {
-            int yearsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", ""));
-            DBHelper.getSubscriptionDao().renewSub(selectedSub.getId(), yearsToAdd);
+            int monthsToAdd = 0;
+            if (selected.contains("μήνας")) {
+                monthsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", ""));
+            } else if (selected.contains("χρόνος")) {
+                monthsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", "")) * 12;
+            }
+            DBHelper.getSubscriptionDao().renewSub(selectedSub.getId(), monthsToAdd);
             loadSubs(customer.getCode());
             notifyDataSaved();
         });
@@ -301,14 +301,6 @@ public class CustomerSubsController implements CustomerTabController {
             return;
         }
         Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedSub.getCustomerId());
-        String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",<br>"
-                + "Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ".<br>"
-                + "Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν.<br>"
-                + "Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f", Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς.<br>"
-                + "Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας.<br>"
-                + "Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας.<br>"
-                + "<br><b>Τραπεζικοί Λογαριασμοί:</b><br>"
-                + "<br><b>ΕΘΝΙΚΗ ΤΡΑΠΕΖΑ</b><br><b>Λογαριασμός:</b> 29700119679<br><b>Λογαριασμός (IBAN):</b> GR6201102970000029700119679<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ<br><b>EUROBANK</b><br><b>Λογαριασμός:</b> 0026.0451.27.0200083481<br><b>Λογαριασμός (IBAN):</b> GR7902604510000270200083481<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ<br><b>myPOS</b><br><b>ΑΡ.ΠΟΡΤΟΦΟΦΟΛΙΟΥ:</b> 40005794314<br><b>Όνομα δικαιούχου:</b> GKOUMAS DIMITRIOS <br><b>IBAN:</b> IE27MPOS99039012868261 <br><b>ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ:</b> 12868261<br><b>myPOS Ltd</b><br><b>BIC: MPOSIE2D</b>";
         try {
             String email = customer.getEmail();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
@@ -318,8 +310,13 @@ public class CustomerSubsController implements CustomerTabController {
             EmailDialogController controller = loader.getController();
             controller.setCustomer(customer);
             controller.setEmail(email);
-            controller.setSubject("Υπενθύμιση λήξης συνδρομής " + selectedSub.getTitle());
-            controller.setBody(msg);
+            Map<String, String> placeholders = new HashMap<>();
+            placeholders.put("{calculatedPrice}", String.format("%.02f", Float.parseFloat(selectedSub.getPrice().trim()) * 1.24));
+            // Prepare email content using EmailTemplateHelper
+            EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("subsReminder", selectedSub, customer, placeholders);
+
+            controller.setSubject(emailContent.subject);
+            controller.setBody(emailContent.body);
             controller.setCopy(false);
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
             dialog.show();

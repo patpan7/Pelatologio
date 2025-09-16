@@ -6,10 +6,12 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
+import org.apache.commons.text.StringEscapeUtils;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.AppSettings;
 import org.easytech.pelatologio.helper.CustomerFolderManager;
@@ -30,7 +32,7 @@ public class EmailDialogController {
     private TextField subjectField;
 
     @FXML
-    private TextArea bodyArea;
+    private HTMLEditor bodyArea;
 
     @FXML
     private ListView<File> attachmentList;
@@ -79,7 +81,7 @@ public class EmailDialogController {
     }
 
     public void setBody(String text) {
-        bodyArea.setText(text);
+        bodyArea.setHtmlText(StringEscapeUtils.unescapeHtml4(text));
     }
 
     public void setAttachments(List<File> attachments) {
@@ -129,7 +131,7 @@ public class EmailDialogController {
         progressIndicator.setVisible(true); // Εμφάνιση προόδου
         String email = emailField.getText().trim();
         String subject = subjectField.getText();
-        String body = bodyArea.getText();
+        String body = bodyArea.getHtmlText();
 
         if (email == null || email.isEmpty()) {
             Platform.runLater(() -> {
@@ -170,7 +172,7 @@ public class EmailDialogController {
                             .owner(ownerNode); // NEW
                     notifications.showConfirm();
                     subjectField.setText("");
-                    bodyArea.setText("");
+                    bodyArea.setHtmlText("");
                     attachmentList.getItems().clear();
                     isSended = true;
                     progressIndicator.setVisible(false); // Απόκρυψη προόδου

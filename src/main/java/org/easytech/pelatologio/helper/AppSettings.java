@@ -42,22 +42,55 @@ public class AppSettings {
 
         // Add new email templates if they don't exist
         if (loadSetting("email.template.subject.simplyService") == null) {
-            saveSetting("email.template.subject.simplyService", "Νέος Πελάτης Simply {serviceType}");
+            saveSetting("email.template.subject.simplyService", "Νέος Πελάτης Simply {logins.tag}");
         }
         if (loadSetting("email.template.body.simplyService") == null) {
-            saveSetting("email.template.body.simplyService", "<b>Νέος Πελάτης Simply {serviceType}</b><br><b>Επωνυμία:</b> {customer.name}<br><b>ΑΦΜ:</b> {customer.afm}<br><b>E-mail:</b> {login.username}<br><b>Κωδικός:</b> {login.password}<br><b>Κινητό:</b> {customer.mobile}<br>Έχει κάνει αποδοχή σύμβασης και εξουσιοδότηση<br>");
+            saveSetting("email.template.body.simplyService", "<b>Νέος Πελάτης Simply {logins.tag}</b><br><b>Επωνυμία:</b> {customer.name}<br><b>ΑΦΜ:</b> {customer.afm}<br><b>E-mail:</b> {logins.username}<br><b>Κωδικός:</b> {logins.password}<br><b>Κινητό:</b> {customer.mobile}<br>Έχει κάνει αποδοχή σύμβασης και εξουσιοδότηση<br>");
         }
         if (loadSetting("email.template.subject.simplyRenew") == null) {
-            saveSetting("email.template.subject.simplyRenew", "Ανανέωση Πελάτη Simply {serviceType}");
+            saveSetting("email.template.subject.simplyRenew", "Ανανέωση Πελάτη Simply {logins.tag}");
         }
         if (loadSetting("email.template.body.simplyRenew") == null) {
-            saveSetting("email.template.body.simplyRenew", "<b>Ανανέωση Πελάτη Simply {serviceType}</b><br><b>Επωνυμία:</b> {customer.name}<br><b>ΑΦΜ:</b> {customer.afm}<br><b>E-mail:</b> {login.username}<br><b>Κωδικός:</b> {login.password}<br><b>Κινητό:</b> {customer.mobile}<br>");
+            saveSetting("email.template.body.simplyRenew", "<b>Ανανέωση Πελάτη Simply {logins.tag}</b><br><b>Επωνυμία:</b> {customer.name}<br><b>ΑΦΜ:</b> {customer.afm}<br><b>E-mail:</b> {logins.username}<br><b>Κωδικός:</b> {logins.password}<br><b>Κινητό:</b> {customer.mobile}<br>");
         }
         if (loadSetting("email.template.subject.simplyPos") == null) {
             saveSetting("email.template.subject.simplyPos", "Νέος Πελάτης Simply POS");
         }
-        if (loadSetting("email.template.body.simplyPos") == null) {
-            saveSetting("email.template.body.simplyPos", "Νέος Πελάτης Simply POS\nΕπωνυμία: {customer.name}\nΑΦΜ: {customer.afm}\nEmail: {login.username}\nΚωδικός: {login.password}\nΚινητό: {customer.mobile}\n");
+                if (loadSetting("email.template.body.simplyPos") == null) {
+            saveSetting("email.template.body.simplyPos", "Νέος Πελάτης Simply POS\nΕπωνυμία: {customer.name}\nΑΦΜ: {customer.afm}\nEmail: {logins.username}\nΚωδικός: {logins.password}\nΚινητό: {customer.mobile}\n");
+        }
+        if (loadSetting("email.template.subject.subsReminder") == null) {
+            saveSetting("email.template.subject.subsReminder", "Υπενθύμιση λήξης συνδρομής {subscription.title}");
+        }
+        if (loadSetting("email.template.body.subsReminder") == null) {
+            saveSetting("email.template.body.subsReminder", "Αγαπητέ/ή {customer.name},<br>Σας υπενθυμίζουμε ότι η συνδρομή σας στο {subscription.title} λήγει στις {subscription.endDate}.<br>Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν.<br>Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [{subscription.price}€ + φπα] = {calculatedPrice}€ στους παρακάτω τραπεζικούς λογαριασμούς.<br>Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας.<br>Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας.<br><br><b>Τραπεζικοί Λογαριασμοί:</b><br><br><b>ΕΘΝΙΚΗ ΤΡΑΠΕΖΑ</b><br><b>Λογαριασμός:</b> 29700119679<br><b>Λογαριασμός (IBAN):</b> GR6201102970000029700119679<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ<br><b>EUROBANK</b><br><b>Λογαριασμός:</b> 0026.0451.27.0200083481<br><b>Λογαριασμός (IBAN):</b> GR7902604510000270200083481<br><b>Με Δικαιούχους:</b> ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ<br><b>myPOS</b><br><b>ΑΡ.ΠΟΡΤΟΦΟΛΙΟΥ:</b> 40005794314<br><b>Όνομα δικαιούχου:</b> GKOUMAS DIMITRIOS <br><b>IBAN:</b> IE27MPOS99039012868261 <br><b>ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ:</b> 12868261<br><b>myPOS Ltd</b><br><b>BIC: MPOSIE2D</b>");
+        }
+        if (loadSetting("email.template.subject.edpsProposal") == null) {
+            saveSetting("email.template.subject.edpsProposal", "Νέα Πρόταση Σύμβασης - {customer.name}");
+        }
+        if (loadSetting("email.template.body.edpsProposal") == null) {
+            saveSetting("email.template.body.edpsProposal", "Αγαπητή EDPS,<br><br>Παρακαλώ βρείτε παρακάτω τα στοιχεία της πρότασης για τον πελάτη: {customer.name} (ΑΦΜ: {customer.afm})<br><br><b>Προμήθεια:</b> {commission}%<br><b>Τιμή POS:</b> {posPrice}€<br><b>Μηνιαία Συνδρομή:</b> {monthlyFee}€<br><b>Τύπος Σύνδεσης:</b> {integrationType}<br><b>Όνομα ERP:</b> {erpName}<br><br>Συνημμένα θα βρείτε το υπογεγραμμένο έντυπο Α1.<br><br>Με εκτίμηση.");
+        }
+        if (loadSetting("email.template.subject.offer") == null) {
+            saveSetting("email.template.subject.offer", "Προσφορά {offer.id}: {offer.customerName}");
+        }
+        if (loadSetting("email.template.body.offer") == null) {
+            saveSetting("email.template.body.offer", "<h3>{offer.description}</h3><br><br><h3>Μπορείτε να την δείτε και να την αποδεχτείτε ή να την\n" +
+                    "  απορρίψετε μέσω του παρακάτω συνδέσμου: </h3><a\n" +
+                    "  href=http://dgou.dynns.com:8090/portal/offer.php?id={offer.id}><b><h2>Αποδοχή ή Απόρριψη προσφορά\n" +
+                    "  {offer.id}</b><h2></a><br><br><h3>Μπορείτε δείτε τους τραπεζικούς μας λογαριασμούς </h3><a\n" +
+                    "  href=http://dgou.dynns.com:8090/portal/bank_accounts.php><b><h2>Τραπεζικοί λογαριασμοί</b></h2></a><br><br><h3>Για\n" +
+                    "  οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας.</h3>");
+        }
+        if (loadSetting("email.template.subject.erganiRegistration") == null) {
+            saveSetting("email.template.subject.erganiRegistration", "Νέος πελάτης Εργάνη");
+        }
+        if (loadSetting("email.template.body.erganiRegistration") == null) {
+            saveSetting("email.template.body.erganiRegistration", "<b>Νέος πελάτης Εργάνη</b><br><b>Επωνυμία:</b>\n" +
+                    "  {customer.name}<br><b>ΑΦΜ:</b> {customer.afm}<br><b>E-mail:</b> {logins.username}<br><b>Κινητό:</b>\n" +
+                    "  {logins.phone}<br><b>E-mail Λογιστή:</b> {erganiregistration.email}<br><b>Προγράμματα:</b>\n" +
+                    "  {erganiregistration.program}<br><b>Σύνολο Ετών:</b> {erganiregistration.years}<br><b>Extra Είσοδος:</b>\n" +
+                    "  {erganiregistration.entrance}");
         }
     }
 

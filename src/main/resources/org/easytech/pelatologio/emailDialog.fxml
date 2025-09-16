@@ -4,8 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.web.*?>
 
-<DialogPane prefHeight="700.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EmailDialogController">
+<DialogPane prefHeight="900.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.EmailDialogController">
     <content>
         <StackPane>
             <VBox spacing="10">
@@ -23,7 +24,7 @@
 
                 <!-- Περιεχόμενο -->
                 <Label styleClass="normal-label" text="Μήνυμα:" />
-                <TextArea fx:id="bodyArea" prefHeight="454.0" prefWidth="580.0" promptText="Περιεχόμενο email" VBox.vgrow="ALWAYS" />
+                <HTMLEditor fx:id="bodyArea" prefHeight="500.0" VBox.vgrow="ALWAYS" />
 
                 <!-- Συνημμένα -->
                 <Label styleClass="normal-label" text="Συνημμένα:" />

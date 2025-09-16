@@ -9,7 +9,7 @@ import org.easytech.pelatologio.helper.Features;
 
 public class FeatureManagementDialogController {
     @FXML
-    private ToggleSwitch suppliersCheck, tasksCheck, ordersCheck, offersCheck, devicesCheck, subsCheck, callsCheck, partnersCheck, d11Check;
+    private ToggleSwitch suppliersCheck, tasksCheck, ordersCheck, offersCheck, devicesCheck, subsCheck, callsCheck, partnersCheck, d11Check, accountantsCheck, mydataCheck;
     @FXML
     private ToggleSwitch taxisCheck, myposCheck, simplyCheck, emblemCheck, erganiCheck, pelatologioCheck, nineposheck, edpsCheck, megasoftCheck;
 
@@ -34,6 +34,8 @@ public class FeatureManagementDialogController {
         nineposheck.setSelected(Features.isEnabled("ninepos"));
         edpsCheck.setSelected(Features.isEnabled("edps"));
         megasoftCheck.setSelected(Features.isEnabled("megasoft"));
+        accountantsCheck.setSelected(Features.isEnabled("accountants"));
+        mydataCheck.setSelected(Features.isEnabled("mydata"));
     }
 
     @FXML
@@ -57,6 +59,8 @@ public class FeatureManagementDialogController {
         Features.setFeatureEnabled("ninepos", nineposheck.isSelected());
         Features.setFeatureEnabled("edps", edpsCheck.isSelected());
         Features.setFeatureEnabled("megasoft", megasoftCheck.isSelected());
+        Features.setFeatureEnabled("accountants", accountantsCheck.isSelected());
+        Features.setFeatureEnabled("mydata", mydataCheck.isSelected());
 
 
         AlertDialogHelper.showDialog("Επιτυχία", "Οι ρυθμίσεις αποθηκεύτηκαν.", "Απαιτείται επανεκκίνηση της εφαρμογής για να εφαρμοστούν οι αλλαγές.", Alert.AlertType.INFORMATION);

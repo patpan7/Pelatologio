@@ -20,6 +20,7 @@ import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.EmailTemplateHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Offer;
 
@@ -378,15 +379,13 @@ public class OffersController implements Initializable {
             EmailDialogController controller = loader.getController();
             controller.setCustomer(customer);
             controller.setEmail(email);
-            controller.setSubject("Προσφορά " + selectedOffer.getId() + ": " + selectedOffer.getCustomerName());
-            controller.setBody("<h3>" + selectedOffer.getDescription() + "</h3>" +
-                    "<br><br><h3>Μπορείτε να την δείτε και να την αποδεχτείτε ή να την απορρίψετε μέσω του παρακάτω συνδέσμου: </h3>" +
-                    "<a href=http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() + "><b><h2>Αποδοχή ή Απόρριψη προσφορά " + selectedOffer.getId() + "</b><h2></a>" +
-                    //"<br>http://dgou.dynns.com:8090/portal/offer.php?id=" + selectedOffer.getId() +
-                    "<br><br><h3>Μπορείτε δείτε τους τραπεζικούς μας λογαριασμούς </h3>" +
-                    "<a href=http://dgou.dynns.com:8090/portal/bank_accounts.php><b><h2>Τραπεζικοί λογαριασμοί</b></h2></a>" +
-                    //"<br>http://dgou.dynns.com:8090/portal/bank_accounts.php" +
-                    "<br><br><h3>Για οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας.</h3>");
+
+            // Prepare email content using EmailTemplateHelper
+            EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("offer", selectedOffer);
+
+            controller.setSubject(emailContent.subject);
+            controller.setBody(emailContent.body);
+
             List<File> attachments = new ArrayList<>();
             String[] offerPaths = selectedOffer.getPaths().split(";");
             for (String path : offerPaths) {

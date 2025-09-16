@@ -101,8 +101,10 @@ public class MainMenu extends Application {
         stage.show();
 
         // Ξεκινά το polling αφού φορτωθεί η εφαρμογή
-        startPolling();
-        startAppointmentReminder();
+        if (!Features.isEnabled("offers"))
+            startPolling();
+        if (Features.isEnabled("tasks"))
+            startAppointmentReminder();
     }
 
     private void showActivationWindow(Stage primaryStage) throws IOException {

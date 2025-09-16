@@ -275,13 +275,13 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
     }
 
     @Override
-    public void renewSub(int id, int yearsToAdd) {
-        String updateQuery = "UPDATE Subscriptions SET endDate = DATEADD(YEAR, ?, endDate) WHERE id = ?";
+    public void renewSub(int id, int monthsToAdd) {
+        String updateQuery = "UPDATE Subscriptions SET endDate = DATEADD(MONTH, ?, endDate) WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(updateQuery)) {
 
-            stmt.setInt(1, yearsToAdd);
+            stmt.setInt(1, monthsToAdd);
             stmt.setInt(2, id); // Το ID του συμβολαίου που ανανεώνεται
 
             int rowsUpdated = stmt.executeUpdate();

@@ -5,31 +5,31 @@ import java.util.List;
 
 public class Customer {
 
-    int code;
-    String name;
-    String title;
-    String job;
-    String afm;
-    String phone1;
-    String phone2;
-    String mobile;
-    String address;
-    String town;
-    String postcode;
-    String email;
-    String email2;
-    String manager;
-    String managerPhone;
-    String notes;
-    int accId;
-    String accName1;
-    String accEmail1;
-    int recommendation;
-    String balance;
-    String balanceReason;
-    Boolean isActive;
-    int subJobTeam;
-    String myPosClientId;
+    public int code;
+    public String name;
+    public String title;
+    public String job;
+    public String afm;
+    public String phone1;
+    public String phone2;
+    public String mobile;
+    public String address;
+    public String town;
+    public String postcode;
+    public String email;
+    public String email2;
+    public String manager;
+    public String managerPhone;
+    public String notes;
+    public int accId;
+    public String accName1;
+    public String accEmail1;
+    public int recommendation;
+    public String balance;
+    public String balanceReason;
+    public Boolean isActive;
+    public int subJobTeam;
+    public String myPosClientId;
     private List<Integer> apps = new ArrayList<>();
 
     public Customer() {
