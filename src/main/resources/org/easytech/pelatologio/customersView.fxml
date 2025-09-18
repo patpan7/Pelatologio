@@ -109,12 +109,13 @@
                             <TableColumn fx:id="codeColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="true" text="Id" />
                             <TableColumn fx:id="nameColumn" minWidth="260.0" prefWidth="328.0" resizable="true" text="Όνομα" />
                             <TableColumn fx:id="titleColumn" maxWidth="300.0" minWidth="100.0" prefWidth="100.0" resizable="true" text="Τίτλος" />
-                            <TableColumn fx:id="afmColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="true" sortable="false" text="ΑΦΜ" />
+                            <TableColumn fx:id="afmColumn" maxWidth="240.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="ΑΦΜ" />
                             <TableColumn fx:id="phone1Column" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="Τηλέφωνο 1" />
                             <TableColumn fx:id="mobileColumn" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" sortable="false" text="Κινητό" />
                             <TableColumn fx:id="townColumn" maxWidth="145.0" minWidth="90.0" prefWidth="90.0" resizable="true" text="Πόλη" />
                             <TableColumn fx:id="emailColumn" maxWidth="320.0" minWidth="160.0" prefWidth="160.0" sortable="false" text="E-mail" />
                             <TableColumn fx:id="balanceColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="true" text="Υπόλοιπο" />
+                     <TableColumn minWidth="1.0" prefWidth="1.0" />
                         </columns>
                         <contextMenu>
                             <ContextMenu>
@@ -165,9 +166,6 @@
                                 </items>
                             </ContextMenu>
                         </contextMenu>
-                        <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                        </columnResizePolicy>
                     </TableView>
                 </VBox>
             </center>

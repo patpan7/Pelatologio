@@ -17,10 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.AppSettings;
-import org.easytech.pelatologio.helper.ComboBoxHelper;
-import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.SubsCategory;
 import org.easytech.pelatologio.models.Subscription;
@@ -37,7 +34,7 @@ public class AddSubController {
     @FXML
     private TextArea noteField;
     @FXML
-    private DatePicker dueDatePicker;
+    private DatePicker startDatePicker, dueDatePicker;
     @FXML
     private ComboBox<Customer> customerComboBox;
     @FXML
@@ -72,6 +69,7 @@ public class AddSubController {
         this.sub = sub;
         titleField.setText(sub.getTitle());
         noteField.setText(sub.getNote());
+        startDatePicker.setValue(sub.getStartDate());
         dueDatePicker.setValue(sub.getEndDate());
         priceField.setText(sub.getPrice());
         for (SubsCategory subsCategory : categoryComboBox.getItems()) {
@@ -133,6 +131,7 @@ public class AddSubController {
             }
         });
         ComboBoxHelper.setupFilter(customerComboBox, filteredCustomers);
+        startDatePicker.setValue(LocalDate.now());
         dueDatePicker.setValue(LocalDate.now());
     }
 
@@ -155,21 +154,21 @@ public class AddSubController {
             String title = titleField.getText();
             String note = noteField.getText();
             String price = priceField.getText();
+            LocalDate startDate = startDatePicker.getValue();
             LocalDate date = dueDatePicker.getValue();
             Customer selectedCustomer = customerComboBox.getValue();
 
             Integer category = categoryComboBox.getValue().getId();
 
-            DBHelper dbHelper = new DBHelper();
-
             if (sub == null) {
                 //Δημιουργία νέας εργασίας
-                Subscription newSub = new Subscription(0, title, date, selectedCustomer.getCode(), category, price, note, "Όχι");
+                Subscription newSub = new Subscription(0, title, startDate, date, selectedCustomer.getCode(), category, price, note, "Όχι");
                 DBHelper.getSubscriptionDao().saveSub(newSub);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
                 sub.setTitle(title);
                 sub.setNote(note);
+                sub.setStartDate(startDate);
                 sub.setEndDate(date);
                 sub.setPrice(price);
                 sub.setCategoryId(category);

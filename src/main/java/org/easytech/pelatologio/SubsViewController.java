@@ -73,6 +73,23 @@ public class SubsViewController implements Initializable {
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         sendedColumn.setCellValueFactory(new PropertyValueFactory<>("sended"));
 
+        // Custom cell factory for endDateColumn to format LocalDate
+        endDateColumn.setCellFactory(column -> {
+            return new TableCell<Subscription, LocalDate>() {
+                private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                @Override
+                protected void updateItem(LocalDate item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(formatter.format(item));
+                    }
+                }
+            };
+        });
+
         // Υπολογισμός της πρώτης και τελευταίας ημέρας του τρέχοντος μήνα
         LocalDate today = LocalDate.now();
         LocalDate firstDay = today.withDayOfMonth(1);
@@ -121,11 +138,9 @@ public class SubsViewController implements Initializable {
                     LocalDate tenDaysLater = today.plusDays(10);
 
                     if (sub.getEndDate().isBefore(today)) {
-                        setStyle("-fx-background-color: #edd4d4; -fx-text-fill: #155724;"); // Κόκκινο για ληγμένες συνδρομές
+                        getStyleClass().add("expired-row");
                     } else if (!sub.getEndDate().isBefore(today) && !sub.getEndDate().isAfter(tenDaysLater)) {
-                        setStyle("-fx-background-color: #fff3cd; -fx-text-fill: #856404;"); // Κίτρινο για συνδρομές που λήγουν σύντομα
-                    } else {
-                        setStyle(""); // Κανονικό χρώμα
+                        getStyleClass().add("expiring-soon-row");
                     }
                 }
             }

@@ -13,10 +13,12 @@ public class Subscription {
     public String price;
     public String note;
     public String sended;
+    public LocalDate startDate;
 
-    public Subscription(int id, String title, LocalDate endDate, Integer customerId, Integer categoryId, String price, String note, String sended) {
+    public Subscription(int id, String title, LocalDate startDate, LocalDate endDate, Integer customerId, Integer categoryId, String price, String note, String sended) {
         this.id = id;
         this.title = title;
+        this.startDate = startDate;
         this.endDate = endDate;
         this.customerId = customerId;
         this.categoryId = categoryId;
@@ -42,6 +44,14 @@ public class Subscription {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     public LocalDate getEndDate() {

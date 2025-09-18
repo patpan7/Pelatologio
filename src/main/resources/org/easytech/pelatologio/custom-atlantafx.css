@@ -29,9 +29,11 @@
     -fx-background-color: derive(-color-accent-emphasis, -10%); /* Ελαφρώς πιο σκούρο από το επιλεγμένο */
     -fx-text-fill: -color-fg-emphasis;
 }
+  .table-row-cell .text {
+      -fx-fill: -color-fg-default;
+  }
 
 .combo-box-popup .list-cell {
-
     -fx-font-size: 1.2em; /* 20% larger */
 }
 
@@ -100,3 +102,15 @@
 .notification-bar > .pane {
     -fx-background-color: -color-bg-default;
 }
+
+  .expired-row {
+      -fx-background-color: -color-danger-subtle;
+  }
+
+  .expiring-soon-row {
+      -fx-background-color: -color-warning-subtle;
+  }
+
+    .completed-order-row {
+        -fx-background-color: -color-success-subtle;
+    }

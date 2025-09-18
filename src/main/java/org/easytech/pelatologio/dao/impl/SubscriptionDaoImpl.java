@@ -47,7 +47,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
     @Override
     public List<Subscription> getAllSubs(LocalDate fromDate, LocalDate toDate) {
         List<Subscription> subs = new ArrayList<>();
-        String query = "SELECT s.id, s.title, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name  " +
+        String query = "SELECT s.id, s.title, s.startDate, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name  " +
                 "FROM Subscriptions s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code " +
                 "LEFT JOIN SubsCategories i ON s.subCatId = i.id " +
@@ -62,7 +62,10 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id");
                     String title = resultSet.getString("title");
-                    LocalDate endDate = resultSet.getDate("endDate").toLocalDate();
+                    Date startDateSql = resultSet.getDate("startDate");
+                    LocalDate startDate = (startDateSql != null) ? startDateSql.toLocalDate() : null;
+                    Date endDateSql = resultSet.getDate("endDate");
+                    LocalDate endDate = (endDateSql != null) ? endDateSql.toLocalDate() : null;
                     Integer customerId = resultSet.getObject("customerId", Integer.class);
                     Integer categoryId = resultSet.getObject("subCatId", Integer.class);
                     String category = resultSet.getString("catName");
@@ -71,7 +74,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                     String customerName = resultSet.getString("name");
                     String sended = resultSet.getString("sended");
 
-                    Subscription sub = new Subscription(id, title, endDate, customerId, categoryId, price, note, sended);
+                    Subscription sub = new Subscription(id, title, startDate, endDate, customerId, categoryId, price, note, sended);
                     sub.setCustomerName(customerName);
                     sub.setCategory(category);
                     subs.add(sub);
@@ -131,16 +134,25 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
 
     @Override
     public boolean saveSub(Subscription newSub) {
-        String query = "INSERT INTO Subscriptions (title, endDate, note, subCatId, customerId, price, sended) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Subscriptions (title, startDate, endDate, note, subCatId, customerId, price, sended) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, newSub.getTitle());
-            stmt.setDate(2, Date.valueOf(newSub.getEndDate()));
-            stmt.setString(3, newSub.getNote());
-            stmt.setInt(4, newSub.getCategoryId());
-            stmt.setInt(5, newSub.getCustomerId());
-            stmt.setString(6, newSub.getPrice());
-            stmt.setString(7, newSub.getSended());
+            if (newSub.getStartDate() != null) {
+                stmt.setDate(2, Date.valueOf(newSub.getStartDate()));
+            } else {
+                stmt.setNull(2, Types.DATE);
+            }
+            if (newSub.getEndDate() != null) {
+                stmt.setDate(3, Date.valueOf(newSub.getEndDate()));
+            } else {
+                stmt.setNull(3, Types.DATE);
+            }
+            stmt.setString(4, newSub.getNote());
+            stmt.setInt(5, newSub.getCategoryId());
+            stmt.setInt(6, newSub.getCustomerId());
+            stmt.setString(7, newSub.getPrice());
+            stmt.setString(8, newSub.getSended());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 return true; // Ενημερώθηκε επιτυχώς
@@ -156,18 +168,27 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
 
     @Override
     public boolean updateSub(Subscription sub) {
-        String query = "UPDATE Subscriptions SET title = ?, endDate = ?, note = ?, subCatId = ?, customerId = ?, price = ? WHERE id = ?";
+        String query = "UPDATE Subscriptions SET title = ?, startDate = ?, endDate = ?, note = ?, subCatId = ?, customerId = ?, price = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, sub.getTitle());
-            stmt.setDate(2, Date.valueOf(sub.getEndDate()));
-            stmt.setString(3, sub.getNote());
-            stmt.setInt(4, sub.getCategoryId());
-            stmt.setInt(5, sub.getCustomerId());
-            stmt.setString(6, sub.getPrice());
-            stmt.setInt(7, sub.getId());
+            if (sub.getStartDate() != null) {
+                stmt.setDate(2, Date.valueOf(sub.getStartDate()));
+            } else {
+                stmt.setNull(2, Types.DATE);
+            }
+            if (sub.getEndDate() != null) {
+                stmt.setDate(3, Date.valueOf(sub.getEndDate()));
+            } else {
+                stmt.setNull(3, Types.DATE);
+            }
+            stmt.setString(4, sub.getNote());
+            stmt.setInt(5, sub.getCategoryId());
+            stmt.setInt(6, sub.getCustomerId());
+            stmt.setString(7, sub.getPrice());
+            stmt.setInt(8, sub.getId());
 
             // Αν δεν υπάρχει το ραντεβού, το προσθέτουμε
             return stmt.executeUpdate() > 0; // Ενημερώθηκε επιτυχώς
@@ -225,7 +246,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
     @Override
     public List<Subscription> getAllCustomerSubs(int customerCode) {
         List<Subscription> subs = new ArrayList<>();
-        String query = "SELECT s.id, s.title, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name  " +
+        String query = "SELECT s.id, s.title, s.startDate, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name  " +
                 "FROM Subscriptions s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code " +
                 "LEFT JOIN SubsCategories i ON s.subCatId = i.id " +
@@ -239,7 +260,10 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id");
                     String title = resultSet.getString("title");
-                    LocalDate endDate = resultSet.getDate("endDate").toLocalDate();
+                    Date startDateSql = resultSet.getDate("startDate");
+                    LocalDate startDate = (startDateSql != null) ? startDateSql.toLocalDate() : null;
+                    Date endDateSql = resultSet.getDate("endDate");
+                    LocalDate endDate = (endDateSql != null) ? endDateSql.toLocalDate() : null;
                     Integer customerId = resultSet.getObject("customerId", Integer.class);
                     Integer categoryId = resultSet.getObject("subCatId", Integer.class);
                     String category = resultSet.getString("catName");
@@ -248,7 +272,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                     String customerName = resultSet.getString("name");
                     String sended = resultSet.getString("sended");
 
-                    Subscription sub = new Subscription(id, title, endDate, customerId, categoryId, price, note, sended);
+                    Subscription sub = new Subscription(id, title, startDate, endDate, customerId, categoryId, price, note, sended);
                     sub.setCustomerName(customerName);
                     sub.setCategory(category);
                     subs.add(sub);
@@ -312,7 +336,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
     @Override
     public List<Subscription> getExpiringSubscriptions(int days) {
         List<Subscription> subs = new ArrayList<>();
-        String query = "SELECT s.id, s.title, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name  " +
+        String query = "SELECT s.id, s.title, s.startDate, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name  " +
                 "FROM Subscriptions s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code " +
                 "LEFT JOIN SubsCategories i ON s.subCatId = i.id " +
@@ -326,7 +350,10 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id");
                     String title = resultSet.getString("title");
-                    LocalDate endDate = resultSet.getDate("endDate").toLocalDate();
+                    Date startDateSql = resultSet.getDate("startDate");
+                    LocalDate startDate = (startDateSql != null) ? startDateSql.toLocalDate() : null;
+                    Date endDateSql = resultSet.getDate("endDate");
+                    LocalDate endDate = (endDateSql != null) ? endDateSql.toLocalDate() : null;
                     Integer customerId = resultSet.getObject("customerId", Integer.class);
                     Integer categoryId = resultSet.getObject("subCatId", Integer.class);
                     String category = resultSet.getString("catName");
@@ -335,7 +362,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                     String customerName = resultSet.getString("name");
                     String sended = resultSet.getString("sended");
 
-                    Subscription sub = new Subscription(id, title, endDate, customerId, categoryId, price, note, sended);
+                    Subscription sub = new Subscription(id, title, startDate, endDate, customerId, categoryId, price, note, sended);
                     sub.setCustomerName(customerName);
                     sub.setCategory(category);
                     subs.add(sub);

@@ -94,13 +94,8 @@ public enum CustomerFeature {
             "EDPS",
             "edpsView.fxml",
             c -> DBHelper.getCustomerProjectDao().hasProjects(c.getCode(), 8)
-      ),
-    ACCOUNTANTS(
-            "accountants",
-            "Λογιστές",
-            "accountantsView.fxml",
-            c -> DBHelper.getCustomerDao().hasAccountant(c.getCode())
-    );
+      )
+    ;
 
 
     public final String featureFlag;

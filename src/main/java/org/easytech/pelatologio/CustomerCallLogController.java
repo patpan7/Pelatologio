@@ -15,16 +15,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.easytech.pelatologio.dao.CallLogDao;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.CallNotesController;
-import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.CallLog;
 import org.easytech.pelatologio.models.Customer;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class CustomerCallLogController {
+public class CustomerCallLogController implements CustomerTabController {
     @FXML
     private TableView<CallLog> callLogTable;
     @FXML
@@ -34,11 +32,13 @@ public class CustomerCallLogController {
     private final ObservableList<CallLog> masterData = FXCollections.observableArrayList();
     private FilteredList<CallLog> filteredData;
     private Customer customer;
+    private Runnable onDataSaved;
 
     @FXML
     public void initialize() {
+        System.out.println("CustomerCallLogController: Initializing...");
         callLogDao = DBHelper.getCallLogDao();
-
+        System.out.println("CallLogDao initialized: " + (callLogDao != null));
         colStartTime.setCellValueFactory(new PropertyValueFactory<>("startTime"));
         colEndTime.setCellValueFactory(new PropertyValueFactory<>("endTime"));
         colDuration.setCellValueFactory(new PropertyValueFactory<>("durationSeconds"));
@@ -58,6 +58,13 @@ public class CustomerCallLogController {
                 }
             }
         });
+
+        if (customer != null) {
+            System.out.println("CustomerCallLogController: Customer is already set in initialize, loading logs.");
+            loadCallLogs();
+        } else {
+            System.out.println("CustomerCallLogController: Customer is null in initialize.");
+        }
     }
 
     private void openCallNotes(CallLog selectedCall) {
@@ -100,9 +107,16 @@ public class CustomerCallLogController {
         }
     }
 
+    @Override
     public void setCustomer(Customer customer) {
         this.customer = customer;
-        loadCallLogs();
+        if (Features.isEnabled("calls")) {
+            loadCallLogs();
+        }
     }
 
+    @Override
+    public void setOnDataSaved(Runnable callback) {
+        this.onDataSaved = callback;
+    }
 }

@@ -20,7 +20,6 @@ import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
-import org.easytech.pelatologio.helper.EmailTemplateHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Logins;
 import org.easytech.pelatologio.models.Subscription;
@@ -563,7 +562,7 @@ public class SimplyViewController implements CustomerTabController {
                 category = 2;
             }
             LocalDate date = LocalDate.now().plusYears(cbContractDuration.getSelectionModel().getSelectedIndex() + 1);
-            Subscription newSub = new Subscription(0, selectedLogin.getTag(), date, customer.getCode(), category, price, selectedLogin.getUsername(), "Όχι");
+            Subscription newSub = new Subscription(0, selectedLogin.getTag(),LocalDate.now(), date, customer.getCode(), category, price, selectedLogin.getUsername(), "Όχι");
             DBHelper.getSubscriptionDao().saveSub(newSub);
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα Simply Cloud.", e.getMessage(), Alert.AlertType.ERROR));

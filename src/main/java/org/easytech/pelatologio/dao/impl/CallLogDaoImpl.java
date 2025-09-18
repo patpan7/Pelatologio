@@ -84,6 +84,7 @@ public class CallLogDaoImpl implements CallLogDao {
 
     @Override
     public List<CallLog> getCallLogsByCustomerId(int customerId) throws SQLException {
+        System.out.println("CallLogDaoImpl: Getting call logs for customerId: " + customerId);
         List<CallLog> callLogs = new ArrayList<>();
         String sql = "SELECT * FROM CallLogs WHERE customerId = ? ORDER BY startTime DESC";
         try (Connection conn = getConnection();
@@ -107,6 +108,7 @@ public class CallLogDaoImpl implements CallLogDao {
                 }
             }
         }
+        System.out.println("CallLogDaoImpl: Found " + callLogs.size() + " call logs.");
         return callLogs;
     }
 

@@ -319,6 +319,7 @@ GO
 CREATE TABLE [dbo].[Subscriptions](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[title] [varchar](255) NOT NULL,
+	[startDate] [datetime] NULL,
 	[endDate] [datetime] NOT NULL,
 	[note] [nvarchar](max) NULL,
 	[subCatId] [int] NULL,

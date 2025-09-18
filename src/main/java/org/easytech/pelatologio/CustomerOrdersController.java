@@ -61,9 +61,7 @@ public class CustomerOrdersController implements CustomerTabController {
                     setStyle("");
                 } else {
                     if (order.getCompleted()) {
-                        setStyle("-fx-background-color: #d4edda; -fx-text-fill: #155724;"); // Πράσινο
-                    } else {
-                        setStyle(""); // Προεπιλογή
+                        getStyleClass().add("completed-order-row");
                     }
                 }
             }

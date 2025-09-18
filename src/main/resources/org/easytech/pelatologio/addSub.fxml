@@ -24,6 +24,12 @@
                     <Label minWidth="150" text="Κατηγορία:" />
                     <ComboBox fx:id="categoryComboBox" editable="true" HBox.hgrow="ALWAYS" />
                 </HBox>
+            <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="149.0" spacing="10">
+               <children>
+                  <Label minWidth="150" text="Ημερ. Έναρξης:" />
+                  <DatePicker fx:id="startDatePicker" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
 
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Label minWidth="150" text="Ημερ. Λήξης:" />

@@ -1157,5 +1157,20 @@ public class MainMenuController implements Initializable {
 
         activationStage.show();
     }
+
+    @FXML
+    private void handleSubscriptionReport(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SubscriptionReportView.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Αναφορά Συνδρομών");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 

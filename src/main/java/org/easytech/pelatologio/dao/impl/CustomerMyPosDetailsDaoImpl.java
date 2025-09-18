@@ -63,15 +63,21 @@ public class CustomerMyPosDetailsDaoImpl implements CustomerMyPosDetailsDao {
                 e.printStackTrace();
             }
         } else {
-            // If the ID is 0, it's a new record, so we INSERT.
+            // If the ID is 0, it's a new record, so we INSERT and get the generated ID.
             String sql = "INSERT INTO CustomerMyPosDetails (customer_id, mypos_client_id, verification_status, account_status) VALUES (?, ?, ?, ?)";
             try (Connection conn = getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                 PreparedStatement pstmt = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
                 pstmt.setInt(1, details.getCustomerId());
                 pstmt.setString(2, details.getMyposClientId());
                 pstmt.setString(3, details.getVerificationStatus());
                 pstmt.setString(4, details.getAccountStatus());
                 pstmt.executeUpdate();
+
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        details.setId(generatedKeys.getInt(1));
+                    }
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
