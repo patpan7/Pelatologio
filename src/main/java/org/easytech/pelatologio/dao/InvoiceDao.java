@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface InvoiceDao {
     List<Invoice> getInvoices(String afm);
+    List<Invoice> getInvoices1(String afm);
 }

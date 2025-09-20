@@ -27,10 +27,6 @@ public class AccountantDaoImpl implements AccountantDao {
 
     @Override
     public List<Accountant> getAccountants() {
-        if (accountantsCache != null) {
-            return accountantsCache;
-        }
-
         List<Accountant> accountants = new ArrayList<>();
         String query = "SELECT * FROM Accountants";
         try (Connection conn = getConnection();

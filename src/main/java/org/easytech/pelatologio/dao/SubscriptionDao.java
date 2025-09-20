@@ -22,4 +22,5 @@ public interface SubscriptionDao {
     void renewSub(int id, int monthsToAdd);
     void updateSubSent(int id);
     List<Subscription> getExpiringSubscriptions(int days);
+    void updateSubscriptionStatus(int subscriptionId, boolean active);
 }

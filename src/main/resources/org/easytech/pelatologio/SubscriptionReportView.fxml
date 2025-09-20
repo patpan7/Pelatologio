@@ -21,6 +21,6 @@
     <DatePicker fx:id="dateFrom" />
     <DatePicker fx:id="dateTo" />
     <Label text="Κατάσταση:" />
-    <ComboBox fx:id="statusComboBox" prefWidth="200.0" />
     <Button fx:id="btnGenerateReport" onAction="#handleGenerateReport" text="Εξαγωγή σε PDF" />
+    <Button fx:id="btnExpiredReport" onAction="#handleExpiredReport" text="Αναφορά Ληγμένων" />
 </VBox>

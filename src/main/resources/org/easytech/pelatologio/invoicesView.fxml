@@ -1,27 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<HBox alignment="TOP_CENTER" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.InvoicesViewController">
-    <VBox alignment="TOP_CENTER"  HBox.hgrow="ALWAYS">
-        <HBox.margin>
-            <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-        </HBox.margin>
-        <TableView fx:id="table" VBox.vgrow="ALWAYS">
-            <columns>
-                <TableColumn fx:id="invoceDateColumn" text="Ημερομηνία"/>
-                <TableColumn fx:id="invoceTypeColumn" text="Παραστατικό"/>
-                <TableColumn fx:id="invoiceNumberColumn" text="Αρ. Παραστατικού"/>
-                <TableColumn fx:id="invoiceAmountColumn" text="Ποσό"/>
-                <TableColumn fx:id="invoicePaidColumn" text="Πληρωμή"/>
-                <TableColumn fx:id="invoiceParColumn" text="Παρατηρήσεις"/>
-            </columns>
-            <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-            </columnResizePolicy>
-        </TableView>
-    </VBox>
-</HBox>
 
+<VBox alignment="TOP_CENTER" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.InvoicesViewController">
+   <children>
+      <SplitPane fx:id="splitPane" dividerPositions="0.5" orientation="VERTICAL">
+        <items>
+          <VBox alignment="TOP_CENTER" minHeight="0.0" minWidth="0.0">
+            <Label text="Τιμολόγια από Ατομική">
+                  <VBox.margin>
+                     <Insets top="5.0" />
+                  </VBox.margin></Label>
+            <TableView fx:id="table" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="invoceDateColumn" text="Ημερομηνία" />
+                    <TableColumn fx:id="invoceTypeColumn" text="Παραστατικό" />
+                    <TableColumn fx:id="invoiceNumberColumn" text="Αρ. Παραστατικού" />
+                    <TableColumn fx:id="invoiceAmountColumn" text="Ποσό" />
+                    <TableColumn fx:id="invoicePaidColumn" text="Πληρωμή" />
+                    <TableColumn fx:id="invoiceParColumn" text="Παρατηρήσεις" />
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+            </TableView>
+          </VBox>
+          <VBox alignment="TOP_CENTER" minHeight="0.0" minWidth="0.0">
+            <Label text="Τιμολόγια από ΕΕ">
+                  <VBox.margin>
+                     <Insets top="5.0" />
+                  </VBox.margin></Label>
+            <TableView fx:id="table1" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="invoceDateColumn1" text="Ημερομηνία" />
+                    <TableColumn fx:id="invoceTypeColumn1" text="Παραστατικό" />
+                    <TableColumn fx:id="invoiceNumberColumn1" text="Αρ. Παραστατικού" />
+                    <TableColumn fx:id="invoiceAmountColumn1" text="Ποσό" />
+                    <TableColumn fx:id="invoicePaidColumn1" text="Πληρωμή" />
+                    <TableColumn fx:id="invoiceParColumn1" text="Παρατηρήσεις" />
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+            </TableView>
+          </VBox>
+        </items>
+      </SplitPane>
+   </children>
+</VBox>

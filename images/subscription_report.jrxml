@@ -27,6 +27,14 @@
 			<bottomPen lineWidth="0.5" lineColor="#000000"/>
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
+		<conditionalStyle mode="Opaque" forecolor="#FF0905">
+			<conditionExpression><![CDATA[$F{isExpired}.equals(true)]]></conditionExpression>
+		</conditionalStyle>
+	</style>
+	<style name="Style1" mode="Opaque" forecolor="#030303">
+		<conditionalStyle forecolor="#FFFFFF">
+			<conditionExpression><![CDATA[$P{fromDate}.isBlank()]]></conditionExpression>
+		</conditionalStyle>
 	</style>
 	<parameter name="fromDate" class="java.lang.String"/>
 	<parameter name="toDate" class="java.lang.String"/>
@@ -34,6 +42,7 @@
 	<field name="title" class="java.lang.String"/>
 	<field name="endDate" class="java.util.Date"/>
 	<field name="price" class="java.lang.String"/>
+	<field name="isExpired" class="java.lang.Boolean"/>
 	<title height="60" splitType="Stretch">
 		<element kind="staticText" uuid="a1dc52d8-2f86-495d-9d60-c151ffaf1d1a" x="0" y="0" width="555" height="30" fontSize="20.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<text><![CDATA[Αναφορά Συνδρομών]]></text>
@@ -47,10 +56,10 @@
 		<element kind="textField" uuid="8bfa3fd9-b53d-45df-9345-3904cbccc45e" x="230" y="40" width="120" height="20" fontSize="14.0" hTextAlign="Left">
 			<expression><![CDATA[$P{toDate}]]></expression>
 		</element>
-		<element kind="staticText" uuid="1ababd32-7c13-4901-858f-2d1282b09535" x="0" y="40" width="50" height="20" fontSize="14.0" bold="true" hTextAlign="Center">
+		<element kind="staticText" uuid="1ababd32-7c13-4901-858f-2d1282b09535" x="0" y="40" width="50" height="20" fontSize="14.0" bold="true" hTextAlign="Center" style="Style1">
 			<text><![CDATA[Από:]]></text>
 		</element>
-		<element kind="staticText" uuid="cac08c28-6995-4a44-b605-5e102afea35c" x="180" y="40" width="50" height="20" fontSize="14.0" bold="true" hTextAlign="Center">
+		<element kind="staticText" uuid="cac08c28-6995-4a44-b605-5e102afea35c" x="180" y="40" width="50" height="20" fontSize="14.0" bold="true" hTextAlign="Center" style="Style1">
 			<text><![CDATA[Εώς:]]></text>
 		</element>
 	</title>
@@ -78,7 +87,7 @@
 				<paragraph leftIndent="5"/>
 				<expression><![CDATA[$F{title}]]></expression>
 			</element>
-			<element kind="textField" uuid="2962a900-9758-4e0a-8fa9-e40021a21970" x="355" y="0" width="100" height="20" pattern="dd/MM/yyyy" hTextAlign="Center" vTextAlign="Middle" style="Table_TD">
+			<element kind="textField" uuid="2962a900-9758-4e0a-8fa9-e40021a21970" x="355" y="0" width="100" height="20" pattern="dd/MM/yyyy" printRepeatedValues="false" hTextAlign="Center" vTextAlign="Middle" style="Table_TD">
 				<expression><![CDATA[$F{endDate}]]></expression>
 			</element>
 			<element kind="textField" uuid="ffa10048-4882-4732-983b-13765d5ee7de" x="455" y="0" width="100" height="20" hTextAlign="Right" vTextAlign="Middle" style="Table_TD">

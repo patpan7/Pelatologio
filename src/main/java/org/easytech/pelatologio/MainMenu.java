@@ -8,10 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -22,6 +19,7 @@ import org.easytech.pelatologio.models.Offer;
 import org.easytech.pelatologio.models.Tasks;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -110,6 +108,42 @@ public class MainMenu extends Application {
             startPolling();
         if (Features.isEnabled("tasks"))
             startAppointmentReminder();
+
+        checkExpiredSubscriptions();
+    }
+
+    private void checkExpiredSubscriptions() {
+        List<org.easytech.pelatologio.models.Subscription> expiredSubscriptions = DBHelper.getSubscriptionDao().getAllSubs(LocalDate.of(2000, 1, 1), LocalDate.now());
+        List<org.easytech.pelatologio.models.Subscription> activeExpiredSubscriptions = new java.util.ArrayList<>();
+        for (org.easytech.pelatologio.models.Subscription sub : expiredSubscriptions) {
+            if (sub.isActive()) {
+                activeExpiredSubscriptions.add(sub);
+            }
+        }
+
+        if (!activeExpiredSubscriptions.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Ειδοποίηση Ληγμένων Συνδρομών");
+            alert.setHeaderText("Βρέθηκαν οι παρακάτω ληγμένες συνδρομές:");
+
+            TableView<org.easytech.pelatologio.models.Subscription> tableView = new TableView<>();
+            TableColumn<org.easytech.pelatologio.models.Subscription, String> customerCol = new TableColumn<>("Πελάτης");
+            customerCol.setPrefWidth(270);
+            customerCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getCustomerName()));
+
+            TableColumn<org.easytech.pelatologio.models.Subscription, String> titleCol = new TableColumn<>("Συνδρομή");
+            titleCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getTitle()));
+
+            TableColumn<org.easytech.pelatologio.models.Subscription, String> endDateCol = new TableColumn<>("Ημ/νία Λήξης");
+            endDateCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getEndDate().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+
+            tableView.getColumns().addAll(customerCol, titleCol, endDateCol);
+            tableView.setItems(javafx.collections.FXCollections.observableArrayList(activeExpiredSubscriptions));
+
+            alert.getDialogPane().setContent(tableView);
+            alert.getDialogPane().setPrefWidth(1000);
+            alert.showAndWait();
+        }
     }
 
     private void showActivationWindow(Stage primaryStage) throws IOException {

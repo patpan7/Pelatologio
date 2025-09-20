@@ -47,7 +47,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
     @Override
     public List<Subscription> getAllSubs(LocalDate fromDate, LocalDate toDate) {
         List<Subscription> subs = new ArrayList<>();
-        String query = "SELECT s.id, s.title, s.startDate, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name  " +
+        String query = "SELECT s.id, s.title, s.startDate, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name, s.active  " +
                 "FROM Subscriptions s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code " +
                 "LEFT JOIN SubsCategories i ON s.subCatId = i.id " +
@@ -73,8 +73,9 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                     String price = resultSet.getString("price");
                     String customerName = resultSet.getString("name");
                     String sended = resultSet.getString("sended");
+                    boolean active = resultSet.getBoolean("active");
 
-                    Subscription sub = new Subscription(id, title, startDate, endDate, customerId, categoryId, price, note, sended);
+                    Subscription sub = new Subscription(id, title, startDate, endDate, customerId, categoryId, price, note, sended, active);
                     sub.setCustomerName(customerName);
                     sub.setCategory(category);
                     subs.add(sub);
@@ -86,6 +87,19 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
 
         return subs;
 
+    }
+
+    @Override
+    public void updateSubscriptionStatus(int subscriptionId, boolean active) {
+        String query = "UPDATE Subscriptions SET active = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setBoolean(1, active);
+            pstmt.setInt(2, subscriptionId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -246,7 +260,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
     @Override
     public List<Subscription> getAllCustomerSubs(int customerCode) {
         List<Subscription> subs = new ArrayList<>();
-        String query = "SELECT s.id, s.title, s.startDate, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name  " +
+        String query = "SELECT s.id, s.title, s.startDate, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name, s.active  " +
                 "FROM Subscriptions s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code " +
                 "LEFT JOIN SubsCategories i ON s.subCatId = i.id " +
@@ -271,8 +285,9 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                     String price = resultSet.getString("price");
                     String customerName = resultSet.getString("name");
                     String sended = resultSet.getString("sended");
+                    boolean active = resultSet.getBoolean("active");
 
-                    Subscription sub = new Subscription(id, title, startDate, endDate, customerId, categoryId, price, note, sended);
+                    Subscription sub = new Subscription(id, title, startDate, endDate, customerId, categoryId, price, note, sended, active);
                     sub.setCustomerName(customerName);
                     sub.setCategory(category);
                     subs.add(sub);
@@ -336,7 +351,7 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
     @Override
     public List<Subscription> getExpiringSubscriptions(int days) {
         List<Subscription> subs = new ArrayList<>();
-        String query = "SELECT s.id, s.title, s.startDate, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name  " +
+        String query = "SELECT s.id, s.title, s.startDate, s.endDate, s.customerId, s.subCatId, i.name AS catName, s.note, s.price, s.sended, c.name, s.active  " +
                 "FROM Subscriptions s " +
                 "LEFT JOIN Customers c ON s.customerId = c.code " +
                 "LEFT JOIN SubsCategories i ON s.subCatId = i.id " +
@@ -361,8 +376,9 @@ public class SubscriptionDaoImpl implements SubscriptionDao {
                     String price = resultSet.getString("price");
                     String customerName = resultSet.getString("name");
                     String sended = resultSet.getString("sended");
+                    boolean active = resultSet.getBoolean("active");
 
-                    Subscription sub = new Subscription(id, title, startDate, endDate, customerId, categoryId, price, note, sended);
+                    Subscription sub = new Subscription(id, title, startDate, endDate, customerId, categoryId, price, note, sended, active);
                     sub.setCustomerName(customerName);
                     sub.setCategory(category);
                     subs.add(sub);

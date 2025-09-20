@@ -83,4 +83,22 @@ public class MegasoftDaoImpl implements MegasoftDao {
         }
         return "";
     }
+
+    @Override
+    public String getMegasoftBalance1(String afm) {
+        String query = "SELECT ypol FROM Megasoft.dbo.E12_Emp001_27 WHERE Afm = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, afm);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("ypol");
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }

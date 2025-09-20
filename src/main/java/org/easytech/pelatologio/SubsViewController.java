@@ -5,6 +5,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -42,6 +43,9 @@ public class SubsViewController implements Initializable {
     @FXML
     private TableColumn idColumn, titleColumn, endDateColumn, customerColumn, categoryColumn, priceColumn, sendedColumn;
     @FXML
+    private TableColumn<Subscription, Boolean> activeColumn;
+
+    @FXML
     private DatePicker dateFrom, dateTo;
     @FXML
     private ComboBox<SubsCategory> categoryFilterComboBox;
@@ -56,6 +60,11 @@ public class SubsViewController implements Initializable {
         this.mainTabPane = mainTabPane;
     }
 
+    @FXML
+    private CheckBox showInactiveCheckBox;
+
+    private FilteredList<Subscription> filteredSubs;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> stackPane.requestFocus());
@@ -64,6 +73,11 @@ public class SubsViewController implements Initializable {
         setTooltip(deleteSubButton, "Διαγραφή συμβολαίου");
         setTooltip(renewButton, "Aνανέωση συμβολαίου");
         setTooltip(addCategoryButton, "Προσθήκη/Επεξεργασία κατηγοριών εργασιών");
+
+        // Initialize FilteredList
+        filteredSubs = new FilteredList<>(allSubs, p -> true);
+        subsTable.setItems(filteredSubs);
+
         // Σύνδεση στηλών πίνακα με πεδία του Task
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -72,6 +86,30 @@ public class SubsViewController implements Initializable {
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         sendedColumn.setCellValueFactory(new PropertyValueFactory<>("sended"));
+        activeColumn.setCellValueFactory(new PropertyValueFactory<>("active"));
+
+        activeColumn.setCellFactory(param -> new TableCell<Subscription, Boolean>() {
+            private final CheckBox checkBox = new CheckBox();
+
+            {
+                checkBox.setOnAction(event -> {
+                    Subscription sub = getTableView().getItems().get(getIndex());
+                    sub.setActive(checkBox.isSelected());
+                    DBHelper.getSubscriptionDao().updateSubscriptionStatus(sub.getId(), sub.isActive());
+                });
+            }
+
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    checkBox.setSelected(item);
+                    setGraphic(checkBox);
+                }
+            }
+        });
 
         // Custom cell factory for endDateColumn to format LocalDate
         endDateColumn.setCellFactory(column -> {
@@ -110,28 +148,12 @@ public class SubsViewController implements Initializable {
         // Αρχικό γέμισμα του πίνακα
         loadSubs(dateFrom.getValue(), dateTo.getValue());
 
-        // RowFactory για διαφορετικά χρώματα
         subsTable.setRowFactory(tv -> new TableRow<Subscription>() {
             @Override
             protected void updateItem(Subscription sub, boolean empty) {
                 super.updateItem(sub, empty);
-                if (empty || sub == null) {
-                    setStyle("");
-                } else {
-                    if (sub.getEndDate().isBefore(LocalDate.now())) {
-                        setStyle("-fx-background-color: #edd4d4; -fx-text-fill: #155724;"); // Πράσινο
-                    } else {
-                        setStyle(""); // Προεπιλογή
-                    }
-                }
-            }
-        });
-
-        subsTable.setRowFactory(tv -> new TableRow<Subscription>() {
-            @Override
-            protected void updateItem(Subscription sub, boolean empty) {
-                super.updateItem(sub, empty);
-                if (empty || sub == null) {
+                getStyleClass().removeAll("expired-row", "expiring-soon-row");
+                if (empty || sub == null || sub.getEndDate() == null) {
                     setStyle("");
                 } else {
                     LocalDate today = LocalDate.now();
@@ -139,7 +161,7 @@ public class SubsViewController implements Initializable {
 
                     if (sub.getEndDate().isBefore(today)) {
                         getStyleClass().add("expired-row");
-                    } else if (!sub.getEndDate().isBefore(today) && !sub.getEndDate().isAfter(tenDaysLater)) {
+                    } else if (!sub.getEndDate().isAfter(today) && sub.getEndDate().isBefore(tenDaysLater)) {
                         getStyleClass().add("expiring-soon-row");
                     }
                 }
@@ -186,6 +208,8 @@ public class SubsViewController implements Initializable {
 
         categoryFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateTaskTable());
 
+        showInactiveCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> updateTaskTable());
+
 
         // Κουμπιά
         addCategoryButton.setOnAction(e -> TaskCategoryManager());
@@ -220,15 +244,20 @@ public class SubsViewController implements Initializable {
     }
 
     private void updateTaskTable() {
-        // Ξεκινάμε με όλες τις εργασίες
-        ObservableList<Subscription> filteredTasks = FXCollections.observableArrayList(allSubs);
-        // Φιλτράρισμα βάσει κατηγορίας
-        SubsCategory selectedCategory = categoryFilterComboBox.getValue(); // Η επιλεγμένη κατηγορία από το ComboBox
-        if (selectedCategory != null && selectedCategory.getId() != 0) { // Εξαιρείται η κατηγορία "Όλες"
-            filteredTasks.removeIf(sub -> !sub.getCategory().equals(selectedCategory.getName()));
-        }
-        // Ανανεώνουμε τα δεδομένα του πίνακα
-        subsTable.setItems(filteredTasks);
+        filteredSubs.setPredicate(sub -> {
+            boolean categoryMatch = true;
+            SubsCategory selectedCategory = categoryFilterComboBox.getValue();
+            if (selectedCategory != null && selectedCategory.getId() != 0) {
+                categoryMatch = sub.getCategory().equals(selectedCategory.getName());
+            }
+
+            boolean activeMatch = true;
+            if (!showInactiveCheckBox.isSelected()) {
+                activeMatch = sub.isActive();
+            }
+
+            return categoryMatch && activeMatch;
+        });
     }
 
     private void handleAddSub() {

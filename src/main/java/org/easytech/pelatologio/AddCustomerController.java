@@ -55,7 +55,7 @@ public class AddCustomerController {
     @FXML
     private Tab tabMain, tabTaxis, tabMypos, tabSimply, tabEmblem, tabErgani, tabPelatologio, tabNinepos, tabEdps, tabDevices, tabInvoices, tabTasks, tabAccountant, tabSubs, tabOffers, tabOrders, tabCallLog, tabNotes;
     @FXML
-    private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone, tfBalance, tfBalanceMega;
+    private TextField tfName, tfTitle, tfJob, tfAfm, tfPhone1, tfPhone2, tfMobile, tfAddress, tfTown, tfPostCode, tfEmail, tfEmail2, tfManager, tfManagerPhone, tfBalance, tfBalanceMega, tfBalanceMega1;
     @FXML
     private ComboBox<Recommendation> tfRecommendation;
     @FXML
@@ -79,7 +79,7 @@ public class AddCustomerController {
     @FXML
     Button btnAddToMegasoft, btnData, btnLabel, btnCopy, btnTask, btnAcs;
     @FXML
-    private Label lblBlance, lblBlanceMega, lblCode;
+    private Label lblBlance, lblBlanceMega, lblBlanceMega1, lblCode;
     @FXML
     public CheckBox checkboxActive;
     @FXML
@@ -163,6 +163,9 @@ public class AddCustomerController {
         tfBalanceMega.setDisable(true);
         tfBalanceMega.setVisible(false);
         lblBlanceMega.setVisible(false);
+        tfBalanceMega1.setDisable(true);
+        tfBalanceMega1.setVisible(false);
+        lblBlanceMega1.setVisible(false);
         checkboxActive.setVisible(false);
         checkboxActive.setDisable(true);
         btnTask.setVisible(false);
@@ -776,6 +779,7 @@ public class AddCustomerController {
         tfBalance.setText(customer.getBalance());
         taBalanceReason.setText(customer.getBalanceReason());
         tfBalanceMega.setText(DBHelper.getMegasoftDao().getMegasoftBalance(customer.getAfm()));
+        tfBalanceMega1.setText(DBHelper.getMegasoftDao().getMegasoftBalance1(customer.getAfm()));
 
         checkboxActive.setSelected(customer.getActive());
 
@@ -798,6 +802,9 @@ public class AddCustomerController {
         tfBalanceMega.setDisable(false);
         tfBalanceMega.setVisible(true);
         lblBlanceMega.setVisible(true);
+        tfBalanceMega1.setDisable(false);
+        tfBalanceMega1.setVisible(true);
+        lblBlanceMega1.setVisible(true);
         checkboxActive.setVisible(true);
         checkboxActive.setDisable(false);
 

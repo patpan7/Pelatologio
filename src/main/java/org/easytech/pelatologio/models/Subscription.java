@@ -14,8 +14,9 @@ public class Subscription {
     public String note;
     public String sended;
     public LocalDate startDate;
+    private boolean active;
 
-    public Subscription(int id, String title, LocalDate startDate, LocalDate endDate, Integer customerId, Integer categoryId, String price, String note, String sended) {
+    public Subscription(int id, String title, LocalDate startDate, LocalDate endDate, Integer customerId, Integer categoryId, String price, String note, String sended, boolean active) {
         this.id = id;
         this.title = title;
         this.startDate = startDate;
@@ -25,6 +26,7 @@ public class Subscription {
         this.price = price;
         this.note = note;
         this.sended = sended;
+        this.active = active;
     }
 
     public Subscription() {
@@ -116,5 +118,13 @@ public class Subscription {
 
     public void setSended(String sended) {
         this.sended = sended;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

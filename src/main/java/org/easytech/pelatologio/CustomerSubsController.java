@@ -13,6 +13,10 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.stage.Modality;
 import javafx.util.Duration;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
@@ -23,6 +27,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static org.apache.commons.io.FilenameUtils.getPath;
 
 public class CustomerSubsController implements CustomerTabController {
     @FXML
@@ -48,6 +54,12 @@ public class CustomerSubsController implements CustomerTabController {
     private Runnable onDataSaved;
 
     @FXML
+    private Button btnPrintReport;
+
+    @FXML
+    private TableColumn<Subscription, Boolean> activeColumn;
+
+    @FXML
     public void initialize() {
         System.out.println("CustomerSubsController: Initializing...");
 
@@ -55,6 +67,7 @@ public class CustomerSubsController implements CustomerTabController {
         setTooltip(editTaskButton, "Επεξεργασία συμβολαίου");
         setTooltip(deleteTaskButton, "Διαγραφή συμβολαίου");
         setTooltip(renewButton, "Ανανέωση συμβολαίου");
+        setTooltip(btnPrintReport, "Εκτύπωση αναφοράς συνδρομών");
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -62,6 +75,30 @@ public class CustomerSubsController implements CustomerTabController {
         endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         sendedColumn.setCellValueFactory(new PropertyValueFactory<>("sended"));
+        activeColumn.setCellValueFactory(new PropertyValueFactory<>("active"));
+
+        activeColumn.setCellFactory(param -> new TableCell<Subscription, Boolean>() {
+            private final CheckBox checkBox = new CheckBox();
+
+            {
+                checkBox.setOnAction(event -> {
+                    Subscription sub = getTableView().getItems().get(getIndex());
+                    sub.setActive(checkBox.isSelected());
+                    DBHelper.getSubscriptionDao().updateSubscriptionStatus(sub.getId(), sub.isActive());
+                });
+            }
+
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    checkBox.setSelected(item);
+                    setGraphic(checkBox);
+                }
+            }
+        });
 
         // Custom cell factory for endDateColumn to format LocalDate
         endDateColumn.setCellFactory(column -> {
@@ -132,7 +169,12 @@ public class CustomerSubsController implements CustomerTabController {
             }
         });
         renewButton.setOnAction(e -> handleRenewSub());
+        btnPrintReport.setOnAction(e -> handlePrintReport());
         System.out.println("CustomerSubsController: Initialization complete.");
+    }
+
+    private void handlePrintReport() {
+        ReportManager.generateSubscriptionReport(allSubs, "", "");
     }
 
 

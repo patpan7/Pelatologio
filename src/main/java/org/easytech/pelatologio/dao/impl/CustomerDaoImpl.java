@@ -521,14 +521,18 @@ public class CustomerDaoImpl implements CustomerDao {
 
     @Override
     public boolean hasInvoices(String afm) {
-        String query = "SELECT COUNT(*) FROM  [MEGASOFT].[dbo].[E2_Emp016_25] WHERE AfmPel = ?";
+        String query = "SELECT CASE WHEN EXISTS (SELECT 1 FROM [MEGASOFT].[dbo].[E2_Emp016_25] WHERE AfmPel = ?" +
+                ") OR EXISTS ( " +
+                "SELECT 1 FROM [MEGASOFT].[dbo].[E12_Emp016_27] WHERE AfmPel = ?" +
+                ") THEN 1 ELSE 0 END";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, afm);
-            pstmt.executeQuery();
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
+            pstmt.setString(2, afm);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) == 1;
+                }
             }
             return false;
         } catch (SQLException e) {

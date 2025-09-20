@@ -562,7 +562,7 @@ public class SimplyViewController implements CustomerTabController {
                 category = 2;
             }
             LocalDate date = LocalDate.now().plusYears(cbContractDuration.getSelectionModel().getSelectedIndex() + 1);
-            Subscription newSub = new Subscription(0, selectedLogin.getTag(),LocalDate.now(), date, customer.getCode(), category, price, selectedLogin.getUsername(), "Όχι");
+            Subscription newSub = new Subscription(0, selectedLogin.getTag(),LocalDate.now(), date, customer.getCode(), category, price, selectedLogin.getUsername(), "Όχι", true);
             DBHelper.getSubscriptionDao().saveSub(newSub);
         } catch (IOException e) {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα Simply Cloud.", e.getMessage(), Alert.AlertType.ERROR));

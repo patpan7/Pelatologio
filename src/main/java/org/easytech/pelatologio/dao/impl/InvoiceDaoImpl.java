@@ -52,4 +52,37 @@ public class InvoiceDaoImpl implements InvoiceDao {
         }
         return invoceList;
     }
+
+    @Override
+    public List<Invoice> getInvoices1(String afm) {
+        List<Invoice> invoceList = new ArrayList<>();
+        String query = "SELECT DatePar, PerigrafhPar, SeiraPar, ArPar, SynTeliko, PerPlhromis, Parat1 " +
+                "FROM MEGASOFT.dbo.E12_Emp016_27 " +
+                "WHERE PelProm = 1 AND AfmPel = ? " +
+                "ORDER BY DatePar DESC, ArPar DESC";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, afm);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Date sqlDate = rs.getDate("DatePar");
+                String date = (sqlDate != null) ? String.valueOf(sqlDate.toLocalDate()) : null;
+
+                String description = rs.getString("PerigrafhPar");
+                String series = rs.getString("SeiraPar");
+                String number = rs.getString("ArPar");
+                String total = rs.getString("SynTeliko");
+                String paid = rs.getString("PerPlhromis");
+                String note = rs.getString("Parat1");
+
+                String seriesAndNumber = (series != null ? series : "") + " " + number;
+
+                Invoice invoice = new Invoice(date, description, seriesAndNumber, total, paid, note);
+                invoceList.add(invoice);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return invoceList;
+    }
 }

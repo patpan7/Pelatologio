@@ -21,6 +21,7 @@ import javafx.scene.layout.StackPane;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Accountant;
+import org.easytech.pelatologio.models.Supplier;
 
 import java.awt.*;
 import java.io.File;
@@ -239,17 +240,12 @@ public class AccountantsController implements Initializable {
             mainTabPane.getSelectionModel().select(accountantTab); // Επιλογή του νέου tab
 
             accountantTab.setOnCloseRequest(event -> {
-                DBHelper.getCustomerDao().customerUnlock(selectedAccountant.getId());
-            });
-
-            accountantTab.setOnClosed(event -> {
-                refreshTableData(); // Ανανεώνει τη λίστα πελατών
+                refreshTableData();
                 filteredData = new FilteredList<>(observableList, b -> true);
 
                 filterField.textProperty().addListener((observable, oldValue, newValue) -> {
                     applyFilters(newValue);
                 });
-
                 applyFilters(filterField.getText());
 
                 SortedList<Accountant> sortedData = new SortedList<>(filteredData);

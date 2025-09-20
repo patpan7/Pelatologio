@@ -18,6 +18,7 @@
                 <TableColumn fx:id="categoryColumn" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="Κατηγορία" />
                 <TableColumn fx:id="priceColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Τιμή" />
                 <TableColumn fx:id="sendedColumn" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="E-mail?" />
+                <TableColumn fx:id="activeColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Ενεργό" />
             </columns>
             <contextMenu>
                 <ContextMenu>
@@ -43,6 +44,14 @@
             <Button fx:id="renewButton" mnemonicParsing="false" styleClass="accent" text="Ανανέωση">
                 <graphic>
                     <FontAwesomeIcon glyphName="RECYCLE" />
+                </graphic>
+                <HBox.margin>
+                    <Insets />
+                </HBox.margin>
+            </Button>
+            <Button fx:id="btnPrintReport" styleClass="info" text="Εκτύπωση Αναφοράς">
+                <graphic>
+                    <FontAwesomeIcon glyphName="PRINT" />
                 </graphic>
                 <HBox.margin>
                     <Insets />

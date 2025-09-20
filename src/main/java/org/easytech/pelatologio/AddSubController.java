@@ -162,7 +162,7 @@ public class AddSubController {
 
             if (sub == null) {
                 //Δημιουργία νέας εργασίας
-                Subscription newSub = new Subscription(0, title, startDate, date, selectedCustomer.getCode(), category, price, note, "Όχι");
+                Subscription newSub = new Subscription(0, title, startDate, date, selectedCustomer.getCode(), category, price, note, "Όχι", true);
                 DBHelper.getSubscriptionDao().saveSub(newSub);
             } else {
                 // Ενημέρωση υπάρχουσας εργασίας
