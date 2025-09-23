@@ -18,7 +18,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.dao.CustomerMyPosDetailsDao;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
@@ -29,6 +28,8 @@ import org.openqa.selenium.By;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+
+;
 
 public class MyposViewController implements CustomerTabController {
     private static final String WARNING_TITLE = "Προσοχή";
@@ -100,11 +101,6 @@ public class MyposViewController implements CustomerTabController {
 
         // Setup for the new myPOS Details Table
         setupMyPosDetailsTable();
-
-
-//        // Initialize ComboBoxes
-//        verificationStatusComboBox.getItems().addAll("Verified", "Unverified");
-//        accountStatusComboBox.getItems().addAll("Active", "Blocked", "Closed");
     }
 
     // Μέθοδος για τη φόρτωση των logins από τη βάση
@@ -244,7 +240,7 @@ public class MyposViewController implements CustomerTabController {
                 "\nΚωδικός: " + selectedLogin.getPassword() +
                 "\nΚινητό: " + customer.getMobile() +
                 "\n";
-        copyTextToClipboard(msg);
+        AppUtils.copyTextToClipboard(msg);
     }
 
     public void handleAddTask(ActionEvent evt) {
@@ -337,25 +333,14 @@ public class MyposViewController implements CustomerTabController {
                         "\nEmail: " + selectedLogin.getUsername() +
                         "\nΚωδικός: " + selectedLogin.getPassword() +
                         "\nΚινητό: " + selectedLogin.getPhone();
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                ClipboardContent content = new ClipboardContent();
-                content.putString(msg);  // Replace with the desired text
-                clipboard.setContent(content);
-                Notifications notifications = Notifications.create()
-                        .title("Αντιγραφή στο clipboard")
-                        .text(msg)
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showInformation();
+                AppUtils.copyTextToClipboard(msg);
             } else {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             }
         } else if (event.getButton() == MouseButton.PRIMARY) {
             // Left-click for regular functionality
@@ -374,22 +359,6 @@ public class MyposViewController implements CustomerTabController {
         }
     }    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
 
-    private void copyTextToClipboard(String msg) {
-        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(msg);  // Replace with the desired text
-        clipboard.setContent(content);
-        //showAlert("Copied to Clipboard", msg);
-        Notifications notifications = Notifications.create()
-                .title("Αντιγραφή στο πρόχειρο")
-                .text(msg)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
-        notifications.showInformation();
-    }
-
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();
         tooltip.setShowDelay(Duration.seconds(0.3));
@@ -400,19 +369,14 @@ public class MyposViewController implements CustomerTabController {
     private Logins checkSelectedLogin() {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
-            showErrorNotification(WARNING_TITLE, SELECT_LOGIN_MSG);
+            CustomNotification.create()
+                    .title("Προσοχή")
+                    .text("Παρακαλώ επιλέξτε ένα login.")
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
         return selectedLogin;
-    }
-
-    private void showErrorNotification(String title, String message) {
-        Notifications.create()
-                .title(title)
-                .text(message)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT)
-                .showError();
     }
 
     // --- Methods for myPOS Details Table ---

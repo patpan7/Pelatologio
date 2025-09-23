@@ -3,8 +3,7 @@ package org.easytech.pelatologio;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
+import org.easytech.pelatologio.helper.AppUtils;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.CustomerAddress;
@@ -38,9 +37,9 @@ public class AddAddressController {
         MenuItem copyItem = new MenuItem("Αντιγραφή");
         MenuItem pasteItem = new MenuItem("Επικόλληση");
         MenuItem clearItem = new MenuItem("Εκκαθάριση");
-        copyItem.setOnAction(event -> copyText());
-        pasteItem.setOnAction(event -> pasteText());
-        clearItem.setOnAction(event -> clearText());
+        copyItem.setOnAction(event -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        pasteItem.setOnAction(event -> AppUtils.pasteText(currentTextField));
+        clearItem.setOnAction(event -> AppUtils.clearText(currentTextField));
         contextMenu.getItems().addAll(copyItem, pasteItem, clearItem);
         setupTextFieldContextMenu(addressField, contextMenu);
         setupTextFieldContextMenu(townField, contextMenu);
@@ -55,27 +54,6 @@ public class AddAddressController {
         textField.setOnContextMenuRequested(e -> currentTextField = textField);
     }
 
-    // Μέθοδοι για τις ενέργειες
-    private void copyText() {
-        if (currentTextField != null) {
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(currentTextField.getText());  // Replace with the desired text
-            clipboard.setContent(content);
-        }
-    }
-
-    private void pasteText() {
-        if (currentTextField != null) {
-            currentTextField.paste();
-        }
-    }
-
-    private void clearText() {
-        if (currentTextField != null) {
-            currentTextField.clear();
-        }
-    }
 
     // Μέθοδος για την αποθήκευση του νέου login
     @FXML
@@ -88,7 +66,6 @@ public class AddAddressController {
         CustomerAddress newCustomerAddress = new CustomerAddress(customer.getCode(), address, town, postcode, store);
 
         if (!address.isEmpty() && !town.isEmpty() && !postcode.isEmpty() && !store.isEmpty()) {
-            DBHelper dbHelper = new DBHelper();
             DBHelper.getAddressDao().addAddress(customer.getCode(), newCustomerAddress); // Υποθέτοντας ότι έχεις αυτή τη μέθοδο στον DBHelper
 
             // Κλείσιμο του διαλόγου

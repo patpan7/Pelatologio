@@ -15,11 +15,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.CustomerTabController;
-import org.easytech.pelatologio.helper.DBHelper;
-import org.easytech.pelatologio.helper.LoginAutomator;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Logins;
 import org.openqa.selenium.By;
@@ -84,7 +80,6 @@ public class TaxisViewController implements CustomerTabController {
 
     public void loadLoginsForCustomer(int customerId) {
         loginList.clear();
-        DBHelper dbHelper = new DBHelper();
         loginList.addAll(DBHelper.getLoginDao().getLogins(customerId, 3));
         if (loginTable.getItems().size() == 1) {
             loginTable.getSelectionModel().select(0);
@@ -291,11 +286,20 @@ public class TaxisViewController implements CustomerTabController {
         content.putString(login.getTag() + "\nUsername: " + login.getUsername() + "\nPassword: " + login.getPassword());
         Clipboard.getSystemClipboard().setContent(content);
 
-        Notifications.create().title("Αντιγραφή στο πρόχειρο").text("Τα στοιχεία του login αντιγράφηκαν").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT).showInformation();
+        CustomNotification.create()
+                .title("Αντιγραφή στο πρόχειρο")
+                .text("Τα στοιχεία του login αντιγράφηκαν")
+                .hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT)
+                .showInfo();
     }
 
     private void showNotification(String title, String message) {
-        Platform.runLater(() -> Notifications.create().title(title).text(message).graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT).showError());
+        Platform.runLater(() -> CustomNotification.create()
+                .title(title)
+                .text(message)
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT)
+                .showWarning());
     }
 
     private void showErrorDialog(String header, String content) {

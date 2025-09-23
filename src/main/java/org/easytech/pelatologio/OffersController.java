@@ -17,10 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.DBHelper;
-import org.easytech.pelatologio.helper.EmailTemplateHelper;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Offer;
 
@@ -284,13 +281,12 @@ public class OffersController implements Initializable {
         if (selectedOffer == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ επιλέξτε ένα προσφορά.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return;
         }
@@ -332,13 +328,12 @@ public class OffersController implements Initializable {
         if (selectedOffer == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ επιλέξτε ένα προσφορά.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return;
         }
@@ -350,7 +345,7 @@ public class OffersController implements Initializable {
                 "\nhttp://dgou.dynns.com:8090/portal/bank_accounts.php" +
                 "\n\nΓια οποιαδήποτε διευκρίνιση, είμαστε στη διάθεσή σας." +
                 "\nΕυχαριστώ πολύ";
-        copyTextToClipboard(msg);
+        AppUtils.copyTextToClipboard(msg);
     }
 
     public void handleSendEmail(ActionEvent event) {
@@ -358,56 +353,40 @@ public class OffersController implements Initializable {
         if (selectedOffer == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ επιλέξτε ένα προσφορά.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return;
         }
-        try {
-            DBHelper dbHelper = new DBHelper();
-            Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedOffer.getCustomerId());
-            String email = customer.getEmail();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Αποστολή Email");
-            EmailDialogController controller = loader.getController();
-            controller.setCustomer(customer);
-            controller.setEmail(email);
+        Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedOffer.getCustomerId());
 
-            // Prepare email content using EmailTemplateHelper
-            EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("offer", selectedOffer);
+        EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("offer", selectedOffer, customer);
 
-            controller.setSubject(emailContent.subject);
-            controller.setBody(emailContent.body);
+        List<File> attachments = new ArrayList<>();
+        String[] offerPaths = selectedOffer.getPaths().split(";");
+        for (String path : offerPaths) {
+            if (path.equals(""))
+                break;
+            File file = new File(path);
+            attachments.add(file);
+        }
 
-            List<File> attachments = new ArrayList<>();
-            String[] offerPaths = selectedOffer.getPaths().split(";");
-            for (String path : offerPaths) {
-                if (path.equals(""))
-                    break;
-                File file = new File(path);
-                attachments.add(file);
-            }
-            controller.setAttachments(attachments);
-            controller.setCopy(false);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            dialog.show();
-            dialog.setOnCloseRequest(evt -> {
-                if (controller.isSended) {
-                    // Εκτελούμε το handleSendEmail
+        EmailHelper.EmailDialogOptions options = new EmailHelper.EmailDialogOptions(customer.getEmail())
+                .subject(emailContent.subject())
+                .body(emailContent.body())
+                .attachments(attachments)
+                .showCopyOption(true)
+                .saveCopy(true)
+                .onSuccess(() -> {
                     DBHelper.getOfferDao().updateOfferSent(selectedOffer.getId());
                     loadOffers();
-                }
-            });
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-        }
+                });
+
+        EmailHelper.showEmailDialog(options);
     }
 
     @FXML
@@ -426,38 +405,34 @@ public class OffersController implements Initializable {
         if (selectedOffer == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ επιλέξτε ένα προσφορά.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return;
         }
 
-        DBHelper dbHelper = new DBHelper();
         if (DBHelper.getOfferDao().updateOfferArchived(selectedOffer.getId())) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Ενημέρωση")
                         .text("Ενημέρωση προσφοράς επιτυχής.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();
+                        .position(Pos.TOP_RIGHT)
+                        .showConfirmation();
             });
             loadOffers(); // Φορτώνει ξανά τις εργασίες
         } else {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Ενημέρωση")
                         .text("Αποτυχία ενημέρωση προσφοράς.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
         }
     }
@@ -467,38 +442,34 @@ public class OffersController implements Initializable {
         if (selectedOffer == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ επιλέξτε ένα προσφορά.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return;
         }
 
-        DBHelper dbHelper = new DBHelper();
         if (DBHelper.getOfferDao().updateOfferStatusManual(selectedOffer.getId(), ans)) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Ενημέρωση")
                         .text("Η προσφορά αρχειοθετήθηκε.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();
+                        .position(Pos.TOP_RIGHT)
+                        .showConfirmation();
             });
             loadOffers(); // Φορτώνει ξανά τις εργασίες
         } else {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Ενημέρωση")
                         .text("Αποτυχία αρχειοθέτησης προσφοράς.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
         }
     }
@@ -511,22 +482,6 @@ public class OffersController implements Initializable {
         button.setTooltip(tooltip);
     }
 
-    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
-    private void copyTextToClipboard(String msg) {
-        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(msg);  // Replace with the desired text
-        clipboard.setContent(content);
-        //showAlert("Copied to Clipboard", msg);
-        Notifications notifications = Notifications.create()
-                .title("Αντιγραφή στο πρόχειρο")
-                .text(msg)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
-        notifications.showInformation();
-    }
 
     public void refresh(MouseEvent mouseEvent) {
         loadOffers();

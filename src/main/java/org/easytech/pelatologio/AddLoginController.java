@@ -8,11 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.CustomerTabController;
-import org.easytech.pelatologio.helper.DBHelper;
-import org.easytech.pelatologio.helper.LoginAutomator;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Logins;
 import org.openqa.selenium.By;
@@ -62,9 +58,9 @@ public class AddLoginController implements CustomerTabController {
         setupTextFieldContextMenu(phoneField, contextMenu);
 
         // Ενέργειες για τα copy, paste, clear items στο βασικό contextMenu
-        copyItem.setOnAction(e -> copyText());
-        pasteItem.setOnAction(e -> pasteText());
-        clearItem.setOnAction(e -> clearText());
+        copyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        pasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
+        clearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
     }
 
     // Μέθοδος για να αναθέτει το contextMenu και να αποθηκεύει το ενεργό TextField
@@ -73,27 +69,6 @@ public class AddLoginController implements CustomerTabController {
         textField.setOnContextMenuRequested(e -> currentTextField = textField);
     }
 
-    // Μέθοδοι για τις ενέργειες
-    private void copyText() {
-        if (currentTextField != null) {
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(currentTextField.getText());  // Replace with the desired text
-            clipboard.setContent(content);
-        }
-    }
-
-    private void pasteText() {
-        if (currentTextField != null) {
-            currentTextField.paste();
-        }
-    }
-
-    private void clearText() {
-        if (currentTextField != null) {
-            currentTextField.clear();
-        }
-    }
 
     // Μέθοδος για την αποθήκευση του νέου login
     @FXML
@@ -139,13 +114,12 @@ public class AddLoginController implements CustomerTabController {
         String password = passwordField.getText();
         if (username.isEmpty() || password.isEmpty()) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Συμπλήρωσε το Username και το Password.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return;
         }
@@ -171,13 +145,12 @@ public class AddLoginController implements CustomerTabController {
 
         if (username.isEmpty() || password.isEmpty() || selectedTag == null) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ συμπληρώστε όλα τα πεδία.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return false;
         }

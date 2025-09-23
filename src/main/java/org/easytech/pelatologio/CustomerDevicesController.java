@@ -11,11 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.CustomerTabController;
-import org.easytech.pelatologio.helper.DBHelper;
-import org.easytech.pelatologio.helper.Features;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Device;
 import org.easytech.pelatologio.models.Logins;
@@ -122,13 +118,12 @@ public class CustomerDevicesController implements CustomerTabController {
             if (selectedDevice == null) {
                 // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
                 Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
+                    CustomNotification.create()
                             .title("Προσοχή")
                             .text("Παρακαλώ επιλέξτε συσκευή.")
-                            .graphic(null)
                             .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();
+                            .position(Pos.TOP_RIGHT)
+                            .showWarning();
                 });
                 return;
             }
@@ -142,28 +137,25 @@ public class CustomerDevicesController implements CustomerTabController {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 // Διαγραφή από τη βάση
-                DBHelper dbHelper = new DBHelper();
                 if (DBHelper.getDeviceDao().recoverDevice(selectedDevice.getId())) {
                     Platform.runLater(() -> {
-                        Notifications notifications = Notifications.create()
+                        CustomNotification.create()
                                 .title("Προσοχή")
                                 .text("Η επαναφορά της συσκευής έγινε με επιτυχία.")
-                                .graphic(null)
                                 .hideAfter(Duration.seconds(5))
-                                .position(Pos.TOP_RIGHT);
-                        notifications.showInformation();
+                                .position(Pos.TOP_RIGHT)
+                                .showConfirmation();
                     });
                     devicesTable.getItems().remove(selectedDevice);
                     notifyDataSaved();
                 } else {
                     Platform.runLater(() -> {
-                        Notifications notifications = Notifications.create()
+                        CustomNotification.create()
                                 .title("Προσοχή")
-                                .text("Η επαναφορά της συσκευής έγινε με επιτυχία.")
-                                .graphic(null)
+                                .text("Η επαναφορά της συσκευής δεν έγινε.")
                                 .hideAfter(Duration.seconds(5))
-                                .position(Pos.TOP_RIGHT);
-                        notifications.showInformation();
+                                .position(Pos.TOP_RIGHT)
+                                .showError();
                     });
                 }
             }
@@ -271,14 +263,5 @@ public class CustomerDevicesController implements CustomerTabController {
         if (onDataSaved != null) {
             onDataSaved.run();
         }
-    }
-
-
-
-    private void setTooltip(Button button, String text) {
-        Tooltip tooltip = new Tooltip();
-        tooltip.setShowDelay(Duration.seconds(0.3));
-        tooltip.setText(text);
-        button.setTooltip(tooltip);
     }
 }

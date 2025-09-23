@@ -110,9 +110,9 @@ public class ProposalDialogController {
             File customerFolder = folderManager.customerFolder(customer.getName(), customer.getAfm());
             File edpsFolder = new File(customerFolder, "EDPS");
             if (!edpsFolder.exists()) edpsFolder.mkdirs();
-            String fileName = "Proposal_" + LocalDate.now().toString() + ".txt";
+            String fileName = "Proposal_" + LocalDate.now() + ".txt";
             // Replace <br> with newline for the text file
-            String textContent = emailContent.body.replaceAll("<br>", "\n").replaceAll("<b>", "").replaceAll("</b>", "");
+            String textContent = emailContent.body().replaceAll("<br>", "\n").replaceAll("<b>", "").replaceAll("</b>", "");
             Files.writeString(Paths.get(edpsFolder.getAbsolutePath(), fileName), textContent);
         } catch (IOException e) {
             e.printStackTrace();
@@ -140,7 +140,7 @@ public class ProposalDialogController {
                     AppSettings.loadSetting("email"),
                     AppSettings.loadSetting("emailPass")
                 );
-                emailSender.sendEmailWithAttachments(recipientsString, emailContent.subject, emailContent.body, attachments);
+                emailSender.sendEmailWithAttachments(recipientsString, emailContent.subject(), emailContent.body(), attachments);
 
                 Platform.runLater(() -> {
                     AlertDialogHelper.showInfoDialog("Επιτυχία", "Η πρόταση στάλθηκε με επιτυχία.");

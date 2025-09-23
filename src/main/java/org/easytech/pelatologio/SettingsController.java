@@ -18,7 +18,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Logins;
@@ -205,7 +204,11 @@ public class SettingsController implements Initializable {
                 ClipboardContent content = new ClipboardContent();
                 content.putString(placeholder);
                 clipboard.setContent(content);
-                Notifications.create().title("Placeholder Copied").text(placeholder).position(Pos.TOP_RIGHT).showInformation();
+                CustomNotification.create()
+                        .title("Placeholder Copied")
+                        .text(placeholder)
+                        .position(Pos.TOP_RIGHT)
+                        .showInfo();
             }
         });
 
@@ -471,13 +474,12 @@ public class SettingsController implements Initializable {
             AppSettings.saveSetting("callerPopupPosition", "BOTTOM_RIGHT");
         }
         Platform.runLater(() -> {
-            Notifications notifications = Notifications.create()
+            CustomNotification.create()
                     .title("Επιτυχία")
                     .text("Οι ρυθμίσεις αποθηκεύτηκαν!")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showInformation();
+                    .position(Pos.TOP_RIGHT)
+                    .showConfirmation();
         });
     }
 

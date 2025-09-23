@@ -1,16 +1,15 @@
 package org.easytech.pelatologio;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.easytech.pelatologio.helper.HardwareIdUtil;
 import org.easytech.pelatologio.helper.LicenseManager;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 
 import java.net.URL;
 import java.util.ResourceBundle;

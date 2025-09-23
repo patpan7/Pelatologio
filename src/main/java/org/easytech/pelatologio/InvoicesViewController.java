@@ -9,7 +9,6 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.CustomerTabController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
@@ -123,13 +122,4 @@ public class InvoicesViewController implements CustomerTabController {
         this.onDataSaved = callback;
     }
 
-    private void showErrorNotification(String title, String message) {
-        Notifications.create()
-                .title(title)
-                .text(message)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT)
-                .showError();
-    }
 }

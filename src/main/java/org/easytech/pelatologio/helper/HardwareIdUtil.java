@@ -1,6 +1,7 @@
 package org.easytech.pelatologio.helper;
 
 import java.net.NetworkInterface;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Base64;
 import java.util.Enumeration;
@@ -56,7 +57,7 @@ public class HardwareIdUtil {
     private static byte[] hashString(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            return digest.digest(input.getBytes("UTF-8"));
+            return digest.digest(input.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new RuntimeException("Hashing failed", e);
         }

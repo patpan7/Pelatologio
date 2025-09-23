@@ -1,44 +1,14 @@
 package org.easytech.pelatologio;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.Alert.AlertType;
-import javafx.geometry.Insets;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.converter.IntegerStringConverter;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
+import javafx.util.Duration;
 import org.easytech.pelatologio.dao.PartnerDao;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
@@ -47,14 +17,7 @@ import org.easytech.pelatologio.models.PartnerCustomer;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import java.io.IOException;
-
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -72,7 +35,9 @@ public class AddPartnerController {
     private Tab tabNotes;
     @FXML
     private TextArea taNotes;
-    
+    @FXML
+    private ProgressIndicator progressIndicator;
+
     @FXML
     private Tab tabCustomers;
     @FXML
@@ -170,7 +135,7 @@ public class AddPartnerController {
             LocalDate date = cellData.getValue().getContractDate();
             return new SimpleObjectProperty<>(date);
         });
-        
+
         // Format currency columns
         colTotalPaid.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getTotalPaid()));
         colTotalPaid.setCellFactory(column -> new TableCell<>() {
@@ -184,7 +149,7 @@ public class AddPartnerController {
                 }
             }
         });
-        
+
         colCommission.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCommission()));
         colCommission.setCellFactory(column -> new TableCell<>() {
             @Override
@@ -197,7 +162,7 @@ public class AddPartnerController {
                 }
             }
         });
-        
+
         // Set column widths
         colCustomerCode.prefWidthProperty().bind(tblPartnerCustomers.widthProperty().multiply(0.15));
         colCustomerName.prefWidthProperty().bind(tblPartnerCustomers.widthProperty().multiply(0.25));
@@ -206,13 +171,13 @@ public class AddPartnerController {
         colTotalPaid.prefWidthProperty().bind(tblPartnerCustomers.widthProperty().multiply(0.15));
         colCommission.prefWidthProperty().bind(tblPartnerCustomers.widthProperty().multiply(0.15));
     }
-    
+
     private void loadPartnerCustomers() {
         if (currentPartner.getId() <= 0) return;
         System.out.println("Loading customers for partner ID: " + code);
         // Show loading indicator
         tblPartnerCustomers.setPlaceholder(new Label("Φόρτωση δεδομένων..."));
-        
+
         // Run database operation in background thread
         new Thread(() -> {
             try {
@@ -233,10 +198,10 @@ public class AddPartnerController {
                     Alert alert = new Alert(AlertType.ERROR);
                     alert.setTitle("Σφάλμα");
                     alert.setHeaderText("Σφάλμα φόρτωσης πελατών");
-                    alert.setContentText("Παρουσιάστηκε σφάλμα κατά τη φόρτωση των πελατών: " + 
-                                     (e.getMessage() != null ? e.getMessage() : "Άγνωστο σφάλμα"));
+                    alert.setContentText("Παρουσιάστηκε σφάλμα κατά τη φόρτωση των πελατών: " +
+                            (e.getMessage() != null ? e.getMessage() : "Άγνωστο σφάλμα"));
                     alert.showAndWait();
-                    
+
                     tblPartnerCustomers.setPlaceholder(new Label("Σφάλμα κατά τη φόρτωση των δεδομένων"));
                 });
             }
@@ -253,10 +218,10 @@ public class AddPartnerController {
     public void initialize() {
         this.partnerDao = DBHelper.getPartnerDao();
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
-        
+
         // Initialize partner customers table
         initializePartnerCustomersTable();
-        
+
         // Add listener to tab selection to load data when tab is selected
         tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
             if (newTab == tabCustomers) {
@@ -330,37 +295,37 @@ public class AddPartnerController {
         btnEmail2.setOnAction(this::showEmailDialog);
 
         // Setup phone buttons with left and right click actions
-        setupPhoneButton(btnPhone1, tfPhone1);
-        setupPhoneButton(btnPhone2, tfPhone2);
-        setupPhoneButton(btnMobile, tfMobile);
-        setupPhoneButton(btnPhoneManager, tfManagerPhone);
+        AppUtils.setupPhoneButton(btnPhone1, tfPhone1);
+        AppUtils.setupPhoneButton(btnPhone2, tfPhone2);
+        AppUtils.setupPhoneButton(btnMobile, tfMobile);
+        AppUtils.setupPhoneButton(btnPhoneManager, tfManagerPhone);
 
         // Ενέργειες για τα copy, paste, clear items στο βασικό contextMenu
-        copyItem.setOnAction(e -> copyText());
-        pasteItem.setOnAction(e -> pasteText());
-        clearItem.setOnAction(e -> clearText());
+        copyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        pasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
+        clearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
 
         // Ενέργειες για τα phoneCopyItem, phonePasteItem, phoneClearItem στο phoneContextMenu
-        phoneCopyItem.setOnAction(e -> copyText());
-        phonePasteItem.setOnAction(e -> pasteText());
-        phoneClearItem.setOnAction(e -> clearText());
+        phoneCopyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        phonePasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
+        phoneClearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
         // Ενέργεια "Viber" μόνο για τα τηλέφωνα
         viberItem.setOnAction(e -> {
             if (currentTextField == tfPhone1 || currentTextField == tfPhone2 || currentTextField == tfMobile || currentTextField == tfManagerPhone) { // Εκτέλεση μόνο αν είναι στο tfEmail
-                viberComunicate(currentTextField);
+                AppUtils.viberComunicate(currentTextField.getText());
             }
         });
         // Ενέργειες για τα emailCopyItem, emailPasteItem, emailClearItem στο emailContextMenu
-        emailCopyItem.setOnAction(e -> copyText());
-        emailPasteItem.setOnAction(e -> pasteText());
-        emailClearItem.setOnAction(e -> clearText());
+        emailCopyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        emailPasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
+        emailClearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
 
         // Ενέργεια "Δοκιμή Email" μόνο για το tfEmail
         mailItem.setOnAction(e -> {
             if (currentTextField == tfEmail) { // Εκτέλεση μόνο αν είναι στο tfEmail
-                sendTestEmail(tfEmail);
+                AppUtils.sendTestEmail(tfEmail.getText(), progressIndicator);
             } else if (currentTextField == tfEmail2) { // Εκτέλεση μόνο αν είναι στο tfEmail2
-                sendTestEmail(tfEmail2);
+                AppUtils.sendTestEmail(tfEmail2.getText(), progressIndicator);
             }
         });
     }
@@ -425,13 +390,12 @@ public class AddPartnerController {
         if (currentPartner.getId() == 0) {
             partnerDao.insert(currentPartner);
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Επιτυχία")
                         .text("Ο πελάτης εισήχθη με επιτυχία στη βάση δεδομένων.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(3))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showInformation();
+                        .position(Pos.TOP_RIGHT)
+                        .showConfirmation();
                 closeCurrentTab(); // Κλείσιμο του "Νέος Πελάτης"
                 openPartnerTab(currentPartner.getId()); // Άνοιγμα καρτέλας με τον νέο πελάτη
             });
@@ -505,52 +469,6 @@ public class AddPartnerController {
         textField.setOnContextMenuRequested(e -> currentTextField = textField);
     }
 
-    // Μέθοδοι για τις ενέργειες
-    private void copyText() {
-        if (currentTextField != null) {
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(currentTextField.getText());  // Replace with the desired text
-            clipboard.setContent(content);
-        }
-    }
-
-    private void pasteText() {
-        if (currentTextField != null) {
-            currentTextField.paste();
-        }
-    }
-
-    private void clearText() {
-        if (currentTextField != null) {
-            currentTextField.clear();
-        }
-    }
-
-    // Μέθοδος αποστολής με viber
-    private void viberComunicate(TextField phoneField) {
-        String phone = phoneField.getText();
-        if (phone != null && !phone.isEmpty()) {
-            try {
-                File viberPath = new File(System.getenv("LOCALAPPDATA") + "\\Viber\\Viber.exe");
-                Desktop.getDesktop().open(viberPath);
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                ClipboardContent content = new ClipboardContent();
-                content.putString(phone);  // Replace with the desired text
-                clipboard.setContent(content);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Παρακαλώ εισάγετε ένα έγκυρο τηλέφωνο")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
-        }
-    }
 
     private void setupFieldListeners() {
         // Προσθήκη listeners σε όλα τα input fields
@@ -593,80 +511,17 @@ public class AddPartnerController {
     }
 
     private void showEmailDialog(ActionEvent actionEvent) {
-//        Button clickedButton = (Button) actionEvent.getSource(); // Ποιο κουμπί πατήθηκε;
-//        TextField emailField = (TextField) clickedButton.getUserData(); // Παίρνουμε το TextField που είναι συνδεδεμένο με το κουμπί
-//        if (emailField != null && !emailField.getText().isEmpty()) {
-//            try {
-//                String email = emailField.getText();
-//                FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
-//                Dialog<ButtonType> dialog = new Dialog<>();
-//                dialog.setDialogPane(loader.load());
-//                dialog.setTitle("Αποστολή Email");
-//                EmailDialogController controller = loader.getController();
-//                controller.setCustomer(currentPartner);
-//                controller.setEmail(email);
-//                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-//                dialog.show();
-//            } catch (IOException e) {
-//                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-//            }
-//        }
-    }
+        Button clickedButton = (Button) actionEvent.getSource(); // Ποιο κουμπί πατήθηκε;
+        TextField emailField = (TextField) clickedButton.getUserData(); // Παίρνουμε το TextField που είναι συνδεδεμένο με το κουμπί
+        if (emailField != null && !emailField.getText().isEmpty()) {
+            EmailHelper.EmailDialogOptions options = new EmailHelper.EmailDialogOptions(emailField.getText())
+                    .subject("")
+                    .body("")
+                    .showCopyOption(false)
+                    .saveCopy(false)
+                    .onSuccess(null);
 
-    private void setupPhoneButton(Button button, TextField textField) {
-        button.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                PhoneCall.callHandle(textField.getText());
-            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                PhoneCall.callHandle2(textField.getText());
-            }
-        });
-    }
-
-    private void sendTestEmail(TextField emailField) {
-        String email = emailField.getText();
-        if (email != null && !email.isEmpty()) {
-            // Εμφάνιση του progress indicator
-            //progressIndicator.setVisible(true);
-
-            // Δημιουργία και αποστολή email σε ξεχωριστό thread για να μην κολλήσει το UI
-            Thread emailThread = new Thread(() -> {
-                try {
-                    String subject = "Δοκιμή Email";
-                    String body = "Δοκιμή email.";
-                    EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
-                    emailSender.sendEmail(email, subject, body);
-
-                    // Ενημερώνουμε το UI όταν ολοκληρωθεί η αποστολή του email
-                    Platform.runLater(() -> {
-                        Notifications notifications = Notifications.create()
-                                .title("Επιτυχία")
-                                .text("Το email στάλθηκε με επιτυχία.")
-                                .graphic(null)
-                                .hideAfter(Duration.seconds(5))
-                                .position(Pos.TOP_RIGHT);
-                        notifications.showConfirm();
-                        //progressIndicator.setVisible(false); // Απόκρυψη του progress indicator
-                    });
-                } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        AlertDialogHelper.showDialog("Σφάλμα", "Υπήρξε πρόβλημα με την αποστολή του email.", e.getMessage(), Alert.AlertType.ERROR);
-                        //progressIndicator.setVisible(false); // Απόκρυψη του progress indicator
-                    });
-                    Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
-                }
-            });
-            emailThread.setDaemon(true);
-            emailThread.start(); // Ξεκινάμε το thread για την αποστολή του email
-        } else {
-            //showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο email.");
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Παρακαλώ εισάγετε ένα έγκυρο email.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
+            EmailHelper.showEmailDialog(options);
         }
     }
 
@@ -680,13 +535,12 @@ public class AddPartnerController {
         String afm = tfAfm.getText();
         if (afm == null || afm.isEmpty()) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ εισάγετε ένα έγκυρο ΑΦΜ.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return;
         }
@@ -698,13 +552,12 @@ public class AddPartnerController {
         String errorDescr = AfmResponseParser.getXPathValue(responseXml, "//error_rec/error_descr");
         if (errorDescr != null && !errorDescr.isEmpty()) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text(errorDescr)
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
             return;
         }
@@ -720,13 +573,12 @@ public class AddPartnerController {
             tfPostCode.setText(companyInfo.getPostcode());
         } else {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Σφάλμα κατά την ανάγνωση των δεδομένων")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
         }
     }

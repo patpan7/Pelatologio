@@ -10,8 +10,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CustomNotification;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.CustomerAddress;
@@ -108,13 +108,12 @@ public class AddressViewController {
         if (selectedCustomerAddress == null) {
             // Εμφάνιση μηνύματος αν δεν έχει επιλεγεί login
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ επιλέξτε κάποια διεύθυνση προς διαγραφή.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return;
         }
@@ -141,13 +140,12 @@ public class AddressViewController {
         if (selectedCustomerAddress == null) {
             // Εμφάνιση μηνύματος αν δεν υπάρχει επιλογή
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ επιλέξτε μία διεύθυνση προς επεξεργασία.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
             return;
         }

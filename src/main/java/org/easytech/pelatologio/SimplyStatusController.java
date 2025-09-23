@@ -17,9 +17,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.AppSettings;
+import org.easytech.pelatologio.helper.CustomNotification;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.SimplyStatus;
@@ -259,13 +259,12 @@ public class SimplyStatusController implements Initializable {
                 if (selectedCustomer != null) {
                     // Ανοίξτε το dialog box για επεξεργασία
                     if (selectedCustomer == null) {
-                        Notifications notifications = Notifications.create()
+                        CustomNotification.create()
                                 .title("Προσοχή")
                                 .text("Δεν έχει επιλεγεί Πελάτης!")
-                                .graphic(null)
                                 .hideAfter(Duration.seconds(3))
-                                .position(Pos.TOP_RIGHT);
-                        notifications.showError();
+                                .position(Pos.TOP_RIGHT)
+                                .showWarning();
                         return;
                     }
                     try {

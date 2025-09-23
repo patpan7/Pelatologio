@@ -15,7 +15,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Logins;
@@ -79,7 +78,6 @@ public class NineposViewController implements CustomerTabController {
         loginList.clear();
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
-        DBHelper dbHelper = new DBHelper();
         loginList.addAll(DBHelper.getLoginDao().getLogins(customerId, 7));
         if (loginTable.getItems().size() == 1)
             loginTable.getSelectionModel().select(0);
@@ -158,7 +156,6 @@ public class NineposViewController implements CustomerTabController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Διαγραφή από τη βάση
-            DBHelper dbHelper = new DBHelper();
             DBHelper.getLoginDao().deleteLogin(selectedLogin.getId());
 
             // Διαγραφή από τη λίστα και ενημέρωση του πίνακα
@@ -223,7 +220,7 @@ public class NineposViewController implements CustomerTabController {
                 "\nΚωδικός: " + selectedLogin.getPassword() +
                 "\nΚινητό: " + customer.getMobile() +
                 "\n";
-        copyTextToClipboard(msg);
+        AppUtils.copyTextToClipboard(msg);
     }
 
     public void handleAddTask(ActionEvent evt) {
@@ -314,14 +311,7 @@ public class NineposViewController implements CustomerTabController {
                     "\nΚωδικός: " + selectedLogin.getPassword() +
                     "\nΚινητό: " + customer.getMobile() +
                     "\n";
-            copyTextToClipboard(msg);
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showInformation();
+            AppUtils.copyTextToClipboard(msg);
         } else {
             try {
                 LoginAutomator loginAutomation = new LoginAutomator(true);
@@ -378,21 +368,6 @@ public class NineposViewController implements CustomerTabController {
         emailSender.sendEmail(AppSettings.loadSetting("emblemRegisterMail"), subject, msg);
     }
 
-    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
-    private void copyTextToClipboard(String msg) {
-        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(msg);  // Replace with the desired text
-        clipboard.setContent(content);
-        Notifications notifications = Notifications.create()
-                .title("Αντιγραφή στο πρόχειρο")
-                .text(msg)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
-        notifications.showInformation();
-    }
 
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();
@@ -405,18 +380,13 @@ public class NineposViewController implements CustomerTabController {
     private Logins checkSelectedLogin() {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
-            showErrorNotification(WARNING_TITLE, SELECT_LOGIN_MSG);
+            CustomNotification.create()
+                    .title(WARNING_TITLE)
+                    .text(SELECT_LOGIN_MSG)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
         return selectedLogin;
-    }
-
-    private void showErrorNotification(String title, String message) {
-        Notifications.create()
-                .title(title)
-                .text(message)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT)
-                .showError();
     }
 }

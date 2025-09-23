@@ -43,6 +43,7 @@ module org.easytech.pelatologio {
     requires javafx.web;
     requires org.apache.commons.text;
     requires org.apache.commons.io;
+    requires fontawesomefx;
 //    requires org.apache.poi.ooxml.schemas;
 //    requires docx4j;
 //    requires org.apache.poi.ooxml;

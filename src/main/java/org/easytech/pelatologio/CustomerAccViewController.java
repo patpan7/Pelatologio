@@ -97,7 +97,6 @@ public class CustomerAccViewController {
         customersList.clear();
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
-        DBHelper dbHelper = new DBHelper();
         customersList.addAll(DBHelper.getCustomerDao().getCustomersByAcc(accId));
     }
 
@@ -106,7 +105,6 @@ public class CustomerAccViewController {
         customersList.clear();
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
-        DBHelper dbHelper = new DBHelper();
         customersList.addAll(DBHelper.getCustomerDao().getCustomersByAcc(accountant.getId()));
     }
 }

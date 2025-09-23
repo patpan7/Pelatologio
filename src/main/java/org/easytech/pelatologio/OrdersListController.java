@@ -17,8 +17,8 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CustomNotification;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Order;
 import org.easytech.pelatologio.models.Supplier;
@@ -207,40 +207,36 @@ public class OrdersListController implements Initializable {
         Order selectedOrder = ordersTable.getSelectionModel().getSelectedItem();
         if (selectedOrder == null) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Δεν έχει επιλεγεί παραγγελία.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return;
         }
 
-        DBHelper dbHelper = new DBHelper();
         if (DBHelper.getOrderDao().completeOrder(selectedOrder.getId(), complete)) {
             System.out.println("Order completion status updated.");
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Ενημέρωση")
                         .text("Ενημέρωση παραγγελίας επιτυχής.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();
+                        .position(Pos.TOP_RIGHT)
+                        .showInfo();
             });
             loadOrders(); // Φορτώνει ξανά τις εργασίες
         } else {
             System.out.println("Failed to update order completion status.");
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Ενημέρωση")
                         .text("Αποτυχία ενημέρωση παραγγελίας.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
         }
     }
@@ -249,7 +245,6 @@ public class OrdersListController implements Initializable {
     private void loadOrders() {
         List<TableColumn<Order, ?>> sortOrder = new ArrayList<>(ordersTable.getSortOrder());
         // Φόρτωση όλων των εργασιών από τη βάση
-        DBHelper dbHelper = new DBHelper();
         allOrders.setAll(DBHelper.getOrderDao().getAllOrders());
         updateOrdersTable();
         ordersTable.getSortOrder().setAll(sortOrder);

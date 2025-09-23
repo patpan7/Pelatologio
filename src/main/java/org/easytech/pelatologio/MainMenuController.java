@@ -19,7 +19,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.dao.CustomerDao;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.CallLog;
@@ -483,10 +482,9 @@ public class MainMenuController implements Initializable {
             mainTabPane.getTabs().add(newTab);
             mainTabPane.getSelectionModel().select(newTab);
         } else {
-            Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("Το module Εργασίες είναι απενεργοποιημένο.")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(3))
                     .position(Pos.TOP_RIGHT)
                     .showWarning();
@@ -531,10 +529,9 @@ public class MainMenuController implements Initializable {
             mainTabPane.getTabs().add(newTab);
             mainTabPane.getSelectionModel().select(newTab);
         } else {
-            Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("Το module Προσφορές είναι απενεργοποιημένο.")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(3))
                     .position(Pos.TOP_RIGHT)
                     .showWarning();
@@ -564,10 +561,9 @@ public class MainMenuController implements Initializable {
                 }
             }
         } else {
-            Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("Το module myPOS είναι απενεργοποιημένο.")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(3))
                     .position(Pos.TOP_RIGHT)
                     .showWarning();
@@ -604,10 +600,9 @@ public class MainMenuController implements Initializable {
                 mainTabPane.getSelectionModel().select(newTab);
             }
         } else {
-            Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("Το module myPOS είναι απενεργοποιημένο.")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(3))
                     .position(Pos.TOP_RIGHT)
                     .showWarning();
@@ -870,10 +865,9 @@ public class MainMenuController implements Initializable {
                 mainTabPane.getSelectionModel().select(newTab);
             }
         } else {
-            Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("Το module Simply είναι απενεργοποιημένο.")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(3))
                     .position(Pos.TOP_RIGHT)
                     .showWarning();
@@ -1075,10 +1069,9 @@ public class MainMenuController implements Initializable {
                 AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα της διαχείρισης EDPS.", e.getMessage(), Alert.AlertType.ERROR);
             }
         } else {
-            Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("Το module EDPS είναι απενεργοποιημένο.")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(3))
                     .position(Pos.TOP_RIGHT)
                     .showWarning();

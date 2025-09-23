@@ -12,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.util.ThemeManager;
 import org.easytech.pelatologio.models.Offer;
@@ -95,8 +94,8 @@ public class MainMenu extends Application {
         // Apply saved theme
         ThemeManager.applySavedTheme(scene);
         
-        // Apply ControlsFX CSS fix
-        scene.getStylesheets().add(getClass().getResource("fix-controlsfx-styles.css").toExternalForm());
+//        // Apply ControlsFX CSS fix
+//        scene.getStylesheets().add(getClass().getResource("fix-controlsfx-styles.css").toExternalForm());
 
         stage.setTitle("Πελατολόγιο");
         //stage.setResizable(false);
@@ -178,15 +177,14 @@ public class MainMenu extends Application {
             //System.out.println("Νέα ενημέρωση στην προσφορά #" + offer.getId());
             Platform.runLater(() -> {
                 // Ενημέρωσε το TableView ή όποιο στοιχείο UI χρησιμοποιείς
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Ενημέρωση")
                         .text("Νέα ενημέρωση στην προσφορά #" + offer.getId() +
                                 "\nΚατάσταση: " + offer.getStatus() +
                                 "\nΠελάτης: " + offer.getCustomerName())
-                        .graphic(null)
                         .hideAfter(Duration.seconds(10))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showInformation();
+                        .position(Pos.TOP_RIGHT)
+                        .showInfo();
             });
             DBHelper.getOfferDao().updateOfferStatus(offer.getId(), offer.getStatus());
             // Ενημέρωσε το TableView ή όποιο στοιχείο UI χρησιμοποιείς
@@ -281,12 +279,12 @@ public class MainMenu extends Application {
 
     private static void snoozeAppointment(Tasks appointment) {
         DBHelper.getTaskDao().snoozeAppointment(appointment.getId());
-        Notifications.create()
+        CustomNotification.create()
                 .title("Αναβολή Ραντεβού")
                 .text("Το ραντεβού '" + appointment.getTitle() + "' ενημερώθηκε.")
                 .hideAfter(Duration.seconds(5))
                 .position(Pos.TOP_RIGHT)
-                .showInformation();
+                .showInfo();
     }
 
     public static void main(String[] args) {

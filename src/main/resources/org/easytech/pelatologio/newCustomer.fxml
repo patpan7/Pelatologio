@@ -387,31 +387,6 @@
                 </HBox>
             </ScrollPane>
         </Tab>
-<!--        <Tab fx:id="tabDevices" closable="false" text="Συσκευές">-->
-<!--            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">-->
-<!--                <AnchorPane fx:id="devicesContainer" />-->
-<!--            </ScrollPane>-->
-<!--        </Tab>-->
-<!--        <Tab fx:id="tabTasks" closable="false" text="Εργασίες">-->
-<!--            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">-->
-<!--                <AnchorPane fx:id="tasksContainer" />-->
-<!--            </ScrollPane>-->
-<!--        </Tab>-->
-<!--        <Tab fx:id="tabSubs" closable="false" text="Συνδρομές">-->
-<!--            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">-->
-<!--                <AnchorPane fx:id="subsContainer" />-->
-<!--            </ScrollPane>-->
-<!--        </Tab>-->
-<!--        <Tab fx:id="tabOffers" closable="false" text="Προσφορές">-->
-<!--            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">-->
-<!--                <AnchorPane fx:id="offersContainer" />-->
-<!--            </ScrollPane>-->
-<!--        </Tab>-->
-<!--        <Tab fx:id="tabOrders" closable="false" text="Παραγγελίες">-->
-<!--            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">-->
-<!--                <AnchorPane fx:id="ordersContainer" />-->
-<!--            </ScrollPane>-->
-<!--        </Tab>-->
         <Tab fx:id="tabNotes" closable="false" text="Σημειώσεις">
             <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
                 <VBox VBox.vgrow="ALWAYS">

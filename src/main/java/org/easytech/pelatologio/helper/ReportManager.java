@@ -6,7 +6,6 @@ import javafx.util.Duration;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.models.Subscription;
 
 import java.io.File;
@@ -58,13 +57,12 @@ public class ReportManager {
         File imageFile = new File(fullPath);
         if (!imageFile.exists()) {
             System.out.println("❌ Δεν βρέθηκε η εικόνα: " + fullPath);
-            Notifications notifications = Notifications.create()
+            CustomNotification.create()
                     .title("Σφάλμα")
-                    .text("❌ Δεν βρέθηκε η εικόνα: " + fullPath)
-                    .graphic(null)
+                    .text("❌ Δεν βρέθηκε: " + fullPath)
                     .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
+                    .position(Pos.TOP_RIGHT)
+                    .showError();
             return null;
         }
         return fullPath;

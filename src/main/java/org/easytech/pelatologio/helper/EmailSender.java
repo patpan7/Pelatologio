@@ -1,20 +1,11 @@
 package org.easytech.pelatologio.helper;
 
-import javafx.application.Platform;
-import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
-
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
@@ -90,7 +81,7 @@ public class EmailSender {
 //                Notifications notifications = Notifications.create()
 //                        .title("Attention")
 //                        .text("Η αποστολή του email απέτυχε.")
-//                        .graphic(null)
+//                        
 //                        .hideAfter(Duration.seconds(5))
 //                        .position(Pos.TOP_RIGHT);
 //                notifications.showError();

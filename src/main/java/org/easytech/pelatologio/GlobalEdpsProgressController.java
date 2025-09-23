@@ -106,8 +106,7 @@ public class GlobalEdpsProgressController {
 
         progressColumn.setCellValueFactory(cellData -> {
             Object value = cellData.getValue().getValue();
-            if (value instanceof CustomerProjectSummary) {
-                CustomerProjectSummary summary = (CustomerProjectSummary) value;
+            if (value instanceof CustomerProjectSummary summary) {
                 return new SimpleStringProperty(summary.getCompletedSteps() + "/" + summary.getTotalSteps());
             }
             return new SimpleStringProperty("");
@@ -159,10 +158,7 @@ public class GlobalEdpsProgressController {
             if (event.getClickCount() == 2) {
                 TreeItem<Object> selectedItem =
                         progressTable.getSelectionModel().getSelectedItem();
-                if (selectedItem != null && selectedItem.getValue() instanceof
-                        CustomerProjectSummary) {
-                    CustomerProjectSummary summary = (CustomerProjectSummary)
-                            selectedItem.getValue();
+                if (selectedItem != null && selectedItem.getValue() instanceof CustomerProjectSummary summary) {
                     openCustomerTab(summary.getCustomerId());
                 }
             }
@@ -189,9 +185,7 @@ public class GlobalEdpsProgressController {
             for (Tab tab : mainTabPane.getTabs()) {
                 if (Integer.valueOf(selectedCustomer.getCode()).equals(tab.getUserData())) {
                     mainTabPane.getSelectionModel().select(tab);
-                    if (tab.getContent().getUserData() instanceof AddCustomerController) {
-                        AddCustomerController controller = (AddCustomerController)
-                                tab.getContent().getUserData();
+                    if (tab.getContent().getUserData() instanceof AddCustomerController controller) {
                         controller.selectEdpsTab(); // Select the EDPS sub-tab
                     }
                     return;

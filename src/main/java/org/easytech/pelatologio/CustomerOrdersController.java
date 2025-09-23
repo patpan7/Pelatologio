@@ -12,8 +12,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CustomNotification;
 import org.easytech.pelatologio.helper.CustomerTabController;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
@@ -70,7 +70,6 @@ public class CustomerOrdersController implements CustomerTabController {
         ordersTable.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getClickCount() == 2) { // Έλεγχος για δύο κλικ
                 Order selectedOrder = ordersTable.getSelectionModel().getSelectedItem();
-                DBHelper dbHelper = new DBHelper();
                 if (selectedOrder == null) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Προσοχή");
@@ -235,7 +234,6 @@ public class CustomerOrdersController implements CustomerTabController {
         alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την παραγγελία " + selectedOrder.getTitle() + ";");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            DBHelper dbHelper = new DBHelper();
             DBHelper.getOrderDao().deleteOrder(selectedOrder.getId());
             loadOrders(customer.getCode());
             notifyDataSaved();
@@ -254,45 +252,40 @@ public class CustomerOrdersController implements CustomerTabController {
         Order selectedOrder = ordersTable.getSelectionModel().getSelectedItem();
         if (selectedOrder == null) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Δεν έχει επιλεγεί παραγγελία.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return;
         }
-        DBHelper dbHelper = new DBHelper();
         if (DBHelper.getOrderDao().completeOrder(selectedOrder.getId(), complete)) {
             System.out.println("Order completion status updated.");
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Ενημέρωση")
                         .text("Ενημέρωση παραγγελίας επιτυχής.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();
+                        .position(Pos.TOP_RIGHT)
+                        .showConfirmation();
             });
             loadOrders(customer.getCode()); // Φορτώνει ξανά τις εργασίες
         } else {
             System.out.println("Failed to update order completion status.");
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Ενημέρωση")
                         .text("Αποτυχία ενημέρωση παραγγελίας.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
         }
     }
 
     private void loadOrders(int id) {
-        DBHelper dbHelper = new DBHelper();
         allOrders.setAll(DBHelper.getOrderDao().getAllOrdersCust(id));
     }
 

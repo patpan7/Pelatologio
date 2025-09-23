@@ -13,16 +13,12 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.DBHelper;
-import org.easytech.pelatologio.helper.EmailTemplateHelper;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.SubsCategory;
 import org.easytech.pelatologio.models.Subscription;
@@ -34,6 +30,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+;
 
 public class SubsViewController implements Initializable {
     @FXML
@@ -185,7 +183,6 @@ public class SubsViewController implements Initializable {
             }
         });
 
-        DBHelper dbHelper = new DBHelper();
         List<SubsCategory> categories = DBHelper.getSubscriptionDao().getAllSubsCategory();
         categoryFilterComboBox.getItems().add(new SubsCategory(0, "Όλες"));
         categoryFilterComboBox.getItems().addAll(categories);
@@ -237,7 +234,6 @@ public class SubsViewController implements Initializable {
     private void loadSubs(LocalDate from, LocalDate to) {
         List<TableColumn<Subscription, ?>> sortOrder = new ArrayList<>(subsTable.getSortOrder());
         // Φόρτωση όλων των εργασιών από τη βάση
-        DBHelper dbHelper = new DBHelper();
         allSubs.setAll(DBHelper.getSubscriptionDao().getAllSubs(from, to));
         updateTaskTable();
         subsTable.getSortOrder().setAll(sortOrder);
@@ -376,7 +372,7 @@ public class SubsViewController implements Initializable {
             int monthsToAdd = 0;
             if (selected.contains("μήνας")) {
                 monthsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", ""));
-            } else if (selected.contains("χρόνος")) {
+            } else if (selected.contains("χρόν")) { // Check for "χρόν" to cover both singular and plural
                 monthsToAdd = Integer.parseInt(selected.replaceAll("[^0-9]", "")) * 12;
             }
             DBHelper.getSubscriptionDao().renewSub(selectedSub.getId(), monthsToAdd);
@@ -416,11 +412,9 @@ public class SubsViewController implements Initializable {
     public void handleSendMail(ActionEvent event) {
         Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
         if (selectedSub == null) {
-            Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("Παρακαλώ επιλέξτε ένα συμβόλαιο για να στείλετε το e-mail.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
                     .position(Pos.TOP_RIGHT)
                     .showError();
             return;
@@ -432,92 +426,38 @@ public class SubsViewController implements Initializable {
 
         EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("subsReminder", customer, selectedSub, placeholders);
 
-        try {
-            String email = customer.getEmail();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(loader.load());
-            dialog.setTitle("Αποστολή Email");
-            EmailDialogController controller = loader.getController();
-            controller.setCustomer(customer);
-            controller.setEmail(email);
-            controller.setSubject(emailContent.subject);
-            controller.setBody(emailContent.body);
-            controller.setCopy(false);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-            dialog.show();
-            dialog.setOnCloseRequest(evt -> {
-                if (controller.isSended) {
+        EmailHelper.EmailDialogOptions options = new EmailHelper.EmailDialogOptions(customer.getEmail())
+                .subject(emailContent.subject())
+                .body(emailContent.body())
+                .showCopyOption(true)
+                .onSuccess(() -> {
                     DBHelper.getSubscriptionDao().updateSubSent(selectedSub.getId());
                     loadSubs(dateFrom.getValue(), dateTo.getValue());
-                }
-            });
-        } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-        }
+                });
+
+        EmailHelper.showEmailDialog(options);
     }
 
     public void handleCopy(ActionEvent event) {
         Subscription selectedSub = subsTable.getSelectionModel().getSelectedItem();
         if (selectedSub == null) {
-            Notifications notifications = Notifications.create()
+            Notifications.create()
                     .title("Προσοχή")
                     .text("Παρακαλώ επιλέξτε ένα συμβόλαιο.")
-                    .graphic(null)
+
                     .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
+                    .position(Pos.TOP_RIGHT)
+                    .showError();
             return;
         }
-        String msg = "Αγαπητέ/ή " + selectedSub.getCustomerName() + ",\n" +
-                "Σας υπενθυμίζουμε ότι η συνδρομή σας στο " + selectedSub.getTitle().trim() + " λήγει στις " + selectedSub.getEndDate() + ".\n" +
-                "Για να συνεχίσετε να απολαμβάνετε τα προνόμια της συνδρομής σας, σας προσκαλούμε να την ανανεώσετε το συντομότερο δυνατόν.\n" +
-                "Μπορείτε να ανανεώσετε τη συνδρομή σας εύκολα και γρήγορα κάνοντας κατάθεση του ποσού [" + selectedSub.getPrice().trim() + "€ + φπα] = " + String.format("%.02f", Float.parseFloat(selectedSub.getPrice().trim()) * 1.24) + "€ στους παρακάτω τραπεζικούς λογαριασμούς.\n" +
-                "Εναλλακτικά επισκεφθείτε  το κατάστημα μας για χρήση μετρητών για ποσά έως 500€ ή με χρήση τραπεζικής κάρτας.\n" +
-                "Εάν έχετε οποιαδήποτε ερώτηση, μη διστάσετε να επικοινωνήσετε μαζί μας.\n" +
-                "Με εκτίμηση,\n" +
-                "\n" +
-                "EasyTech\n" +
-                "Γκούμας Δημήτρης \n" +
-                "Δενδρινού & Γρηγορίου Ε’ 10\n" +
-                "85100 Ρόδος\n" +
-                "Τηλ. 22410 36750 \n" +
-                "Κιν.6944570089\n" +
-                "\n" +
-                "Τραπεζικοί Λογαριασμοί:\n" +
-                "\n" +
-                "ΕΘΝΙΚΗ ΤΡΑΠΕΖΑ\n" +
-                "Λογαριασμός: 29700119679\n" +
-                "Λογαριασμός (IBAN): GR6201102970000029700119679\n" +
-                "Με Δικαιούχους: ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ\n" +
-                "EUROBANK\n" +
-                "Λογαριασμός: 0026.0451.27.0200083481\n" +
-                "Λογαριασμός (IBAN): GR7902604510000270200083481\n" +
-                "Με Δικαιούχους: ΓΚΟΥΜΑΣ ΔΗΜΗΤΡΙΟΣ ΑΠΟΣΤΟΛΟΣ\n" +
-                "myPOS\n" +
-                "ΑΡ.ΠΟΡΤΟΦΟΛΙΟΥ: 40005794314\n" +
-                "Όνομα δικαιούχου: GKOUMAS DIMITRIOS \n" +
-                "IBAN: IE27MPOS99039012868261 \n" +
-                "ΑΡΙΘΜΟΣ ΛΟΓΑΡΙΑΣΜΟΥ: 12868261\n" +
-                "myPOS Ltd \n" +
-                "BIC: MPOSIE2D\n";
-        copyTextToClipboard(msg);
+        Customer customer = DBHelper.getCustomerDao().getSelectedCustomer(selectedSub.getCustomerId());
+
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("{calculatedPrice}", String.format("%.02f", Float.parseFloat(selectedSub.getPrice().trim()) * 1.24));
+
+        EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("subsReminder", customer, selectedSub, placeholders);
+        String plainText = EmailTemplateHelper.htmlToPlainText(emailContent.body());
+        AppUtils.copyTextToClipboard(plainText);
     }
 
-    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
-    private void copyTextToClipboard(String msg) {
-        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(msg);  // Replace with the desired text
-        clipboard.setContent(content);
-        //showAlert("Copied to Clipboard", msg);
-        Notifications notifications = Notifications.create()
-                .title("Αντιγραφή στο πρόχειρο")
-                .text(msg)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
-        notifications.showInformation();
-    }
 }

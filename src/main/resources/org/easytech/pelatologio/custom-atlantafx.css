@@ -6,50 +6,63 @@
     -fx-text-inner-color: -color-fg-default;
 }
 
-/* Hover effect for all table rows */
+/* ===================================================================
+ * TableView
+ * =================================================================== */
+
+.table-view {
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: -color-border-default;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-font-size: 1.1em; /* 10% larger */
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -color-bg-subtle;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: -color-border-default;
+    -fx-border-width: 0 0 1px 0; /* Bottom border only */
+
+}
+
+.table-view .column-header .label {
+    -fx-font-size: 1.1em;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-fg-default;
+}
+
+.table-row-cell {
+    -fx-border-color: -color-border-default;
+    -fx-border-width: 0 0 1px 0; /* Bottom border only */
+}
+
 .table-row-cell:filled:hover {
-    -fx-background-color: -color-accent-emphasis; /* Ένα πολύ ανοιχτό γκρι για hover */
-    -fx-text-fill: -color-fg-default; /* Χρησιμοποιεί το προεπιλεγμένο χρώμα κειμένου του θέματος */
+    -fx-background-color: -color-accent-subtle;
 }
 
-/* Selected row effect */
 .table-row-cell:filled:selected {
-    -fx-background-color: -color-accent-emphasis; /* Πιο έντονο χρώμα από το θέμα */
-    -fx-font-weight: bold; /* Κάνει το κείμενο πιο έντονο */
-    -fx-font-size: 1.3em; /* Ελαφρώς μεγαλύτερο κείμενο */
-}
-
-/* Target the text within the selected cell */
-.table-row-cell:filled:selected .text {
-    -fx-fill: -color-fg-emphasis; /* Το κείμενο γίνεται λευκό και υπερισχύει */
-}
-
-/* Combined hover and selected effect */
-.table-row-cell:filled:selected:hover {
-    -fx-background-color: derive(-color-accent-emphasis, -10%); /* Ελαφρώς πιο σκούρο από το επιλεγμένο */
-    -fx-text-fill: -color-fg-emphasis;
-}
-  .table-row-cell .text {
-      -fx-fill: -color-fg-default;
-  }
-
-.combo-box-popup .list-cell {
-    -fx-font-size: 1.2em; /* 20% larger */
-}
-
-.combo-box-popup .list-cell:filled:hover {
-    -fx-background-color: -color-accent-muted;
-
-}
-
-.combo-box-popup .list-cell:filled:selected {
     -fx-background-color: -color-accent-emphasis;
-    -fx-text-fill: -color-fg-emphasis !important;
 }
 
-.table-cell {
-      -fx-font-size: 1.1em; /* 10% larger */
-  }
+.table-row-cell:filled:selected .text {
+    -fx-fill: -color-fg-emphasis;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.2em; /* 10% larger */
+}
+
+.table-row-cell .text {
+    -fx-fill: -color-fg-default;
+}
+
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
 
 /* Larger button text */
 .button {
@@ -78,6 +91,11 @@
     -fx-font-weight: bold;
 }
 
+.text-field .selection {
+    -fx-fill: -fx-highlight-fill;
+    -fx-stroke: -fx-highlight-text-fill;
+}
+
 .text-field {
     -fx-font-size: 1.2em; /* 20% larger */
     -fx-border-color: -color-neutral-emphasis;
@@ -99,10 +117,6 @@
     -fx-border-width: 2px;
 }
 
-.notification-bar > .pane {
-    -fx-background-color: -color-bg-default;
-}
-
   .expired-row {
       -fx-background-color: -color-danger-subtle;
   }
@@ -114,3 +128,37 @@
     .completed-order-row {
         -fx-background-color: -color-success-subtle;
     }
+
+.custom-notification {
+    -fx-background-radius: 10;
+    -fx-padding: 20px;
+    -fx-border-radius: 10;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 0, 0);
+}
+
+.custom-notification.info {
+    -fx-background-color: -color-info-subtle;
+    -fx-border-color: -color-info-emphasis;
+}
+
+.custom-notification.error {
+    -fx-background-color: -color-danger-subtle;
+    -fx-border-color: -color-danger-emphasis;
+}
+
+.custom-notification.warning {
+    -fx-background-color: -color-warning-subtle;
+    -fx-border-color: -color-warning-emphasis;
+}
+
+.custom-notification .title {
+    -fx-font-size: 1.3em;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-fg-emphasis;
+}
+
+.custom-notification .message {
+    -fx-font-size: 1.1em;
+    -fx-text-fill: -color-fg-default;
+}

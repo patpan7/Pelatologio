@@ -17,11 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.AppSettings;
-import org.easytech.pelatologio.helper.ComboBoxHelper;
-import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Device;
 import org.easytech.pelatologio.models.Item;
@@ -56,8 +52,6 @@ public class AddDeviceController {
 
     private Device device;
     private int customerId;
-    private String customerName;
-    private Customer selectedCustomer;
     private FilteredList<Customer> filteredCustomers;
     private FilteredList<Item> filteredItems;
 
@@ -147,7 +141,7 @@ public class AddDeviceController {
                         if (!newSerial.trim().isEmpty() && !serialNumbers.contains(newSerial)) {
                             serialNumbers.set(serialNumbers.indexOf(selectedSerial), newSerial);
                         } else {
-                            showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Ο σειριακός αριθμός είναι κενός ή υπάρχει ήδη!");
+                            AlertDialogHelper.showErrorDialog("Σφάλμα", "Ο σειριακός αριθμός είναι κενός ή υπάρχει ήδη!");
                         }
                     });
                 }
@@ -196,13 +190,7 @@ public class AddDeviceController {
         if (serial.isEmpty()) {
             //showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Το πεδίο σειριακού αριθμού είναι κενό!");
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Σφάλμα")
-                        .text("Το πεδίο σειριακού αριθμού είναι κενό!")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                CustomNotification.create().title("Σφάλμα").text("Το πεδίο σειριακού αριθμού είναι κενό!").hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT).showWarning();
             });
             return;
         }
@@ -210,13 +198,7 @@ public class AddDeviceController {
         if (serialNumbers.contains(serial)) {
             //showAlert(Alert.AlertType.WARNING, "Προειδοποίηση", "Ο σειριακός αριθμός έχει ήδη προστεθεί!");
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
-                        .title("Προειδοποίηση")
-                        .text("Ο σειριακός αριθμός έχει ήδη προστεθεί!")
-                        .graphic(null)
-                        .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                CustomNotification.create().title("Προειδοποίηση").text("Ο σειριακός αριθμός έχει ήδη προστεθεί!").hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT).showError();
             });
             serialField.setText("");
             return;
@@ -278,8 +260,7 @@ public class AddDeviceController {
             String rate = rateField.getEditor().getText().trim();
             if (!rate.isEmpty() && descriptionField.getText() == null || descriptionField.getText().isEmpty())
                 description = "TID: " + descriptionField.getText();
-            else
-                description = descriptionField.getText();
+            else description = descriptionField.getText();
 
             // Επιλογή πελάτη
             Object value = customerComboBox.getValue();
@@ -288,10 +269,7 @@ public class AddDeviceController {
             if (value instanceof Customer) {
                 selectedCustomer = (Customer) value;
             } else if (value instanceof String customerName) {
-                selectedCustomer = customerComboBox.getItems().stream()
-                        .filter(c -> c.getName().equalsIgnoreCase(customerName))
-                        .findFirst()
-                        .orElse(null);
+                selectedCustomer = customerComboBox.getItems().stream().filter(c -> c.getName().equalsIgnoreCase(customerName)).findFirst().orElse(null);
             }
 
             // Επιλογή είδους
@@ -301,19 +279,15 @@ public class AddDeviceController {
             if (itemValue instanceof Item) {
                 selectedItem = (Item) itemValue;
             } else if (itemValue instanceof String itemName) {
-                selectedItem = itemComboBox.getItems().stream()
-                        .filter(i -> i.getName().equalsIgnoreCase(itemName))
-                        .findFirst()
-                        .orElse(null);
+                selectedItem = itemComboBox.getItems().stream().filter(i -> i.getName().equalsIgnoreCase(itemName)).findFirst().orElse(null);
             }
 
             if (selectedItem == null) {
-                showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Πρέπει να επιλέξετε ένα είδος!");
+                AlertDialogHelper.showErrorDialog("Σφάλμα", "Πρέπει να επιλέξετε ένα είδος!");
                 return false;
             }
 
             int itemId = selectedItem.getId();
-            DBHelper dbHelper = new DBHelper();
 
 
             if (device == null) {
@@ -322,13 +296,12 @@ public class AddDeviceController {
                 for (String serial : serialNumbers) {
                     if (!DBHelper.getDeviceDao().isSerialUnique(serial)) {
                         Platform.runLater(() -> {
-                            Notifications notifications = Notifications.create()
+                            CustomNotification.create()
                                     .title("Σφάλμα")
                                     .text("Ο σειριακός αριθμός " + serial + " υπάρχει ήδη!")
-                                    .graphic(null)
                                     .hideAfter(Duration.seconds(5))
-                                    .position(Pos.TOP_RIGHT);
-                            notifications.showError();
+                                    .position(Pos.TOP_RIGHT)
+                                    .showWarning();
                         });
                         invalidSerials.add(serial);
                     }
@@ -337,7 +310,7 @@ public class AddDeviceController {
                 serialNumbers.removeAll(invalidSerials);
                 // Αν μετά την αφαίρεση η λίστα είναι άδεια, σταματάμε
                 if (serialNumbers.isEmpty()) {
-                    showAlert(Alert.AlertType.WARNING, "Προειδοποίηση", "Δεν υπάρχουν έγκυροι σειριακοί αριθμοί για αποθήκευση.");
+                    AlertDialogHelper.showWarningDialog("Προειδοποίηση", "Δεν υπάρχουν έγκυροι σειριακοί αριθμοί για αποθήκευση.");
                     return false;
                 }
 
@@ -346,13 +319,12 @@ public class AddDeviceController {
                     Device newDevice = new Device(0, serial, description, rate, itemId, selectedCustomer != null ? selectedCustomer.getCode() : 0);
                     if (DBHelper.getDeviceDao().saveDevice(newDevice)) {
                         Platform.runLater(() -> {
-                            Notifications notifications = Notifications.create()
+                            CustomNotification.create()
                                     .title("Επιτυχία")
                                     .text("Η συσκευή με σειριακό " + serial + " προστέθηκε!")
-                                    .graphic(null)
                                     .hideAfter(Duration.seconds(5))
-                                    .position(Pos.TOP_RIGHT);
-                            notifications.showInformation();
+                                    .position(Pos.TOP_RIGHT)
+                                    .showConfirmation();
                         });
                     }
                 }
@@ -372,7 +344,7 @@ public class AddDeviceController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Σφάλμα", "Υπήρξε πρόβλημα με την αποθήκευση της συσκευής!");
+            AlertDialogHelper.showErrorDialog( "Σφάλμα", "Υπήρξε πρόβλημα με την αποθήκευση της συσκευής!");
             return false;
         }
     }
@@ -389,32 +361,28 @@ public class AddDeviceController {
                 }
             }
 
-            DBHelper dbHelper = new DBHelper();
-
             // Έλεγχος μοναδικότητας του σειριακού αριθμού
             List<String> invalidSerials = new ArrayList<>();
             for (String serial : serialNumbers) {
                 if (DBHelper.getDeviceDao().isSerialAssigned(serial, customerId)) {
                     Platform.runLater(() -> {
-                        Notifications notifications = Notifications.create()
+                        CustomNotification.create()
                                 .title("Σφάλμα")
                                 .text("Ο σειριακός αριθμός " + serial + " ανήκει σε άλλον πελάτη!")
-                                .graphic(null)
                                 .hideAfter(Duration.seconds(5))
-                                .position(Pos.TOP_RIGHT);
-                        notifications.showError();
+                                .position(Pos.TOP_RIGHT)
+                                .showError();
                     });
                     invalidSerials.add(serial);
                 }
                 if (DBHelper.getDeviceDao().isSerialUnique(serial)) {
                     Platform.runLater(() -> {
-                        Notifications notifications = Notifications.create()
+                        CustomNotification.create()
                                 .title("Σφάλμα")
                                 .text("Ο σειριακός αριθμός " + serial + " δεν υπάρχει!")
-                                .graphic(null)
                                 .hideAfter(Duration.seconds(5))
-                                .position(Pos.TOP_RIGHT);
-                        notifications.showError();
+                                .position(Pos.TOP_RIGHT)
+                                .showError();
                     });
                     invalidSerials.add(serial);
                 }
@@ -423,7 +391,7 @@ public class AddDeviceController {
             serialNumbers.removeAll(invalidSerials);
             // Αν μετά την αφαίρεση η λίστα είναι άδεια, σταματάμε
             if (serialNumbers.isEmpty()) {
-                showAlert(Alert.AlertType.WARNING, "Προειδοποίηση", "Δεν υπάρχουν έγκυροι σειριακοί αριθμοί για αποθήκευση.");
+                AlertDialogHelper.showWarningDialog( "Προειδοποίηση", "Δεν υπάρχουν έγκυροι σειριακοί αριθμοί για αποθήκευση.");
                 return false;
             }
 
@@ -431,13 +399,12 @@ public class AddDeviceController {
             for (String serial : serialNumbers) {
                 if (DBHelper.getDeviceDao().assignDevice(serial, customerId)) {
                     Platform.runLater(() -> {
-                        Notifications notifications = Notifications.create()
+                        CustomNotification.create()
                                 .title("Επιτυχία")
                                 .text("Η συσκευή με σειριακό " + serial + " προστέθηκε!")
-                                .graphic(null)
                                 .hideAfter(Duration.seconds(5))
-                                .position(Pos.TOP_RIGHT);
-                        notifications.showInformation();
+                                .position(Pos.TOP_RIGHT)
+                                .showConfirmation();
                     });
                 }
             }
@@ -487,16 +454,4 @@ public class AddDeviceController {
             Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εμφάνιση του πελάτη.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
-
-
-    // Μέθοδος για εμφάνιση Alert
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-
 }

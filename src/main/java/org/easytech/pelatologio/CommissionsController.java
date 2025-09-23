@@ -10,8 +10,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.dao.CommissionDao;
+import org.easytech.pelatologio.helper.CustomNotification;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Commission;
 
@@ -103,16 +103,16 @@ public class CommissionsController {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 commissionDao.deleteCommission(selected.getId());
-                Notifications.create()
+                CustomNotification.create()
                         .title("Επιτυχία")
                         .text("Η προμήθεια διαγράφηκε με επιτυχία.")
                         .position(Pos.TOP_RIGHT)
                         .hideAfter(Duration.seconds(5))
-                        .showInformation();
+                        .showConfirmation();
                 loadCommissions();
             }
         } else {
-            Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("Παρακαλώ επιλέξτε μια προμήθεια για διαγραφή.")
                     .position(Pos.TOP_RIGHT)

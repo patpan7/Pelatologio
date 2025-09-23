@@ -52,7 +52,7 @@ public class ThemeManager {
 
     public static boolean isDarkMode() {
         String darkMode = AppSettings.loadSetting(DARK_MODE_PREF_KEY);
-        return darkMode != null && Boolean.parseBoolean(darkMode);
+        return Boolean.parseBoolean(darkMode);
     }
 
     public static String getCurrentTheme() {

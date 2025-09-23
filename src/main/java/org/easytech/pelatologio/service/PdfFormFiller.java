@@ -44,11 +44,9 @@ public class PdfFormFiller {
             
             // Force the default appearance on all fields to override individual field settings
             for (PDField field : acroForm.getFields()) {
-                if (field instanceof org.apache.pdfbox.pdmodel.interactive.form.PDTextField) {
-                    org.apache.pdfbox.pdmodel.interactive.form.PDTextField textField = (org.apache.pdfbox.pdmodel.interactive.form.PDTextField) field;
+                if (field instanceof org.apache.pdfbox.pdmodel.interactive.form.PDTextField textField) {
                     textField.setDefaultAppearance(daString);
-                } else if (field instanceof org.apache.pdfbox.pdmodel.interactive.form.PDChoice) {
-                    org.apache.pdfbox.pdmodel.interactive.form.PDChoice choiceField = (org.apache.pdfbox.pdmodel.interactive.form.PDChoice) field;
+                } else if (field instanceof org.apache.pdfbox.pdmodel.interactive.form.PDChoice choiceField) {
                     choiceField.setDefaultAppearance(daString);
                 }
             }

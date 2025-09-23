@@ -19,8 +19,8 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CustomNotification;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.TaskCategory;
@@ -226,13 +226,12 @@ public class TaskListViewController implements Initializable {
         Tasks selectedTasks = taskTable.getSelectionModel().getSelectedItem();
         if (selectedTasks == null) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Δεν έχει επιλεγεί εργασία.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return;
         }
@@ -240,25 +239,23 @@ public class TaskListViewController implements Initializable {
         if (DBHelper.getTaskDao().completeTask(selectedTasks.getId(), complete)) {
             System.out.println("Task completion status updated.");
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Ενημέρωση")
                         .text("Ενημέρωση εργασίας επιτυχής.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();
+                        .position(Pos.TOP_RIGHT)
+                        .showConfirmation();
             });
             loadTasks(); // Φορτώνει ξανά τις εργασίες
         } else {
             System.out.println("Failed to update task completion status.");
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Ενημέρωση")
                         .text("Αποτυχία ενημέρωση εργασίας.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
         }
     }
@@ -266,7 +263,6 @@ public class TaskListViewController implements Initializable {
 
     private void loadTasks() {
         // Φόρτωση όλων των εργασιών από τη βάση
-        DBHelper dbHelper = new DBHelper();
         List<TableColumn<Tasks, ?>> sortOrder = new ArrayList<>(taskTable.getSortOrder());
         allTasks.setAll(DBHelper.getTaskDao().getAllTasks());
         updateTaskTable();

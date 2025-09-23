@@ -11,11 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.CustomerTabController;
-import org.easytech.pelatologio.helper.DBHelper;
-import org.easytech.pelatologio.helper.Features;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Tasks;
 
@@ -126,13 +122,12 @@ public class CustomerTasksController implements CustomerTabController {
             Tasks selectedTasks = tasksTable.getSelectionModel().getSelectedItem();
             if (selectedTasks == null) {
                 Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
+                    CustomNotification.create()
                             .title("Προσοχή")
                             .text("Δεν έχει επιλεγεί εργασία.")
-                            .graphic(null)
                             .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();
+                            .position(Pos.TOP_RIGHT)
+                            .showWarning();
                 });
                 return;
             }
@@ -141,35 +136,32 @@ public class CustomerTasksController implements CustomerTabController {
             if (DBHelper.getTaskDao().completeTask(selectedTasks.getId(), complete)) {
                 System.out.println("Task completion status updated.");
                 Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
+                    CustomNotification.create()
                             .title("Ενημέρωση")
                             .text("Ενημέρωση εργασίας επιτυχής.")
-                            .graphic(null)
                             .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showConfirm();
+                            .position(Pos.TOP_RIGHT)
+                            .showConfirmation();
                 });
                 loadTasks(customer.getCode()); // Φορτώνει ξανά τις εργασίες
             } else {
                 System.out.println("Failed to update task completion status.");
                 Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
+                    CustomNotification.create()
                             .title("Ενημέρωση")
                             .text("Αποτυχία ενημέρωση εργασίας.")
-                            .graphic(null)
                             .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();
+                            .position(Pos.TOP_RIGHT)
+                            .showError();
                 });
             }
         } else {
-            Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("Το module Εργασίες είναι απενεργοποιημένο.")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(3))
                     .position(Pos.TOP_RIGHT)
-                    .showWarning();
+                    .showError();
         }
     }
 
@@ -178,7 +170,6 @@ public class CustomerTasksController implements CustomerTabController {
         if (Features.isEnabled("tasks")) {
             allTasks.clear();
             // Φόρτωση όλων των εργασιών από τη βάση
-            DBHelper dbHelper = new DBHelper();
             allTasks.setAll(DBHelper.getTaskDao().getAllCustomerTasks(customerCode));
         }
     }
@@ -225,13 +216,12 @@ public class CustomerTasksController implements CustomerTabController {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την προσθήγη.", e.getMessage(), Alert.AlertType.ERROR));
             }
         } else {
-            Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("Το module Εργασίες είναι απενεργοποιημένο.")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(3))
                     .position(Pos.TOP_RIGHT)
-                    .showWarning();
+                    .showError();
         }
     }
 
@@ -283,13 +273,12 @@ public class CustomerTasksController implements CustomerTabController {
                 Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
             }
         } else {
-            Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("Το module Εργασίες είναι απενεργοποιημένο.")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(3))
                     .position(Pos.TOP_RIGHT)
-                    .showWarning();
+                    .showError();
         }
     }
 

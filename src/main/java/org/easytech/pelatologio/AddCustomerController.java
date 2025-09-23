@@ -1,5 +1,6 @@
 package org.easytech.pelatologio;
 
+import de.jensd.fx.glyphs.testapps.App;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,7 +30,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.*;
 
@@ -235,41 +235,41 @@ public class AddCustomerController {
         btnAccEmail1.setOnAction(this::showEmailDialog);
 
         // Setup phone buttons with left and right click actions
-        setupPhoneButton(btnPhone1, tfPhone1);
-        setupPhoneButton(btnPhone2, tfPhone2);
-        setupPhoneButton(btnMobile, tfMobile);
-        setupPhoneButton(btnPhoneManager, tfManagerPhone);
-        setupPhoneButton(btnAccPhone, tfAccPhone);
-        setupPhoneButton(btnAccMobile, tfAccMobile);
+        AppUtils.setupPhoneButton(btnPhone1, tfPhone1);
+        AppUtils.setupPhoneButton(btnPhone2, tfPhone2);
+        AppUtils.setupPhoneButton(btnMobile, tfMobile);
+        AppUtils.setupPhoneButton(btnPhoneManager, tfManagerPhone);
+        AppUtils.setupPhoneButton(btnAccPhone, tfAccPhone);
+        AppUtils.setupPhoneButton(btnAccMobile, tfAccMobile);
 
         // Ενέργειες για τα copy, paste, clear items στο βασικό contextMenu
-        copyItem.setOnAction(e -> copyText());
-        pasteItem.setOnAction(e -> pasteText());
-        clearItem.setOnAction(e -> clearText());
+        copyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        pasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
+        clearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
 
         // Ενέργειες για τα phoneCopyItem, phonePasteItem, phoneClearItem στο phoneContextMenu
-        phoneCopyItem.setOnAction(e -> copyText());
-        phonePasteItem.setOnAction(e -> pasteText());
-        phoneClearItem.setOnAction(e -> clearText());
+        phoneCopyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        phonePasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
+        phoneClearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
         // Ενέργεια "Viber" μόνο για τα τηλέφωνα
         viberItem.setOnAction(e -> {
             if (currentTextField == tfPhone1 || currentTextField == tfPhone2 || currentTextField == tfMobile || currentTextField == tfManagerPhone) { // Εκτέλεση μόνο αν είναι στο tfEmail
-                viberComunicate(currentTextField);
+                AppUtils.viberComunicate(currentTextField.getText());
             }
         });
         // Ενέργειες για τα emailCopyItem, emailPasteItem, emailClearItem στο emailContextMenu
-        emailCopyItem.setOnAction(e -> copyText());
-        emailPasteItem.setOnAction(e -> pasteText());
-        emailClearItem.setOnAction(e -> clearText());
+        emailCopyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        emailPasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
+        emailClearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
 
         // Ενέργεια "Δοκιμή Email" μόνο για το tfEmail
         mailItem.setOnAction(e -> {
             if (currentTextField == tfEmail) { // Εκτέλεση μόνο αν είναι στο tfEmail
-                sendTestEmail(tfEmail);
+                AppUtils.sendTestEmail(tfEmail.getText(), progressIndicator);
             } else if (currentTextField == tfEmail2) { // Εκτέλεση μόνο αν είναι στο tfEmail2
-                sendTestEmail(tfEmail2);
+                AppUtils.sendTestEmail(tfEmail2.getText(),progressIndicator);
             } else if (currentTextField == tfAccEmail) { // Εκτέλεση μόνο αν είναι στο tfEmail2
-                sendTestEmail(tfAccEmail);
+                AppUtils.sendTestEmail(tfAccEmail.getText(), progressIndicator);
             }
         });
         List<Accountant> accountants = DBHelper.getAccountantDao().getAccountants();
@@ -494,232 +494,6 @@ public class AddCustomerController {
         textField.setOnContextMenuRequested(e -> currentTextField = textField);
     }
 
-    // Μέθοδοι για τις ενέργειες
-    private void copyText() {
-        if (currentTextField != null) {
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(currentTextField.getText());  // Replace with the desired text
-            clipboard.setContent(content);
-        }
-    }
-
-    private void pasteText() {
-        if (currentTextField != null) {
-            currentTextField.paste();
-        }
-    }
-
-    private void clearText() {
-        if (currentTextField != null) {
-            currentTextField.clear();
-        }
-    }
-
-    // Μέθοδος αποστολής με viber
-    private void viberComunicate(TextField phoneField) {
-        String phone = phoneField.getText();
-        if (phone != null && !phone.isEmpty()) {
-            try {
-                File viberPath = new File(System.getenv("LOCALAPPDATA") + "\\Viber\\Viber.exe");
-                Desktop.getDesktop().open(viberPath);
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                ClipboardContent content = new ClipboardContent();
-                content.putString(phone);  // Replace with the desired text
-                clipboard.setContent(content);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Notifications notifications = Notifications.create().title("Προσοχή").text("Παρακαλώ εισάγετε ένα έγκυρο τηλέφωνο").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
-            notifications.showError();
-        }
-    }
-
-    // Μέθοδος αποστολής δοκιμαστικού email
-    private void sendTestEmail(TextField emailField) {
-        String email = emailField.getText();
-        if (email != null && !email.isEmpty()) {
-            // Εμφάνιση του progress indicator
-            progressIndicator.setVisible(true);
-
-            // Δημιουργία και αποστολή email σε ξεχωριστό thread για να μην κολλήσει το UI
-            Thread emailThread = new Thread(() -> {
-                try {
-                    String subject = "Δοκιμή Email";
-                    String body = "Δοκιμή email.";
-                    EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
-                    emailSender.sendEmail(email, subject, body);
-
-                    // Ενημερώνουμε το UI όταν ολοκληρωθεί η αποστολή του email
-                    Platform.runLater(() -> {
-                        Notifications notifications = Notifications.create().title("Επιτυχία").text("Το email στάλθηκε με επιτυχία.").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
-                        notifications.showConfirm();
-                        progressIndicator.setVisible(false); // Απόκρυψη του progress indicator
-                    });
-                } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        AlertDialogHelper.showDialog("Σφάλμα", "Υπήρξε πρόβλημα με την αποστολή του email.", e.getMessage(), Alert.AlertType.ERROR);
-                        progressIndicator.setVisible(false); // Απόκρυψη του progress indicator
-                    });
-                    Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
-                }
-            });
-            emailThread.setDaemon(true);
-            emailThread.start(); // Ξεκινάμε το thread για την αποστολή του email
-        } else {
-            //showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο email.");
-            Notifications notifications = Notifications.create().title("Προσοχή").text("Παρακαλώ εισάγετε ένα έγκυρο email.").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
-            notifications.showError();
-        }
-    }
-
-
-//    public void setCustomerForEdit(Customer customer) {
-//        this.isLoading = true; // Start loading data
-//
-//        // Ρύθμιση των πεδίων με τα υπάρχοντα στοιχεία του πελάτη
-//        tfName.setText(customer.getName());
-//        tfTitle.setText(customer.getTitle());
-//        tfJob.setText(customer.getJob());
-//        tfAfm.setText(customer.getAfm());
-//        tfPhone1.setText(customer.getPhone1());
-//        tfPhone2.setText(customer.getPhone2());
-//        tfMobile.setText(customer.getMobile());
-//        tfAddress.setText(customer.getAddress());
-//        tfTown.setText(customer.getTown());
-//        tfPostCode.setText(customer.getPostcode());
-//        tfEmail.setText(customer.getEmail());
-//        tfEmail2.setText(customer.getEmail2());
-//        tfManager.setText(customer.getManager());
-//        tfManagerPhone.setText(customer.getManagerPhone());
-//        taNotes.setText(customer.getNotes());
-//        tfAccName1.setText(customer.getAccName1());
-//        tfAccEmail1.setText(customer.getAccEmail1());
-//        tfBalance.setText(customer.getBalance());
-//        taBalanceReason.setText(customer.getBalanceReason());
-//        tfBalanceMega.setText(DBHelper.getMegasoftDao().getMegasoftBalance(customer.getAfm()));
-//
-//        checkboxActive.setSelected(customer.getActive());
-//
-//        // Add listeners after populating the fields to avoid premature firing
-//        Platform.runLater(() -> {
-//            setupFieldListeners();
-//            this.hasUnsavedChanges = false; // Reset again after listeners are set
-//            updateTabTitle("");
-//        });
-//
-//
-//        btnAddressAdd.setDisable(false);
-//
-//
-//        btnData.setDisable(false);
-//        btnData.setVisible(true);
-//        btnLabel.setDisable(false);
-//        btnLabel.setVisible(true);
-//        btnCopy.setDisable(false);
-//        btnCopy.setVisible(true);
-//
-//        btnAcs.setDisable(false);
-//        btnAcs.setVisible(true);
-//
-//        btnAnydesk.setDisable(false);
-//        btnAnydesk.setVisible(true);
-//        tfBalance.setDisable(false);
-//        tfBalance.setVisible(true);
-//        lblBlance.setVisible(true);
-//        tfBalanceMega.setDisable(false);
-//        tfBalanceMega.setVisible(true);
-//        lblBlanceMega.setVisible(true);
-//        checkboxActive.setVisible(true);
-//        checkboxActive.setDisable(false);
-//
-//        if (Features.isEnabled("taxis")) {
-//            tabTaxis.setDisable(false);
-//        }
-//        if (Features.isEnabled("mypos")) {
-//            tabMypos.setDisable(false);
-//        }
-//        if (Features.isEnabled("simply")) {
-//            tabSimply.setDisable(false);
-//        }
-//        if (Features.isEnabled("emblem")) {
-//            tabEmblem.setDisable(false);
-//        }
-//        if (Features.isEnabled("ergani")) {
-//            tabErgani.setDisable(false);
-//        }
-//        if (Features.isEnabled("pelatologio")) {
-//            tabPelatologio.setDisable(false);
-//        }
-//        if (Features.isEnabled("ninepos")) {
-//            tabNinepos.setDisable(false);
-//        }
-//        if (Features.isEnabled("devices")) {
-//            tabDevices.setDisable(false);
-//        }
-//        if (Features.isEnabled("megasoft")) {
-//            tabInvoices.setDisable(false);
-//            btnAddToMegasoft.setDisable(false);
-//            btnAddToMegasoft.setVisible(true);
-//        }
-//        if (Features.isEnabled("tasks")) {
-//            tabTasks.setDisable(false);
-//            btnTask.setDisable(false);
-//            btnTask.setVisible(true);
-//        }
-//        if (Features.isEnabled("subs")) {
-//            tabSubs.setDisable(false);
-//        }
-//        if (Features.isEnabled("offers")) {
-//            tabOffers.setDisable(false);
-//        }
-//        if (Features.isEnabled("calls")) {
-//            tabCallLog.setDisable(false);
-//            startCallLogButton.setDisable(false);
-//            startCallLogButton.setVisible(true);
-//        }
-//        if (Features.isEnabled("orders")) {
-//            tabOrders.setDisable(false);
-//        }
-//
-//        startCallLogButton.setOnAction(e -> handleStartCallLogging());
-//        // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
-//        this.code = customer.getCode();
-//        this.customer = customer;
-//
-//
-//        // Find and select the parent job team based on the sub job team ID
-//        if (customer.getSubJobTeam() != 0) {
-//            int parentTeamId = DBHelper.getJobTeamDao().getParentTeamIdBySubTeamId(customer.getSubJobTeam());
-//            if (parentTeamId != 0) {
-//                for (JobTeam jobTeam : jobTeamList) {
-//                    if (jobTeam.getId() == parentTeamId) {
-//                        tfJobTeam.getSelectionModel().select(jobTeam);
-//                        // The listener of tfJobTeam has now populated the sub-teams.
-//                        // We can now select the correct sub-team directly.
-//                        for (SubJobTeam s : subJobTeamList) {
-//                            if (s.getId() == customer.getSubJobTeam()) {
-//                                tfSubJobTeam.getSelectionModel().select(s);
-//                                break;
-//                            }
-//                        }
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//        hasTabs();
-//        setAccountant();
-//        setRecommendation();
-//        setJobTeam();
-//
-//        this.isLoading = false; // Finish loading data
-//        this.hasUnsavedChanges = false; // Ensure it's clean after loading
-//        updateTabTitle("");
-//        lblCode.setText("Κωδικός: " + customer.getCode());
-//    }
-//
 
     /**
      * Καλείται όταν ανοίγεις πελάτη για επεξεργασία.
@@ -830,7 +604,7 @@ public class AddCustomerController {
                     tabPane.getTabs().add(tab); // Προσθήκη στο TabPane
                 }
             } else {
-                if (tab != null && tabPane.getTabs().contains(tab)) {
+                if (tab != null) {
                     tabPane.getTabs().remove(tab); // Αφαίρεση από το TabPane
                 }
             }
@@ -1216,8 +990,12 @@ public class AddCustomerController {
         String afm = tfAfm.getText();
         if (afm == null || afm.isEmpty()) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create().title("Προσοχή").text("Παρακαλώ εισάγετε ένα έγκυρο ΑΦΜ.").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
-                notifications.showError();
+                CustomNotification.create()
+                        .title("Προσοχή")
+                        .text("Παρακαλώ εισάγετε ένα έγκυρο ΑΦΜ.")
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
             return;
         }
@@ -1229,8 +1007,12 @@ public class AddCustomerController {
         String errorDescr = AfmResponseParser.getXPathValue(responseXml, "//error_rec/error_descr");
         if (errorDescr != null && !errorDescr.isEmpty()) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create().title("Προσοχή").text(errorDescr).graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
-                notifications.showError();
+                CustomNotification.create()
+                        .title("Προσοχή")
+                        .text(errorDescr)
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
             return;
         }
@@ -1246,8 +1028,12 @@ public class AddCustomerController {
             tfPostCode.setText(companyInfo.getPostcode());
         } else {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create().title("Προσοχή").text("Σφάλμα κατά την ανάγνωση των δεδομένων").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
-                notifications.showError();
+                CustomNotification.create()
+                        .title("Προσοχή")
+                        .text("Σφάλμα κατά την ανάγνωση των δεδομένων")
+                        .hideAfter(Duration.seconds(5))
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
         }
     }
@@ -1563,13 +1349,12 @@ public class AddCustomerController {
 
         if (!afmIsEmpty && DBHelper.getCustomerDao().isAfmExists(afm)) {
             Platform.runLater(() -> {
-                Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Ο πελάτης με ΑΦΜ " + afm + " υπάρχει ήδη.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(3))
                         .position(Pos.TOP_RIGHT)
-                        .showError();
+                        .showWarning();
             });
         } else {
             int customerId = DBHelper.getCustomerDao().insertCustomer(name, title, job, afm, phone1, phone2, mobile, primaryAddress, town, postcode, email, email2, manager, managerPhone, notes, accId, accName1, accEmail1, selectedRecommendation, balance, balanceReason, selectedJobTeam);
@@ -1581,13 +1366,12 @@ public class AddCustomerController {
             }
 
             Platform.runLater(() -> {
-                Notifications.create()
+                CustomNotification.create()
                         .title("Επιτυχία")
                         .text("Ο πελάτης εισήχθη με επιτυχία στη βάση δεδομένων.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(3))
                         .position(Pos.TOP_RIGHT)
-                        .showInformation();
+                        .showConfirmation();
                 closeCurrentTab();
                 openCustomerTab(customerId);
             });
@@ -1694,14 +1478,22 @@ public class AddCustomerController {
 
         DBHelper.getAccountantDao().updateAccountant(accId, accName, accPhone, accMobile, accEmail, accErganiEmail);
 
-        Notifications notifications = Notifications.create().title("Επιτυχία").text("Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
-        notifications.showInformation();
+        CustomNotification.create()
+                .title("Επιτυχία")
+                .text("Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.")
+                .hideAfter(Duration.seconds(5))
+                .position(Pos.TOP_RIGHT)
+                .showConfirmation();
     }
 
     public void addAddress(ActionEvent event) {
         if (tfAddress.getText() == null || tfAddress.getText().isEmpty()) {
-            Notifications notifications = Notifications.create().title("Προσοχή").text("Δεν υπάρχει κεντρική διεύθυνση!").graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
-            notifications.showError();
+            CustomNotification.create()
+                    .title("Προσοχή")
+                    .text("Δεν υπάρχει κεντρική διεύθυνση!")
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
             return;
         }
         try {
@@ -1738,7 +1530,7 @@ public class AddCustomerController {
 
     public void copyClick(ActionEvent event) {
         String msg = "Στοιχεία πελάτη" + "\nΕπωνυμία: " + customer.getName() + "\nΤίτλος: " + customer.getTitle() + "\nΕπάγγελμα: " + customer.getJob() + "\nΔιεύθυνση: " + customer.getAddress() + "\nΠόλη: " + customer.getTown() + "\nΤ.Κ.: " + customer.getPostcode() + "\nΑΦΜ: " + customer.getAfm() + "\nEmail: " + customer.getEmail() + "\nΤηλέφωνο: " + customer.getPhone1() + "\nΚινητό: " + customer.getMobile();
-        copyTextToClipboard(msg);
+        AppUtils.copyTextToClipboard(msg);
     }
 
 
@@ -1775,15 +1567,6 @@ public class AddCustomerController {
         }
     }
 
-    private void copyTextToClipboard(String msg) {
-        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(msg);  // Replace with the desired text
-        clipboard.setContent(content);
-        Notifications notifications = Notifications.create().title("Αντιγραφή στο πρόχειρο").text(msg).graphic(null).hideAfter(Duration.seconds(5)).position(Pos.TOP_RIGHT);
-        notifications.showInformation();
-    }
 
 
     private void setTooltip(Button button, String text) {
@@ -1797,27 +1580,15 @@ public class AddCustomerController {
         Button clickedButton = (Button) actionEvent.getSource(); // Ποιο κουμπί πατήθηκε;
         TextField emailField = (TextField) clickedButton.getUserData(); // Παίρνουμε το TextField που είναι συνδεδεμένο με το κουμπί
         if (emailField != null && !emailField.getText().isEmpty()) {
-            try {
-                String email = emailField.getText();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Αποστολή Email");
+            EmailHelper.EmailDialogOptions options = new EmailHelper.EmailDialogOptions(emailField.getText())
+                    .subject("")
+                    .body("")
+                    .showCopyOption(true)
+                    .saveCopy(true)
+                    .customer(customer)
+                    .onSuccess(null);
 
-                // Copy stylesheets from main window to the dialog
-                if (emailField.getScene() != null) {
-                    dialog.getDialogPane().getStylesheets().addAll(emailField.getScene().getStylesheets());
-                }
-
-                EmailDialogController controller = loader.getController();
-                controller.setOwnerNode(tabPane); // NEW
-                controller.setCustomer(customer);
-                controller.setEmail(email);
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-                dialog.show();
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-            }
+            EmailHelper.showEmailDialog(options);
         }
     }
 
@@ -2130,15 +1901,6 @@ public class AddCustomerController {
      * @param button    The button to set up.
      * @param textField The text field containing the phone number.
      */
-    private void setupPhoneButton(Button button, TextField textField) {
-        button.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                PhoneCall.callHandle(textField.getText());
-            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                PhoneCall.callHandle2(textField.getText());
-            }
-        });
-    }
 
     public void anydesk(MouseEvent mouseEvent) {
         openAnydeskWindow(customer);

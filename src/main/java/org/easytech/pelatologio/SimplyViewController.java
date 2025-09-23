@@ -1,7 +1,6 @@
 package org.easytech.pelatologio;
 
 import atlantafx.base.controls.ToggleSwitch;
-import com.jfoenix.controls.JFXCheckBox;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -18,7 +17,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Logins;
@@ -27,9 +25,7 @@ import org.openqa.selenium.By;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class SimplyViewController implements CustomerTabController {
     private static final String WARNING_TITLE = "Προσοχή";
@@ -153,12 +149,12 @@ public class SimplyViewController implements CustomerTabController {
 
     private void sendSimplyServiceEmail(Logins login) {
         EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("simplyService", customer, login);
-        sendEmail(emailContent.subject, emailContent.body);
+        sendEmail(emailContent.subject(), emailContent.body());
     }
 
     private void sendSimplyPosEmail(Logins login) {
         EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("simplyPos", customer, login);
-        sendEmail(emailContent.subject, emailContent.body);
+        sendEmail(emailContent.subject(), emailContent.body());
     }
 
     private void setupBidirectionalBinding() {
@@ -215,7 +211,12 @@ public class SimplyViewController implements CustomerTabController {
                 e.printStackTrace();
                 Platform.runLater(() -> {
                     progressBox.setVisible(false);
-                    showErrorNotification("Σφάλμα", "Δεν ήταν δυνατή η φόρτωση των logins: " + e.getMessage());
+                    CustomNotification.create()
+                            .title("Σφάλμα")
+                            .text("Δεν ήταν δυνατή η φόρτωση των logins: " + e.getMessage())
+                            .hideAfter(Duration.seconds(5))
+                            .position(Pos.TOP_RIGHT)
+                            .showWarning();
                 });
             }
         }).start();
@@ -349,7 +350,7 @@ public class SimplyViewController implements CustomerTabController {
                 "\nΚωδικός: " + selectedLogin.getPassword() +
                 "\nΚινητό: " + customer.getMobile() +
                 "\n";
-        copyTextToClipboard(msg);
+        AppUtils.copyTextToClipboard(msg);
     }
 
     public void handleAddTask(ActionEvent evt) {
@@ -511,11 +512,22 @@ public class SimplyViewController implements CustomerTabController {
                         "\nΚωδικός: " + selectedLogin.getPassword() +
                         "\nΚινητό: " + customer.getMobile() +
                         "\nΈχει κάνει αποδοχή σύμβασης και εξουσιοδότηση\n";
-                copyTextToClipboard(msg);
+                AppUtils.copyTextToClipboard(msg);
             } else if (choice == buttonRenew) {
-                EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("simplyRenew", customer, selectedLogin);
-                sendEmail(emailContent.subject, emailContent.body);
-                cbMail.setSelected(true);
+                List<String> choices = Arrays.asList("1 χρόνος", "2 χρόνια");
+                ChoiceDialog<String> dialog = new ChoiceDialog<>("1 χρόνος", choices);
+                dialog.setTitle("Επιλογή Διάρκειας Ανανέωσης");
+                dialog.setHeaderText("Επιλέξτε τη διάρκεια ανανέωσης για το email.");
+                dialog.setContentText("Διάρκεια:");
+
+                Optional<String> result = dialog.showAndWait();
+                result.ifPresent(duration -> {
+                    Map<String, String> placeholders = new HashMap<>();
+                    placeholders.put("{renewal_duration}", duration);
+                    EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("simplyRenew", customer, selectedLogin, placeholders);
+                    sendEmail(emailContent.subject(), emailContent.body());
+                    cbMail.setSelected(true);
+                });
             }
         });
     }
@@ -572,7 +584,12 @@ public class SimplyViewController implements CustomerTabController {
     private Logins checkSelectedLogin() {
         Logins selectedLogin = loginTable.getSelectionModel().getSelectedItem();
         if (selectedLogin == null) {
-            showErrorNotification(WARNING_TITLE, SELECT_LOGIN_MSG);
+            CustomNotification.create()
+                    .title(WARNING_TITLE)
+                    .text(SELECT_LOGIN_MSG)
+                    .hideAfter(Duration.seconds(5))
+                    .position(Pos.TOP_RIGHT)
+                    .showWarning();
         }
         return selectedLogin;
     }
@@ -585,33 +602,6 @@ public class SimplyViewController implements CustomerTabController {
         emailSender.sendEmail(AppSettings.loadSetting("simplyRegisterMail"), subject, msg);
     }
 
-    private void copyTextToClipboard(String msg) {
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(msg);
-        clipboard.setContent(content);
-        showInfoNotification("Αντιγραφή", "Οι πληροφορίες έχουν αντιγραφεί στο πρόχειρο.");
-    }
-
-    private void showInfoNotification(String title, String message) {
-        Notifications.create()
-                .title(title)
-                .text(message)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT)
-                .showInformation();
-    }
-
-    private void showErrorNotification(String title, String message) {
-        Notifications.create()
-                .title(title)
-                .text(message)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT)
-                .showError();
-    }
 
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();

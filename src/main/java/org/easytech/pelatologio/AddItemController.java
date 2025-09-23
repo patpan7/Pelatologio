@@ -12,7 +12,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
+import org.easytech.pelatologio.helper.AppUtils;
+import org.easytech.pelatologio.helper.CustomNotification;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Item;
 
@@ -41,9 +42,9 @@ public class AddItemController {
         setupTextFieldContextMenu(tfName, contextMenu);
 
         // Ενέργειες για τα copy, paste, clear items στο βασικό contextMenu
-        copyItem.setOnAction(e -> copyText());
-        pasteItem.setOnAction(e -> pasteText());
-        clearItem.setOnAction(e -> clearText());
+        copyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        pasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
+        clearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
     }
 
     @FXML
@@ -95,28 +96,6 @@ public class AddItemController {
         textField.setOnContextMenuRequested(e -> currentTextField = textField);
     }
 
-    // Μέθοδοι για τις ενέργειες
-    private void copyText() {
-        if (currentTextField != null) {
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(currentTextField.getText());  // Replace with the desired text
-            clipboard.setContent(content);
-        }
-    }
-
-    private void pasteText() {
-        if (currentTextField != null) {
-            currentTextField.paste();
-        }
-    }
-
-    private void clearText() {
-        if (currentTextField != null) {
-            currentTextField.clear();
-        }
-    }
-
     public void setItemData(Item item) {
         // Ρύθμιση των πεδίων με τα υπάρχοντα στοιχεία του πελάτη
         tfName.setText(item.getName());
@@ -139,18 +118,16 @@ public class AddItemController {
     void addItem() {
         String name = tfName.getText();
         String description = taDescription.getText();
-        DBHelper dbHelper = new DBHelper();
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         if (DBHelper.getItemDao().isItemExists(name)) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Το είδος " + name + " υπάρχει ήδη.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(3))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
@@ -158,24 +135,22 @@ public class AddItemController {
             if (itemId != -1) {
                 // Εμφάνιση επιτυχίας
                 Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
+                    CustomNotification.create()
                             .title("Επιτυχία")
                             .text("Το είδος εισήχθη με επιτυχία στη βάση δεδομένων.")
-                            .graphic(null)
                             .hideAfter(Duration.seconds(3))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showInformation();
+                            .position(Pos.TOP_RIGHT)
+                            .showConfirmation();
                 });
             } else {
                 // Εμφάνιση σφάλματος
                 Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
+                    CustomNotification.create()
                             .title("Σφάλμα")
                             .text("Παρουσιάστηκε σφάλμα κατά την εισαγωγή του είδους στη βάση δεδομένων.")
-                            .graphic(null)
                             .hideAfter(Duration.seconds(3))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();
+                            .position(Pos.TOP_RIGHT)
+                            .showError();
                 });
             }
         }
@@ -185,17 +160,13 @@ public class AddItemController {
         String name = tfName.getText();
         String description = taDescription.getText();
 
-        DBHelper dbHelper = new DBHelper();
-
-
         DBHelper.getItemDao().updateItem(code, name, description);
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
-        Notifications notifications = Notifications.create()
+        CustomNotification.create()
                 .title("Επιτυχία")
                 .text("Το είδος ενημερώθηκε με επιτυχία στη βάση δεδομένων.")
-                .graphic(null)
                 .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
-        notifications.showInformation();
+                .position(Pos.TOP_RIGHT)
+                .showConfirmation();
     }
 }

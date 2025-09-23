@@ -17,11 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
-import org.controlsfx.control.Notifications;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.AppSettings;
-import org.easytech.pelatologio.helper.ComboBoxHelper;
-import org.easytech.pelatologio.helper.DBHelper;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.TaskCategory;
 import org.easytech.pelatologio.models.Tasks;
@@ -58,8 +54,6 @@ public class AddTaskController {
 
     private Tasks tasks;
     private int customerId;
-    private String customerName;
-    private Customer selectedCustomer;
     private FilteredList<Customer> filteredCustomers;
 
     public void setCustomerId(int customerId) {
@@ -178,13 +172,12 @@ public class AddTaskController {
         try {
             if (dueDatePicker.getValue() == null || titleField.getText() == null || descriptionField.getText() == null) {
                 Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
+                    CustomNotification.create()
                             .title("Προσοχή")
                             .text("Συμπληρώστε όλα τα απαραίτητα πεδία.")
-                            .graphic(null)
                             .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();
+                            .position(Pos.TOP_RIGHT)
+                            .showWarning();
                 });
                 return false;
             }
@@ -193,13 +186,12 @@ public class AddTaskController {
                         startMinuteComboBox.getValue() == null || durationComboBox.getValue() == null ||
                         categoryComboBox.getValue() == null) {
                     Platform.runLater(() -> {
-                        Notifications notifications = Notifications.create()
+                        CustomNotification.create()
                                 .title("Σφάλμα")
                                 .text("Συμπληρώστε όλα τα απαραίτητα πεδία.")
-                                .graphic(null)
                                 .hideAfter(Duration.seconds(5))
-                                .position(Pos.TOP_RIGHT);
-                        notifications.showError();
+                                .position(Pos.TOP_RIGHT)
+                                .showWarning();
                     });
                     return false; // Αποτυχία
                 }
@@ -230,7 +222,6 @@ public class AddTaskController {
             Boolean isWait = is_wait.isSelected();
             Boolean isCalendar = is_calendar.isSelected();
 
-            DBHelper dbHelper = new DBHelper();
 
             if (tasks == null) {
                 // Δημιουργία νέας εργασίας
@@ -268,13 +259,12 @@ public class AddTaskController {
             }
 
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Επιτυχία")
                         .text("Η εργασία αποθηκεύτηκε!")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();
+                        .position(Pos.TOP_RIGHT)
+                        .showConfirmation();
             });
             return true;
 
@@ -327,7 +317,6 @@ public class AddTaskController {
     }
 
     public void showCustomer(ActionEvent evt) {
-        DBHelper dbHelper = new DBHelper();
 
         Customer selectedCustomer = DBHelper.getCustomerDao().getSelectedCustomer(tasks.getCustomerId());
         if (selectedCustomer.getCode() == 0) {

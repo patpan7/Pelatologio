@@ -16,7 +16,6 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.ErganiRegistration;
@@ -85,7 +84,6 @@ public class ErganiViewController implements CustomerTabController {
         loginList.clear();
         // Φέρε τα logins από τη βάση για τον συγκεκριμένο πελάτη
         // Προσθήκη των logins στη λίστα
-        DBHelper dbHelper = new DBHelper();
         loginList.addAll(DBHelper.getLoginDao().getLogins(customerId, 5));
         if (loginTable.getItems().size() == 1)
             loginTable.getSelectionModel().select(0);
@@ -103,6 +101,7 @@ public class ErganiViewController implements CustomerTabController {
         //customerLabel.setText("Όνομα Πελάτη: " + customer.getName());
         loadLoginsForCustomer(customer.getCode()); // Κλήση φόρτωσης logins αφού οριστεί ο πελάτης
     }
+
     @Override
     public void setOnDataSaved(Runnable callback) {
         this.onDataSaved = callback;
@@ -236,7 +235,7 @@ public class ErganiViewController implements CustomerTabController {
                 "\nΚωδικός: " + selectedLogin.getPassword() +
                 "\nΚινητό: " + customer.getMobile() +
                 "\n";
-        copyTextToClipboard(msg);
+        AppUtils.copyTextToClipboard(msg);
     }
 
     public void handleAddTask(ActionEvent evt) {
@@ -387,10 +386,10 @@ public class ErganiViewController implements CustomerTabController {
                 // Prepare email using the template helper
                 EmailTemplateHelper.EmailContent emailContent = EmailTemplateHelper.prepareEmail("erganiRegistration", customer, selectedLogin, data);
 
-                sendEmail(emailContent.subject, emailContent.body);
+                sendEmail(emailContent.subject(), emailContent.body());
 
                 if (DBHelper.getCustomerDao().hasAccountant(selectedLogin.getCustomerId())) {
-                    DBHelper.getSubscriptionDao().updateErganiEmail(selectedLogin.getCustomerId(), data.getEmail());
+                    DBHelper.getSubscriptionDao().updateErganiEmail(selectedLogin.getCustomerId(), data.email());
                 }
             });
         } else {
@@ -402,13 +401,12 @@ public class ErganiViewController implements CustomerTabController {
         if (Features.isEnabled("ergani")) {
             Logins selectedLogin = checkSelectedLogin();
             if (selectedLogin == null) {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ επιλέξτε ένα login.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
                 return;
             }
             try {
@@ -431,21 +429,6 @@ public class ErganiViewController implements CustomerTabController {
         emailSender.sendEmail(AppSettings.loadSetting("erganiRegisterMail"), subject, msg);
     }
 
-    // Μέθοδος αντιγραφής κειμένου στο πρόχειρο
-    private void copyTextToClipboard(String msg) {
-        // Κώδικας για αντιγραφή κειμένου στο πρόχειρο
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(msg);  // Replace with the desired text
-        clipboard.setContent(content);
-        Notifications notifications = Notifications.create()
-                .title("Αντιγραφή στο πρόχειρο")
-                .text(msg)
-                .graphic(null)
-                .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
-        notifications.showInformation();
-    }
 
     private void setTooltip(Button button, String text) {
         Tooltip tooltip = new Tooltip();
@@ -463,10 +446,9 @@ public class ErganiViewController implements CustomerTabController {
     }
 
     private void showErrorNotification(String title, String message) {
-        Notifications.create()
+        CustomNotification.create()
                 .title(title)
                 .text(message)
-                .graphic(null)
                 .hideAfter(Duration.seconds(5))
                 .position(Pos.TOP_RIGHT)
                 .showError();

@@ -4,18 +4,20 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
-import com.sun.jna.platform.win32.WinUser;
 import com.sun.jna.platform.win32.WinDef.HWND;
+import com.sun.jna.platform.win32.WinUser;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Logins;
-import org.sikuli.script.*;
+import org.sikuli.script.Key;
+import org.sikuli.script.Screen;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
 import java.util.List;
 
 
@@ -41,6 +43,7 @@ public class PrismaWinAutomation {
     public class WindowUtils {
         interface User32Library extends Library {
             User32Library INSTANCE = Native.load("user32", User32Library.class);
+
             boolean SetForegroundWindow(HWND hWnd);
         }
 
@@ -126,7 +129,7 @@ public class PrismaWinAutomation {
             List<Logins> myposLogins = DBHelper.getLoginDao().getLogins(customer.getCode(), 1);
             if (!myposLogins.isEmpty()) {
                 for (Logins login : myposLogins) {
-                    String loginstr = "\n\nmyPOS"+
+                    String loginstr = "\n\nmyPOS" +
                             "\nEmail: " + login.getUsername() +
                             "\nΚωδικός: " + login.getPassword() +
                             "\nΚινητό: " + login.getPhone();
@@ -137,7 +140,7 @@ public class PrismaWinAutomation {
             if (!simplyLogins.isEmpty()) {
                 for (Logins login : simplyLogins) {
                     System.out.println(login.getTag());
-                    String loginstr = "\n\nSimply "+ login.getTag() +
+                    String loginstr = "\n\nSimply " + login.getTag() +
                             "\nEmail: " + login.getUsername() +
                             "\nΚωδικός: " + login.getPassword() +
                             "\nΚινητό: " + login.getPhone();
@@ -147,23 +150,22 @@ public class PrismaWinAutomation {
             List<Logins> emblemLogins = DBHelper.getLoginDao().getLogins(customer.getCode(), 4);
             if (!emblemLogins.isEmpty()) {
                 for (Logins login : emblemLogins) {
-                    String loginstr = "\n\nEmblem"+
+                    String loginstr = "\n\nEmblem" +
                             "\nEmail: " + login.getUsername() +
                             "\nΚωδικός: " + login.getPassword() +
                             "\nΚινητό: " + login.getPhone();
                     waitForImageAndPaste(screen, "note2.png", loginstr, 10);
                 }
             }
-            
+
 
             System.out.println("Εισαγωγή ολοκληρώθηκε!");
-            Notifications notifications = Notifications.create()
+            CustomNotification.create()
                     .title("Ολοκλήρωση")
                     .text("Εισαγωγή ολοκληρώθηκε")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showInformation();
+                    .position(Pos.TOP_RIGHT)
+                    .showInfo();
             WindowUtils.removeAlwaysOnTop("Megasoft PRISMA Win - Εμπορική Διαχείριση");
             screen = null;  // Ελευθέρωση της μνήμης του SikuliX
             System.gc();  // Κλήση garbage collection
@@ -199,13 +201,12 @@ public class PrismaWinAutomation {
             waitForImageAndClick(screen, "select.png", 10);
 
             System.out.println("Εισαγωγή ολοκληρώθηκε!");
-            Notifications notifications = Notifications.create()
+            CustomNotification.create()
                     .title("Ολοκλήρωση")
                     .text("Η εμφάνιση ολοκληρώθηκε")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showInformation();
+                    .position(Pos.TOP_RIGHT)
+                    .showInfo();
             WindowUtils.removeAlwaysOnTop("Megasoft PRISMA Win - Εμπορική Διαχείριση");
             screen = null;  // Ελευθέρωση της μνήμης του SikuliX
             System.gc();  // Κλήση garbage collection
@@ -232,22 +233,20 @@ public class PrismaWinAutomation {
                 Thread.sleep(500); // Προσθήκη μικρής καθυστέρησης
             }
             System.out.println("❌ Δεν βρέθηκε η εικόνα: " + imagePath);
-            Notifications notifications = Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("❌ Δεν βρέθηκε η εικόνα: " + imagePath)
-                    .graphic(null)
                     .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showWarning();
+                    .position(Pos.TOP_RIGHT)
+                    .showError();
         } catch (Exception e) {
             System.out.println("⚠ Σφάλμα στο waitForImageAndClick: " + e.getMessage());
-            Notifications notifications = Notifications.create()
+            CustomNotification.create()
                     .title("Σφάλμα")
                     .text("⚠ Σφάλμα στο waitForImageAndClick: " + e.getMessage())
-                    .graphic(null)
                     .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
+                    .position(Pos.TOP_RIGHT)
+                    .showError();
         }
     }
 
@@ -268,22 +267,20 @@ public class PrismaWinAutomation {
                 Thread.sleep(500);
             }
             System.out.println("❌ Δεν βρέθηκε η εικόνα: " + imagePath);
-            Notifications notifications = Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("❌ Δεν βρέθηκε η εικόνα: " + imagePath)
-                    .graphic(null)
                     .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showWarning();
+                    .position(Pos.TOP_RIGHT)
+                    .showError();
         } catch (Exception e) {
             System.out.println("⚠ Σφάλμα στο waitForImageAndPaste: " + e.getMessage());
-            Notifications notifications = Notifications.create()
+            CustomNotification.create()
                     .title("Σφάλμα")
                     .text("⚠ Σφάλμα στο waitForImageAndPaste: " + e.getMessage())
-                    .graphic(null)
                     .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
+                    .position(Pos.TOP_RIGHT)
+                    .showError();
         }
     }
 
@@ -306,13 +303,12 @@ public class PrismaWinAutomation {
         File imageFile = new File(fullPath);
         if (!imageFile.exists()) {
             System.out.println("❌ Δεν βρέθηκε η εικόνα: " + fullPath);
-            Notifications notifications = Notifications.create()
+            CustomNotification.create()
                     .title("Σφάλμα")
                     .text("❌ Δεν βρέθηκε η εικόνα: " + fullPath)
-                    .graphic(null)
                     .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
+                    .position(Pos.TOP_RIGHT)
+                    .showError();
             return null;
         }
 

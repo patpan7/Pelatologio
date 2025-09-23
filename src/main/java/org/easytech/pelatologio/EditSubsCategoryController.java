@@ -6,6 +6,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import org.easytech.pelatologio.helper.AppUtils;
 import org.easytech.pelatologio.models.SubsCategory;
 
 public class EditSubsCategoryController {
@@ -27,9 +28,9 @@ public class EditSubsCategoryController {
         setupTextFieldContextMenu(nameField, contextMenu);
 
 
-        copyItem.setOnAction(e -> copyText());
-        pasteItem.setOnAction(e -> pasteText());
-        clearItem.setOnAction(e -> clearText());
+        copyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        pasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
+        clearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
     }
 
     // Μέθοδος για να αναθέτει το contextMenu και να αποθηκεύει το ενεργό TextField
@@ -38,27 +39,6 @@ public class EditSubsCategoryController {
         textField.setOnContextMenuRequested(e -> currentTextField = textField);
     }
 
-    // Μέθοδοι για τις ενέργειες
-    private void copyText() {
-        if (currentTextField != null) {
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(currentTextField.getText());  // Replace with the desired text
-            clipboard.setContent(content);
-        }
-    }
-
-    private void pasteText() {
-        if (currentTextField != null) {
-            currentTextField.paste();
-        }
-    }
-
-    private void clearText() {
-        if (currentTextField != null) {
-            currentTextField.clear();
-        }
-    }
 
     // Μέθοδος για να ρυθμίσεις το login προς επεξεργασία
     public void setSubsCategory(SubsCategory subsCategory) {

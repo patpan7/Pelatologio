@@ -63,16 +63,6 @@ public class ActivationCodeValidator {
         return dateFormat.format(date);
     }
 
-    public static class ValidationResult {
-        private final boolean isValid;
-        private final String expiryDate;
-
-        public ValidationResult(boolean isValid, String expiryDate) {
-            this.isValid = isValid;
-            this.expiryDate = expiryDate;
-        }
-
-        public boolean isValid() { return isValid; }
-        public String getExpiryDate() { return expiryDate; }
+    public record ValidationResult(boolean isValid, String expiryDate) {
     }
 }

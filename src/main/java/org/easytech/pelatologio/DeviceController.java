@@ -13,8 +13,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
+import org.easytech.pelatologio.helper.CustomNotification;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.helper.Features;
 import org.easytech.pelatologio.models.Device;
@@ -253,13 +253,12 @@ public class DeviceController implements Initializable {
 
             }
         } else {
-            Notifications.create()
+            CustomNotification.create()
                     .title("Προσοχή")
                     .text("Το module Συσκευές είναι απενεργοποιημένο.")
-                    .graphic(null)
                     .hideAfter(Duration.seconds(3))
                     .position(Pos.TOP_RIGHT)
-                    .showWarning();
+                    .showError();
         }
     }
 
@@ -322,13 +321,12 @@ public class DeviceController implements Initializable {
             boolean deleted = DBHelper.getDeviceDao().deleteDevice(selectedDevice.getId());
             if (deleted) {
                 Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
+                    CustomNotification.create()
                             .title("Επιτυχία")
                             .text("Ο σειριακός αριθμός " + selectedDevice.getSerial() + " διαγράψετε!")
-                            .graphic(null)
                             .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showInformation();
+                            .position(Pos.TOP_RIGHT)
+                            .showConfirmation();
                 });
                 loadDevices();
             } else {

@@ -13,7 +13,7 @@ public class GlobalProgressEntry {
     private String projectName;
     private int currentStepId;
     private String currentStepName;
-    private BooleanProperty completed; // Changed to BooleanProperty
+    private final BooleanProperty completed; // Changed to BooleanProperty
     private LocalDate completionDate;
     private String notes;
 

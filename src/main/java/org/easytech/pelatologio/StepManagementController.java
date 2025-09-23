@@ -22,12 +22,18 @@ import java.util.Optional;
 
 public class StepManagementController {
 
-    @FXML private ComboBox<AppItem> applicationComboBox;
-    @FXML private TableView<ApplicationStep> stepsTable;
-    @FXML private TableColumn<ApplicationStep, Integer> orderColumn;
-    @FXML private TableColumn<ApplicationStep, String> nameColumn;
-    @FXML private TableColumn<ApplicationStep, String> actionTypeColumn;
-    @FXML private TableColumn<ApplicationStep, Void> actionConfigColumn;
+    @FXML
+    private ComboBox<AppItem> applicationComboBox;
+    @FXML
+    private TableView<ApplicationStep> stepsTable;
+    @FXML
+    private TableColumn<ApplicationStep, Integer> orderColumn;
+    @FXML
+    private TableColumn<ApplicationStep, String> nameColumn;
+    @FXML
+    private TableColumn<ApplicationStep, String> actionTypeColumn;
+    @FXML
+    private TableColumn<ApplicationStep, Void> actionConfigColumn;
 
     private ApplicationStepDao stepDao;
     private ObservableList<AppItem> applications;
@@ -105,6 +111,7 @@ public class StepManagementController {
             public TableCell<ApplicationStep, Void> call(final TableColumn<ApplicationStep, Void> param) {
                 return new TableCell<>() {
                     private final Button btn = new Button("Edit JSON");
+
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             ApplicationStep step = getTableView().getItems().get(getIndex());

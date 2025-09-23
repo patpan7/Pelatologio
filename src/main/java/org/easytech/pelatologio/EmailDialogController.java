@@ -10,12 +10,8 @@ import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.apache.commons.text.StringEscapeUtils;
-import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.AppSettings;
-import org.easytech.pelatologio.helper.CustomerFolderManager;
-import org.easytech.pelatologio.helper.EmailSender;
+import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 
 import java.io.File;
@@ -45,12 +41,11 @@ public class EmailDialogController {
     @FXML
     private ProgressIndicator progressIndicator;
 
-    private Boolean copy = true;
+    private boolean saveCopy = true;
 
 
     private Stage dialogStage;
     private Customer customer;
-    private Node ownerNode; // NEW
 
     private final List<File> attachments = new ArrayList<>();
     public boolean isSended = false;
@@ -59,16 +54,12 @@ public class EmailDialogController {
         this.dialogStage = dialogStage;
     }
 
-    public void setOwnerNode(Node ownerNode) { // NEW
-        this.ownerNode = ownerNode;
-    }
-
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 
-    public void setCopy(Boolean copy) {
-        this.copy = copy;
+    public void setSaveCopy(boolean saveCopy) {
+        this.saveCopy = saveCopy;
     }
 
 
@@ -85,8 +76,10 @@ public class EmailDialogController {
     }
 
     public void setAttachments(List<File> attachments) {
-        this.attachments.addAll(attachments);
-        attachmentList.getItems().addAll(attachments);
+        if (attachments != null) {
+            this.attachments.addAll(attachments);
+            attachmentList.getItems().addAll(attachments);
+        }
     }
 
     @FXML
@@ -135,14 +128,12 @@ public class EmailDialogController {
 
         if (email == null || email.isEmpty()) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Σφάλμα")
                         .text("Το πεδίο παραλήπτη δεν μπορεί να είναι κενό.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
                         .position(Pos.TOP_RIGHT)
-                        .owner(ownerNode); // NEW
-                notifications.showError();
+                        .showError();
             });
             progressIndicator.setVisible(false); // Απόκρυψη προόδου σε περίπτωση σφάλματος
             return;
@@ -163,14 +154,12 @@ public class EmailDialogController {
 
                 // Ενημέρωση του UI με επιτυχία (πρέπει να γίνει στο JavaFX thread)
                 Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
+                    CustomNotification.create()
                             .title("Επιτυχία")
                             .text("Το email στάλθηκε με επιτυχία.")
-                            .graphic(null)
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT)
-                            .owner(ownerNode); // NEW
-                    notifications.showConfirm();
+                            .showConfirmation();
                     subjectField.setText("");
                     bodyArea.setHtmlText("");
                     attachmentList.getItems().clear();
@@ -179,20 +168,18 @@ public class EmailDialogController {
                 });
 
                 // Αποθήκευση του email (εκτός UI thread αλλά με τελική ενημέρωση στο UI)
-                if (copy)
+                if (saveCopy)
                     saveEmailCopy(email, subject, body, attachments);
 
             } catch (Exception e) {
                 // Ενημέρωση του UI για αποτυχία (στο JavaFX thread)
                 Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
+                    CustomNotification.create()
                             .title("Σφάλμα")
                             .text("Υπήρξε πρόβλημα κατά την αποστολή του email.")
-                            .graphic(null)
                             .hideAfter(Duration.seconds(5))
                             .position(Pos.TOP_RIGHT)
-                            .owner(ownerNode); // NEW
-                    notifications.showError();
+                            .showError(); // NEW
                     progressIndicator.setVisible(false); // Απόκρυψη προόδου
                     AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR);
                 });
@@ -232,7 +219,7 @@ public class EmailDialogController {
                 writer.println("Θέμα: " + subject);
                 writer.println("Ημερομηνία: " + java.time.LocalDateTime.now());
                 writer.println("Κείμενο:");
-                writer.println(body);
+                writer.println(EmailTemplateHelper.htmlToPlainText(body));
                 writer.println();
 
                 if (!attachments.isEmpty()) {

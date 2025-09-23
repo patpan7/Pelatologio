@@ -30,10 +30,10 @@ public class LicenseManager {
         ActivationCodeValidator.ValidationResult result = ActivationCodeValidator.validate(activationCode, deviceId, secretKey);
 
         if (result.isValid()) {
-            System.out.println("LicenseManager: Activation successful. Expiry Date: " + result.getExpiryDate());
+            System.out.println("LicenseManager: Activation successful. Expiry Date: " + result.expiryDate());
             prefs.put(KEY_ACTIVATION_CODE, activationCode);
             prefs.put(KEY_SECRET, secretKey);
-            prefs.put(KEY_EXPIRY_DATE, result.getExpiryDate());
+            prefs.put(KEY_EXPIRY_DATE, result.expiryDate());
             prefs.put(KEY_LAST_SEEN_DATE, DATE_FORMATTER.format(new Date()));
             return true;
         }

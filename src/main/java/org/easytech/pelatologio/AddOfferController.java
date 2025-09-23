@@ -22,7 +22,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Offer;
@@ -192,13 +191,12 @@ public class AddOfferController {
         try {
             if (dueDatePicker.getValue() == null || descriptionField.getText() == null) {
                 Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
+                    CustomNotification.create()
                             .title("Προσοχή")
                             .text("Συμπληρώστε όλα τα απαραίτητα πεδία.")
-                            .graphic(null)
                             .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();
+                            .position(Pos.TOP_RIGHT)
+                            .showWarning();
                 });
                 return false;
             }
@@ -212,7 +210,6 @@ public class AddOfferController {
             String paths = attachments.stream()
                     .map(File::getAbsolutePath) // Παίρνουμε τα paths
                     .collect(Collectors.joining(";")); // Ενώνουμε με ";"
-            DBHelper dbHelper = new DBHelper();
 
             if (offer == null) {
                 //Δημιουργία νέας εργασίας
@@ -231,13 +228,12 @@ public class AddOfferController {
             }
 
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Επιτυχία")
                         .text("Η εργασία αποθηκεύτηκε!")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();
+                        .position(Pos.TOP_RIGHT)
+                        .showConfirmation();
             });
             return true;
 
@@ -290,8 +286,6 @@ public class AddOfferController {
     }
 
     public void showCustomer(ActionEvent evt) {
-        DBHelper dbHelper = new DBHelper();
-
         Customer selectedCustomer = DBHelper.getCustomerDao().getSelectedCustomer(offer.getCustomerId());
         if (selectedCustomer.getCode() == 0) {
             return;

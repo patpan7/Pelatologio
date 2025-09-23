@@ -4,14 +4,7 @@ import java.util.Map;
 
 public class EmailTemplateHelper {
 
-    public static class EmailContent {
-        public final String subject;
-        public final String body;
-
-        public EmailContent(String subject, String body) {
-            this.subject = subject;
-            this.body = body;
-        }
+    public record EmailContent(String subject, String body) {
     }
 
     public static EmailContent prepareEmail(String templateName, Object... dataObjects) {
@@ -36,5 +29,15 @@ public class EmailTemplateHelper {
             result = result.replace(entry.getKey(), entry.getValue());
         }
         return result;
+    }
+
+    public static String htmlToPlainText(String html) {
+        if (html == null) {
+            return "";
+        }
+        // Replace <br> tags with newlines
+        String textWithNewlines = html.replaceAll("<br\\s*/?>", "\n");
+        // Remove all other HTML tags
+        return textWithNewlines.replaceAll("<[^>]*>", "");
     }
 }

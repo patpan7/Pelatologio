@@ -142,6 +142,7 @@
         </tabs>
     </TabPane>
     <HBox alignment="BOTTOM_RIGHT" fillHeight="false" VBox.vgrow="ALWAYS">
+        <ProgressIndicator fx:id="progressIndicator" />
         <Button mnemonicParsing="false" onAction="#handleOkButton" styleClass="accent" text="Αποθήκευση">
             <graphic>
                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">

@@ -9,27 +9,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Supplier;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.function.Consumer;
 
@@ -46,7 +35,7 @@ public class AddSupplierController {
     @FXML
     private ProgressIndicator progressIndicator;
     @FXML
-    private Button btnPhone, btnMobile;
+    private Button btnPhone, btnMobile, btnEmail, btnEmail2;
     @FXML
     private Button btnAfmSearch;
     @FXML
@@ -88,7 +77,7 @@ public class AddSupplierController {
 
     public void initialize() {
         Platform.runLater(() -> tabPane.requestFocus());
-
+        progressIndicator.setVisible(false);
         try {
             FXMLLoader loaderOrders = new FXMLLoader(getClass().getResource("ordersSupView.fxml"));
             Parent ordersContent = loaderOrders.load();
@@ -154,39 +143,45 @@ public class AddSupplierController {
         tfEmail2.setOnContextMenuRequested(e -> currentTextField = tfEmail2);
 
         // Ενέργειες για τα copy, paste, clear items στο βασικό contextMenu
-        copyItem.setOnAction(e -> copyText());
-        pasteItem.setOnAction(e -> pasteText());
-        clearItem.setOnAction(e -> clearText());
+        copyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        pasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
+        clearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
 
         // Ενέργειες για τα phoneCopyItem, phonePasteItem, phoneClearItem στο phoneContextMenu
-        phoneCopyItem.setOnAction(e -> copyText());
-        phonePasteItem.setOnAction(e -> pasteText());
-        phoneClearItem.setOnAction(e -> clearText());
+        phoneCopyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        phonePasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
+        phoneClearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
         // Ενέργεια "Viber" μόνο για τα τηλέφωνα
         viberItem.setOnAction(e -> {
             if (currentTextField == tfPhone || currentTextField == tfMobile) { // Εκτέλεση μόνο αν είναι στο tfEmail
-                viberComunicate(currentTextField);
+                AppUtils.viberComunicate(currentTextField.getText());
             }
         });
         // Ενέργειες για τα emailCopyItem, emailPasteItem, emailClearItem στο emailContextMenu
-        emailCopyItem.setOnAction(e -> copyText());
-        emailPasteItem.setOnAction(e -> pasteText());
-        emailClearItem.setOnAction(e -> clearText());
+        emailCopyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
+        emailPasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
+        emailClearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
 
         // Ενέργεια "Δοκιμή Email" μόνο για το tfEmail
         mailItem.setOnAction(e -> {
             if (currentTextField == tfEmail) { // Εκτέλεση μόνο αν είναι στο tfEmail
-                sendTestEmail(tfEmail);
+                AppUtils.sendTestEmail(tfEmail.getText(), progressIndicator);
             }
         });
 
         btnPhone.setUserData(tfPhone);
         //btnPhone.setOnAction(PhoneCall::callHandle);
-        setupPhoneButton(btnPhone, tfPhone);
+        AppUtils.setupPhoneButton(btnPhone, tfPhone);
         btnMobile.setUserData(tfMobile);
         //btnMobile.setOnAction(PhoneCall::callHandle);
-        setupPhoneButton(btnMobile, tfMobile);
+        AppUtils.setupPhoneButton(btnMobile, tfMobile);
         btnAfmSearch.setOnAction(event -> handleAfmSearch());
+
+        btnEmail.setUserData(tfEmail);
+        btnEmail2.setUserData(tfEmail2);
+
+        btnEmail.setOnAction(this::showEmailDialog);
+        btnEmail2.setOnAction(this::showEmailDialog);
     }
 
 
@@ -195,101 +190,6 @@ public class AddSupplierController {
         textField.setContextMenu(contextMenu);
         textField.setOnContextMenuRequested(e -> currentTextField = textField);
     }
-
-    // Μέθοδοι για τις ενέργειες
-    private void copyText() {
-        if (currentTextField != null) {
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(currentTextField.getText());  // Replace with the desired text
-            clipboard.setContent(content);
-        }
-    }
-
-    private void pasteText() {
-        if (currentTextField != null) {
-            currentTextField.paste();
-        }
-    }
-
-    private void clearText() {
-        if (currentTextField != null) {
-            currentTextField.clear();
-        }
-    }
-
-    // Μέθοδος αποστολής με viber
-    private void viberComunicate(TextField phoneField) {
-        String phone = phoneField.getText();
-        System.out.println("Τηλέφωνο: " + phone);
-        if (phone != null && !phone.isEmpty()) {
-            try {
-                File viberPath = new File(System.getenv("LOCALAPPDATA") + "\\Viber\\Viber.exe");
-                Desktop.getDesktop().open(viberPath);
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                ClipboardContent content = new ClipboardContent();
-                content.putString(phone);  // Replace with the desired text
-                clipboard.setContent(content);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Παρακαλώ εισάγετε ένα έγκυρο τηλέφωνο")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
-        }
-    }
-
-    // Μέθοδος αποστολής δοκιμαστικού email
-    private void sendTestEmail(TextField emailField) {
-        String email = emailField.getText();
-        if (email != null && !email.isEmpty()) {
-            // Εμφάνιση του progress indicator
-            progressIndicator.setVisible(true);
-
-            // Δημιουργία και αποστολή email σε ξεχωριστό thread για να μην κολλήσει το UI
-            new Thread(() -> {
-                try {
-                    String subject = "Δοκιμή Email";
-                    String body = "Δοκιμή email.";
-                    EmailSender emailSender = new EmailSender(AppSettings.loadSetting("smtp"), AppSettings.loadSetting("smtpport"), AppSettings.loadSetting("email"), AppSettings.loadSetting("emailPass"));
-                    emailSender.sendEmail(email, subject, body);
-
-                    // Ενημερώνουμε το UI όταν ολοκληρωθεί η αποστολή του email
-                    Platform.runLater(() -> {
-                        Notifications notifications = Notifications.create()
-                                .title("Επιτυχία")
-                                .text("Το email στάλθηκε με επιτυχία.")
-                                .graphic(null)
-                                .hideAfter(Duration.seconds(5))
-                                .position(Pos.TOP_RIGHT);
-                        notifications.showConfirm();
-                        progressIndicator.setVisible(false); // Απόκρυψη του progress indicator
-                    });
-                } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        AlertDialogHelper.showDialog("Σφάλμα", "Υπήρξε πρόβλημα με την αποστολή του email.", e.getMessage(), Alert.AlertType.ERROR);
-                        progressIndicator.setVisible(false); // Απόκρυψη του progress indicator
-                    });
-                    Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την αποστολή email.", e.getMessage(), Alert.AlertType.ERROR));
-                }
-            }).start(); // Ξεκινάμε το thread για την αποστολή του email
-        } else {
-            //showAlert("Προσοχή", "Παρακαλώ εισάγετε ένα έγκυρο email.");
-            Notifications notifications = Notifications.create()
-                    .title("Προσοχή")
-                    .text("Παρακαλώ εισάγετε ένα έγκυρο email.")
-                    .graphic(null)
-                    .hideAfter(Duration.seconds(5))
-                    .position(Pos.TOP_RIGHT);
-            notifications.showError();
-        }
-    }
-
 
     public void setSupplierData(Supplier supplier) {
         // Ρύθμιση των πεδίων με τα υπάρχοντα στοιχεία του πελάτη
@@ -371,13 +271,12 @@ public class AddSupplierController {
             Supplier newSupplier = new Supplier(supplierId, name, title, afm, phone, mobile, contact, email, email2, site, notes, hasCommissions);
 
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Επιτυχία")
                         .text("Ο πελάτης εισήχθη με επιτυχία στη βάση δεδομένων.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(3))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showInformation();
+                        .position(Pos.TOP_RIGHT)
+                        .showConfirmation();
                 if (callback != null) {
                     callback.accept(newSupplier);
                     stage.close();
@@ -397,8 +296,6 @@ public class AddSupplierController {
 
 
     void updateSupplier() {
-        DBHelper dbHelper = new DBHelper();
-
         String name = tfName.getText();
         String title = tfTitle.getText() != null ? tfTitle.getText() : "";
         String afm = (tfAfm.getText() != null ? tfAfm.getText() : "");
@@ -420,42 +317,36 @@ public class AddSupplierController {
 
         DBHelper.getSupplierDao().updateSupplier(code, name, title, afm, phone, mobile, contact, email, email2, site, notes, hasCommissions);
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
-        Notifications notifications = Notifications.create()
+        CustomNotification.create()
                 .title("Επιτυχία")
                 .text("Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.")
-                .graphic(null)
                 .hideAfter(Duration.seconds(5))
-                .position(Pos.TOP_RIGHT);
-        notifications.showInformation();
+                .position(Pos.TOP_RIGHT)
+                .showConfirmation();
     }
 
 
     @FXML
     private void showEmailDialog(ActionEvent actionEvent) {
-        if (supplier != null) {
-            try {
-                // Φόρτωση του FXML για προσθήκη ραντεβού
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("emailDialog.fxml"));
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(loader.load());
-                dialog.setTitle("Αποστολή Email");
-                EmailDialogController controller = loader.getController();
-                //controller.setCustomer(accountant);
-                controller.setEmail(tfEmail.getText());
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-                dialog.show();
-            } catch (IOException e) {
-                Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα.", e.getMessage(), Alert.AlertType.ERROR));
-            }
+        System.out.println("showEmailDialog called");
+        Button clickedButton = (Button) actionEvent.getSource(); // Ποιο κουμπί πατήθηκε;
+        TextField emailField = (TextField) clickedButton.getUserData(); // Παίρνουμε το TextField που είναι συνδεδεμένο με το κουμπί
+        if (emailField != null && !emailField.getText().isEmpty()) {
+            System.out.println("Email field is not empty, opening dialog for: " + emailField.getText());
+            EmailHelper.EmailDialogOptions options = new EmailHelper.EmailDialogOptions(emailField.getText())
+                    .subject("")
+                    .body("")
+                    .showCopyOption(false)
+                    .saveCopy(false)
+                    .onSuccess(null);
+
+            EmailHelper.showEmailDialog(options);
+        } else {
+            System.out.println("Email field is null or empty.");
         }
     }
 
     public void openSite(ActionEvent actionEvent) {
-//        if (supplier.getSite().isEmpty() || supplier.getSite().equals("")){
-//            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Δεν υπάρχει site.","Ο προμηθευτής δεν έχει site!", Alert.AlertType.ERROR));
-//            return;
-//        }
-
         try {
             LoginAutomator loginAutomation = new LoginAutomator(false);
             String site = supplier.getSite().trim();
@@ -477,13 +368,12 @@ public class AddSupplierController {
         String afm = tfAfm.getText();
         if (afm == null || afm.isEmpty()) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Παρακαλώ εισάγετε ένα έγκυρο ΑΦΜ.")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showWarning();
             });
             return;
         }
@@ -495,13 +385,12 @@ public class AddSupplierController {
         String errorDescr = AfmResponseParser.getXPathValue(responseXml, "//error_rec/error_descr");
         if (errorDescr != null && !errorDescr.isEmpty()) {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text(errorDescr)
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
             return;
         }
@@ -513,13 +402,12 @@ public class AddSupplierController {
             tfTitle.setText(companyInfo.getTitle());
         } else {
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Προσοχή")
                         .text("Σφάλμα κατά την ανάγνωση των δεδομένων")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showError();
+                        .position(Pos.TOP_RIGHT)
+                        .showError();
             });
         }
     }
@@ -564,15 +452,5 @@ public class AddSupplierController {
         Scene scene = new Scene(vbox);
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
-    }
-
-    private void setupPhoneButton(Button button, TextField textField) {
-        button.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                PhoneCall.callHandle(textField.getText());
-            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                PhoneCall.callHandle2(textField.getText());
-            }
-        });
     }
 }

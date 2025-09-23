@@ -17,13 +17,13 @@
                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                             </HBox.margin>
                         </Label>
-                        <DatePicker fx:id="dateFrom" prefWidth="180.0" />
+                        <DatePicker fx:id="dateFrom" prefWidth="150.0" />
                         <Label text="Έως:">
                             <HBox.margin>
                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                             </HBox.margin>
                         </Label>
-                        <DatePicker fx:id="dateTo" />
+                        <DatePicker fx:id="dateTo" prefWidth="150.0" />
                         <Separator orientation="VERTICAL">
                             <HBox.margin>
                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -45,7 +45,7 @@
                                 <Insets left="10.0" right="10.0" />
                             </HBox.margin>
                         </Button>
-                        <CheckBox fx:id="showInactiveCheckBox" mnemonicParsing="false" text="Εμφάνιση Ανενεργών" />
+                        <CheckBox fx:id="showInactiveCheckBox" mnemonicParsing="false" text="Ανενεργά" />
                         <VBox.margin>
                             <Insets />
                         </VBox.margin>

@@ -16,7 +16,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
-import org.controlsfx.control.Notifications;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.SubsCategory;
@@ -44,8 +43,6 @@ public class AddSubController {
 
     private Subscription sub;
     private int customerId;
-    private String customerName;
-    private Customer selectedCustomer;
     private FilteredList<Customer> filteredCustomers;
 
     public void setCustomerId(int customerId) {
@@ -140,13 +137,12 @@ public class AddSubController {
         try {
             if (dueDatePicker.getValue() == null || titleField.getText() == null) {
                 Platform.runLater(() -> {
-                    Notifications notifications = Notifications.create()
+                    CustomNotification.create()
                             .title("Προσοχή")
                             .text("Συμπληρώστε όλα τα απαραίτητα πεδία.")
-                            .graphic(null)
                             .hideAfter(Duration.seconds(5))
-                            .position(Pos.TOP_RIGHT);
-                    notifications.showError();
+                            .position(Pos.TOP_RIGHT)
+                            .showWarning();
                 });
                 return false;
             }
@@ -177,13 +173,12 @@ public class AddSubController {
             }
 
             Platform.runLater(() -> {
-                Notifications notifications = Notifications.create()
+                CustomNotification.create()
                         .title("Επιτυχία")
                         .text("Η εργασία αποθηκεύτηκε!")
-                        .graphic(null)
                         .hideAfter(Duration.seconds(5))
-                        .position(Pos.TOP_RIGHT);
-                notifications.showConfirm();
+                        .position(Pos.TOP_RIGHT)
+                        .showConfirmation();
             });
             return true;
 
@@ -236,8 +231,6 @@ public class AddSubController {
     }
 
     public void showCustomer(ActionEvent evt) {
-        DBHelper dbHelper = new DBHelper();
-
         Customer selectedCustomer = DBHelper.getCustomerDao().getSelectedCustomer(sub.getCustomerId());
         if (selectedCustomer.getCode() == 0) {
             return;
