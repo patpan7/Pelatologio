@@ -138,8 +138,8 @@
 }
 
 .custom-notification.info {
-    -fx-background-color: -color-info-subtle;
-    -fx-border-color: -color-info-emphasis;
+    -fx-background-color: -color-success-subtle;
+    -fx-border-color: -color-success-emphasis;
 }
 
 .custom-notification.error {

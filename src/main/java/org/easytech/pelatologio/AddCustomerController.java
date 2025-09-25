@@ -1,6 +1,5 @@
 package org.easytech.pelatologio;
 
-import de.jensd.fx.glyphs.testapps.App;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,8 +32,6 @@ import javafx.util.StringConverter;
 import org.easytech.pelatologio.helper.*;
 import org.easytech.pelatologio.models.*;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
@@ -1100,9 +1097,7 @@ public class AddCustomerController {
             if (customer != null && customer.getRecommendation() > 0) {
                 for (Recommendation rec : recommendationList) {
                     if (rec.getId() == customer.getRecommendation()) {
-                        Platform.runLater(() -> {
-                            tfRecommendation.getSelectionModel().select(rec);
-                        });
+                        tfRecommendation.getSelectionModel().select(rec);
                         break;
                     }
                 }

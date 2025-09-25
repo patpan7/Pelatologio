@@ -20,7 +20,6 @@ import javafx.stage.Modality;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
-import org.easytech.pelatologio.helper.CustomNotification;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.TaskCategory;

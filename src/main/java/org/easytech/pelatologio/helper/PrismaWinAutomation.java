@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.util.Duration;
+import org.easytech.pelatologio.CustomNotification;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Logins;
 import org.sikuli.script.Key;

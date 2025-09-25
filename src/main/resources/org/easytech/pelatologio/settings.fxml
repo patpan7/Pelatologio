@@ -381,6 +381,26 @@
                             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                         </HBox.margin>
                     </Button>
+                    <Button onAction="#handleExport" styleClass="success" text="Export">
+                        <graphic>
+                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@icons/export.png" />
+                            </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        </HBox.margin>
+                    </Button>
+                    <Button onAction="#handleImport" styleClass="danger" text="Import">
+                        <graphic>
+                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@icons/import.png" />
+                            </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        </HBox.margin>
+                    </Button>
                 </HBox>
             </bottom>
         </BorderPane>

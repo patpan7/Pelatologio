@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.util.Duration;
 import net.sf.jasperreports.engine.*;
+import org.easytech.pelatologio.CustomNotification;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.Logins;
 

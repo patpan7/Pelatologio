@@ -108,7 +108,8 @@ public class MainMenu extends Application {
         if (Features.isEnabled("tasks"))
             startAppointmentReminder();
 
-        checkExpiredSubscriptions();
+        if (Features.isEnabled("subs"))
+            checkExpiredSubscriptions();
     }
 
     private void checkExpiredSubscriptions() {

@@ -10,8 +10,8 @@
             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                 <Image url="@icons/phone-ringing.png" />
             </ImageView>
-            <Label fx:id="callerNumberLabel" alignment="CENTER" maxWidth="300.0" styleClass="title-label" text="2241036750" textAlignment="CENTER" wrapText="true" />
-            <Label fx:id="callerTitleLabel" alignment="CENTER" maxWidth="300.0" styleClass="normal-label" text="2241036750" textAlignment="CENTER" />
+            <Label fx:id="callerNameLabel" alignment="CENTER" styleClass="title-label" text="Όνομα Πελάτη" textAlignment="CENTER" textOverrun="ELLIPSIS" />
+            <Label fx:id="callerNumberLabel" alignment="CENTER" styleClass="normal-label" text="2241036750" textAlignment="CENTER" />
             <HBox alignment="BOTTOM_RIGHT" spacing="10">
                 <Button fx:id="openCustomerButton" defaultButton="true" styleClass="accent" text="Άνοιγμα Πελάτη" />
                 <Button fx:id="closeButton" cancelButton="true" styleClass="default" text="Κλείσιμο" />

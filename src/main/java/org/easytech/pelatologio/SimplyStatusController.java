@@ -19,7 +19,6 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.easytech.pelatologio.helper.AlertDialogHelper;
 import org.easytech.pelatologio.helper.AppSettings;
-import org.easytech.pelatologio.helper.CustomNotification;
 import org.easytech.pelatologio.helper.DBHelper;
 import org.easytech.pelatologio.models.Customer;
 import org.easytech.pelatologio.models.SimplyStatus;

@@ -6,35 +6,27 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
+import javafx.util.StringConverter;
 import org.easytech.pelatologio.helper.*;
-import org.easytech.pelatologio.models.Customer;
-import org.easytech.pelatologio.models.Logins;
-import org.easytech.pelatologio.models.Offer;
-import org.easytech.pelatologio.models.Subscription;
-import org.easytech.pelatologio.models.Tasks;
+import org.easytech.pelatologio.models.*;
 import org.easytech.pelatologio.util.ThemeManager;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.util.StringConverter;
 
 public class SettingsController implements Initializable {
     @FXML
@@ -146,7 +138,7 @@ public class SettingsController implements Initializable {
     private ComboBox<String> templateComboBox;
     @FXML
     private TextField templateSubjectField;
-        @FXML
+    @FXML
     private HTMLEditor templateBodyEditor;
     @FXML
     private Button insertLinkButton; // NEW
@@ -261,7 +253,7 @@ public class SettingsController implements Initializable {
     }
 
     private void setupTemplateEditor() {
-        templateComboBox.getItems().addAll("simplyService", "simplyRenew", "subsReminder","edpsProposal", "offer", "erganiRegistration");
+        templateComboBox.getItems().addAll("simplyService", "simplyRenew", "subsReminder", "edpsProposal", "offer", "erganiRegistration");
         templateComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 templateSubjectField.setText(getSettingOrEmpty("email.template.subject." + newVal));
@@ -534,47 +526,6 @@ public class SettingsController implements Initializable {
         new Thread(task).start();
     }
 
-    private void openNotesDialog(String currentNotes) {
-        // Ο κώδικας για το παράθυρο διαλόγου, όπως περιγράφεται
-        Stage dialogStage = new Stage();
-        dialogStage.initModality(Modality.APPLICATION_MODAL);
-        dialogStage.setTitle("Επεξεργασία Σημειώσεων");
-
-        TextArea expandedTextArea = new TextArea(currentNotes);
-        expandedTextArea.setWrapText(true);
-        expandedTextArea.setPrefSize(400, 300);
-        expandedTextArea.setStyle("-fx-font-size: 24px;");
-        if (currentNotes != null && !currentNotes.isEmpty()) {
-            expandedTextArea.setText(currentNotes);
-            expandedTextArea.positionCaret(currentNotes.length());
-        } else {
-            expandedTextArea.setText(""); // Βεβαιωθείτε ότι το TextArea είναι κενό
-            expandedTextArea.positionCaret(0); // Τοποθετήστε τον κέρσορα στην αρχή
-        }
-
-        Button btnOk = new Button("OK");
-        btnOk.setPrefWidth(100);
-        btnOk.setOnAction(event -> {
-            taSignature.setHtmlText(expandedTextArea.getText()); // Ενημέρωση του αρχικού TextArea
-            dialogStage.close();
-        });
-
-        VBox vbox = new VBox(10, expandedTextArea, btnOk);
-        vbox.setAlignment(Pos.CENTER);
-        //vbox.setPadding(new Insets(10));
-
-        Scene scene = new Scene(vbox);
-        dialogStage.setScene(scene);
-        dialogStage.showAndWait();
-    }
-
-    @FXML
-    private void handleMouseClick(MouseEvent event) {
-        // Check for double click
-        if (event.getClickCount() == 2) {
-            openNotesDialog(taSignature.getHtmlText());
-        }
-    }
 
     @FXML
     private void handleDatabaseSetup() {
@@ -602,6 +553,54 @@ public class SettingsController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
             AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά τον έλεγχο ή τη δημιουργία της βάσης δεδομένων.", e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void handleExport() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export Settings");
+        fileChooser.setInitialFileName("pelatologio_settings.properties");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Properties Files", "*.properties"));
+        File file = fileChooser.showSaveDialog(stackPane.getScene().getWindow());
+        if (file != null) {
+            try (java.io.Writer writer = new java.io.OutputStreamWriter(new java.io.FileOutputStream(file), java.nio.charset.StandardCharsets.UTF_8)) {
+                java.util.Properties props = new java.util.Properties();
+                AppSettings.getAllSettings().forEach((key, value) -> props.setProperty((String) key, (String) value));
+                props.store(writer, "Pelatologio Settings");
+                CustomNotification.create()
+                        .title("Επιτυχία")
+                        .text("Οι ρυθμίσεις εξήχθησαν με επιτυχία.")
+                        .position(Pos.TOP_RIGHT)
+                        .showInfo();
+            } catch (IOException e) {
+                e.printStackTrace();
+                AlertDialogHelper.showErrorDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εξαγωγή των ρυθμίσεων.");
+            }
+        }
+    }
+
+    @FXML
+    private void handleImport() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Import Settings");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Properties Files", "*.properties"));
+        File file = fileChooser.showOpenDialog(stackPane.getScene().getWindow());
+        if (file != null) {
+            try (java.io.Reader reader = new java.io.InputStreamReader(new java.io.FileInputStream(file), java.nio.charset.StandardCharsets.UTF_8)) {
+                java.util.Properties props = new java.util.Properties();
+                props.load(reader);
+                props.forEach((key, value) -> AppSettings.saveSetting((String) key, (String) value));
+                CustomNotification.create()
+                        .title("Επιτυχία")
+                        .text("Οι ρυθμίσεις εισήχθησαν με επιτυχία. Η εφαρμογή θα επανεκκινηθεί.")
+                        .position(Pos.TOP_RIGHT)
+                        .showInfo();
+                MainMenu.restartApplication();
+            } catch (IOException e) {
+                e.printStackTrace();
+                AlertDialogHelper.showErrorDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την εισαγωγή των ρυθμίσεων.");
+            }
         }
     }
 }

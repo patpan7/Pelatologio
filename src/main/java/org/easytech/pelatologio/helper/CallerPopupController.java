@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -13,8 +14,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class CallerPopupController {
+    @FXML private Label callerNameLabel;
     @FXML private Label callerNumberLabel;
-    @FXML private Label callerTitleLabel;
     @FXML private Button openCustomerButton;
     @FXML private Button closeButton;
 
@@ -43,6 +44,7 @@ public class CallerPopupController {
 
     private void positionWindow() {
         Platform.runLater(() -> {
+            stage.sizeToScene(); // Calculate size before showing
             Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
             double popupHeight = stage.getHeight();
             double popupWidth = stage.getWidth();
@@ -136,11 +138,12 @@ public class CallerPopupController {
         this.customerId = customerId;
 
         if (customerName != null && !customerName.isEmpty() && !customerName.equals("Άγνωστο")) {
-            callerNumberLabel.setText("Κλήση από: " + customerName + " (" + callerNumber + ")");
-            callerTitleLabel.setText(customerTitle);
+            callerNameLabel.setText(customerName);
+            callerNameLabel.setTooltip(new Tooltip(customerName));
         } else {
-            callerNumberLabel.setText("Κλήση από: " + callerNumber);
+            callerNameLabel.setText("Άγνωστος");
         }
+        callerNumberLabel.setText(callerNumber);
 
         openCustomerButton.setDisable(customerId == -1);
         positionWindow();

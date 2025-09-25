@@ -1,10 +1,8 @@
 package org.easytech.pelatologio;
 
-import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;

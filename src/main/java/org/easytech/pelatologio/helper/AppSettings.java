@@ -53,12 +53,6 @@ public class AppSettings {
         if (loadSetting("email.template.body.simplyRenew") == null) {
             saveSetting("email.template.body.simplyRenew", "<b>Ανανέωση Πελάτη Simply {logins.tag}</b><br><b>Επωνυμία:</b> {customer.name}<br><b>ΑΦΜ:</b> {customer.afm}<br><b>E-mail:</b> {logins.username}<br><b>Κωδικός:</b> {logins.password}<br><b>Κινητό:</b> {customer.mobile}<br>");
         }
-        if (loadSetting("email.template.subject.simplyPos") == null) {
-            saveSetting("email.template.subject.simplyPos", "Νέος Πελάτης Simply POS");
-        }
-                if (loadSetting("email.template.body.simplyPos") == null) {
-            saveSetting("email.template.body.simplyPos", "Νέος Πελάτης Simply POS\nΕπωνυμία: {customer.name}\nΑΦΜ: {customer.afm}\nEmail: {logins.username}\nΚωδικός: {logins.password}\nΚινητό: {customer.mobile}\n");
-        }
         if (loadSetting("email.template.subject.subsReminder") == null) {
             saveSetting("email.template.subject.subsReminder", "Υπενθύμιση λήξης συνδρομής {subscription.title}");
         }
@@ -128,23 +122,26 @@ public class AppSettings {
 
 
     public static String loadSetting(String key) {
+        Properties prop = getAllSettings();
+        return prop.getProperty(key);
+    }
+
+    public static Properties getAllSettings() {
+        Properties prop = new Properties();
         File file = new File(FILE_NAME);
-        if (!file.exists()) {
-            return null;
-        }
-        try (InputStream input = new FileInputStream(file)) {
-            Properties prop = new Properties();
-            byte[] encryptedBytes = input.readAllBytes();
-            if (encryptedBytes.length == 0) {
-                return null; // Empty file
+        if (file.exists()) {
+            try (InputStream input = new FileInputStream(file)) {
+                byte[] encryptedBytes = input.readAllBytes();
+                if (encryptedBytes.length > 0) {
+                    String encryptedSettings = new String(encryptedBytes, StandardCharsets.UTF_8);
+                    String decryptedSettings = EncryptionHelper.decrypt(encryptedSettings);
+                    prop.load(new StringReader(decryptedSettings));
+                }
+            } catch (Exception e) {
+                System.err.println("Could not load or decrypt existing settings. A new file will be created.");
+                e.printStackTrace();
             }
-            String encryptedSettings = new String(encryptedBytes, StandardCharsets.UTF_8);
-            String decryptedSettings = EncryptionHelper.decrypt(encryptedSettings);
-            prop.load(new StringReader(decryptedSettings));
-            return prop.getProperty(key);
-        } catch (Exception e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την ανάκτηση.", e.getMessage(), Alert.AlertType.ERROR));
-            return null;
         }
+        return prop;
     }
 }

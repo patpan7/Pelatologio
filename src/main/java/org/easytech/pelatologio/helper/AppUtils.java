@@ -1,20 +1,15 @@
 package org.easytech.pelatologio.helper;
 
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.util.Duration;
-import org.easytech.pelatologio.EmailDialogController;
-import org.easytech.pelatologio.models.Customer;
+import org.easytech.pelatologio.CustomNotification;
 
 import java.awt.*;
 import java.io.File;

@@ -6,12 +6,12 @@ import javafx.util.Duration;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
+import org.easytech.pelatologio.CustomNotification;
 import org.easytech.pelatologio.models.Subscription;
 
 import java.io.File;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ReportManager {

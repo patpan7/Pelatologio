@@ -1,4 +1,4 @@
-package org.easytech.pelatologio.helper;
+package org.easytech.pelatologio;
 
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
@@ -69,7 +69,7 @@ public class CustomNotification {
             Stage stage = new Stage();
             stage.initStyle(StageStyle.TRANSPARENT);
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/easytech/pelatologio/notification.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("notification.fxml"));
             Parent root = loader.load();
 
             ImageView icon = (ImageView) root.lookup("#icon");
@@ -79,7 +79,7 @@ public class CustomNotification {
             titleLabel.setText(title);
             messageLabel.setText(message);
 
-            String imagePath = "/org/easytech/pelatologio/icons/" + type + ".png";
+            String imagePath = "icons/" + type + ".png";
             try {
                 Image image = new Image(getClass().getResourceAsStream(imagePath));
                 icon.setImage(image);

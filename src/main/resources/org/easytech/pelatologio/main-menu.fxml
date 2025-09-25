@@ -48,6 +48,21 @@
                                 </Button>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
 
+                                <!-- Reports Menu Button -->
+                                <MenuButton fx:id="btnReports" maxWidth="160.0" mnemonicParsing="false" text="Αναφορές" textAlignment="CENTER">
+                                    <items>
+                                        <MenuItem mnemonicParsing="false" onAction="#handleSubscriptionReport" text="Αναφορά Συνδρομών" />
+                                    </items>
+                                    <graphic>
+                                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                            <Image url="@icons/report.png" />
+                                        </ImageView>
+                                    </graphic>
+                                    <VBox.margin>
+                                        <Insets bottom="10.0" />
+                                    </VBox.margin>
+                                </MenuButton>
+
                                 <Button fx:id="btnDashboard" maxWidth="160.0" mnemonicParsing="false" onAction="#handleDashboardClick" text="Dashboard" textAlignment="CENTER">
                                     <graphic>
                                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -70,21 +85,6 @@
                                         <Insets bottom="10.0" />
                                     </VBox.margin>
                                 </Button>
-
-                                <!-- Reports Menu Button -->
-                                <MenuButton fx:id="btnReports" maxWidth="160.0" mnemonicParsing="false" text="Αναφορές" textAlignment="CENTER">
-                                    <items>
-                                        <MenuItem mnemonicParsing="false" onAction="#handleSubscriptionReport" text="Αναφορά Συνδρομών" />
-                                    </items>
-                                    <graphic>
-                                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                            <Image url="@icons/report.png" />
-                                        </ImageView>
-                                    </graphic>
-                                    <VBox.margin>
-                                        <Insets bottom="10.0" />
-                                    </VBox.margin>
-                                </MenuButton>
 
                                 <Button layoutX="1050.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleRefreshButton" prefWidth="160.0" text="Ανανέωση">
                                     <graphic>
@@ -344,7 +344,7 @@
                                 </HBox>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false">
-                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.13" VBox.vgrow="NEVER">
+                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.14" VBox.vgrow="NEVER">
                                         <VBox.margin>
                                             <Insets bottom="5.0" right="20.0" />
                                         </VBox.margin>
