@@ -9,14 +9,16 @@ public class Device {
     Integer customerId;
     String itemName;
     String customerName;
+    boolean isActive;
 
-    public Device(int id, String serial, String description, String rate, int itemId, int customerId) {
+    public Device(int id, String serial, String description, String rate, int itemId, int customerId, boolean isActive) {
         this.id = id;
         this.serial = serial;
         this.description = description;
         this.rate = rate;
         this.itemId = itemId;
         this.customerId = customerId;
+        this.isActive = isActive;
     }
 
     public Device() {
@@ -105,5 +107,13 @@ public class Device {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

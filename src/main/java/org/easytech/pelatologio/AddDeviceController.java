@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -46,6 +47,11 @@ public class AddDeviceController {
     private Label serialListTitle;
     @FXML
     private Button addSerialButton;
+    @FXML
+    private CheckBox activeCheckBox;
+
+    @FXML
+    private HBox rateBox;
 
     private final ObservableList<String> serialNumbers = FXCollections.observableArrayList();
     private final ObservableList<String> rateList = FXCollections.observableArrayList();
@@ -93,9 +99,8 @@ public class AddDeviceController {
                 }
             }
         }
-        serialListTitle.setVisible(false);
-        serialListView.setVisible(false);
         addSerialButton.setVisible(false);
+        activeCheckBox.setSelected(device.isActive());
     }
 
     public void lock() {
@@ -173,6 +178,17 @@ public class AddDeviceController {
         rateList.clear();
         rateList.addAll(DBHelper.getDeviceDao().getRates());
         rateField.setItems(rateList);
+
+        rateBox.setVisible(false);
+        itemComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue != null) {
+                if ("POS".equals(newValue.getCategory())) {
+                    rateBox.setVisible(true);
+                } else {
+                    rateBox.setVisible(false);
+                }
+            }
+        });
     }
 
 
@@ -316,7 +332,8 @@ public class AddDeviceController {
 
                 // Δημιουργία νέας συσκευής
                 for (String serial : serialNumbers) {
-                    Device newDevice = new Device(0, serial, description, rate, itemId, selectedCustomer != null ? selectedCustomer.getCode() : 0);
+                    Device newDevice = new Device(0, serial, description, rate, itemId, selectedCustomer != null ? selectedCustomer.getCode() : 0, true);
+                    newDevice.setActive(activeCheckBox.isSelected());
                     if (DBHelper.getDeviceDao().saveDevice(newDevice)) {
                         Platform.runLater(() -> {
                             CustomNotification.create()
@@ -337,6 +354,7 @@ public class AddDeviceController {
                 device.setItemId(itemId);
                 int customerId = selectedCustomer != null ? selectedCustomer.getCode() : 0;
                 device.setCustomerId(customerId);
+                device.setActive(activeCheckBox.isSelected());
                 DBHelper.getDeviceDao().updateDevice(device);
             }
 

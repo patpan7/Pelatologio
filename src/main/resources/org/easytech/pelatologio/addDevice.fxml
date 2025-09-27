@@ -33,9 +33,14 @@
                     <TextArea fx:id="descriptionField" onMouseClicked="#handleMouseClick" prefHeight="100" wrapText="true" HBox.hgrow="ALWAYS" />
                 </HBox>
 
-                <HBox alignment="CENTER_LEFT" spacing="10">
+                <HBox fx:id="rateBox" alignment="CENTER_LEFT" spacing="10">
                     <Label minWidth="150" text="Ποσοστό:" />
                     <ComboBox fx:id="rateField" editable="true" HBox.hgrow="ALWAYS" />
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label minWidth="150" text="Κατάσταση:" />
+                    <CheckBox fx:id="activeCheckBox" selected="true" text="Ενεργή" />
                 </HBox>
 
                 <HBox alignment="CENTER_LEFT" spacing="10">

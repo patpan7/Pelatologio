@@ -23,7 +23,7 @@ public class DeviceDaoImpl implements DeviceDao {
     @Override
     public List<Device> getAllDevices() {
         List<Device> devices = new ArrayList<>();
-        String query = "SELECT d.id, d.serial, d.description, d.rate, d.itemId, d.customerId, i.name AS itemName, c.name " +
+        String query = "SELECT d.id, d.serial, d.description, d.rate, d.itemId, d.customerId, i.name AS itemName, c.name, d.is_active " +
                 "FROM Devices d " +
                 "LEFT JOIN Customers c ON d.customerId = c.code " +
                 "LEFT JOIN Items i ON d.itemId = i.id " +
@@ -44,6 +44,7 @@ public class DeviceDaoImpl implements DeviceDao {
                 String customerName = resultSet.getString("name");
 
                 Device device = new Device(id, serial, description, rate, itemId, customerId, item, customerName);
+                device.setActive(resultSet.getBoolean("is_active"));
                 devices.add(device);
             }
         } catch (SQLException e) {
@@ -71,7 +72,7 @@ public class DeviceDaoImpl implements DeviceDao {
 
     @Override
     public boolean saveDevice(Device newDevice) {
-        String query = "INSERT INTO Devices (serial, description, rate, itemId, customerId) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Devices (serial, description, rate, itemId, customerId, is_active) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, newDevice.getSerial());
@@ -83,6 +84,7 @@ public class DeviceDaoImpl implements DeviceDao {
             } else {
                 stmt.setInt(5, 0);
             }
+            stmt.setBoolean(6, newDevice.isActive());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
                 return true; // Εισαγωγή επιτυχής
@@ -95,7 +97,7 @@ public class DeviceDaoImpl implements DeviceDao {
 
     @Override
     public Boolean updateDevice(Device device) {
-        String query = "UPDATE Devices SET serial = ?, description = ?, rate = ?, itemId = ?, customerId = ? WHERE id = ?";
+        String query = "UPDATE Devices SET serial = ?, description = ?, rate = ?, itemId = ?, customerId = ?, is_active = ? WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, device.getSerial());
@@ -107,7 +109,8 @@ public class DeviceDaoImpl implements DeviceDao {
             } else {
                 stmt.setNull(5, Types.INTEGER);
             }
-            stmt.setInt(6, device.getId());
+            stmt.setBoolean(6, device.isActive());
+            stmt.setInt(7, device.getId());
 
             if (stmt.executeUpdate() > 0) {
                 return true; // Ενημέρωση επιτυχής
@@ -121,7 +124,7 @@ public class DeviceDaoImpl implements DeviceDao {
     @Override
     public List<Device> getCustomerDevices(int customerId) {
         List<Device> devices = new ArrayList<>();
-        String query = "SELECT d.id, d.serial, d.description, d.rate, d.itemId, d.customerId, i.name AS itemName " +
+        String query = "SELECT d.id, d.serial, d.description, d.rate, d.itemId, d.customerId, i.name AS itemName, d.is_active " +
                 "FROM Devices d " +
                 "LEFT JOIN Items i ON d.itemId = i.id " +
                 "WHERE d.customerId = ?";
@@ -140,6 +143,7 @@ public class DeviceDaoImpl implements DeviceDao {
                 String item = resultSet.getString("itemName");
 
                 Device device = new Device(id, serial, description, rate, itemId, customerId, item);
+                device.setActive(resultSet.getBoolean("is_active"));
                 devices.add(device);
             }
         } catch (SQLException e) {

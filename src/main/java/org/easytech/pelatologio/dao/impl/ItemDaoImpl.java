@@ -34,6 +34,7 @@ public class ItemDaoImpl implements ItemDao {
                 item.setId(resultSet.getInt("id"));
                 item.setName(resultSet.getString("name"));
                 item.setDescription(resultSet.getString("description"));
+                item.setCategory(resultSet.getString("category"));
                 dataList.add(item);
             }
         } catch (Exception e) {
@@ -60,15 +61,15 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
-    public int insertItem(String name, String description) {
-        String insertQuery = "INSERT INTO Items (name, description) "
-                + "VALUES (?, ?)";
+    public int insertItem(String name, String description, String category) {
+        String insertQuery = "INSERT INTO Items (name, description, category) "
+                + "VALUES (?, ?, ?)";
         int newItemId = -1; // Default value for error handling
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
-
             pstmt.setString(1, name);
             pstmt.setString(2, description);
+            pstmt.setString(3, category);
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -89,15 +90,16 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
-    public void updateItem(int code, String name, String description) {
-        String sql = "UPDATE items SET name = ?, description = ? WHERE id = ?";
+    public void updateItem(int code, String name, String description, String category) {
+        String sql = "UPDATE items SET name = ?, description = ?, category = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, name);
             pstmt.setString(2, description);
-            pstmt.setInt(3, code);
+            pstmt.setString(3, category);
+            pstmt.setInt(4, code);
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {

@@ -17,6 +17,10 @@
                 <TextArea fx:id="taDescription" onMouseClicked="#handleMouseClick" prefHeight="102.0"
                           wrapText="true" HBox.hgrow="ALWAYS"/>
             </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label minWidth="100" text="Κατηγορία:"/>
+                <ComboBox fx:id="categoryComboBox" HBox.hgrow="ALWAYS" />
+            </HBox>
         </VBox>
     </content>
     <padding>

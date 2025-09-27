@@ -20,6 +20,8 @@ public class AddItemController {
     private TextField tfName;
     @FXML
     private TextArea taDescription;
+    @FXML
+    private ComboBox<String> categoryComboBox;
 
     int code = 0;
 
@@ -42,6 +44,8 @@ public class AddItemController {
         copyItem.setOnAction(e -> AppUtils.copyTextToClipboard(currentTextField.getText()));
         pasteItem.setOnAction(e -> AppUtils.pasteText(currentTextField));
         clearItem.setOnAction(e -> AppUtils.clearText(currentTextField));
+
+        categoryComboBox.getItems().addAll("POS", "Ταμειακή");
     }
 
     @FXML
@@ -97,6 +101,7 @@ public class AddItemController {
         // Ρύθμιση των πεδίων με τα υπάρχοντα στοιχεία του πελάτη
         tfName.setText(item.getName());
         taDescription.setText(item.getDescription());
+        categoryComboBox.setValue(item.getCategory());
 
         // Αποθήκευση του κωδικού του πελάτη για χρήση κατά την ενημέρωση
         this.code = item.getId();
@@ -115,6 +120,7 @@ public class AddItemController {
     void addItem() {
         String name = tfName.getText();
         String description = taDescription.getText();
+        String category = categoryComboBox.getValue();
 
         // Έλεγχος για ύπαρξη πελάτη με το ίδιο ΑΦΜ
         if (DBHelper.getItemDao().isItemExists(name)) {
@@ -128,7 +134,7 @@ public class AddItemController {
             });
         } else {
             // Εισαγωγή του πελάτη στον κύριο πίνακα με την πρώτη διεύθυνση
-            int itemId = DBHelper.getItemDao().insertItem(name, description);
+            int itemId = DBHelper.getItemDao().insertItem(name, description, category);
             if (itemId != -1) {
                 // Εμφάνιση επιτυχίας
                 Platform.runLater(() -> {
@@ -156,8 +162,9 @@ public class AddItemController {
     void updateItem() {
         String name = tfName.getText();
         String description = taDescription.getText();
+        String category = categoryComboBox.getValue();
 
-        DBHelper.getItemDao().updateItem(code, name, description);
+        DBHelper.getItemDao().updateItem(code, name, description, category);
         //showAlert("Επιτυχία", "Ο πελάτης ενημερώθηκε με επιτυχία στη βάση δεδομένων.");
         CustomNotification.create()
                 .title("Επιτυχία")

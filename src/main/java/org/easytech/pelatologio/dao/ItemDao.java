@@ -7,6 +7,6 @@ import java.util.List;
 public interface ItemDao {
     List<Item> getItems() throws SQLException;
     boolean isItemExists(String name);
-    int insertItem(String name, String description);
-    void updateItem(int code, String name, String description);
+    int insertItem(String name, String description, String category);
+    void updateItem(int code, String name, String description, String category);
 }

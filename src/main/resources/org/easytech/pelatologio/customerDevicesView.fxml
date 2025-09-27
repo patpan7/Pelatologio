@@ -10,11 +10,12 @@
         <HBox.margin>
             <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
         </HBox.margin>
-        <TableView fx:id="devicesTable" styleClass="striped" VBox.vgrow="ALWAYS">
+        <TableView fx:id="devicesTable" editable="true" styleClass="striped" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="serialColumn" text="Serial Number" />
                 <TableColumn fx:id="itemColumn" text="Είδος" />
                 <TableColumn fx:id="descriptionColumn" text="Περιγραφή" />
+                <TableColumn fx:id="statusColumn" text="Κατάσταση" />
             </columns>
             <contextMenu>
                 <ContextMenu>

@@ -1,6 +1,7 @@
 package org.easytech.pelatologio;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
@@ -36,6 +38,9 @@ public class DeviceController implements Initializable {
     private TableView<Device> devicesTable;
     @FXML
     private TableColumn idColumn, serialColumn, itemColumn, descriptionColumn, customerColumn, rateColumn;
+
+    @FXML
+    private TableColumn<Device, Boolean> statusColumn;
 
     @FXML
     private CheckBox showAllCheckbox, showWithCustomerCheckbox, showWithoutCustomerCheckbox;
@@ -81,6 +86,18 @@ public class DeviceController implements Initializable {
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         rateColumn.setCellValueFactory(new PropertyValueFactory<>("rate"));
+        statusColumn.setCellValueFactory(cellData -> {
+            Device device = cellData.getValue();
+            SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(device.isActive());
+            booleanProp.addListener((observable, oldValue, newValue) -> {
+                device.setActive(newValue);
+                DBHelper.getDeviceDao().updateDevice(device);
+            });
+            return booleanProp;
+        });
+
+        statusColumn.setCellFactory(CheckBoxTableCell.forTableColumn(statusColumn));
+        statusColumn.setEditable(true);
         // Αρχικό γέμισμα του πίνακα
         loadDevices();
 
@@ -112,8 +129,6 @@ public class DeviceController implements Initializable {
 
         filterField.textProperty().addListener((observable, oldValue, newValue) -> updateDevicesTable());
 
-
-        DBHelper dbHelper = new DBHelper();
         List<Item> items = null;
         List<String> rates = null;
         try {
@@ -122,7 +137,7 @@ public class DeviceController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        itemFilterComboBox.getItems().add(new Item(0, "Όλα", ""));
+        itemFilterComboBox.getItems().add(new Item(0, "Όλα", "",""));
         itemFilterComboBox.getItems().addAll(items);
         itemFilterComboBox.getSelectionModel().selectFirst();
         itemFilterComboBox.setConverter(new StringConverter<>() {
@@ -175,7 +190,6 @@ public class DeviceController implements Initializable {
         if (Features.isEnabled("devices")) {
             List<TableColumn<Device, ?>> sortOrder = new ArrayList<>(devicesTable.getSortOrder());
             // Φόρτωση όλων των εργασιών από τη βάση
-            DBHelper dbHelper = new DBHelper();
             allDevices.setAll(DBHelper.getDeviceDao().getAllDevices());
             updateDevicesTable();
             devicesTable.getSortOrder().setAll(sortOrder);
@@ -316,7 +330,6 @@ public class DeviceController implements Initializable {
         alert.setHeaderText("Είστε βέβαιος ότι θέλετε να διαγράψετε την συσκευή " + selectedDevice.getSerial() + ";");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            DBHelper dbHelper = new DBHelper();
             boolean deleted = DBHelper.getDeviceDao().deleteDevice(selectedDevice.getId());
             if (deleted) {
                 Platform.runLater(() -> {

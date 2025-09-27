@@ -1,50 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
-<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" stylesheets="@custom-atlantafx.css"
-           xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="org.easytech.pelatologio.DeviceController">
+
+<StackPane fx:id="stackPane" prefHeight="800.0" prefWidth="1200.0" stylesheets="@custom-atlantafx.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.easytech.pelatologio.DeviceController">
     <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
         <BorderPane fx:id="rootPane" StackPane.alignment="CENTER">
             <top>
                 <VBox spacing="10" BorderPane.alignment="CENTER">
                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </padding>
                     <HBox alignment="CENTER_LEFT" spacing="10">
-                        <Label styleClass="title-label" text="Φίλτρα:"/>
-                        <CheckBox fx:id="showAllCheckbox" selected="true" text="Όλες"/>
-                        <CheckBox fx:id="showWithCustomerCheckbox" text="Με πελάτη"/>
-                        <CheckBox fx:id="showWithoutCustomerCheckbox" text="Χωρίς πελάτη"/>
-                        <Separator orientation="VERTICAL"/>
-                        <Label text="Είδος:"/>
-                        <ComboBox fx:id="itemFilterComboBox" editable="true" prefWidth="300.0" HBox.hgrow="ALWAYS"/>
+                        <Label styleClass="title-label" text="Φίλτρα:" />
+                        <CheckBox fx:id="showAllCheckbox" selected="true" text="Όλες" />
+                        <CheckBox fx:id="showWithCustomerCheckbox" text="Με πελάτη" />
+                        <CheckBox fx:id="showWithoutCustomerCheckbox" text="Χωρίς πελάτη" />
+                        <Separator orientation="VERTICAL" />
+                        <Label text="Είδος:" />
+                        <ComboBox fx:id="itemFilterComboBox" editable="true" prefWidth="300.0" HBox.hgrow="ALWAYS" />
                     </HBox>
                     <HBox alignment="CENTER_LEFT" spacing="10">
-                        <Label styleClass="title-label" text="S/N:"/>
-                        <TextField fx:id="filterField" prefWidth="250.0"/>
+                        <Label styleClass="title-label" text="S/N:" />
+                        <TextField fx:id="filterField" prefWidth="250.0" />
                         <Button fx:id="btnClear" mnemonicParsing="false" onAction="#clean" styleClass="danger">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/clean.png"/>
+                                    <Image url="@icons/clean.png" />
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Separator orientation="VERTICAL"/>
-                        <Label text="Ποσοστό:"/>
-                        <ComboBox fx:id="rateFilterComboBox" editable="true" prefWidth="150.0" HBox.hgrow="ALWAYS"/>
-                        <Label fx:id="countLabel" text="Label"/>
-                        <Separator visible="false" HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="addDeviceButton" mnemonicParsing="false" onAction="#handleAddDevice"
-                                styleClass="accent" text="Προσθήκη S/N">
+                        <Separator orientation="VERTICAL" />
+                        <Label text="Ποσοστό:" />
+                        <ComboBox fx:id="rateFilterComboBox" editable="true" prefWidth="150.0" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="countLabel" text="Label" />
+                        <Separator visible="false" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="addDeviceButton" mnemonicParsing="false" onAction="#handleAddDevice" styleClass="accent" text="Προσθήκη S/N">
                             <graphic>
                                 <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@icons/add.png"/>
+                                    <Image url="@icons/add.png" />
                                 </ImageView>
                             </graphic>
                         </Button>
@@ -52,47 +49,42 @@
                 </VBox>
             </top>
             <center>
-                <TableView fx:id="devicesTable" styleClass="striped" BorderPane.alignment="CENTER">
+                <TableView fx:id="devicesTable" editable="true" styleClass="striped" BorderPane.alignment="CENTER">
                     <columns>
-                        <TableColumn fx:id="idColumn" maxWidth="80.0" minWidth="80.0" text="ID"/>
-                        <TableColumn fx:id="serialColumn" maxWidth="500.0" minWidth="250.0" prefWidth="250.0"
-                                     text="Serial Number"/>
-                        <TableColumn fx:id="itemColumn" maxWidth="200.0" minWidth="200.0" prefWidth="200.0"
-                                     text="Είδος"/>
-                        <TableColumn fx:id="descriptionColumn" maxWidth="700.0" minWidth="300.0" prefWidth="300.0"
-                                     text="Περιγραφή"/>
-                        <TableColumn fx:id="customerColumn" minWidth="280.0" prefWidth="280.0" text="Πελάτης"/>
-                        <TableColumn fx:id="rateColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0"
-                                     text="Rate"/>
+                        <TableColumn fx:id="idColumn" maxWidth="80.0" minWidth="80.0" text="ID" />
+                        <TableColumn fx:id="serialColumn" maxWidth="500.0" minWidth="250.0" prefWidth="250.0" text="Serial Number" />
+                        <TableColumn fx:id="itemColumn" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="Είδος" />
+                        <TableColumn fx:id="descriptionColumn" maxWidth="700.0" minWidth="300.0" prefWidth="300.0" text="Περιγραφή" />
+                <TableColumn fx:id="customerColumn" prefWidth="200.0" text="Πελάτης" />
+                <TableColumn fx:id="statusColumn" prefWidth="100.0" text="Κατάσταση" />
+                        <TableColumn fx:id="rateColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Rate" />
                     </columns>
                     <contextMenu>
                         <ContextMenu>
                             <items>
                                 <MenuItem onAction="#handleEditDevice" text="Επεξεργασία">
                                     <graphic>
-                                        <FontAwesomeIcon glyphName="PENCIL"/>
+                                        <FontAwesomeIcon glyphName="PENCIL" />
                                     </graphic>
                                 </MenuItem>
                                 <MenuItem mnemonicParsing="false" onAction="#handleAddDevice" text="Προσθήκη">
                                     <graphic>
-                                        <FontAwesomeIcon glyphName="PLUS"/>
+                                        <FontAwesomeIcon glyphName="PLUS" />
                                     </graphic>
                                 </MenuItem>
                                 <MenuItem mnemonicParsing="false" onAction="#handleDeleteDevice" text="Διαγραφή">
                                     <graphic>
-                                        <FontAwesomeIcon glyphName="TRASH"/>
+                                        <FontAwesomeIcon glyphName="TRASH" />
                                     </graphic>
                                 </MenuItem>
                             </items>
                         </ContextMenu>
                     </contextMenu>
                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                 </TableView>
             </center>
         </BorderPane>
     </ScrollPane>
 </StackPane>
-
-

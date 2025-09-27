@@ -1,6 +1,7 @@
 package org.easytech.pelatologio;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.util.Duration;
@@ -33,6 +35,8 @@ public class CustomerDevicesController implements CustomerTabController {
 
     @FXML
     private TableColumn<Logins, String> descriptionColumn;
+    @FXML
+    private TableColumn<Device, Boolean> statusColumn;
 
 
     Customer customer;
@@ -51,6 +55,18 @@ public class CustomerDevicesController implements CustomerTabController {
         serialColumn.setCellValueFactory(new PropertyValueFactory<>("serial"));
         itemColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        statusColumn.setCellValueFactory(cellData -> {
+            Device device = cellData.getValue();
+            SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(device.isActive());
+            booleanProp.addListener((observable, oldValue, newValue) -> {
+                device.setActive(newValue);
+                DBHelper.getDeviceDao().updateDevice(device);
+            });
+            return booleanProp;
+        });
+
+        statusColumn.setCellFactory(CheckBoxTableCell.forTableColumn(statusColumn));
+        statusColumn.setEditable(true);
 
         devicesTable.setItems(devicesList);
 
