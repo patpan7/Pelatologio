@@ -254,64 +254,40 @@ public class SuppliersViewController implements Initializable {
     }
 
     public void openSupplierTab(int supplierId) {
-        refreshTableData(); // Ανανεώνει τη λίστα πελατών
-        filteredData = new FilteredList<>(observableList, b -> true);
-
-        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-            applyFilters(newValue);
-        });
-
-        applyFilters(filterField.getText());
-
-        SortedList<Supplier> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(supplierTable.comparatorProperty());
-        supplierTable.setItems(sortedData);
-        // Έλεγχος αν υπάρχει ήδη ανοικτό tab για τον συγκεκριμένο πελάτη
         Supplier selectedSupplier = DBHelper.getSupplierDao().getSelectedSupplier(supplierId);
+        if (selectedSupplier == null) {
+            AlertDialogHelper.showErrorDialog("Σφάλμα", "Δεν βρέθηκε ο προμηθευτής με ID: " + supplierId);
+            return;
+        }
+
         try {
-            // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
+            // Check if a tab for this supplier is already open
+            String tabTitle = selectedSupplier.getName().substring(0, Math.min(selectedSupplier.getName().length(), 18));
             for (Tab tab : mainTabPane.getTabs()) {
-                if (tab.getText().equals(selectedSupplier.getName().substring(0, Math.min(selectedSupplier.getName().length(), 18)))) {
-                    mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                if (tabTitle.equals(tab.getText())) {
+                    mainTabPane.getSelectionModel().select(tab);
                     return;
                 }
             }
-            // Φόρτωση του FXML
+
+            // If not, create a new tab
             FXMLLoader loader = new FXMLLoader(getClass().getResource("newSupplier.fxml"));
             Parent supplierForm = loader.load();
 
-            // Δημιουργία νέου tab για την ενημέρωση του πελάτη
-            Tab supplierTab = new Tab(selectedSupplier.getName().substring(0, Math.min(selectedSupplier.getName().length(), 18)));
-
+            Tab supplierTab = new Tab(tabTitle);
             supplierTab.setContent(supplierForm);
 
             AddSupplierController controller = loader.getController();
-            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
             controller.setSupplierData(selectedSupplier);
             controller.setMainTabPane(mainTabPane);
-            // Προσθήκη του tab στο TabPane
-            Platform.runLater(() -> {
-                mainTabPane.getTabs().add(supplierTab);
-                mainTabPane.getSelectionModel().select(supplierTab);
-                System.out.println("Tab added successfully: " + supplierTab.getText());
-            });
 
-            supplierTab.setOnClosed(event -> {
-                refreshTableData(); // Ανανεώνει τη λίστα πελατών
-                filteredData = new FilteredList<>(observableList, b -> true);
+            mainTabPane.getTabs().add(supplierTab);
+            mainTabPane.getSelectionModel().select(supplierTab);
 
-                filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-                    applyFilters(newValue);
-                });
+            supplierTab.setOnClosed(event -> refreshTableData());
 
-                applyFilters(filterField.getText());
-
-                SortedList<Supplier> sortedData1 = new SortedList<>(filteredData);
-                sortedData1.comparatorProperty().bind(supplierTable.comparatorProperty());
-                supplierTable.setItems(sortedData1);
-            });
         } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα της καρτέλας του προμηθευτή.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 

@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -61,10 +62,20 @@ public class MainMenuController implements Initializable {
     @FXML
     private Button btnSimulateCall;
 
+    @FXML
+    private TextField globalSearchField;
+    private ListView<SearchResult> globalSearchResults;
+    private PopupControl searchResultPopup;
+
+    private GlobalSearchService globalSearchService;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         mainTab.setClosable(false);
         setTooltips();
+
+        globalSearchService = new GlobalSearchService();
+        setupGlobalSearch();
 
         // License Info
         LicenseManager licenseManager = new LicenseManager();
@@ -246,7 +257,190 @@ public class MainMenuController implements Initializable {
                     }
                 }
             });
+
+            // Global Search Shortcut
+            final KeyCombination searchCombination = new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN);
+            stage.getScene().getAccelerators().put(searchCombination, () -> globalSearchField.requestFocus());
         });
+    }
+
+    private void setupGlobalSearch() {
+        globalSearchResults = new ListView<>();
+        searchResultPopup = new PopupControl();
+        searchResultPopup.getScene().setRoot(globalSearchResults);
+
+        // Set initial width and bind to search field's width
+        globalSearchResults.setPrefWidth(globalSearchField.getWidth());
+        globalSearchField.widthProperty().addListener((obs, oldVal, newVal) -> {
+            globalSearchResults.setPrefWidth(newVal.doubleValue());
+        });
+
+        globalSearchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null || newValue.trim().isEmpty()) {
+                searchResultPopup.hide();
+            } else {
+                List<SearchResult> results = globalSearchService.search(newValue);
+                if (results.isEmpty()) {
+                    searchResultPopup.hide();
+                } else {
+                    globalSearchResults.getItems().setAll(results);
+                    // Calculate screen coordinates to show the popup directly below the search field
+                    javafx.geometry.Bounds screenBounds =
+                            globalSearchField.localToScreen(globalSearchField.getBoundsInLocal());
+                    double screenX = screenBounds.getMinX();
+                    double screenY = screenBounds.getMaxY();
+                    searchResultPopup.show(globalSearchField, screenX, screenY);
+                    // Request focus for the ListView so arrow keys work immediately
+                    Platform.runLater(() -> globalSearchResults.requestFocus());
+                }
+            }
+        });
+
+        globalSearchResults.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                SearchResult selected = globalSearchResults.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    handleSearchResult(selected);
+                    globalSearchField.clear();
+                    searchResultPopup.hide();
+                }
+            }
+        });
+
+        // Handle Enter key press on the ListView
+        globalSearchResults.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                SearchResult selected = globalSearchResults.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    handleSearchResult(selected);
+                    globalSearchField.clear();
+                    searchResultPopup.hide();
+                }
+            }
+        });
+
+        // Hide popup when focus is lost from either the search field or the results list
+        globalSearchField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal && !globalSearchResults.isFocused()) {
+                searchResultPopup.hide();
+            }
+        });
+        globalSearchResults.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal && !globalSearchField.isFocused()) {
+                searchResultPopup.hide();
+            }
+        });
+    }
+
+    private void handleSearchResult(SearchResult result) {
+        switch (result.getType()) {
+            case CUSTOMER -> openCustomerDetailsTabSimple(result.getObjectId());
+            case DEVICE -> openDevicesTabAndSearch(result.getDisplayText().split(" ")[0]);
+            case SUPPLIER -> openSuppliersTabAndSearch(result.getObjectId());
+            case ACCOUNTANT -> openAccountantsTabAndSearch(result.getObjectId());
+            // Add cases for other types
+        }
+    }
+
+    private void openDevicesTabAndSearch(String serial) {
+        try {
+            // First, ensure the Devices tab itself is open
+            Tab devicesTab = null;
+            for (Tab tab : mainTabPane.getTabs()) {
+                if ("Συσκευές".equals(tab.getText())) {
+                    devicesTab = tab;
+                    mainTabPane.getSelectionModel().select(devicesTab);
+                    break;
+                }
+            }
+
+            if (devicesTab == null) {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("deviceView.fxml"));
+                Parent devicesContent = fxmlLoader.load();
+                DeviceController controller = fxmlLoader.getController();
+                devicesTab = new Tab("Συσκευές");
+                devicesTab.setContent(devicesContent);
+                devicesTab.setUserData(controller); // Store controller
+                mainTabPane.getTabs().add(devicesTab);
+                mainTabPane.getSelectionModel().select(devicesTab);
+            }
+
+            // Now, get the controller and call the search method
+            if (devicesTab.getUserData() instanceof DeviceController controller) {
+                controller.searchBySerial(serial);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openSuppliersTabAndSearch(int supplierId) {
+        try {
+            // First, ensure the Suppliers tab itself is open
+            Tab suppliersTab = null;
+            for (Tab tab : mainTabPane.getTabs()) {
+                if ("Προμηθευτές".equals(tab.getText())) {
+                    suppliersTab = tab;
+                    mainTabPane.getSelectionModel().select(suppliersTab);
+                    break;
+                }
+            }
+
+            if (suppliersTab == null) {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("suppliersView.fxml"));
+                Parent suppliersContent = fxmlLoader.load();
+                SuppliersViewController controller = fxmlLoader.getController();
+                controller.setMainTabPane(mainTabPane);
+                suppliersTab = new Tab("Προμηθευτές");
+                suppliersTab.setContent(suppliersContent);
+                suppliersTab.setUserData(controller); // Store controller
+                mainTabPane.getTabs().add(suppliersTab);
+                mainTabPane.getSelectionModel().select(suppliersTab);
+            }
+
+            // Now, get the controller and open the specific supplier's tab
+            if (suppliersTab.getUserData() instanceof SuppliersViewController controller) {
+                controller.openSupplierTab(supplierId);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openAccountantsTabAndSearch(int accountantId) {
+        try {
+            // First, ensure the Accountants tab itself is open
+            Tab accountantsTab = null;
+            for (Tab tab : mainTabPane.getTabs()) {
+                if ("Λογιστές".equals(tab.getText())) {
+                    accountantsTab = tab;
+                    mainTabPane.getSelectionModel().select(accountantsTab);
+                    break;
+                }
+            }
+
+            if (accountantsTab == null) {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("accountantsView.fxml"));
+                Parent accountantsContent = fxmlLoader.load();
+                AccountantsController controller = fxmlLoader.getController();
+                controller.setMainTabPane(mainTabPane);
+                accountantsTab = new Tab("Λογιστές");
+                accountantsTab.setContent(accountantsContent);
+                accountantsTab.setUserData(controller); // Store controller
+                mainTabPane.getTabs().add(accountantsTab);
+                mainTabPane.getSelectionModel().select(accountantsTab);
+            }
+
+            // Now, get the controller and open the specific accountant's tab
+            if (accountantsTab.getUserData() instanceof AccountantsController controller) {
+                controller.openAccountantTab(accountantId);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showCallerPopup(String callerNumber, String customerName, int customerId, String customerTitle) {

@@ -242,70 +242,40 @@ public class AccountantsController implements Initializable {
     }
 
     public void openAccountantTab(int accountantId) {
-        refreshTableData(); // Ανανεώνει τη λίστα πελατών
-        filteredData = new FilteredList<>(observableList, b -> true);
-
-        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-            applyFilters(newValue);
-        });
-
-        applyFilters(filterField.getText());
-
-        SortedList<Accountant> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(accountantTable.comparatorProperty());
-        accountantTable.setItems(sortedData);
-        // Έλεγχος αν υπάρχει ήδη ανοικτό tab για τον συγκεκριμένο πελάτη
         Accountant selectedAccountant = DBHelper.getAccountantDao().getSelectedAccountant(accountantId);
-        System.out.println("selectedCustomer: " + selectedAccountant);
+        if (selectedAccountant == null) {
+            AlertDialogHelper.showErrorDialog("Σφάλμα", "Δεν βρέθηκε ο λογιστής με ID: " + accountantId);
+            return;
+        }
+
         try {
-            // Ψάχνουμε αν υπάρχει ήδη tab για το συγκεκριμένο πελάτη
+            // Check if a tab for this accountant is already open
+            String tabTitle = selectedAccountant.getName().substring(0, Math.min(selectedAccountant.getName().length(), 18));
             for (Tab tab : mainTabPane.getTabs()) {
-                if (tab.getText().equals(selectedAccountant.getName().substring(0, Math.min(selectedAccountant.getName().length(), 18)))) {
-                    mainTabPane.getSelectionModel().select(tab); // Επιλογή του υπάρχοντος tab
+                if (tabTitle.equals(tab.getText())) {
+                    mainTabPane.getSelectionModel().select(tab);
                     return;
                 }
             }
-            // Φόρτωση του FXML
+
+            // If not, create a new tab
             FXMLLoader loader = new FXMLLoader(getClass().getResource("newAccountant.fxml"));
             Parent accountantForm = loader.load();
 
-            // Δημιουργία νέου tab για την ενημέρωση του πελάτη
-            Tab accountantTab = new Tab(selectedAccountant.getName().substring(0, Math.min(selectedAccountant.getName().length(), 18)));
-
+            Tab accountantTab = new Tab(tabTitle);
             accountantTab.setContent(accountantForm);
 
             AddAccountantController controller = loader.getController();
-            // Αν είναι ενημέρωση, φόρτωσε τα στοιχεία του πελάτη
             controller.setAccountantData(selectedAccountant);
             controller.setMainTabPane(mainTabPane);
-            // Προσθήκη του tab στο TabPane
-            Platform.runLater(() -> {
-                mainTabPane.getTabs().add(accountantTab);
-                mainTabPane.getSelectionModel().select(accountantTab);
-                System.out.println("Tab added successfully: " + accountantTab.getText());
-            });
 
-            accountantTab.setOnCloseRequest(event -> {
-                DBHelper.getCustomerDao().customerUnlock(selectedAccountant.getId());
+            mainTabPane.getTabs().add(accountantTab);
+            mainTabPane.getSelectionModel().select(accountantTab);
 
-            });
+            accountantTab.setOnClosed(event -> refreshTableData());
 
-            accountantTab.setOnClosed(event -> {
-                refreshTableData(); // Ανανεώνει τη λίστα πελατών
-                filteredData = new FilteredList<>(observableList, b -> true);
-
-                filterField.textProperty().addListener((observable, oldValue, newValue) -> {
-                    applyFilters(newValue);
-                });
-
-                applyFilters(filterField.getText());
-
-                SortedList<Accountant> sortedData1 = new SortedList<>(filteredData);
-                sortedData1.comparatorProperty().bind(accountantTable.comparatorProperty());
-                accountantTable.setItems(sortedData1);
-            });
         } catch (IOException e) {
-            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά την επεξεργασία.", e.getMessage(), Alert.AlertType.ERROR));
+            Platform.runLater(() -> AlertDialogHelper.showDialog("Σφάλμα", "Προέκυψε σφάλμα κατά το άνοιγμα της καρτέλας του λογιστή.", e.getMessage(), Alert.AlertType.ERROR));
         }
     }
 

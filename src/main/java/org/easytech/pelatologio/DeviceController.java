@@ -350,6 +350,11 @@ public class DeviceController implements Initializable {
         }
     }
 
+    public void searchBySerial(String serial) {
+        filterField.setText(serial);
+        updateDevicesTable();
+    }
+
     public void clean(ActionEvent actionEvent) {
         filterField.setText("");
         devicesTable.getSelectionModel().clearSelection();

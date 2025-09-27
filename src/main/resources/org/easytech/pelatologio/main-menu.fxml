@@ -344,7 +344,7 @@
                                 </HBox>
                                 <Separator orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                                 <VBox alignment="CENTER_RIGHT" maxHeight="26.0" minHeight="26.0" prefHeight="26.0" snapToPixel="false">
-                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.14" VBox.vgrow="NEVER">
+                                    <Label fx:id="version" alignment="CENTER" text="v 2.14.15" VBox.vgrow="NEVER">
                                         <VBox.margin>
                                             <Insets bottom="5.0" right="20.0" />
                                         </VBox.margin>
@@ -386,36 +386,41 @@
                 </TabPane>
             </center>
             <top>
-                <HBox alignment="CENTER" BorderPane.alignment="CENTER">
-                    <BorderPane.margin>
-                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-                    </BorderPane.margin>
-                    <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                        <Label styleClass="header-label" text="Πελατολόγιο" HBox.hgrow="ALWAYS">
-                            <font>
-                                <Font size="38.0" />
-                            </font>
+                <VBox alignment="TOP_CENTER" spacing="5">
+                    <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+                        <BorderPane.margin>
+                            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                        </BorderPane.margin>
+                        <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label styleClass="header-label" text="Πελατολόγιο" HBox.hgrow="ALWAYS">
+                                <font>
+                                    <Font size="38.0" />
+                                </font>
+                                <HBox.margin>
+                                    <Insets />
+                                </HBox.margin>
+                            </Label>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT">
+                            <opaqueInsets>
+                                <Insets right="20.0" />
+                            </opaqueInsets>
                             <HBox.margin>
                                 <Insets />
                             </HBox.margin>
-                        </Label>
+                            <VBox alignment="CENTER_RIGHT">
+                               <children>
+                                  <Label fx:id="lbAppUser" text="Χειριστή: " HBox.hgrow="ALWAYS" />
+                                  <Label fx:id="lblExpiryDate" styleClass="small-label" text="Λήξη άδειας:" />
+                                  <Label fx:id="lblRemainingDays" styleClass="small-label" text="Υπόλοιπες ημέρες:" />
+                               </children>
+                            </VBox>
+                        </HBox>
                     </HBox>
-                    <HBox alignment="CENTER_RIGHT">
-                        <opaqueInsets>
-                            <Insets right="20.0" />
-                        </opaqueInsets>
-                        <HBox.margin>
-                            <Insets />
-                        </HBox.margin>
-                        <VBox alignment="CENTER_RIGHT">
-                           <children>
-                              <Label fx:id="lbAppUser" text="Χειριστή: " HBox.hgrow="ALWAYS" />
-                              <Label fx:id="lblExpiryDate" styleClass="small-label" text="Λήξη άδειας:" />
-                              <Label fx:id="lblRemainingDays" styleClass="small-label" text="Υπόλοιπες ημέρες:" />
-                           </children>
-                        </VBox>
-                    </HBox>
-                </HBox>
+                    <VBox alignment="TOP_CENTER" maxWidth="600.0" spacing="5">
+                        <TextField fx:id="globalSearchField" promptText="Αναζήτηση πελατών, συσκευών... (Ctrl+F)" />
+                    </VBox>
+                </VBox>
             </top>
         </BorderPane>
     </ScrollPane>
